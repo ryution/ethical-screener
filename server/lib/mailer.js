@@ -18,9 +18,11 @@ export function mailerEnabled() {
 // The public origin, for absolute links in emails. Render sets
 // RENDER_EXTERNAL_URL automatically; APP_URL overrides it if set.
 export function siteUrl() {
+  const vercel = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null;
   const raw =
     process.env.APP_URL ||
     process.env.RENDER_EXTERNAL_URL ||
+    vercel ||
     `http://localhost:${process.env.PORT || 8787}`;
   return raw.replace(/\/$/, "");
 }

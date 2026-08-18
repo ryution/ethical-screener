@@ -113,6 +113,7 @@ function allowedOrigins() {
   const list = [];
   if (process.env.APP_URL) list.push(process.env.APP_URL.replace(/\/$/, ""));
   if (process.env.RENDER_EXTERNAL_URL) list.push(process.env.RENDER_EXTERNAL_URL.replace(/\/$/, ""));
+  if (process.env.VERCEL_URL) list.push(`https://${process.env.VERCEL_URL}`);
   if (!process.env.DATABASE_URL) {
     // Local dev: the Vite dev server and the API run on different ports.
     list.push(`http://localhost:${PORT}`, "http://localhost:5173", "http://127.0.0.1:5173");
@@ -199,7 +200,9 @@ async function issueVerification(user) {
 }
 
 // ── Routes ────────────────────────────────────────────────────────────────────
-const server = createServer(async (req, res) => {
+// The request handler. Exported so a serverless host (Vercel) can import and call it;
+// locally we wrap it in a real http server below.
+export async function handler(req, res) {
  try {
   const url = new URL(req.url, `http://localhost:${PORT}`);
   const path = url.pathname;
@@ -465,7 +468,7 @@ const server = createServer(async (req, res) => {
   captureError(err, `${req.method} ${req.url}`);
   try { if (!res.headersSent) sendJson(res, 500, { error: "Something went wrong." }); } catch { /* ignore */ }
  }
-});
+}
 
 // ── Static file serving ───────────────────────────────────────────────────────
 const MIME = {
@@ -496,18 +499,25 @@ async function serveStatic(res, pathname) {
   }
 }
 
-// Flush the last few seconds of state on shutdown (Render sends SIGTERM on deploy).
-for (const sig of ["SIGTERM", "SIGINT"]) {
-  process.on(sig, async () => {
-    try { await db.closeDb(); } catch { /* best effort */ }
-    process.exit(0);
-  });
-}
+// Run a real long-lived server only when this file is executed directly (local dev, or
+// a Node host like Render). On Vercel the handler is imported by api/[...path].mjs and
+// this block is skipped.
+const isMain = process.argv[1] && process.argv[1].endsWith("api.mjs");
+if (isMain) {
+  const server = createServer(handler);
 
-// Load persisted state BEFORE serving, so a restart doesn't look like data loss.
-const dbInfo = await db.initDb();
+  // Flush the last few seconds of state on shutdown (SIGTERM on deploy).
+  for (const sig of ["SIGTERM", "SIGINT"]) {
+    process.on(sig, async () => {
+      try { await db.closeDb(); } catch { /* best effort */ }
+      process.exit(0);
+    });
+  }
 
-server.listen(PORT, () => {
+  // Load persisted state BEFORE serving, so a restart doesn't look like data loss.
+  const dbInfo = await db.initDb();
+
+  server.listen(PORT, () => {
   console.log(`Steward on http://localhost:${PORT}`);
   console.log(`  db:        ${dbInfo.backend} · ${dbInfo.users} users`);
   console.log(`  snaptrade: ${snaptradeEnabled() ? "on" : "OFF — set SNAPTRADE_CLIENT_ID / SNAPTRADE_CONSUMER_KEY"}`);
@@ -521,4 +531,5 @@ server.listen(PORT, () => {
   if (process.env.DATABASE_URL && !process.env.APP_URL && !process.env.RENDER_EXTERNAL_URL) {
     console.warn(`  ⚠ neither APP_URL nor RENDER_EXTERNAL_URL is set — email links will point at localhost:${PORT} and will not work.`);
   }
-});
+  });
+}

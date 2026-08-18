@@ -108,5 +108,7 @@ key), and `npm run lint:data` to validate it.
 ## Docs
 
 - [`PLAN.md`](PLAN.md) — what this is, why, and where it's going
+- [`DEPLOY.md`](DEPLOY.md) — deploying on Vercel + Supabase
+- [`NEXT.md`](NEXT.md) — status and what's left
 - [`SECURITY.md`](SECURITY.md) — security posture
 - [`compliance/REGULATORY.md`](compliance/REGULATORY.md) — why the analyzer is regulatorily clear

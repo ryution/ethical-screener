@@ -32,6 +32,46 @@ let pool = null;
 let dirty = false;
 let flushing = false;
 
+// ── Serverless (Vercel) support ──────────────────────────────────────────────
+// On a serverless host each request may run in a fresh or frozen process, so the
+// in-memory + interval-flush model isn't safe. Instead the function wrapper (see
+// api/[...path].mjs) creates the pool once, RELOADS the state from Postgres at the
+// start of each request, and FLUSHES at the end. That trades a DB round-trip per
+// request for correctness. For higher scale, move from the single-JSONB-blob model to
+// real tables — see NEXT.md.
+async function ensurePool() {
+  if (pool || !DATABASE_URL) return pool;
+  const { default: pg } = await import("pg");
+  pool = new pg.Pool({
+    connectionString: DATABASE_URL,
+    ssl: DATABASE_URL.includes("localhost") ? false : { rejectUnauthorized: false },
+    max: 3, // serverless: keep the per-instance pool small
+  });
+  await pool.query(`CREATE TABLE IF NOT EXISTS steward_state (
+    id INT PRIMARY KEY,
+    data JSONB NOT NULL,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`);
+  return pool;
+}
+
+/** Create the connection (once per warm instance). Safe to call on every request. */
+export async function initPool() {
+  await ensurePool();
+  return { backend: pool ? "postgres" : "json" };
+}
+
+/** Re-read the whole state from storage into memory. Call at the start of each
+ *  serverless request so writes from other instances are visible. */
+export async function reload() {
+  if (pool) {
+    const { rows } = await pool.query("SELECT data FROM steward_state WHERE id = 1");
+    db = rows.length ? { ...empty(), ...rows[0].data } : empty();
+  } else {
+    try { db = { ...empty(), ...JSON.parse(readFileSync(FILE, "utf8")) }; } catch { db = empty(); }
+  }
+}
+
 // ── Boot: load whatever is already stored ────────────────────────────────────
 //
 // FAIL-SOFT BY DESIGN: if Postgres is misconfigured or unreachable, we log loudly
@@ -41,18 +81,7 @@ let flushing = false;
 export async function initDb() {
   if (DATABASE_URL) {
     try {
-      const { default: pg } = await import("pg");
-      pool = new pg.Pool({
-        connectionString: DATABASE_URL,
-        // Render's managed Postgres requires TLS with a cert Node won't verify by
-        // default; this is the standard setting for their connection strings.
-        ssl: DATABASE_URL.includes("localhost") ? false : { rejectUnauthorized: false },
-      });
-      await pool.query(`CREATE TABLE IF NOT EXISTS steward_state (
-        id INT PRIMARY KEY,
-        data JSONB NOT NULL,
-        updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
-      )`);
+      await ensurePool();
       const { rows } = await pool.query("SELECT data FROM steward_state WHERE id = 1");
       db = rows.length ? { ...empty(), ...rows[0].data } : empty();
 
