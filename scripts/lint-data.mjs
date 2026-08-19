@@ -103,5 +103,35 @@ console.log("generated/companies.json");
   }
 }
 
+// ── generated/fund-holdings.json (live ETF holdings overlay) ─────────────────────
+console.log("generated/fund-holdings.json");
+{
+  const FILE = join(dirname(fileURLToPath(import.meta.url)), "..", "server", "generated", "fund-holdings.json");
+  if (!existsSync(FILE)) {
+    warn("no live holdings yet — run `node scripts/fetch-holdings.mjs` (funds.js uses curated fallback)");
+  } else {
+    let d;
+    try { d = JSON.parse(readFileSync(FILE, "utf8")); } catch (e) { err(`unparseable: ${e.message}`); d = null; }
+    if (d) {
+      if (!d.lastUpdated || Number.isNaN(Date.parse(d.lastUpdated))) err("missing/invalid lastUpdated");
+      const baskets = d.baskets || {};
+      if (!Object.keys(baskets).length) err("no baskets — the fetch produced nothing");
+      for (const [basis, list] of Object.entries(baskets)) {
+        if (!Array.isArray(list) || !list.length) { err(`basket ${basis} is empty`); continue; }
+        const seen = new Set();
+        for (const t of list) {
+          if (!TICKER_RE.test(t)) err(`basket ${basis}: malformed constituent "${t}"`);
+          if (seen.has(t)) warn(`basket ${basis}: ${t} listed twice`);
+          seen.add(t);
+        }
+      }
+      const stale = d.lastUpdated ? Math.floor((Date.now() - Date.parse(d.lastUpdated)) / 86400000) : null;
+      if (stale != null && stale > 45) warn(`holdings are ${stale} days old — consider re-running the fetch`);
+      const summary = Object.entries(baskets).map(([b, l]) => `${b}:${l.length}`).join(", ");
+      console.log(`  ${Object.keys(baskets).length} baskets (${summary}), updated ${d.lastUpdated?.slice(0, 10)}`);
+    }
+  }
+}
+
 console.log(`\n${errors} error${errors === 1 ? "" : "s"}, ${warnings} warning${warnings === 1 ? "" : "s"}`);
 process.exit(errors ? 1 : 0);

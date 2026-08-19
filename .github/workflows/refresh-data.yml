@@ -1,0 +1,64 @@
+# Keep Steward's reference data fresh, hands-off.
+#
+# Two free, no-key data layers age on their own:
+#   • EDGAR/SIC classification (scripts/enrich-edgar.mjs) — new SEC filers appear.
+#   • ETF holdings (scripts/fetch-holdings.mjs) — index membership drifts.
+#
+# This job re-runs both on a schedule, validates the result, and commits the
+# regenerated files back to the repo. That commit triggers the normal Vercel
+# redeploy, so the live app picks up the new data with no manual step.
+#
+# SIC codes barely change, so monthly is plenty; issuer holdings update daily, so
+# the same run keeps them current too. Trigger it by hand anytime from the Actions
+# tab (workflow_dispatch).
+
+name: Refresh data
+
+on:
+  schedule:
+    - cron: "0 6 1 * *" # 06:00 UTC on the 1st of each month
+  workflow_dispatch: {}
+
+# Never let two refreshes race on the same files.
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write # commit the regenerated dataset back
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+
+      # SEC asks for a descriptive User-Agent with a real contact address.
+      - name: Refresh EDGAR classification + ETF holdings
+        env:
+          SEC_USER_AGENT: "Steward Analyzer (ren@involego.com)"
+        run: npm run refresh:data
+
+      # Fail the run if the regenerated data is malformed — never commit bad data.
+      - name: Validate dataset
+        run: npm run lint:data
+
+      - name: Run tests
+        run: npm test
+
+      - name: Commit refreshed data if it changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add server/generated/companies.json server/generated/fund-holdings.json
+          if git diff --cached --quiet; then
+            echo "No data changes — nothing to commit."
+          else
+            git commit -m "chore(data): refresh EDGAR classification + ETF holdings"
+            git push
+          fi

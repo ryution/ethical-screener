@@ -14,7 +14,10 @@
 //
 // The lists below are screened companies (from screens.js) that are established
 // large-cap members of each index. Deliberately conservative: a name is included only
-// where its membership is stable and well-known.
+// where its membership is stable and well-known. They are the FALLBACK — when
+// fetch-holdings.mjs has run, holdings.js overlays the issuer's live constituents.
+
+import { basketFor } from "./holdings.js";
 
 // Screened companies that are established S&P 500 constituents.
 const SP500 = [
@@ -49,20 +52,33 @@ const TOTAL = [...new Set([...SP500,
 // Nasdaq-100 is tech-heavy: few of our screened names, mostly the data/ad giants.
 const NASDAQ100 = ["META", "GOOGL", "GOOG", "PLTR"];
 
-/** ticker -> { name, basis (plain-English index), holds (screened constituents) }. */
-export const FUNDS = {
-  VOO:   { name: "Vanguard S&P 500 ETF",                    basis: "the S&P 500",        holds: SP500 },
-  SPY:   { name: "SPDR S&P 500 ETF",                        basis: "the S&P 500",        holds: SP500 },
-  IVV:   { name: "iShares Core S&P 500 ETF",                basis: "the S&P 500",        holds: SP500 },
-  SPLG:  { name: "SPDR Portfolio S&P 500 ETF",              basis: "the S&P 500",        holds: SP500 },
-  FXAIX: { name: "Fidelity 500 Index Fund",                 basis: "the S&P 500",        holds: SP500 },
-  VFIAX: { name: "Vanguard 500 Index Fund",                 basis: "the S&P 500",        holds: SP500 },
-  SWPPX: { name: "Schwab S&P 500 Index Fund",               basis: "the S&P 500",        holds: SP500 },
-  VTI:   { name: "Vanguard Total Stock Market ETF",         basis: "the total US market", holds: TOTAL },
-  ITOT:  { name: "iShares Core S&P Total US Stock Market",  basis: "the total US market", holds: TOTAL },
-  VTSAX: { name: "Vanguard Total Stock Market Index Fund",  basis: "the total US market", holds: TOTAL },
-  QQQ:   { name: "Invesco QQQ Trust (Nasdaq-100)",          basis: "the Nasdaq-100",     holds: NASDAQ100 },
+// Each fund tracks one BASIS. The screened constituents for a basis come, when we've
+// fetched them, from the issuer's daily holdings (see holdings.js / fetch-holdings.mjs);
+// otherwise from the conservative curated fallback above. Grouping by basis means one
+// authoritative live source (SPY for the S&P 500, SPTM for the total market) refreshes
+// every fund that tracks it. The Nasdaq-100 basis has no free live source, so it stays
+// curated — small and stable, and marked as such rather than guessed.
+const FALLBACK = { sp500: SP500, total: TOTAL, nasdaq100: NASDAQ100 };
+const holdsFor = (basisKey) => basketFor(basisKey) || FALLBACK[basisKey];
+
+const CATALOGUE = {
+  VOO:   { name: "Vanguard S&P 500 ETF",                    basis: "the S&P 500",         basisKey: "sp500" },
+  SPY:   { name: "SPDR S&P 500 ETF",                        basis: "the S&P 500",         basisKey: "sp500" },
+  IVV:   { name: "iShares Core S&P 500 ETF",                basis: "the S&P 500",         basisKey: "sp500" },
+  SPLG:  { name: "SPDR Portfolio S&P 500 ETF",              basis: "the S&P 500",         basisKey: "sp500" },
+  FXAIX: { name: "Fidelity 500 Index Fund",                 basis: "the S&P 500",         basisKey: "sp500" },
+  VFIAX: { name: "Vanguard 500 Index Fund",                 basis: "the S&P 500",         basisKey: "sp500" },
+  SWPPX: { name: "Schwab S&P 500 Index Fund",               basis: "the S&P 500",         basisKey: "sp500" },
+  VTI:   { name: "Vanguard Total Stock Market ETF",         basis: "the total US market", basisKey: "total" },
+  ITOT:  { name: "iShares Core S&P Total US Stock Market",  basis: "the total US market", basisKey: "total" },
+  VTSAX: { name: "Vanguard Total Stock Market Index Fund",  basis: "the total US market", basisKey: "total" },
+  QQQ:   { name: "Invesco QQQ Trust (Nasdaq-100)",          basis: "the Nasdaq-100",      basisKey: "nasdaq100" },
 };
+
+/** ticker -> { name, basis (plain-English index), holds (screened constituents) }. */
+export const FUNDS = Object.fromEntries(
+  Object.entries(CATALOGUE).map(([t, f]) => [t, { name: f.name, basis: f.basis, holds: holdsFor(f.basisKey) }]),
+);
 
 /** The fund record for a ticker we can see inside, or null. */
 export const knownFund = (t) => FUNDS[String(t || "").toUpperCase()] || null;

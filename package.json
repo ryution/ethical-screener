@@ -12,7 +12,9 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "lint:data": "node scripts/lint-data.mjs",
-    "enrich": "node scripts/enrich-edgar.mjs"
+    "enrich": "node scripts/enrich-edgar.mjs",
+    "enrich:holdings": "node scripts/fetch-holdings.mjs",
+    "refresh:data": "node scripts/enrich-edgar.mjs && node scripts/fetch-holdings.mjs"
   },
   "engines": {
     "node": ">=22"

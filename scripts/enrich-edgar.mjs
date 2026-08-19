@@ -50,10 +50,18 @@ async function main() {
   // Reuse anything we already have so a re-run is incremental, not a full refetch.
   const prev = existsSync(OUT) ? JSON.parse(readFileSync(OUT, "utf8")).companies || {} : {};
 
+  // Plain common-stock tickers only. SEC's universe also lists preferred shares (BFH-PA),
+  // warrants (OXY-WT), rights (GFR-RW) and separately-quoted class lines (PBR-A) with a
+  // dash suffix — secondary securities whose issuer's common stock already carries the
+  // flag, so they add symbol-format noise, not coverage. Skipping them pre-fetch also
+  // spares SEC the request. (Matches lint-data.mjs's TICKER_RE.)
+  const isCommonTicker = (t) => /^[A-Z][A-Z.]{0,6}$/.test(t);
+
   const companies = {};
   let flagged = 0, done = 0;
   for (const r of rows) {
     const ticker = String(r.ticker).toUpperCase();
+    if (!isCommonTicker(ticker)) continue;
     try {
       const sub = await getJson(`https://data.sec.gov/submissions/CIK${pad10(r.cik_str)}.json`);
       const flags = screensForSic(sub.sic);
