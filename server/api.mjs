@@ -380,9 +380,11 @@ export async function handler(req, res) {
   }
 
   // ===== everything below requires a session =====
-  const authRoutes = ["/api/profile", "/api/portfolio", "/api/purchase", "/api/config",
-                      "/api/plaid/link-token", "/api/plaid/exchange", "/api/plaid/sync", "/api/audit", "/api/verify/request",
-                      "/api/bank/accounts", "/api/bank/link", "/api/deposit", "/api/withdraw", "/api/transfers",
+  // Only routes this product actually implements. The v1 round-up app's money routes
+  // (deposit/withdraw/purchase/transfers/bank/plaid) were listed here with no handlers —
+  // they 401'd then 404'd. Steward moves no money and holds no accounts, so advertising
+  // money endpoints contradicts compliance/REGULATORY.md and is needless attack surface.
+  const authRoutes = ["/api/audit", "/api/verify/request",
                       "/api/screens/select", "/api/brokerage/connect", "/api/analysis"];
   if (authRoutes.includes(path)) {
     const user = currentUser(req);

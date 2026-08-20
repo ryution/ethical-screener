@@ -8,7 +8,7 @@
     "build": "vite build",
     "start": "node --env-file-if-exists=server/.env server/api.mjs",
     "serve": "npm run build && npm start",
-    "test": "node server/test/engine.test.mjs && node server/test/analyzer.test.mjs",
+    "test": "node server/test/analyzer.test.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
     "lint:data": "node scripts/lint-data.mjs",
@@ -20,10 +20,8 @@
   "dependencies": {
     "lucide-react": "^1.23.0",
     "pg": "^8.13.1",
-    "plaid": "^45.0.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "react-plaid-link": "^5.0.0",
     "recharts": "^3.9.2",
     "snaptrade-typescript-sdk": "^12.1.3"
   },

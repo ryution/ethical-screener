@@ -115,20 +115,68 @@ export async function initDb() {
   return { backend: "json", users: Object.keys(db.users).length };
 }
 
+// Merge our in-memory state onto whatever is currently stored, instead of blindly
+// overwriting it.
+//
+// WHY: the whole DB lives in one JSONB row. On Vercel each request runs on its own
+// serverless instance, so two concurrent requests both read {10 users}, both add one,
+// and both write {11 users} — the second write erases the first user, silently. That
+// was safe on a single long-lived server; it is not safe here.
+//
+// Overlaying our entries on top of the fresh read means a user created by another
+// instance survives, and so does ours. Trade-off: a deletion can be resurrected if it
+// races with a write elsewhere. Losing a deleted session is recoverable (they expire and
+// can log in again); losing a signed-up account is not, so we optimise for that.
+function mergeState(fresh, ours) {
+  const keyed = (a = {}, b = {}) => ({ ...a, ...b });
+  const out = {
+    users:    keyed(fresh.users, ours.users),
+    byEmail:  keyed(fresh.byEmail, ours.byEmail),
+    sessions: keyed(fresh.sessions, ours.sessions),
+    tokens:   keyed(fresh.tokens, ours.tokens),
+    meta:     keyed(fresh.meta, ours.meta),
+    // Waitlist is an append-only list; union it and de-dupe by email.
+    waitlist: [],
+    // Counters: take the larger side, so a concurrent write can't roll one backwards.
+    events: {},
+  };
+  const seen = new Set();
+  for (const w of [...(fresh.waitlist || []), ...(ours.waitlist || [])]) {
+    const e = String(w?.email || "").toLowerCase();
+    if (!e || seen.has(e)) continue;
+    seen.add(e);
+    out.waitlist.push(w);
+  }
+  for (const k of new Set([...Object.keys(fresh.events || {}), ...Object.keys(ours.events || {})])) {
+    out.events[k] = Math.max(Number(fresh.events?.[k] || 0), Number(ours.events?.[k] || 0));
+  }
+  return out;
+}
+
 async function flush() {
   if (!dirty || flushing || !pool) return;
   flushing = true;
   dirty = false;
+  const client = await pool.connect();
   try {
-    await pool.query(
+    // SELECT ... FOR UPDATE locks the row so concurrent flushes queue instead of
+    // clobbering each other. Transaction-mode pooling (Supabase port 6543) supports this.
+    await client.query("BEGIN");
+    const { rows } = await client.query("SELECT data FROM steward_state WHERE id = 1 FOR UPDATE");
+    const fresh = rows.length ? { ...empty(), ...rows[0].data } : empty();
+    db = mergeState(fresh, db);
+    await client.query(
       `INSERT INTO steward_state (id, data, updated_at) VALUES (1, $1, now())
        ON CONFLICT (id) DO UPDATE SET data = $1, updated_at = now()`,
       [JSON.stringify(db)]
     );
+    await client.query("COMMIT");
   } catch (err) {
+    try { await client.query("ROLLBACK"); } catch { /* ignore */ }
     dirty = true; // retry on the next tick
     console.error("db flush failed:", err.message);
   } finally {
+    client.release();
     flushing = false;
   }
 }
