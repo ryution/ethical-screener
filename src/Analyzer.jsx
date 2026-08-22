@@ -259,10 +259,11 @@ function Landing({ onStart }) {
           <div style={{ ...wrap, textAlign: "center", padding: "clamp(56px,9vw,96px) 24px clamp(48px,7vw,80px)" }}>
             <p style={{ fontFamily: sans, fontSize: 13, letterSpacing: "0.18em", textTransform: "uppercase", color: D.brassSoft, marginBottom: 22 }}>The ethical portfolio analyzer</p>
             <h1 style={{ fontFamily: serif, fontWeight: 800, fontSize: "clamp(38px,7vw,68px)", lineHeight: 1.03, margin: 0, letterSpacing: "-0.045em", color: "#F4FAF6" }}>
-              You don't know<br /><span style={{ color: D.mint }}>what you own.</span>
+              The search engine for<br /><span style={{ color: D.mint }}>clean investing.</span>
             </h1>
             <p style={{ fontFamily: sans, fontSize: "clamp(16px,2vw,19px)", lineHeight: 1.6, color: D.muted, margin: "24px auto 0", maxWidth: 560 }}>
-              Even a plain S&P 500 fund quietly holds oil majors, weapons makers, and tobacco giants. Type any ticker to see what's inside — free, no sign-up.
+              Is your money funding what you fight against?<br />
+              Even broad market funds hide holdings that might not match your values. Search any stock or ETF ticker to see the full breakdown.
             </p>
             <HeroAnalyzer onStart={onStart} wrap={wrap} />
             <p style={{ fontFamily: sans, fontSize: 12.5, color: D.faint, marginTop: 18 }}>Read-only. We never trade, and never move your money.</p>
