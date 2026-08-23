@@ -57,4 +57,6 @@ export const SIC_CLASSIFIED = [
 ];
 export const CURATED_ONLY = [
   "gambling", "big_tech_surveillance", "adult", "animal_testing", "private_prisons",
+  // Curated seeds + filing-cited (10-K) detection; no clean SIC signal we use today.
+  "opioids", "thermal_coal",
 ];

@@ -75,7 +75,7 @@ Each flag: **key** (stable id) · **definition** · **counts as a violation** ·
 - **Detection:** SIC — coal 1220–1241, crude oil/gas 1311, oil/gas services 1381–1389, refining 2911, pipelines 4610–4619, gas utilities 4922–4925, petroleum wholesale 5171. Plus curated majors.
 - **Examples:** ExxonMobil (XOM), Chevron (CVX), Kinder Morgan (KMI), Halliburton (HAL).
 
-#### Thermal coal — `thermal_coal` · ⬤ · **Proposed**
+#### Thermal coal — `thermal_coal` · ⬤ · **Live**
 - **Definition:** Mining of coal burned for power, and coal-fired generation. A stricter, climate-focused cut inside fossil fuels.
 - **Counts:** Thermal/steam coal mining; utilities with material coal-fired generation.
 - **Does not count:** Metallurgical (steelmaking) coal only, unless the user's line includes it — flagged distinctly if so.
@@ -180,7 +180,7 @@ Each flag: **key** (stable id) · **definition** · **counts as a violation** ·
 - **Examples:** Canopy Growth, Tilray, Green Thumb, Curaleaf.
 - **Note:** Some users screen *against* cannabis (faith/vice); others specifically screen *for* it. Presented neutrally.
 
-#### Opioid crisis — `opioids` · ◐ · **Proposed** *(culpability-based)*
+#### Opioid crisis — `opioids` · ◐ · **Live** *(culpability-based)*
 - **Definition:** Documented culpability in the opioid epidemic — not the manufacture of legitimate pain medication.
 - **Counts:** Opioid-marketing litigation, DEA enforcement, and settlements (manufacturers and distributors).
 - **Does not count:** A company supplying medically-appropriate opioids (e.g. hospital morphine) with no misconduct record. **This is the defining example of the harm-not-category principle (§1.2).**

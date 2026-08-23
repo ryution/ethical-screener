@@ -180,11 +180,14 @@ function HeroResult({ result, onStart }) {
     return (
       <div style={panel}>
         <div style={{ fontFamily: serif, fontSize: 20, color: "#F4FAF6" }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
-        <div style={{ marginTop: 12, display: "grid", gap: 8 }}>
+        <div style={{ marginTop: 12, display: "grid", gap: 12 }}>
           {result.flags.map((f) => (
-            <div key={f.key} style={{ display: "flex", gap: 9, alignItems: "flex-start" }}>
-              <FlagChip>{f.label}</FlagChip>
-              <span style={{ fontFamily: sans, fontSize: 13, color: D.ink, lineHeight: 1.45 }}>{f.reason}</span>
+            <div key={f.key} style={{ display: "grid", gap: 6 }}>
+              <div style={{ display: "flex", gap: 9, alignItems: "flex-start" }}>
+                <FlagChip>{f.label}</FlagChip>
+                <span style={{ fontFamily: sans, fontSize: 13, color: D.ink, lineHeight: 1.45 }}>{f.reason}</span>
+              </div>
+              <FlagEvidence quote={f.quote} source={f.source} asOf={f.asOf} muted={D.muted} link="#CFE8DA" />
             </div>
           ))}
         </div>
@@ -232,7 +235,7 @@ const groupByFlag = (contains) => {
   const m = new Map();
   for (const c of contains) for (const f of c.flags) {
     if (!m.has(f.key)) m.set(f.key, { key: f.key, label: f.label, items: [] });
-    m.get(f.key).items.push({ name: c.name, ticker: c.ticker, reason: f.reason });
+    m.get(f.key).items.push({ name: c.name, ticker: c.ticker, reason: f.reason, quote: f.quote, source: f.source, asOf: f.asOf });
   }
   return [...m.values()].sort((a, b) => b.items.length - a.items.length);
 };
@@ -273,6 +276,7 @@ function FundBreakdown({ groups, theme }) {
                   <b>{openItem.ticker}</b> · {openItem.name} — flagged <b>{g.label}</b>
                 </div>
                 <div style={{ fontFamily: sans, fontSize: 12.5, color: c.muted, lineHeight: 1.5 }}>{openItem.reason}</div>
+                <FlagEvidence quote={openItem.quote} source={openItem.source} asOf={openItem.asOf} muted={c.muted} link={c.link} />
                 <ReportControl item={openItem} group={g} linkColor={c.link} muted={c.muted} />
               </div>
             )}
@@ -280,6 +284,26 @@ function FundBreakdown({ groups, theme }) {
         );
       })}
     </>
+  );
+}
+
+// The receipt: a verbatim quote from the company's filing plus a link to the source, so a
+// surprising flag ("Walmart · opioids") reads as a checkable fact, not an accusation.
+function FlagEvidence({ quote, source, asOf, muted, link }) {
+  if (!quote && !source) return null;
+  return (
+    <div style={{ display: "grid", gap: 5 }}>
+      {quote && (
+        <div style={{ fontFamily: sans, fontSize: 12, color: muted, fontStyle: "italic", borderLeft: `2px solid ${muted}`, paddingLeft: 9, lineHeight: 1.5 }}>
+          “{quote}”
+        </div>
+      )}
+      {source && (
+        <a href={source} target="_blank" rel="noopener noreferrer" style={{ fontFamily: sans, fontSize: 11.5, color: link, textDecoration: "none", justifySelf: "start" }}>
+          Source: {asOf || "SEC filing"} ↗
+        </a>
+      )}
+    </div>
   );
 }
 

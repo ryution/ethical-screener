@@ -26,6 +26,7 @@ import { tmpdir } from "node:os";
 import { execFileSync } from "node:child_process";
 import { flagsFor, SCREEN_KEYS } from "../server/lib/screens.js";
 import { enrichedFlagsFor } from "../server/lib/enriched.js";
+import { filingFlagsFor } from "../server/lib/filings.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const OUT = join(HERE, "..", "server", "generated", "fund-holdings.json");
@@ -49,7 +50,7 @@ function screenedForm(rawTicker) {
   if (!t) return null;
   const variants = [t, t.replace(/\./g, "-"), t.replace(/-/g, ".")];
   for (const v of variants) {
-    if (flagsFor(v, SCREEN_KEYS).length || enrichedFlagsFor(v, SCREEN_KEYS).length) return v;
+    if (flagsFor(v, SCREEN_KEYS).length || enrichedFlagsFor(v, SCREEN_KEYS).length || filingFlagsFor(v, SCREEN_KEYS).length) return v;
   }
   return null;
 }

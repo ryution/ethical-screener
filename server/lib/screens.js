@@ -200,6 +200,28 @@ export const SCREENS = [
       OPRT: "Oportun — subprime consumer lending.",
     },
   },
+  {
+    key: "opioids",
+    label: "Opioid crisis",
+    blurb: "Culpability in the opioid epidemic — settlements, litigation, or enforcement (not legitimate pain medicine).",
+    tickers: {
+      TEVA: "Teva Pharmaceutical — opioid manufacturer; national opioid settlement.",
+      MNK: "Mallinckrodt — opioid manufacturer; opioid-driven bankruptcy settlements.",
+      MCK: "McKesson — opioid distributor; national opioid settlement.",
+      CAH: "Cardinal Health — opioid distributor; national opioid settlement.",
+      COR: "Cencora (AmerisourceBergen) — opioid distributor; national opioid settlement.",
+    },
+  },
+  {
+    key: "thermal_coal",
+    label: "Thermal coal",
+    blurb: "Mining of coal burned for power, and coal-fired power generation.",
+    tickers: {
+      BTU: "Peabody Energy — thermal and metallurgical coal mining.",
+      ARLP: "Alliance Resource Partners — thermal coal mining.",
+      HNRG: "Hallador Energy — thermal coal mining and coal-fired power.",
+    },
+  },
 ];
 
 // Fast lookup: TICKER -> [{ key, label, reason }] across every screen, so matching a

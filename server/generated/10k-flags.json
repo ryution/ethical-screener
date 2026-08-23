@@ -1,0 +1,97 @@
+{
+  "lastUpdated": "2026-08-23T00:00:00.000Z",
+  "source": "SEC 10-K filings (filing-cited classification, human-reviewed)",
+  "companies": {
+    "WMT": {
+      "name": "Walmart Inc.",
+      "flags": [
+        {
+          "key": "opioids",
+          "summary": "Walmart runs ~4,000 in-store pharmacies and for years self-distributed controlled substances to them. Over its opioid dispensing and suspicious-order reporting it faced a 2020 U.S. DOJ civil suit and joined the 2022 national opioid settlement, accruing ~$3.3B (since paid in full). Settled without admitting wrongdoing.",
+          "quote": "the Company accrued a liability of approximately $3.3 billion in fiscal year 2023 for certain opioid-related settlements. As of January 31, 2025, all of the accrued liability has been paid.",
+          "source": "https://www.sec.gov/Archives/edgar/data/104169/000010416926000055/wmt-20260131.htm",
+          "asOf": "10-K filed 2026-03-13"
+        }
+      ]
+    },
+    "CVS": {
+      "name": "CVS Health Corp",
+      "flags": [
+        {
+          "key": "opioids",
+          "summary": "CVS operates one of the largest U.S. pharmacy chains. Over opioid dispensing it reached a ~$5B national settlement in 2022 and continues to record opioid-litigation charges (a $320M charge in 2025). Settled without admitting wrongdoing.",
+          "quote": "a $320 million opioid litigation charge related to a change in the Company’s accrual for ongoing opioid litigation matters",
+          "source": "https://www.sec.gov/Archives/edgar/data/64803/000006480326000010/cvs-20251231.htm",
+          "asOf": "10-K filed 2026-02-10"
+        }
+      ]
+    },
+    "JNJ": {
+      "name": "Johnson & Johnson",
+      "flags": [
+        {
+          "key": "opioids",
+          "summary": "Johnson & Johnson manufactured prescription opioids (Duragesic, Nucynta). Named in ~3,500 suits over opioid marketing, it agreed to a national settlement and has accrued ~$1.1B to resolve remaining opioid litigation.",
+          "quote": "have been named in close to 3,500 lawsuits related to the marketing of opioids, including DURAGESIC, NUCYNTA and NUCYNTA ER",
+          "source": "https://www.sec.gov/Archives/edgar/data/200406/000020040626000016/jnj-20251228.htm",
+          "asOf": "10-K filed 2026-02-11"
+        }
+      ]
+    },
+    "ABBV": {
+      "name": "AbbVie Inc.",
+      "flags": [
+        {
+          "key": "opioids",
+          "summary": "AbbVie's Allergan unit manufactured and sold prescription opioids. It faced ~335 suits in the national opioid litigation (MDL 2804) and took part in the manufacturers' settlement.",
+          "quote": "Lawsuits are pending against Allergan and several other manufacturers generally alleging that they improperly promoted and sold prescription opioid products.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1551152/000155115226000008/abbv-20251231.htm",
+          "asOf": "10-K filed 2026-02-20"
+        }
+      ]
+    },
+    "BRK.B": {
+      "name": "Berkshire Hathaway Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Berkshire owns Berkshire Hathaway Energy, whose utilities operate ~20,900 miles of interstate natural-gas pipelines and generate power from gas — a material fossil-fuel business most people don't associate with Berkshire.",
+          "quote": "five U.S. interstate natural gas pipeline companies with approximately 20,900 miles of operated pipeline having a design capacity of approximately 21.6 billion cubic feet of natural gas per day",
+          "source": "https://www.sec.gov/Archives/edgar/data/1067983/000119312526083899/brka-20251231.htm",
+          "asOf": "10-K filed 2026-03-02"
+        },
+        {
+          "key": "thermal_coal",
+          "summary": "Berkshire Hathaway Energy's regulated utilities still operate coal-fueled power plants, with some units slated to run past 2038 under emission limits.",
+          "quote": "Coal-fueled units that will operate after December 31, 2038, must meet emission limits equivalent to operating with carbon capture and sequestration beginning January 1, 2032",
+          "source": "https://www.sec.gov/Archives/edgar/data/1067983/000119312526083899/brka-20251231.htm",
+          "asOf": "10-K filed 2026-03-02"
+        }
+      ]
+    },
+    "GE": {
+      "name": "GE Aerospace",
+      "flags": [
+        {
+          "key": "weapons",
+          "summary": "GE Aerospace is a defense contractor: it develops and produces military jet engines and propulsion systems, and describes its role as a defense contractor in its filings.",
+          "quote": "related to our role as a defense contractor",
+          "source": "https://www.sec.gov/Archives/edgar/data/40545/000004054526000008/ge-20251231.htm",
+          "asOf": "10-K filed 2026-01-29"
+        }
+      ]
+    },
+    "NEE": {
+      "name": "NextEra Energy Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "NextEra, known for renewables, also generates power from natural gas and holds large firm natural-gas pipeline capacity (~2.8M MMBtu/day) to supply its fossil-fuel generation.",
+          "quote": "firm transportation contracts with ten different transportation suppliers for natural gas pipeline capacity for an aggregate maximum delivery quantity of 2,836,000 MMBtu/day",
+          "source": "https://www.sec.gov/Archives/edgar/data/753308/000075330826000015/nee-20251231.htm",
+          "asOf": "10-K filed 2026-02-13"
+        }
+      ]
+    }
+  }
+}

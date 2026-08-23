@@ -10,20 +10,24 @@
 import { flagsFor, companyName, SCREEN_KEYS } from "./screens.js";
 import { knownFund, unanalyzedFund } from "./funds.js";
 import { enrichedFlagsFor, enrichedName, dataMeta } from "./enriched.js";
+import { filingFlagsFor, filingName } from "./filings.js";
 
 export { dataMeta };
 
-// Flags for a ticker from BOTH layers: curated (precise, reasoned) takes precedence, and
-// EDGAR industry-classification fills in everything the curated list doesn't name. Deduped
-// by screen key, so a company on both lists isn't flagged twice for the same screen.
+// Flags for a ticker across all THREE layers, deduped by screen key so a company on more
+// than one isn't flagged twice for the same screen. Precedence is by richness of the
+// reason: filing-cited (a summary + verbatim 10-K quote + source) wins, then curated
+// (precise hand-written reason), then EDGAR industry-classification (breadth).
 function allFlagsFor(ticker, activeKeys) {
   const out = [];
   const seen = new Set();
+  for (const f of filingFlagsFor(ticker, activeKeys)) { if (!seen.has(f.key)) { seen.add(f.key); out.push(f); } }
   for (const f of flagsFor(ticker, activeKeys)) { if (!seen.has(f.key)) { seen.add(f.key); out.push(f); } }
   for (const f of enrichedFlagsFor(ticker, activeKeys)) { if (!seen.has(f.key)) { seen.add(f.key); out.push(f); } }
   return out;
 }
-const nameFor = (ticker, fallback) => (companyName(ticker) !== ticker ? companyName(ticker) : (enrichedName(ticker) || fallback || ticker));
+const nameFor = (ticker, fallback) =>
+  (companyName(ticker) !== ticker ? companyName(ticker) : (filingName(ticker) || enrichedName(ticker) || fallback || ticker));
 
 /**
  * Analyze a single ticker against ALL screens — for the public, no-login hero widget.

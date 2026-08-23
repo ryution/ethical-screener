@@ -7,7 +7,7 @@
 //
 // Usage: node scripts/classify-10k.mjs BRK.B [TICKER2 ...]  > candidates.json
 
-import { writeFileSync } from "node:fs";
+import { writeFileSync, readFileSync } from "node:fs";
 
 const UA = process.env.SEC_USER_AGENT || "Steward Analyzer (ren@involego.com)";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -104,9 +104,12 @@ function extract(text, window = 320) {
 
 async function main() {
   const argv = process.argv.slice(2);
-  const outIdx = argv.indexOf("--out");
-  const outFile = outIdx >= 0 ? argv[outIdx + 1] : "/dev/stdout";
-  const tickers = argv.filter((a, i) => a !== "--out" && !(outIdx >= 0 && i === outIdx + 1));
+  const opt = (name) => { const i = argv.indexOf(name); return i >= 0 ? argv[i + 1] : null; };
+  const outFile = opt("--out") || "/dev/stdout";
+  const fileArg = opt("--file");
+  const consumed = new Set(["--out", opt("--out"), "--file", fileArg]);
+  let tickers = argv.filter((a) => !consumed.has(a));
+  if (fileArg) tickers = readFileSync(fileArg, "utf8").split(/[\s,]+/).map((s) => s.trim()).filter(Boolean);
   const universe = await getJson("https://www.sec.gov/files/company_tickers.json");
   const rows = Object.values(universe);
   const results = [];
@@ -114,13 +117,16 @@ async function main() {
     const key = t.toUpperCase().replace(/[.-]/g, "");
     const row = rows.find((r) => String(r.ticker).toUpperCase().replace(/[.-]/g, "") === key);
     if (!row) { console.error(`  ${t}: not found in EDGAR universe`); continue; }
-    const f = await latest10K(row.cik_str);
-    console.error(`  ${t}: ${f.name} — 10-K filed ${f.filingDate}`);
-    const text = stripHtml(await getText(f.url));
-    const candidates = extract(text);
-    const hitFlags = Object.keys(candidates);
-    console.error(`     ${text.length.toLocaleString()} chars · candidate flags: ${hitFlags.join(", ") || "none"}`);
-    results.push({ ticker: t.toUpperCase(), name: f.name, filingDate: f.filingDate, source: f.url, textLength: text.length, candidates });
+    try {
+      const f = await latest10K(row.cik_str);
+      const text = stripHtml(await getText(f.url));
+      const candidates = extract(text);
+      console.error(`  ${t}: ${f.name} — 10-K ${f.filingDate} · ${text.length.toLocaleString()} chars · ${Object.keys(candidates).join(", ") || "none"}`);
+      results.push({ ticker: t.toUpperCase(), name: f.name, filingDate: f.filingDate, source: f.url, textLength: text.length, candidates });
+    } catch (e) {
+      // Foreign filers (20-F, not 10-K), fetch hiccups — skip and keep going.
+      console.error(`  ${t}: skipped (${e.message})`);
+    }
     await sleep(300);
   }
   writeFileSync(outFile, JSON.stringify(results, null, 2));
