@@ -52,27 +52,38 @@ const TOTAL = [...new Set([...SP500,
 // Nasdaq-100 is tech-heavy: few of our screened names, mostly the data/ad giants.
 const NASDAQ100 = ["META", "GOOGL", "GOOG", "PLTR"];
 
+// Large-cap growth split — the data/ad giants sit on the growth side.
+const GROWTH = ["META", "GOOGL", "GOOG", "PLTR"];
+// Large-cap value split — energy, defense, and tobacco are classic value sectors.
+const VALUE = ["XOM", "CVX", "COP", "OXY", "SLB", "HAL", "MPC", "VLO", "PSX", "WMB", "OKE",
+  "LMT", "RTX", "NOC", "GD", "LHX", "MO", "PM"];
+
 // Each fund tracks one BASIS. The screened constituents for a basis come, when we've
 // fetched them, from the issuer's daily holdings (see holdings.js / fetch-holdings.mjs);
 // otherwise from the conservative curated fallback above. Grouping by basis means one
-// authoritative live source (SPY for the S&P 500, SPTM for the total market) refreshes
-// every fund that tracks it. The Nasdaq-100 basis has no free live source, so it stays
-// curated — small and stable, and marked as such rather than guessed.
-const FALLBACK = { sp500: SP500, total: TOTAL, nasdaq100: NASDAQ100 };
+// authoritative live source refreshes every fund that tracks it (SPY→S&P 500, SPTM→total,
+// SPYG→growth, SPYV→value). The Nasdaq-100 has no free live source, so it stays curated.
+const FALLBACK = { sp500: SP500, total: TOTAL, nasdaq100: NASDAQ100, large_growth: GROWTH, large_value: VALUE };
 const holdsFor = (basisKey) => basketFor(basisKey) || FALLBACK[basisKey];
 
 const CATALOGUE = {
-  VOO:   { name: "Vanguard S&P 500 ETF",                    basis: "the S&P 500",         basisKey: "sp500" },
-  SPY:   { name: "SPDR S&P 500 ETF",                        basis: "the S&P 500",         basisKey: "sp500" },
-  IVV:   { name: "iShares Core S&P 500 ETF",                basis: "the S&P 500",         basisKey: "sp500" },
-  SPLG:  { name: "SPDR Portfolio S&P 500 ETF",              basis: "the S&P 500",         basisKey: "sp500" },
-  FXAIX: { name: "Fidelity 500 Index Fund",                 basis: "the S&P 500",         basisKey: "sp500" },
-  VFIAX: { name: "Vanguard 500 Index Fund",                 basis: "the S&P 500",         basisKey: "sp500" },
-  SWPPX: { name: "Schwab S&P 500 Index Fund",               basis: "the S&P 500",         basisKey: "sp500" },
-  VTI:   { name: "Vanguard Total Stock Market ETF",         basis: "the total US market", basisKey: "total" },
-  ITOT:  { name: "iShares Core S&P Total US Stock Market",  basis: "the total US market", basisKey: "total" },
-  VTSAX: { name: "Vanguard Total Stock Market Index Fund",  basis: "the total US market", basisKey: "total" },
-  QQQ:   { name: "Invesco QQQ Trust (Nasdaq-100)",          basis: "the Nasdaq-100",      basisKey: "nasdaq100" },
+  VOO:   { name: "Vanguard S&P 500 ETF",                    basis: "the S&P 500",             basisKey: "sp500" },
+  SPY:   { name: "SPDR S&P 500 ETF",                        basis: "the S&P 500",             basisKey: "sp500" },
+  IVV:   { name: "iShares Core S&P 500 ETF",                basis: "the S&P 500",             basisKey: "sp500" },
+  SPLG:  { name: "SPDR Portfolio S&P 500 ETF",              basis: "the S&P 500",             basisKey: "sp500" },
+  FXAIX: { name: "Fidelity 500 Index Fund",                 basis: "the S&P 500",             basisKey: "sp500" },
+  VFIAX: { name: "Vanguard 500 Index Fund",                 basis: "the S&P 500",             basisKey: "sp500" },
+  SWPPX: { name: "Schwab S&P 500 Index Fund",               basis: "the S&P 500",             basisKey: "sp500" },
+  VTI:   { name: "Vanguard Total Stock Market ETF",         basis: "the total US market",     basisKey: "total" },
+  ITOT:  { name: "iShares Core S&P Total US Stock Market",  basis: "the total US market",     basisKey: "total" },
+  VTSAX: { name: "Vanguard Total Stock Market Index Fund",  basis: "the total US market",     basisKey: "total" },
+  QQQ:   { name: "Invesco QQQ Trust (Nasdaq-100)",          basis: "the Nasdaq-100",          basisKey: "nasdaq100" },
+  VUG:   { name: "Vanguard Growth ETF",                     basis: "large-cap US growth",     basisKey: "large_growth" },
+  IWF:   { name: "iShares Russell 1000 Growth ETF",         basis: "large-cap US growth",     basisKey: "large_growth" },
+  SCHG:  { name: "Schwab U.S. Large-Cap Growth ETF",        basis: "large-cap US growth",     basisKey: "large_growth" },
+  VTV:   { name: "Vanguard Value ETF",                      basis: "large-cap US value",      basisKey: "large_value" },
+  IWD:   { name: "iShares Russell 1000 Value ETF",          basis: "large-cap US value",      basisKey: "large_value" },
+  SCHV:  { name: "Schwab U.S. Large-Cap Value ETF",         basis: "large-cap US value",      basisKey: "large_value" },
 };
 
 /** ticker -> { name, basis (plain-English index), holds (screened constituents) }. */
@@ -82,3 +93,31 @@ export const FUNDS = Object.fromEntries(
 
 /** The fund record for a ticker we can see inside, or null. */
 export const knownFund = (t) => FUNDS[String(t || "").toUpperCase()] || null;
+
+// Widely-held funds we RECOGNIZE but deliberately don't analyze — our screens cover
+// US-listed companies by line of business, which doesn't fit foreign equities, bonds, or
+// commodities. Naming them explicitly lets the UI say "not analyzed" honestly, instead of
+// letting a popular international/bond fund read as "clean" just because we track nothing
+// inside it. (HONESTY RULE #1: not analyzed ≠ clean.)
+const NOT_ANALYZED = {
+  VEA:  { name: "Vanguard FTSE Developed Markets ETF",        kind: "international" },
+  IEFA: { name: "iShares Core MSCI EAFE ETF",                 kind: "international" },
+  VXUS: { name: "Vanguard Total International Stock ETF",      kind: "international" },
+  VWO:  { name: "Vanguard FTSE Emerging Markets ETF",         kind: "international" },
+  IEMG: { name: "iShares Core MSCI Emerging Markets ETF",     kind: "international" },
+  BND:  { name: "Vanguard Total Bond Market ETF",             kind: "bond" },
+  AGG:  { name: "iShares Core U.S. Aggregate Bond ETF",       kind: "bond" },
+  BNDX: { name: "Vanguard Total International Bond ETF",       kind: "bond" },
+  GLD:  { name: "SPDR Gold Shares",                           kind: "commodity" },
+};
+const NOT_ANALYZED_REASON = {
+  international: "An international fund — our screens cover US-listed companies, so we don't look inside this one yet.",
+  bond: "A bond fund — our screens flag companies by their line of business, which doesn't apply to bond holdings.",
+  commodity: "A commodity fund — it holds an asset (not companies), so there's nothing to screen.",
+};
+
+/** A widely-held fund we recognize but don't analyze, or null. */
+export function unanalyzedFund(t) {
+  const f = NOT_ANALYZED[String(t || "").toUpperCase()];
+  return f ? { name: f.name, reason: NOT_ANALYZED_REASON[f.kind] } : null;
+}

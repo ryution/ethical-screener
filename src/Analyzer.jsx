@@ -193,6 +193,22 @@ function HeroResult({ result, onStart }) {
     );
   }
 
+  // fund we recognize but deliberately don't analyze (international / bond / commodity)
+  if (result.type === "fund" && result.analyzable === false) {
+    return (
+      <div style={panel}>
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
+          <div style={{ fontFamily: serif, fontSize: 20, color: "#F4FAF6" }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
+          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, color: D.muted, background: "rgba(255,255,255,0.08)", borderRadius: 20, padding: "3px 10px" }}>NOT ANALYZED</span>
+        </div>
+        <p style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, margin: "8px 0 0", lineHeight: 1.55 }}>
+          {result.notAnalyzedReason} We call that <b style={{ color: "#F4FAF6" }}>not analyzed</b> — never "clean."
+        </p>
+        <HeroCTA onStart={onStart} />
+      </div>
+    );
+  }
+
   // fund — the money shot
   const groups = groupByFlag(result.contains);
   return (

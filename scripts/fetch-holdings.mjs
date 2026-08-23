@@ -33,11 +33,12 @@ const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (
 
 // One authoritative, daily-published fund per basis. QQQ's issuer (Invesco) blocks
 // scripted downloads, so the Nasdaq-100 basis stays curated in funds.js.
+const ssga = (f) => `https://www.ssga.com/us/en/intermediary/etfs/library-content/products/fund-data/etfs/us/holdings-daily-us-en-${f}.xlsx`;
 const SOURCES = {
-  sp500: { fund: "SPY",  label: "SPDR S&P 500 ETF",
-    url: "https://www.ssga.com/us/en/intermediary/etfs/library-content/products/fund-data/etfs/us/holdings-daily-us-en-spy.xlsx" },
-  total: { fund: "SPTM", label: "SPDR Portfolio S&P 1500 Composite Stock Market ETF",
-    url: "https://www.ssga.com/us/en/intermediary/etfs/library-content/products/fund-data/etfs/us/holdings-daily-us-en-sptm.xlsx" },
+  sp500:        { fund: "SPY",  label: "SPDR S&P 500 ETF",                                   url: ssga("spy") },
+  total:        { fund: "SPTM", label: "SPDR Portfolio S&P 1500 Composite Stock Market ETF", url: ssga("sptm") },
+  large_growth: { fund: "SPYG", label: "SPDR Portfolio S&P 500 Growth ETF",                  url: ssga("spyg") },
+  large_value:  { fund: "SPYV", label: "SPDR Portfolio S&P 500 Value ETF",                   url: ssga("spyv") },
 };
 
 // A holding counts as screened if EITHER layer flags it. Class shares differ by dot vs

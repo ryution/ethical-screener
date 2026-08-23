@@ -8,7 +8,7 @@
 // Pure function of (positions, activeScreenKeys). No network, no state.
 
 import { flagsFor, companyName, SCREEN_KEYS } from "./screens.js";
-import { knownFund } from "./funds.js";
+import { knownFund, unanalyzedFund } from "./funds.js";
 import { enrichedFlagsFor, enrichedName, dataMeta } from "./enriched.js";
 
 export { dataMeta };
@@ -42,6 +42,8 @@ export function lookupSymbol(symbol) {
     }
     return { symbol: sym, type: "fund", name: fund.name, basis: fund.basis, contains };
   }
+  const na = unanalyzedFund(sym);
+  if (na) return { symbol: sym, type: "fund", name: na.name, analyzable: false, notAnalyzedReason: na.reason, contains: [] };
   const flags = allFlagsFor(sym, SCREEN_KEYS);
   if (flags.length) return { symbol: sym, type: "stock", name: nameFor(sym), flags };
   return { symbol: sym, type: "none" };
@@ -72,7 +74,9 @@ export function analyze(positions, activeKeys) {
         return { ...p, type: "fund", fundBasis: fund.basis, contains,
           flags: distinctLabels(contains), analyzable: true, lookThrough: true, conflicted: contains.length > 0 };
       }
-      return { ...p, type: "fund", analyzable: false, contains: [], flags: [], conflicted: false };
+      const na = unanalyzedFund(p.symbol);
+      return { ...p, type: "fund", analyzable: false, contains: [], flags: [], conflicted: false,
+        notAnalyzedReason: na?.reason || null };
     }
     // Crypto, options, cash, anything else — not screened.
     return { ...p, type: p.kind, analyzable: false, flags: [], conflicted: false };
