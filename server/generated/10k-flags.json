@@ -92,6 +92,116 @@
           "asOf": "10-K filed 2026-02-13"
         }
       ]
+    },
+    "SO": {
+      "name": "Southern Company",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Southern Company's gas utilities operate ~77,900 miles of natural-gas pipelines and distribution, and it generates power from gas — a large fossil-fuel business alongside its regulated electric utilities.",
+          "quote": "operates, constructs, and maintains approximately 77,900 miles of natural gas pipelines",
+          "source": "https://www.sec.gov/Archives/edgar/data/92122/000009212226000006/so-20251231.htm",
+          "asOf": "10-K filed 2026-02-19"
+        },
+        {
+          "key": "thermal_coal",
+          "summary": "Southern Company's electric utilities (Alabama Power, Georgia Power, Mississippi Power) still operate coal-fired generating capacity, some of it slated to retire or convert to gas.",
+          "quote": "plans to retire or convert to natural gas certain coal-fired generating capacity",
+          "source": "https://www.sec.gov/Archives/edgar/data/92122/000009212226000006/so-20251231.htm",
+          "asOf": "10-K filed 2026-02-19"
+        }
+      ]
+    },
+    "DUK": {
+      "name": "Duke Energy Corp",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Duke Energy generates power from natural gas and holds interstate gas-pipeline interests (e.g. a 7.5% stake in the Sabal Trail pipeline) — a material fossil-fuel business within its utilities.",
+          "quote": "Sabal Trail Natural Gas Pipeline, which is regulated by FERC and traverses Alabama, Georgia, and Florida to transport natural gas to Florida",
+          "source": "https://www.sec.gov/Archives/edgar/data/1326160/000132616026000014/duk-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        },
+        {
+          "key": "thermal_coal",
+          "summary": "Duke Energy operates coal-fired power generation across its utility fleet, managing coal inventory for dispatch.",
+          "quote": "Coal inventory levels may fluctuate as a result of volatility in natural gas prices and the associated impacts on coal-fired dispatch within the generation fleet",
+          "source": "https://www.sec.gov/Archives/edgar/data/1326160/000132616026000014/duk-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "D": {
+      "name": "Dominion Energy Inc.",
+      "flags": [
+        {
+          "key": "thermal_coal",
+          "summary": "Dominion Energy operates coal-fired power generation; it produces and stores coal ash (CCRs) as a by-product across 11 facilities.",
+          "quote": "continue to produce coal ash, or CCRs, as a by-product of their coal-fired generation operations",
+          "source": "https://www.sec.gov/Archives/edgar/data/715957/000119312526063120/d-20251231.htm",
+          "asOf": "10-K filed 2026-02-23"
+        }
+      ]
+    },
+    "CEG": {
+      "name": "Constellation Energy Corp",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Constellation Energy, though mostly nuclear, owns ~21 GW of natural-gas-fired generation (via Calpine) — combined-cycle gas plants in Texas, California and the Northeast.",
+          "quote": "Calpine owns 21 GWs of natural gas-fired generation, primarily consisting of combined cycle gas turbine plants in the Texas, California, and Northeast regions of the United States.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1868275/000186827526000032/ceg-20251231.htm",
+          "asOf": "10-K filed 2026-02-24"
+        }
+      ]
+    },
+    "AEP": {
+      "name": "American Electric Power Co Inc",
+      "flags": [
+        {
+          "key": "thermal_coal",
+          "summary": "American Electric Power owns ~10,700 MW of coal-fired generating capacity (of ~25,400 MW total), including the Mitchell, Rockport and Turk plants.",
+          "quote": "AEP owned generating capacity of approximately 25,400 MWs, of which approximately 10,700 MWs were coal-fired",
+          "source": "https://www.sec.gov/Archives/edgar/data/4904/000000490426000013/aep-20251231.htm",
+          "asOf": "10-K filed 2026-02-12"
+        }
+      ]
+    },
+    "RCL": {
+      "name": "Royal Caribbean Cruises Ltd",
+      "flags": [
+        {
+          "key": "gambling",
+          "summary": "Royal Caribbean operates casinos on its cruise ships as a core part of its onboard revenue.",
+          "quote": "revenues from the sale of goods and/or services onboard our ships not included in passenger ticket prices, casino operations",
+          "source": "https://www.sec.gov/Archives/edgar/data/884887/000088488726000007/rcl-20251231.htm",
+          "asOf": "10-K filed 2026-02-11"
+        }
+      ]
+    },
+    "MNST": {
+      "name": "Monster Beverage Corp",
+      "flags": [
+        {
+          "key": "alcohol",
+          "summary": "Monster Beverage, best known for energy drinks, also develops, markets and distributes craft beers, flavored malt beverages, and hard seltzers (its 'Beast' alcohol line).",
+          "quote": "We also develop, market, sell and distribute craft beers, flavored malt beverages (\"FMBs\") and hard seltzers",
+          "source": "https://www.sec.gov/Archives/edgar/data/865752/000110465926020831/mnst-20251231x10k.htm",
+          "asOf": "10-K filed 2026-02-27"
+        }
+      ]
+    },
+    "HOOD": {
+      "name": "Robinhood Markets Inc.",
+      "flags": [
+        {
+          "key": "gambling",
+          "summary": "Robinhood offers sports-related event/prediction contracts that regulators (e.g. New Jersey's DGE) have called unlicensed sports wagering, drawing cease-and-desist demands.",
+          "quote": "cease and desist from offering sports-related event contracts, which the NJDGE views as unlicensed sports wagering",
+          "source": "https://www.sec.gov/Archives/edgar/data/1783879/000178387926000023/hood-20251231.htm",
+          "asOf": "10-K filed 2026-02-18"
+        }
+      ]
     }
   }
 }
