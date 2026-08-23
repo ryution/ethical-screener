@@ -205,14 +205,7 @@ function HeroResult({ result, onStart }) {
         Tracks {result.basis} — and holds <b style={{ color: "#F4FAF6" }}>{result.contains.length}</b> companies you may want to avoid:
       </p>
       <div style={{ marginTop: 12, display: "grid", gap: 9 }}>
-        {groups.map((g) => (
-          <div key={g.label} style={{ display: "flex", gap: 9, alignItems: "baseline", flexWrap: "wrap" }}>
-            <FlagChip>{g.label} · {g.names.length}</FlagChip>
-            <span style={{ fontFamily: sans, fontSize: 12.5, color: D.ink, lineHeight: 1.5 }}>
-              {g.names.join(", ")}
-            </span>
-          </div>
-        ))}
+        <FundBreakdown groups={groups} theme="dark" />
       </div>
       <HeroCTA onStart={onStart} />
     </div>
@@ -222,11 +215,88 @@ function HeroResult({ result, onStart }) {
 const groupByFlag = (contains) => {
   const m = new Map();
   for (const c of contains) for (const f of c.flags) {
-    if (!m.has(f.key)) m.set(f.key, { label: f.label, names: [] });
-    m.get(f.key).names.push(c.name);
+    if (!m.has(f.key)) m.set(f.key, { key: f.key, label: f.label, items: [] });
+    m.get(f.key).items.push({ name: c.name, ticker: c.ticker, reason: f.reason });
   }
-  return [...m.values()].sort((a, b) => b.names.length - a.names.length);
+  return [...m.values()].sort((a, b) => b.items.length - a.items.length);
 };
+
+// The clickable fund breakdown: every flagged holding is a quiet link; clicking one
+// reveals WHY it was flagged, and — understated, one level down — a way to dispute it.
+// The dispute path is deliberately not loud: the default view reads as confident, and
+// only a user who knows a specific name is wrong goes looking for it.
+function FundBreakdown({ groups, theme }) {
+  const [open, setOpen] = useState(null); // "flagKey:TICKER"
+  const dark = theme === "dark";
+  const Chip = dark ? FlagChip : LFlagChip;
+  const c = dark
+    ? { ink: D.ink, muted: D.muted, faint: D.faint, link: "#CFE8DA", panel: "rgba(255,255,255,0.06)", border: D.glassBorder }
+    : { ink: L.ink, muted: L.faint, faint: L.faint, link: "#2F6B4F", panel: "rgba(0,0,0,0.03)", border: "rgba(0,0,0,0.10)" };
+  return (
+    <>
+      {groups.map((g) => {
+        const openItem = g.items.find((it) => open === `${g.key}:${it.ticker}`);
+        return (
+          <div key={g.key} style={{ display: "grid", gap: 6 }}>
+            <div style={{ display: "flex", gap: 9, alignItems: "baseline", flexWrap: "wrap" }}>
+              <Chip>{g.label} · {g.items.length}</Chip>
+              <span style={{ fontFamily: sans, fontSize: 12.5, color: c.ink, lineHeight: 1.6 }}>
+                {g.items.map((it, i) => (
+                  <span key={it.ticker + i}>
+                    <span
+                      onClick={() => setOpen(open === `${g.key}:${it.ticker}` ? null : `${g.key}:${it.ticker}`)}
+                      style={{ cursor: "pointer", textDecoration: "underline", textDecorationStyle: "dotted", textDecorationColor: c.faint, textUnderlineOffset: 3 }}
+                    >{it.name}</span>{i < g.items.length - 1 ? ", " : ""}
+                  </span>
+                ))}
+              </span>
+            </div>
+            {openItem && (
+              <div style={{ background: c.panel, border: `1px solid ${c.border}`, borderRadius: 8, padding: "10px 12px", display: "grid", gap: 6 }}>
+                <div style={{ fontFamily: sans, fontSize: 12.5, color: c.ink, lineHeight: 1.5 }}>
+                  <b>{openItem.ticker}</b> · {openItem.name} — flagged <b>{g.label}</b>
+                </div>
+                <div style={{ fontFamily: sans, fontSize: 12.5, color: c.muted, lineHeight: 1.5 }}>{openItem.reason}</div>
+                <ReportControl item={openItem} group={g} linkColor={c.link} muted={c.muted} />
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </>
+  );
+}
+
+function ReportControl({ item, group, linkColor, muted }) {
+  const [stage, setStage] = useState("idle"); // idle | form | sent
+  const [note, setNote] = useState("");
+  const [busy, setBusy] = useState(false);
+  if (stage === "sent") return <div style={{ fontFamily: sans, fontSize: 12, color: muted }}>Thanks — we'll review this.</div>;
+  if (stage === "idle") {
+    return (
+      <button onClick={() => setStage("form")} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: sans, fontSize: 11.5, color: muted, textDecoration: "underline", textUnderlineOffset: 2, justifySelf: "start" }}>
+        Think this is wrong?
+      </button>
+    );
+  }
+  const submit = async () => {
+    setBusy(true);
+    try {
+      await api("/api/report", { method: "POST", body: { ticker: item.ticker, flag: group.key, label: group.label, reason: item.reason, note } });
+      setStage("sent");
+    } catch { setStage("sent"); } // fail quietly — a dispute is low-stakes
+  };
+  return (
+    <div style={{ display: "grid", gap: 6 }}>
+      <textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="What's off about this flag? (optional)" rows={2}
+        style={{ fontFamily: sans, fontSize: 12.5, padding: "6px 8px", borderRadius: 6, border: `1px solid ${muted}`, background: "transparent", color: "inherit", resize: "vertical" }} />
+      <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+        <button onClick={submit} disabled={busy} style={{ fontFamily: sans, fontSize: 12, fontWeight: 700, color: linkColor, background: "none", border: `1px solid ${linkColor}`, borderRadius: 6, padding: "4px 10px", cursor: "pointer" }}>Send report</button>
+        <button onClick={() => setStage("idle")} style={{ fontFamily: sans, fontSize: 12, color: muted, background: "none", border: "none", cursor: "pointer" }}>Cancel</button>
+      </div>
+    </div>
+  );
+}
 const FlagChip = ({ children }) => (
   <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, color: "#F2A98F", background: "rgba(238,120,86,0.15)", border: "1px solid rgba(238,120,86,0.34)", borderRadius: 6, padding: "2px 8px", flexShrink: 0, whiteSpace: "nowrap" }}>{children}</span>
 );
@@ -535,14 +605,7 @@ function Results({ analysis }) {
                 </div>
                 <div style={{ fontFamily: sans, fontSize: 12, color: L.faint, marginTop: 2 }}>Tracks {h.fundBasis} — holds {h.contains.length} flagged companies</div>
                 <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
-                  {groups.map((g) => (
-                    <div key={g.label} style={{ display: "flex", gap: 8, alignItems: "baseline", flexWrap: "wrap" }}>
-                      <LFlagChip>{g.label} · {g.names.length}</LFlagChip>
-                      <span style={{ fontFamily: sans, fontSize: 12.5, color: L.ink, lineHeight: 1.5 }}>
-                        {g.names.join(", ")}
-                      </span>
-                    </div>
-                  ))}
+                  <FundBreakdown groups={groups} theme="light" />
                 </div>
               </div>
             );

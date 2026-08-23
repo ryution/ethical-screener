@@ -111,8 +111,8 @@ async function main() {
   const rows = Object.values(universe);
   const results = [];
   for (const t of tickers) {
-    const key = t.toUpperCase().replace(/[.\-]/g, "");
-    const row = rows.find((r) => String(r.ticker).toUpperCase().replace(/[.\-]/g, "") === key);
+    const key = t.toUpperCase().replace(/[.-]/g, "");
+    const row = rows.find((r) => String(r.ticker).toUpperCase().replace(/[.-]/g, "") === key);
     if (!row) { console.error(`  ${t}: not found in EDGAR universe`); continue; }
     const f = await latest10K(row.cik_str);
     console.error(`  ${t}: ${f.name} — 10-K filed ${f.filingDate}`);

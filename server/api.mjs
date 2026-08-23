@@ -244,6 +244,16 @@ export async function handler(req, res) {
     return sendJson(res, 200, { ok: true, position: r.total });
   }
 
+  // ---- flag dispute: "I think this flag is wrong" (public, stored for human review) ----
+  if (req.method === "POST" && path === "/api/report") {
+    const rl = rateLimit("report", ip, 20, 60 * 60 * 1000);
+    if (rl.limited) return sendJson(res, 429, { error: "Too many reports. Try again later." }, { "Retry-After": String(rl.retryAfter) });
+    const body = await readBody(req);
+    if (!body?.ticker || !body?.flag) return sendJson(res, 400, { error: "ticker and flag are required." });
+    db.addReport({ ticker: body.ticker, flag: body.flag, label: body.label, reason: body.reason, note: body.note });
+    return sendJson(res, 200, { ok: true });
+  }
+
   // ---- funnel event (lightweight, name-only) ----
   if (req.method === "POST" && path === "/api/event") {
     const body = await readBody(req);
