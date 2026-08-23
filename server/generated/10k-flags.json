@@ -532,6 +532,164 @@
           "asOf": "10-K filed 2026-02-10"
         }
       ]
+    },
+    "COO": {
+      "name": "COOPER COMPANIES, INC.",
+      "flags": [
+        {
+          "key": "abortion_contraceptives",
+          "summary": "Cooper Companies manufactures Paragard, an intrauterine device (IUD) used as a long-acting reversible contraceptive.",
+          "quote": "With Paragard, we compete with manufacturers of hormonal IUDs including Bayer and AbbVie, Long Acting Reversible Contraceptives including Organon, and other forms of birth control.",
+          "source": "https://www.sec.gov/Archives/edgar/data/711404/000162828025055615/coo-20251031.htm",
+          "asOf": "10-K filed 2025-12-05"
+        }
+      ]
+    },
+    "BWXT": {
+      "name": "BWX Technologies, Inc.",
+      "flags": [
+        {
+          "key": "nuclear_weapons",
+          "summary": "BWX Technologies manages and operates U.S. nuclear weapons manufacturing sites and complexes.",
+          "quote": "provides various services to the U.S. and Canadian governments by managing and operating high-consequence operations at U.S. nuclear weapons sites, national laboratories and manufacturing complexes",
+          "source": "https://www.sec.gov/Archives/edgar/data/1486957/000148695726000007/bwxt-20251231.htm",
+          "asOf": "10-K filed 2026-02-23"
+        }
+      ]
+    },
+    "JAZZ": {
+      "name": "Jazz Pharmaceuticals plc",
+      "flags": [
+        {
+          "key": "cannabis",
+          "summary": "Jazz Pharmaceuticals manufactures and sells Epidiolex and other cannabinoid-based pharmaceutical products.",
+          "quote": "could increase competition for and adversely affect our ability to generate sales of Epidiolex and our cannabinoid product candidates",
+          "source": "https://www.sec.gov/Archives/edgar/data/1232524/000123252426000013/jazz-20251231.htm",
+          "asOf": "10-K filed 2026-02-24"
+        }
+      ]
+    },
+    "PINS": {
+      "name": "PINTEREST, INC.",
+      "flags": [
+        {
+          "key": "big_tech_surveillance",
+          "summary": "Pinterest's core business model is built on personal-data profiling for targeted advertising delivery.",
+          "quote": "limit our ability to deliver personalized advertising by, for example, requiring users to opt-in to personalized advertising.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1506293/000150629326000021/pins-20251231.htm",
+          "asOf": "10-K filed 2026-02-12"
+        }
+      ]
+    },
+    "PNW": {
+      "name": "PINNACLE WEST CAPITAL CORP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Pinnacle West Capital (APS) owns and operates oil-fired and gas-fired power plants as a core utility business generating electricity.",
+          "quote": "APS has two oil-only power plants: Douglas, located in the town of Douglas, Arizona and Yucca GT-4 in Yuma, Arizona. APS owns and operates each of these plants",
+          "source": "https://www.sec.gov/Archives/edgar/data/764622/000076462226000011/pnw-20251231.htm",
+          "asOf": "10-K filed 2026-02-25"
+        },
+        {
+          "key": "thermal_coal",
+          "summary": "Pinnacle West Capital operates coal-fired power generation facilities, including the Cholla coal-fired power plant.",
+          "quote": "APS operates the plant and owns 100% of Cholla Units 1, 2 and 3",
+          "source": "https://www.sec.gov/Archives/edgar/data/764622/000076462226000011/pnw-20251231.htm",
+          "asOf": "10-K filed 2026-02-25"
+        }
+      ]
+    },
+    "OSK": {
+      "name": "OSHKOSH CORP",
+      "flags": [
+        {
+          "key": "weapons",
+          "summary": "Oshkosh Defense manufactures military tactical vehicles as a core business line.",
+          "quote": "Oshkosh Defense has become a leading manufacturer of heavy, medium and light tactical wheeled vehicles and related sustainment services.",
+          "source": "https://www.sec.gov/Archives/edgar/data/775158/000119312526054061/osk-20251231.htm",
+          "asOf": "10-K filed 2026-02-17"
+        }
+      ]
+    },
+    "AES": {
+      "name": "AES CORP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "AES owns and operates coal-fired and natural gas-fired power generation plants.",
+          "quote": "15% of the capacity of our generation fleet is coal-fired.",
+          "source": "https://www.sec.gov/Archives/edgar/data/874761/000087476126000063/aes-20251231.htm",
+          "asOf": "10-K filed 2026-03-02"
+        }
+      ]
+    },
+    "OGE": {
+      "name": "OGE ENERGY CORP.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "OGE Energy owns and operates coal-fired and natural gas-fired power generation plants.",
+          "quote": "OG&E owns and operates coal-fired, natural gas-fired, wind-powered and solar-powered generating assets.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1021635/000119312526055414/oge-20251231.htm",
+          "asOf": "10-K filed 2026-02-18"
+        },
+        {
+          "key": "thermal_coal",
+          "summary": "OGE Energy operates coal-fired power generation as a material business.",
+          "quote": "Coal OG&E's coal-fired units are designed to burn primarily low sulfur western sub-bituminous coal.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1021635/000119312526055414/oge-20251231.htm",
+          "asOf": "10-K filed 2026-02-18"
+        }
+      ]
+    },
+    "WTRG": {
+      "name": "Essential Utilities, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Essential Utilities owns and operates natural gas pipelines and distribution systems, which constitutes transporting natural gas.",
+          "quote": "As an owner or operator of natural gas pipelines, distribution systems and storage",
+          "source": "https://www.sec.gov/Archives/edgar/data/78128/000007812826000050/wtrg-20251231x10k.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "FCFS": {
+      "name": "FirstCash Holdings, Inc.",
+      "flags": [
+        {
+          "key": "firearms",
+          "summary": "FirstCash operates pawn stores that buy and sell firearms as a material line of business in the United States.",
+          "quote": "U.S. pawn store locations that handle pawned firearms or buy and sell firearms must comply with the Brady Act.",
+          "source": "https://www.sec.gov/Archives/edgar/data/840489/000084048926000032/fcfs-20251231.htm",
+          "asOf": "10-K filed 2026-02-09"
+        }
+      ]
+    },
+    "UGI": {
+      "name": "UGI CORP /PA/",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "UGI Corp develops, owns, and operates natural gas pipelines and storage infrastructure as a material line of business.",
+          "quote": "develop, own and operate pipelines, gathering infrastructure and gas storage facilities in the Marcellus and Utica Shale regions of Pennsylvania, eastern Ohio, and the panhandle of West Virginia",
+          "source": "https://www.sec.gov/Archives/edgar/data/884614/000088461425000053/ugi-20250930.htm",
+          "asOf": "10-K filed 2025-11-21"
+        }
+      ]
+    },
+    "NCLH": {
+      "name": "Norwegian Cruise Line Holdings Ltd.",
+      "flags": [
+        {
+          "key": "gambling",
+          "summary": "Norwegian Cruise Line Holdings operates casinos aboard its cruise ships as part of onboard revenue and passenger amenities.",
+          "quote": "All of our brands offer an assortment of features, amenities and activities, including a variety of accommodations, multiple dining venues, bars and lounges, spa, casino and retail shopping areas and numerous entertainment choices.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1513761/000110465926022067/nclh-20251231x10k.htm",
+          "asOf": "10-K filed 2026-03-02"
+        }
+      ]
     }
   }
 }
