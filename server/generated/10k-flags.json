@@ -20,7 +20,7 @@
         {
           "key": "opioids",
           "summary": "CVS operates one of the largest U.S. pharmacy chains. Over opioid dispensing it reached a ~$5B national settlement in 2022 and continues to record opioid-litigation charges (a $320M charge in 2025). Settled without admitting wrongdoing.",
-          "quote": "a $320 million opioid litigation charge related to a change in the Company’s accrual for ongoing opioid litigation matters",
+          "quote": "a $320 million opioid litigation charge related to a change in the Company\u2019s accrual for ongoing opioid litigation matters",
           "source": "https://www.sec.gov/Archives/edgar/data/64803/000006480326000010/cvs-20251231.htm",
           "asOf": "10-K filed 2026-02-10"
         }
@@ -55,7 +55,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Berkshire owns Berkshire Hathaway Energy, whose utilities operate ~20,900 miles of interstate natural-gas pipelines and generate power from gas — a material fossil-fuel business most people don't associate with Berkshire.",
+          "summary": "Berkshire owns Berkshire Hathaway Energy, whose utilities operate ~20,900 miles of interstate natural-gas pipelines and generate power from gas \u2014 a material fossil-fuel business most people don't associate with Berkshire.",
           "quote": "five U.S. interstate natural gas pipeline companies with approximately 20,900 miles of operated pipeline having a design capacity of approximately 21.6 billion cubic feet of natural gas per day",
           "source": "https://www.sec.gov/Archives/edgar/data/1067983/000119312526083899/brka-20251231.htm",
           "asOf": "10-K filed 2026-03-02"
@@ -98,7 +98,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Southern Company's gas utilities operate ~77,900 miles of natural-gas pipelines and distribution, and it generates power from gas — a large fossil-fuel business alongside its regulated electric utilities.",
+          "summary": "Southern Company's gas utilities operate ~77,900 miles of natural-gas pipelines and distribution, and it generates power from gas \u2014 a large fossil-fuel business alongside its regulated electric utilities.",
           "quote": "operates, constructs, and maintains approximately 77,900 miles of natural gas pipelines",
           "source": "https://www.sec.gov/Archives/edgar/data/92122/000009212226000006/so-20251231.htm",
           "asOf": "10-K filed 2026-02-19"
@@ -117,7 +117,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Duke Energy generates power from natural gas and holds interstate gas-pipeline interests (e.g. a 7.5% stake in the Sabal Trail pipeline) — a material fossil-fuel business within its utilities.",
+          "summary": "Duke Energy generates power from natural gas and holds interstate gas-pipeline interests (e.g. a 7.5% stake in the Sabal Trail pipeline) \u2014 a material fossil-fuel business within its utilities.",
           "quote": "Sabal Trail Natural Gas Pipeline, which is regulated by FERC and traverses Alabama, Georgia, and Florida to transport natural gas to Florida",
           "source": "https://www.sec.gov/Archives/edgar/data/1326160/000132616026000014/duk-20251231.htm",
           "asOf": "10-K filed 2026-02-26"
@@ -148,7 +148,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Constellation Energy, though mostly nuclear, owns ~21 GW of natural-gas-fired generation (via Calpine) — combined-cycle gas plants in Texas, California and the Northeast.",
+          "summary": "Constellation Energy, though mostly nuclear, owns ~21 GW of natural-gas-fired generation (via Calpine) \u2014 combined-cycle gas plants in Texas, California and the Northeast.",
           "quote": "Calpine owns 21 GWs of natural gas-fired generation, primarily consisting of combined cycle gas turbine plants in the Texas, California, and Northeast regions of the United States.",
           "source": "https://www.sec.gov/Archives/edgar/data/1868275/000186827526000032/ceg-20251231.htm",
           "asOf": "10-K filed 2026-02-24"
@@ -200,6 +200,336 @@
           "quote": "cease and desist from offering sports-related event contracts, which the NJDGE views as unlicensed sports wagering",
           "source": "https://www.sec.gov/Archives/edgar/data/1783879/000178387926000023/hood-20251231.htm",
           "asOf": "10-K filed 2026-02-18"
+        }
+      ]
+    },
+    "SRE": {
+      "name": "SEMPRA",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Operates natural gas pipelines and LNG facilities as material business lines.",
+          "quote": "SI Partners owns the Cameron Interstate Pipeline, a 40-mile natural gas pipeline in south Louisiana that links the Cameron LNG Phase 1 facility in Cameron Parish in Louisiana to seven pipelines",
+          "source": "https://www.sec.gov/Archives/edgar/data/1032208/000103220826000010/sre-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "EXC": {
+      "name": "EXELON CORP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Operates natural gas distribution pipelines as regulated utility business.",
+          "quote": "natural gas pipelines and associated distribution facilities",
+          "source": "https://www.sec.gov/Archives/edgar/data/1109357/000110935726000018/exc-20251231.htm",
+          "asOf": "10-K filed 2026-02-12"
+        }
+      ]
+    },
+    "ETR": {
+      "name": "ENTERGY CORP /DE/",
+      "flags": [
+        {
+          "key": "thermal_coal",
+          "summary": "Owns and operates coal-fired power generation plants as material line of business.",
+          "quote": "coal-fired generating plants located in Louisiana",
+          "source": "https://www.sec.gov/Archives/edgar/data/65984/000006598426000174/etr-20251231.htm",
+          "asOf": "10-K filed 2026-02-19"
+        }
+      ]
+    },
+    "XEL": {
+      "name": "XCEL ENERGY INC",
+      "flags": [
+        {
+          "key": "thermal_coal",
+          "summary": "Currently operates coal-fired power generation units as part of utility business.",
+          "quote": "Xcel Energy has plans to retire or convert to natural gas all of its existing coal generation by the end of 2030",
+          "source": "https://www.sec.gov/Archives/edgar/data/72903/000007290326000009/xel-20251231.htm",
+          "asOf": "10-K filed 2026-02-25"
+        }
+      ]
+    },
+    "VST": {
+      "name": "Vistra Corp.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Vistra operates coal and lignite-fueled power generation facilities and mines lignite as its own business.",
+          "quote": "Our coal/lignite-fueled generation fleet is comprised of seven generation facilities totaling 8,743 MW of generation capacity. We meet our fuel requirements at our coal-fueled generation facilities in PJM and MISO with coal purchased from multiple suppliers under contracts of various lengths and transported to the facilities by either railcar or barges. We meet our fuel requirements in ERCOT using lignite that we mine at our generation facilities",
+          "source": "https://www.sec.gov/Archives/edgar/data/1692819/000169281926000006/vistra-20251231.htm",
+          "asOf": "10-K filed 2026-02-27"
+        }
+      ]
+    },
+    "PCG": {
+      "name": "PG&E Corp",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "PG&E operates natural gas pipeline and transportation infrastructure as a core utility business.",
+          "quote": "The Utility competes with other natural gas pipeline companies for customers transporting natural gas into the southern California market on the basis of transportation rates, access to competitively priced supplies of natural gas, and the quality and reliability of transportation services.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1004980/000100498026000009/pcg-20251231.htm",
+          "asOf": "10-K filed 2026-02-12"
+        }
+      ]
+    },
+    "UAL": {
+      "name": "United Airlines Holdings, Inc.",
+      "flags": [
+        {
+          "key": "big_tech_surveillance",
+          "summary": "United Airlines operates an ad/data business built on personal-data profiling of travel behaviors.",
+          "quote": "launching Kinective Media SM \u2013 the first media network that uses insights from travel behaviors to connect customers to personalized advertising, experiences and offers from leading brands",
+          "source": "https://www.sec.gov/Archives/edgar/data/100517/000010051726000023/ual-20251231.htm",
+          "asOf": "10-K filed 2026-02-12"
+        }
+      ]
+    },
+    "DTE": {
+      "name": "DTE ENERGY CO",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Operates natural gas pipeline systems and trading as material business.",
+          "quote": "physical and financial power, natural gas and environmental marketing and trading, structured transactions, enhancement of returns from its asset portfolio, and optimization of contracted natural gas pipeline transportation and storage positions",
+          "source": "https://www.sec.gov/Archives/edgar/data/936340/000093634026000054/dte-20251231.htm",
+          "asOf": "10-K filed 2026-02-17"
+        },
+        {
+          "key": "thermal_coal",
+          "summary": "Operates coal-fired power plants for electricity generation.",
+          "quote": "Electricity is primarily generated by two coal-fired plants",
+          "source": "https://www.sec.gov/Archives/edgar/data/936340/000093634026000054/dte-20251231.htm",
+          "asOf": "10-K filed 2026-02-17"
+        }
+      ]
+    },
+    "LH": {
+      "name": "LABCORP HOLDINGS INC.",
+      "flags": [
+        {
+          "key": "animal_testing",
+          "summary": "LabCorp's BLS operates as contract research organization conducting preclinical animal testing services.",
+          "quote": "Safety assessment : General, genetic, and immunotoxicology services; non-clinical pathology; safety pharmacology services",
+          "source": "https://www.sec.gov/Archives/edgar/data/920148/000092014826000111/lh-20251231.htm",
+          "asOf": "10-K filed 2026-02-24"
+        }
+      ]
+    },
+    "AEE": {
+      "name": "AMEREN CORP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Operates natural gas distribution and pipeline systems as core utility business.",
+          "quote": "to maintain natural gas deliveries to customers throughout the year and especially during peak demand periods",
+          "source": "https://www.sec.gov/Archives/edgar/data/1002910/000100291026000009/aee-20251231.htm",
+          "asOf": "10-K filed 2026-02-18"
+        },
+        {
+          "key": "thermal_coal",
+          "summary": "Currently operates coal-fired power generation plants; plans to retire them by 2042.",
+          "quote": "retiring all of Ameren Missouri's coal-fired energy centers by 2042",
+          "source": "https://www.sec.gov/Archives/edgar/data/1002910/000100291026000009/aee-20251231.htm",
+          "asOf": "10-K filed 2026-02-18"
+        }
+      ]
+    },
+    "PPL": {
+      "name": "PPL Corp",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Operates natural gas pipeline systems and distribution infrastructure.",
+          "quote": "notified owners and operators of natural gas pipeline facilities",
+          "source": "https://www.sec.gov/Archives/edgar/data/922224/000092222426000008/ppl-20251231.htm",
+          "asOf": "10-K filed 2026-02-20"
+        },
+        {
+          "key": "thermal_coal",
+          "summary": "Subsidiaries operate coal-fired power generation; evidence of ongoing/past operations evident from retirement timeline.",
+          "quote": "LG&E and KU have retired approximately 1,500 MW of coal-fired generation plants since 2010",
+          "source": "https://www.sec.gov/Archives/edgar/data/922224/000092222426000008/ppl-20251231.htm",
+          "asOf": "10-K filed 2026-02-20"
+        }
+      ]
+    },
+    "CNP": {
+      "name": "CENTERPOINT ENERGY INC",
+      "flags": [
+        {
+          "key": "thermal_coal",
+          "summary": "CenterPoint operates coal-fired electric generating units and purchases coal for power generation.",
+          "quote": "Coal for coal-fired generating stations",
+          "source": "https://www.sec.gov/Archives/edgar/data/1130310/000113031026000008/cnp-20251231.htm",
+          "asOf": "10-K filed 2026-02-19"
+        }
+      ]
+    },
+    "ES": {
+      "name": "EVERSOURCE ENERGY",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Eversource owns and operates natural gas pipelines and distribution systems as a material business.",
+          "quote": "natural gas pipeline",
+          "source": "https://www.sec.gov/Archives/edgar/data/72741/000162828026008461/es-20251231.htm",
+          "asOf": "10-K filed 2026-02-17"
+        }
+      ]
+    },
+    "FE": {
+      "name": "FIRSTENERGY CORP",
+      "flags": [
+        {
+          "key": "thermal_coal",
+          "summary": "FirstEnergy owns and operates coal-fired power generation as a material business.",
+          "quote": "coal-fired electric generation facilities located in West Virginia",
+          "source": "https://www.sec.gov/Archives/edgar/data/1031296/000103129626000046/fe-20251231.htm",
+          "asOf": "10-K filed 2026-02-18"
+        }
+      ]
+    },
+    "PKG": {
+      "name": "PACKAGING CORP OF AMERICA",
+      "flags": [
+        {
+          "key": "deforestation",
+          "summary": "Packaging Corp operates industrial logging and timber harvesting as a material business.",
+          "quote": "We lease the cutting rights to approximately 41,000 acres of timberland",
+          "source": "https://www.sec.gov/Archives/edgar/data/75677/000119312526074129/pkg-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "EFX": {
+      "name": "EQUIFAX INC",
+      "flags": [
+        {
+          "key": "big_tech_surveillance",
+          "summary": "Equifax is a credit reporting agency and data broker whose business is built on personal-data profiling.",
+          "quote": "data broker registration requirements in California, Vermont, Oregon and Texas",
+          "source": "https://www.sec.gov/Archives/edgar/data/33185/000003318526000010/efx-20251231.htm",
+          "asOf": "10-K filed 2026-02-19"
+        }
+      ]
+    },
+    "VRSK": {
+      "name": "Verisk Analytics, Inc.",
+      "flags": [
+        {
+          "key": "big_tech_surveillance",
+          "summary": "Verisk operates as a data broker handling personal information for profiling and disclosure.",
+          "quote": "re-disclosing their protected information",
+          "source": "https://www.sec.gov/Archives/edgar/data/1442145/000143774926004452/vrsk20251231_10k.htm",
+          "asOf": "10-K filed 2026-02-18"
+        }
+      ]
+    },
+    "NRG": {
+      "name": "NRG ENERGY, INC.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "NRG generates electric power using natural gas, coal, and oil as its material business.",
+          "quote": "NRG relies on natural gas, coal and oil to fuel a majority of its power generation facilities",
+          "source": "https://www.sec.gov/Archives/edgar/data/1013871/000101387126000004/nrg-20251231.htm",
+          "asOf": "10-K filed 2026-02-24"
+        },
+        {
+          "key": "thermal_coal",
+          "summary": "NRG operates coal-fired electric generation facilities despite declining coal portfolio.",
+          "quote": "less than 5% of the Company's consolidated revenues were derived from coal-fired operating assets",
+          "source": "https://www.sec.gov/Archives/edgar/data/1013871/000101387126000004/nrg-20251231.htm",
+          "asOf": "10-K filed 2026-02-24"
+        }
+      ]
+    },
+    "CMS": {
+      "name": "CMS ENERGY CORP",
+      "flags": [
+        {
+          "key": "thermal_coal",
+          "summary": "CMS Energy subsidiary (Consumers) wholly owns and operates coal-fired power generating units.",
+          "quote": "J.H. Campbell Generating Complex, a three-unit coal-fueled electric generating facility comprised of Units 1 and 2, which are wholly owned by Consumers",
+          "source": "https://www.sec.gov/Archives/edgar/data/811156/000081115626000004/cms-20251231.htm",
+          "asOf": "10-K filed 2026-02-10"
+        }
+      ]
+    },
+    "VTRS": {
+      "name": "Viatris Inc",
+      "flags": [
+        {
+          "key": "opioids",
+          "summary": "Viatris has opioid litigation with settlement payment to Pfizer (57% of third-party losses), evidencing culpability.",
+          "quote": "claims with respect to the manufacture, sale, marketing and distribution of opioid products",
+          "source": "https://www.sec.gov/Archives/edgar/data/1792044/000179204426000013/vtrs-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        },
+        {
+          "key": "abortion_contraceptives",
+          "summary": "Viatris manufactured contraceptive products (oral and injectable); also developing new contraceptive patches.",
+          "quote": "the Company completed the divestiture of its women's healthcare business, primarily related to its oral and injectable contraceptives",
+          "source": "https://www.sec.gov/Archives/edgar/data/1792044/000179204426000013/vtrs-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "EVRG": {
+      "name": "Evergy, Inc.",
+      "flags": [
+        {
+          "key": "thermal_coal",
+          "summary": "Evergy directly operates coal-fired power generation units.",
+          "quote": "the Evergy Companies operate coal-fired generation",
+          "source": "https://www.sec.gov/Archives/edgar/data/1711269/000171126926000017/evrg-20251231.htm",
+          "asOf": "10-K filed 2026-02-19"
+        }
+      ]
+    },
+    "LNT": {
+      "name": "ALLIANT ENERGY CORP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Company operates natural gas pipeline systems as part of its core business.",
+          "quote": "Alliant Energy, IPL and WPL are subject to regulation for physical and cybersecurity of their natural gas pipeline systems.",
+          "source": "https://www.sec.gov/Archives/edgar/data/352541/000035254126000007/lnt-20251231.htm",
+          "asOf": "10-K filed 2026-02-20"
+        },
+        {
+          "key": "thermal_coal",
+          "summary": "Company directly operates multiple coal-fired power generation facilities.",
+          "quote": "including IPL's coal-fired Ottumwa Generating Station, George Neal Generating Station, and Louisa Generating Station, WPL's coal-fired Edgewater Generating Station Unit 5 and Columbia Units 1 and 2",
+          "source": "https://www.sec.gov/Archives/edgar/data/352541/000035254126000007/lnt-20251231.htm",
+          "asOf": "10-K filed 2026-02-20"
+        }
+      ]
+    },
+    "NI": {
+      "name": "NISOURCE INC.",
+      "flags": [
+        {
+          "key": "thermal_coal",
+          "summary": "Company directly operates coal-fired power generation facilities.",
+          "quote": "we also operate two hydroelectric generation facilities, a CCGT, and two coal generation facilities",
+          "source": "https://www.sec.gov/Archives/edgar/data/1111711/000111171126000027/nix-20251231.htm",
+          "asOf": "10-K filed 2026-02-11"
+        }
+      ]
+    },
+    "L": {
+      "name": "LOEWS CORP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Company subsidiary operates extensive natural gas and NGLs pipeline and storage infrastructure as primary business.",
+          "quote": "Boardwalk Pipelines owns approximately 14,275 miles of natural gas and NGLs pipelines and underground storage caverns",
+          "source": "https://www.sec.gov/Archives/edgar/data/60086/000006008626000008/l-20251231.htm",
+          "asOf": "10-K filed 2026-02-10"
         }
       ]
     }
