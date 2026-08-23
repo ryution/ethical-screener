@@ -209,7 +209,7 @@ function HeroResult({ result, onStart }) {
           <div key={g.label} style={{ display: "flex", gap: 9, alignItems: "baseline", flexWrap: "wrap" }}>
             <FlagChip>{g.label} · {g.names.length}</FlagChip>
             <span style={{ fontFamily: sans, fontSize: 12.5, color: D.ink, lineHeight: 1.5 }}>
-              {g.names.slice(0, 4).join(", ")}{g.names.length > 4 ? `, +${g.names.length - 4} more` : ""}
+              {g.names.join(", ")}
             </span>
           </div>
         ))}
@@ -539,7 +539,7 @@ function Results({ analysis }) {
                     <div key={g.label} style={{ display: "flex", gap: 8, alignItems: "baseline", flexWrap: "wrap" }}>
                       <LFlagChip>{g.label} · {g.names.length}</LFlagChip>
                       <span style={{ fontFamily: sans, fontSize: 12.5, color: L.ink, lineHeight: 1.5 }}>
-                        {g.names.slice(0, 5).join(", ")}{g.names.length > 5 ? `, +${g.names.length - 5} more` : ""}
+                        {g.names.join(", ")}
                       </span>
                     </div>
                   ))}
