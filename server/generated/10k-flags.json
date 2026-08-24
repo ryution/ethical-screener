@@ -1945,6 +1945,13 @@
           "quote": "We also own and manage coal-related transportation and processing assets in the Illinois Basin that generate additional revenues generally based on throughput or rents.",
           "source": "https://www.sec.gov/Archives/edgar/data/1171486/000143774926006147/nrp20251231_10k.htm",
           "asOf": "10-K filed 2026-02-27"
+        },
+        {
+          "key": "thermal_coal",
+          "summary": "NRP operates thermal coal mines across multiple U.S. regions with significant sales volumes and mining operations generating material revenues.",
+          "quote": "The vast majority of our thermal coal sales are located in Illinois and its operations are some of the most cost-efficient mines east of the Mississippi River",
+          "source": "https://www.sec.gov/Archives/edgar/data/1171486/000143774926006147/nrp20251231_10k.htm",
+          "asOf": "10-K filed 2026-02-27"
         }
       ]
     },
@@ -3956,6 +3963,214 @@
           "quote": "The Company is also engaged in the procurement and distribution of small-caliber arms, including rifles and pistols, along with newly developing firearms technologies.",
           "source": "https://www.sec.gov/Archives/edgar/data/1703625/000119983526000287/napc_10k.htm",
           "asOf": "10-K filed 2026-08-13"
+        }
+      ]
+    },
+    "VIVK": {
+      "name": "Vivakor, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Company operates integrated midstream platform providing crude oil transportation, terminaling, storage, and marketing services across major U.S. oil-producing basins as core business segments.",
+          "quote": "provides crude oil transportation, terminaling, and marketing services across major U.S. producing basins",
+          "source": "https://www.sec.gov/Archives/edgar/data/1450704/000182912626003530/vivakor_10k.htm",
+          "asOf": "10-K filed 2026-04-15"
+        }
+      ]
+    },
+    "NRHI": {
+      "name": "Natural Resource Holdings, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Company actively conducts mining and mineral exploration services on Potter County, PA Utica Shale oil and gas properties, representing primary business focus.",
+          "quote": "mining and mineral exploration and surveying services on Potter County, PA Utica Shale area oil and gas properties",
+          "source": "https://www.sec.gov/Archives/edgar/data/1680689/000164033425001165/boxxy_10k.htm",
+          "asOf": "10-K filed 2025-07-11"
+        }
+      ]
+    },
+    "KAVL": {
+      "name": "Kaival Brands Innovations Group, Inc.",
+      "flags": [
+        {
+          "key": "tobacco",
+          "summary": "Company manufactures and distributes e-cigarettes (electronic nicotine delivery systems) as a line of business, which meets the definition of vaping/nicotine products under the tobacco flag.",
+          "quote": "engaged in the sale, marketing and distribution of electronic nicotine delivery system (\"ENDS\") products, also known as \"e-cigarettes\"",
+          "source": "https://www.sec.gov/Archives/edgar/data/1762239/000173112226000140/e7194_10-k.htm",
+          "asOf": "10-K filed 2026-01-29"
+        }
+      ]
+    },
+    "CIRX": {
+      "name": "CIRTRAN CORP",
+      "flags": [
+        {
+          "key": "tobacco",
+          "summary": "Company manufactures, markets, and distributes electronic cigarettes and other tobacco/nicotine products as a primary line of business under the HUSTLER brand licensing agreement.",
+          "quote": "manufacture, distribute, and sell condoms, electronic cigarettes, electronic cigars, cigars, hookahs, hookah tobacco, energy drinks, water beverages, and related merchandise, all using the HUSTLER\u00ae trademark",
+          "source": "https://www.sec.gov/Archives/edgar/data/813716/000149315226016869/form10-k.htm",
+          "asOf": "10-K filed 2026-04-15"
+        }
+      ]
+    },
+    "LEEN": {
+      "name": "Leopard Energy, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Company explicitly redirected its business into energy sector with royalty interests in producing oil wells as core line of business.",
+          "quote": "Since the transfer of its controlling interest in August 2023, the Company redirect its business into the energy sector, mainly aiming at investment in royalty interest of energy related petrol and mineral production.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1230524/000147793225007668/cyap_10k.htm",
+          "asOf": "10-K filed 2025-10-21"
+        }
+      ]
+    },
+    "TWNPQ": {
+      "name": "Twin Hospitality Group Inc.",
+      "flags": [
+        {
+          "key": "alcohol",
+          "summary": "Company operates in-house brewery that produces beer for sale at its Twin Peaks restaurant locations.",
+          "quote": "All of our signature beer sold at our Twin Peaks restaurants in Texas are brewed at Twin Peaks Brewing Co., our award-winning brew-pub in Irving, Texas",
+          "source": "https://www.sec.gov/Archives/edgar/data/2011954/000162828025009131/twnp-20241229.htm",
+          "asOf": "10-K filed 2025-02-28"
+        }
+      ]
+    },
+    "EDVA": {
+      "name": "SPLASH BEVERAGE GROUP, INC.",
+      "flags": [
+        {
+          "key": "alcohol",
+          "summary": "Splash Beverage Group produces and markets Chispo Tequila as a material line of business, partnering with distilling operations to produce spirits for commercial sale.",
+          "quote": "Chispo Tequila is produced in Jalisco, Mexico in partnership with ZB Distillery, a respected distilling operation known for its commitment to quality and traditional tequila craftsmanship.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1553788/000173112226000577/e7552_10-k.htm",
+          "asOf": "10-K filed 2026-04-15"
+        }
+      ]
+    },
+    "CHSCP": {
+      "name": "CHS INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "CHS Inc. operates as a major petroleum refiner and wholesaler, refining crude oil at facilities in Montana and Kansas and distributing refined fuels (gasoline, diesel, propane) as a primary line of business.",
+          "quote": "We are the nation's largest cooperative energy company based on revenues and identifiable assets, with operations that include petroleum refining and pipelines; supply, marketing and distribution of refined fuels (gasoline, diesel fuel and other energy products)",
+          "source": "https://www.sec.gov/Archives/edgar/data/823277/000082327725000038/chscp-20250831.htm",
+          "asOf": "10-K filed 2025-11-05"
+        }
+      ]
+    },
+    "EMP": {
+      "name": "ENTERGY MISSISSIPPI, LLC",
+      "flags": [
+        {
+          "key": "thermal_coal",
+          "summary": "Entergy Mississippi operates coal-fired generating plants as a material line of business for electric power generation, managing coal transportation and coal-fired power units.",
+          "quote": "coal-fired generating plants located in Louisiana",
+          "source": "https://www.sec.gov/Archives/edgar/data/66901/000006598426000174/etr-20251231.htm",
+          "asOf": "10-K filed 2026-02-19"
+        }
+      ]
+    },
+    "EAI": {
+      "name": "ENTERGY ARKANSAS, LLC",
+      "flags": [
+        {
+          "key": "thermal_coal",
+          "summary": "Entergy Arkansas operates coal-fired generating plants as a material line of business for electric power generation, managing coal supplies and transportation to coal-fired units.",
+          "quote": "coal-fired generating plants located in Louisiana",
+          "source": "https://www.sec.gov/Archives/edgar/data/7323/000006598426000174/etr-20251231.htm",
+          "asOf": "10-K filed 2026-02-19"
+        }
+      ]
+    },
+    "ENJ": {
+      "name": "ENTERGY NEW ORLEANS, LLC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Operates natural gas distribution business as a material line of business to retail customers",
+          "quote": "provided both electric power and natural gas to retail customers",
+          "source": "https://www.sec.gov/Archives/edgar/data/71508/000006598426000174/etr-20251231.htm",
+          "asOf": "10-K filed 2026-02-19"
+        },
+        {
+          "key": "thermal_coal",
+          "summary": "Operates coal-fired generating plants as part of regulated utility generation portfolio",
+          "quote": "coal-fired generating plants located in Louisiana",
+          "source": "https://www.sec.gov/Archives/edgar/data/71508/000006598426000174/etr-20251231.htm",
+          "asOf": "10-K filed 2026-02-19"
+        }
+      ]
+    },
+    "GPJA": {
+      "name": "GEORGIA POWER CO",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Southern Company Gas operates extensive natural gas distribution infrastructure as largest segment of business",
+          "quote": "operates, constructs, and maintains approximately 77,900 miles of natural gas pipelines and 14 storage facilities, with total capacity of 157 Bcf, to provide natural gas to residential, commercial, and industrial customers",
+          "source": "https://www.sec.gov/Archives/edgar/data/41091/000009212226000006/so-20251231.htm",
+          "asOf": "10-K filed 2026-02-19"
+        },
+        {
+          "key": "thermal_coal",
+          "summary": "Owns and operates coal-fired generating capacity as part of diversified utility generation fleet",
+          "quote": "coal-fired generating capacity",
+          "source": "https://www.sec.gov/Archives/edgar/data/41091/000009212226000006/so-20251231.htm",
+          "asOf": "10-K filed 2026-02-19"
+        }
+      ]
+    },
+    "AILIH": {
+      "name": "Ameren Illinois Co",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Operates natural gas distribution systems and maintains gas deliveries to retail customers",
+          "quote": "on-system storage facilities to maintain natural gas deliveries to customers throughout the year and especially during peak demand periods",
+          "source": "https://www.sec.gov/Archives/edgar/data/18654/000100291026000009/aee-20251231.htm",
+          "asOf": "10-K filed 2026-02-18"
+        },
+        {
+          "key": "thermal_coal",
+          "summary": "Owns and operates coal-fired energy centers as part of diversified fuel portfolio",
+          "quote": "Ameren Missouri owns energy centers that rely on a diverse fuel portfolio, including coal, nuclear, and natural gas",
+          "source": "https://www.sec.gov/Archives/edgar/data/18654/000100291026000009/aee-20251231.htm",
+          "asOf": "10-K filed 2026-02-18"
+        }
+      ]
+    },
+    "UELMO": {
+      "name": "UNION ELECTRIC CO",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Operates natural gas distribution systems and maintains gas deliveries to retail customers",
+          "quote": "on-system storage facilities to maintain natural gas deliveries to customers throughout the year and especially during peak demand periods",
+          "source": "https://www.sec.gov/Archives/edgar/data/100826/000100291026000009/aee-20251231.htm",
+          "asOf": "10-K filed 2026-02-18"
+        },
+        {
+          "key": "thermal_coal",
+          "summary": "Owns and operates coal-fired energy centers as part of diversified fuel portfolio",
+          "quote": "Ameren Missouri owns energy centers that rely on a diverse fuel portfolio, including coal, nuclear, and natural gas",
+          "source": "https://www.sec.gov/Archives/edgar/data/100826/000100291026000009/aee-20251231.htm",
+          "asOf": "10-K filed 2026-02-18"
+        }
+      ]
+    },
+    "ELC": {
+      "name": "ENTERGY LOUISIANA, LLC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Entergy Louisiana operates coal-fired generating plants and natural gas distribution as core business lines, directly extracting and transporting fossil fuels for power generation.",
+          "quote": "coal-fired generating plants located in Louisiana",
+          "source": "https://www.sec.gov/Archives/edgar/data/1348952/000006598426000174/etr-20251231.htm",
+          "asOf": "10-K filed 2026-02-19"
         }
       ]
     }
