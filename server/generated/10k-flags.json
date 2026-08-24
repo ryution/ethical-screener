@@ -2260,8 +2260,8 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Evolution Petroleum is an independent oil and natural gas exploration and production company operating properties across U.S. onshore basins including Oklahoma and Wyoming.",
-          "quote": "In the United States market where our properties are operated, crude oil, natural gas, and NGLs are readily transportable and marketable.",
+          "summary": "Evolution Petroleum directly extracts, produces, and sells crude oil, natural gas, and natural gas liquids as its core business line with proved reserves and measurable production volumes.",
+          "quote": "Crude oil, natural gas, and natural gas liquids production volumes, average sales price per unit and average daily production on an equivalent basis",
           "source": "https://www.sec.gov/Archives/edgar/data/1006655/000110465925090839/epm-20250630x10k.htm",
           "asOf": "10-K filed 2025-09-17"
         }
@@ -2284,8 +2284,8 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Stabilis Solutions provides liquefied natural gas (LNG) production and transportation logistics services to diverse end-markets including oil and gas operators, utilities, and industrial customers.",
-          "quote": "The Company provides LNG solutions to customers in diverse end markets, including aerospace, agriculture, industrial, marine bunkering, mining, oil and gas, pipeline, remote power and utility markets.",
+          "summary": "Company operates as a natural gas distribution utility, providing LNG production and turnkey transportation and logistics services through a virtual natural gas pipeline network across North America.",
+          "quote": "Stabilis offers our customers a \"virtual natural gas pipeline\" by providing turnkey LNG transportation and logistics services in North America",
           "source": "https://www.sec.gov/Archives/edgar/data/1043186/000143774926007090/slng20251231_10k.htm",
           "asOf": "10-K filed 2026-03-05"
         }
@@ -2296,8 +2296,8 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "AleAnna, Inc. holds oil and gas properties and produces renewable natural gas from waste sources through its AleAnna Renewable Energy subsidiaries.",
-          "quote": "AleAnna Renewable is comprised of various subsidiaries that hold its renewable natural gas assets (the \"RNG Subsidiaries\").",
+          "summary": "AleAnna operates hydrocarbon production contracts to explore, develop, and produce oil and gas as a core business activity, as evidenced by its proved reserves and development well operations.",
+          "quote": "Oil and Gas Contract\" - means any Hydrocarbon production sharing contract, lease or license or other similar agreement or right binding on AleAnna or any of the AleAnna Subsidiaries to explore for, develop, use, produce, sever, process and operate any Hydrocarbons, whether onshore or offshore",
           "source": "https://www.sec.gov/Archives/edgar/data/1845123/000121390026036606/ea0281737-10k_aleanna.htm",
           "asOf": "10-K filed 2026-03-31"
         }
@@ -2320,8 +2320,8 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Martin Midstream Partners provides integrated pipeline, storage, and logistics services for crude oil, natural gas, natural gas liquids, and refined petroleum products throughout the U.S. Gulf Coast region.",
-          "quote": "petroleum products and by-products we gather, transport, store and market are produced primarily by major and independent oil and gas companies",
+          "summary": "MMLP's core business is transportation, storage, and distribution of natural gas liquids and petroleum products; fossil fuel transport is explicitly flagged.",
+          "quote": "Marketing, distribution, and transportation services for natural gas liquids (\"NGL\") and blending and packaging services for specialty lubricants and grease",
           "source": "https://www.sec.gov/Archives/edgar/data/1176334/000117633426000012/mmlp-20251231.htm",
           "asOf": "10-K filed 2026-02-23"
         }
@@ -2332,8 +2332,8 @@
       "flags": [
         {
           "key": "tobacco",
-          "summary": "Ispire Technology manufactures and distributes the Aspire brand of nicotine vaporizer hardware and cannabis vaping devices globally, with products sold through a network of over 150 distributors across more than 30 countries.",
-          "quote": "We sell the Aspire brand of tobacco vaporizer technology products in more than 30 countries through our global network of more than 150 distributors.",
+          "summary": "Ispire manufactures and globally distributes e-cigarette/vaping hardware products containing nicotine; this is a core tobacco/nicotine vaping business.",
+          "quote": "We sell the Aspire brand of tobacco vaporizer technology products in more than 30 countries through our global network of more than 150 distributors",
           "source": "https://www.sec.gov/Archives/edgar/data/1948455/000121390025087632/ea0255094-10k_ispire.htm",
           "asOf": "10-K filed 2025-09-15"
         }
@@ -2368,8 +2368,8 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Blue Dolphin Energy operates crude oil refining and processing facilities, converting crude oil and condensate into refined petroleum products through complex distillation and conversion operations.",
-          "quote": "For refinery operations, calculated as crude oil, fuel use, and chemicals plus other conversion costs plus intercompany processing fees plus associated depreciation and amortization.",
+          "summary": "Company operates crude oil refinery operations with crude distillation towers that refine crude oil into petroleum products as a core line of business.",
+          "quote": "Crude distillation tower . A tall column-like vessel in which crude oil and condensate is heated and its vaporized components are distilled by means of distillation trays. This process refines crude oil and other inputs into intermediate and finished petroleum products",
           "source": "https://www.sec.gov/Archives/edgar/data/793306/000143774926010712/bdco20251231_10k.htm",
           "asOf": "10-K filed 2026-03-31"
         }
@@ -2380,8 +2380,8 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Big Sky Industrial is an independent oil and gas exploration and production company acquiring and operating crude oil and natural gas properties across multiple U.S. regions.",
-          "quote": "we acquired operated properties in North Dakota, New Mexico, Wyoming and the Texas Gulf Coast, and on January 5, 2022, we closed the acquisitions of certain oil and gas properties from three separate sellers, representing a diversified portfolio of primarily operated, producing, oil-weighted assets located across the Rockies, West Texas, Eagle Ford, and Mid-Continent regions.",
+          "summary": "Company directly extracts and produces oil and natural gas through operated properties in North Dakota, New Mexico, Wyoming, Texas, and other regions\u2014a core line of business, not incidental or divested.",
+          "quote": "we previously explored for and produced oil and natural gas through a non-operator business model, however, during 2020 we acquired operated properties in North Dakota, New Mexico, Wyoming and the Texas Gulf Coast, and on January 5, 2022, we closed the acquisitions of certain oil and gas properties from three separate sellers, representing a diversified portfolio of primarily operated, producing, oil-weighted assets",
           "source": "https://www.sec.gov/Archives/edgar/data/101594/000143774926008057/useg20251231_10k.htm",
           "asOf": "10-K filed 2026-03-13"
         }
@@ -2392,7 +2392,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Prairie Operating Co. is an independent oil and natural gas company focused on acquiring and developing crude oil, natural gas, and natural gas liquids in the Denver-Julesburg Basin of Colorado.",
+          "summary": "Prairie Operating Co. explicitly identifies as an independent oil and natural gas company acquiring and developing crude oil, natural gas, and NGLs as its core business.",
           "quote": "Prairie Operating Co. (the \"Company,\" \"we,\" \"our\" or \"us\") is an independent oil and natural gas company focused on the acquisition and development of crude oil, natural gas, and NGLs.",
           "source": "https://www.sec.gov/Archives/edgar/data/1162896/000114036126012036/ef20060649_10k.htm",
           "asOf": "10-K filed 2026-03-31"
@@ -2428,8 +2428,8 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Laredo Oil is an oil and gas exploration and development company acquiring and operating crude oil and natural gas properties, with experience in drilling conventional oil wells and evaluating oil and gas properties.",
-          "quote": "we gained specialized know-how, intellectual property and operational experience in evaluating, acquiring, operating and developing oil and gas properties, as well as expertise in designing, drilling and producing conventional oil wells.",
+          "summary": "Laredo Oil directly operates oil and gas exploration and production as its primary business, acquiring and drilling mineral interests in Montana fields for conventional oil and gas extraction.",
+          "quote": "oil and gas properties, as well as expertise in designing, drilling and producing conventional oil wells",
           "source": "https://www.sec.gov/Archives/edgar/data/1442492/000119983525000313/lrdc-10k.htm",
           "asOf": "10-K filed 2025-09-15"
         }
@@ -2452,8 +2452,8 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "KLX Energy Services provides oilfield services including directional drilling, coiled tubing, hydraulic fracturing, and pressure control equipment to oil and gas operators for drilling and production activities.",
-          "quote": "We deliver mission critical oilfield services to primarily independent major oil and gas companies focused on drilling, completion, production and intervention activities for technically demanding wells from over 60 service facilities located in the United States. Our primary services include directional drilling, coiled tubing, thru tubing, hydraulic frac rentals, fishing, pressure control, wireline",
+          "summary": "KLX Energy Services is an oilfield services company delivering mission-critical drilling, completion, production, and intervention services directly to oil and gas operators.",
+          "quote": "We deliver mission critical oilfield services to primarily independent major oil and gas companies focused on drilling, completion, production and intervention activities",
           "source": "https://www.sec.gov/Archives/edgar/data/1738827/000173882726000013/klxe-20251231.htm",
           "asOf": "10-K filed 2026-03-12"
         }
@@ -2488,8 +2488,8 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Spindletop Oil & Gas Co. is an independent oil and gas company engaged in exploration, development, production, and acquisition of crude oil and natural gas with operations in five states.",
-          "quote": "Spindletop Oil & Gas Co. is an independent oil and gas company engaged in the exploration, development, production and acquisition of oil and natural gas; and through one of its subsidiaries, the rental of oilfield equipment and the gathering and marketing of natural gas.",
+          "summary": "Independent oil and gas company directly engaged in exploration, development, production, and acquisition of oil and natural gas, plus gathering and marketing of natural gas.",
+          "quote": "Spindletop Oil & Gas Co. is an independent oil and gas company engaged in the exploration, development, production and acquisition of oil and natural gas",
           "source": "https://www.sec.gov/Archives/edgar/data/867038/000101738626000048/spnd_2025dec31-10k.htm",
           "asOf": "10-K filed 2026-04-15"
         }
@@ -3440,6 +3440,282 @@
           "quote": "the Company is primarily engaged in the construction, replacement and repair of natural gas pipelines and storage facilities for utility companies and private natural gas companies. Energy Services is involved in the construction of both interstate and intrastate pipelines, with an emphasis on the latter. For the oil industry, the Company provides a variety of services relating to pipeline, storage facilities and pla",
           "source": "https://www.sec.gov/Archives/edgar/data/1357971/000110465925121185/esoa-20250930x10k.htm",
           "asOf": "10-K filed 2025-12-15"
+        }
+      ]
+    },
+    "BNC": {
+      "name": "CEA Industries Inc.",
+      "flags": [
+        {
+          "key": "tobacco",
+          "summary": "Company operates Fat Panda as a material revenue-generating line of business, manufacturing and retailing e-cigarettes, vape devices, and nicotine e-liquids across 34 retail locations.",
+          "quote": "we acquired Fat Panda, a retailer and manufacturer of e-cigarettes, vape devices and e-liquids",
+          "source": "https://www.sec.gov/Archives/edgar/data/1482541/000148254126000019/bncww-20260430.htm",
+          "asOf": "10-K filed 2026-06-23"
+        }
+      ]
+    },
+    "SPWH": {
+      "name": "SPORTSMAN'S WAREHOUSE HOLDINGS, INC.",
+      "flags": [
+        {
+          "key": "firearms",
+          "summary": "Sportsman's Warehouse operates as a major retailer with substantial direct-to-consumer sales of firearms and ammunition through retail stores and online channels, a core line of business.",
+          "quote": "We also have a large assortment and offering of firearms available online for in-store purchase and buy-online-pickup-in-store.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1132105/000119312526134702/spwh-20260131.htm",
+          "asOf": "10-K filed 2026-03-31"
+        }
+      ]
+    },
+    "AGIG": {
+      "name": "ABUNDIA GLOBAL IMPACT GROUP, INC.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Company operates oil and gas extraction and production assets that remain active and generate revenue despite strategic transition to renewable energy.",
+          "quote": "The Company also continues to hold its legacy oil and gas assets, which remain in operation and generate revenue.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1156041/000149315226012070/form10-k.htm",
+          "asOf": "10-K filed 2026-03-23"
+        }
+      ]
+    },
+    "VIP": {
+      "name": "Vulcan Infrastructure & Power Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Vulcan owns and operates a natural gas power plant and a 4.6-mile natural gas pipeline serving as infrastructure for fossil fuel distribution.",
+          "quote": "This included securing the right of way and constructing a 4.6-mile natural gas pipeline which we now own and operate",
+          "source": "https://www.sec.gov/Archives/edgar/data/1844971/000184497126000011/gree-20251231.htm",
+          "asOf": "10-K filed 2026-03-31"
+        }
+      ]
+    },
+    "VWAV": {
+      "name": "VisionWave Holdings, Inc.",
+      "flags": [
+        {
+          "key": "weapons",
+          "summary": "VisionWave generates revenue from direct product sales and technology licensing for defense systems to governments and defense contractors, including autonomous platforms for guided munitions and military vehicles.",
+          "quote": "generate revenue through direct product sales, technology licensing to defense contractors and governments",
+          "source": "https://www.sec.gov/Archives/edgar/data/2038439/000173112225001750/e7126_10-k.htm",
+          "asOf": "10-K filed 2025-12-31"
+        }
+      ]
+    },
+    "PRT": {
+      "name": "PermRock Royalty Trust",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Trust holds mineral interests in oil and natural gas reserves and receives income from exploration, development, and production of oil and natural gas properties.",
+          "quote": "characteristics of the Underlying Properties, including estimates regarding oil and gas reserves",
+          "source": "https://www.sec.gov/Archives/edgar/data/1724009/000119312526128868/prt_10-k_2025-12-31.htm",
+          "asOf": "10-K filed 2026-03-27"
+        }
+      ]
+    },
+    "CDLX": {
+      "name": "Cardlytics, Inc.",
+      "flags": [
+        {
+          "key": "big_tech_surveillance",
+          "summary": "Bridg business explicitly relies on acquisition and sale of personal data from third-party suppliers as a core line of business, triggering data broker regulatory obligations.",
+          "quote": "Our Bridg business relies on the acquisition and sale of personal data, including data obtained from third-party data suppliers",
+          "source": "https://www.sec.gov/Archives/edgar/data/1666071/000166607126000010/cdlx-20251231.htm",
+          "asOf": "10-K filed 2026-03-04"
+        }
+      ]
+    },
+    "DFNS": {
+      "name": "T3 Defense Inc.",
+      "flags": [
+        {
+          "key": "weapons",
+          "summary": "T3 Defense operates Israeli defense contractor subsidiaries engaged in aerospace and defense businesses; company explicitly acknowledges Israeli Ministry of Defense audits of defense contractor subsidiaries.",
+          "quote": "Israeli Ministry of Defense may audit the books and records of our Israeli defense contractor subsidiaries",
+          "source": "https://www.sec.gov/Archives/edgar/data/1787518/000121390026041888/ea0282720-10k_t3defense.htm",
+          "asOf": "10-K filed 2026-04-09"
+        }
+      ]
+    },
+    "ZSTK": {
+      "name": "ZeroStack Corp.",
+      "flags": [
+        {
+          "key": "tobacco",
+          "summary": "Company manufactures and sells vaporizers containing nicotine as a material product line through its AV (Aussie Vapes) business unit.",
+          "quote": "new limitations by the Australian government that limits the sales of vaporizers containing nicotine to only pharmacies, which are likely to negatively impact AV's direct-to-consumer online sales",
+          "source": "https://www.sec.gov/Archives/edgar/data/1790169/000106299326001203/form10k.htm",
+          "asOf": "10-K filed 2026-02-27"
+        }
+      ]
+    },
+    "PFX": {
+      "name": "PhenixFIN Corp",
+      "flags": [
+        {
+          "key": "thermal_coal",
+          "summary": "Company owns and operates Kemmerer Operations as a consolidated portfolio company engaged in thermal coal mining and production.",
+          "quote": "Kemmerer Operations, LLC, located in Wyoming, is a producer of high-value thermal coal and surface-mined coal",
+          "source": "https://www.sec.gov/Archives/edgar/data/1490349/000121390025120913/ea0264791-10k_phenixfin.htm",
+          "asOf": "10-K filed 2025-12-12"
+        }
+      ]
+    },
+    "CWGL": {
+      "name": "Crimson Wine Group, Ltd",
+      "flags": [
+        {
+          "key": "alcohol",
+          "summary": "Crimson Wine Group produces and distributes wines as a primary line of business through multiple retail and hospitality channels.",
+          "quote": "The Company's wines are sold in restaurants, bars, and other hospitality locations (\"On-Premise\") as well as in supermarkets, grocery stores, liquor stores, and other chains, third-party Ecommerce, and independent stores",
+          "source": "https://www.sec.gov/Archives/edgar/data/1562151/000162828026018796/cwgl-20251231.htm",
+          "asOf": "10-K filed 2026-03-17"
+        }
+      ]
+    },
+    "SSTI": {
+      "name": "SOUNDTHINKING, INC.",
+      "flags": [
+        {
+          "key": "big_tech_surveillance",
+          "summary": "SoundThinking explicitly registers as a data broker and obtains and sells personal data from third parties as a core business line, with clients accessing personal datasets in their CrimeTracer platform.",
+          "quote": "we have registered as a data broker and file reports with certain regulators",
+          "source": "https://www.sec.gov/Archives/edgar/data/1351636/000119312526132104/ssti-20251231.htm",
+          "asOf": "10-K filed 2026-03-30"
+        }
+      ]
+    },
+    "PYYX": {
+      "name": "PYXUS INTERNATIONAL, INC.",
+      "flags": [
+        {
+          "key": "tobacco",
+          "summary": "PYXUS operates leaf tobacco operations as a principal business line, processing and selling tobacco globally to manufacturers of tobacco products.",
+          "quote": "Our leaf tobacco revenues are principally comprised of sales of processed leaf tobacco",
+          "source": "https://www.sec.gov/Archives/edgar/data/939930/000093993026000017/pyx-20260331.htm",
+          "asOf": "10-K filed 2026-06-04"
+        }
+      ]
+    },
+    "DH": {
+      "name": "Definitive Healthcare Corp.",
+      "flags": [
+        {
+          "key": "big_tech_surveillance",
+          "summary": "Definitive Healthcare operates as a registered data broker under multiple state laws, actively acquiring and selling personal data as a core line of business.",
+          "quote": "as a data supplier, we are currently required to register as a data broker under California, Oregon, Texas, and Vermont law",
+          "source": "https://www.sec.gov/Archives/edgar/data/1861795/000119312526076782/dh-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "FRMM": {
+      "name": "FORUM MARKETS Inc",
+      "flags": [
+        {
+          "key": "gambling",
+          "summary": "Forum Markets commercialized blockchain-enabled iGaming technology as a primary operating focus in 2025, targeting real-money online casinos.",
+          "quote": "By the first half of 2025, our operating plan was focused on commercializing this blockchain-enabled iGaming technology platform, including initially targeting business-to-consumer online casinos",
+          "source": "https://www.sec.gov/Archives/edgar/data/1690080/000121390026037888/ea0283286-10k_forum.htm",
+          "asOf": "10-K filed 2026-04-01"
+        }
+      ]
+    },
+    "PEW": {
+      "name": "GrabAGun Digital Holdings Inc.",
+      "flags": [
+        {
+          "key": "firearms",
+          "summary": "Company operates as a major online retailer selling civilian firearms and ammunition as a core business line.",
+          "quote": "we sell firearms, ammunitions and related accessories manufactured by third parties",
+          "source": "https://www.sec.gov/Archives/edgar/data/2051380/000119312526104172/pew-20251231.htm",
+          "asOf": "10-K filed 2026-03-12"
+        }
+      ]
+    },
+    "CSBR": {
+      "name": "CHAMPIONS ONCOLOGY, INC.",
+      "flags": [
+        {
+          "key": "animal_testing",
+          "summary": "Champions Oncology operates a contract research business performing animal studies as a service for pharmaceutical and biotechnology companies, with ~500 different clients over ten years\u2014a clear line of business.",
+          "quote": "We have performed studies for approximately 500 different pharmaceutical and biotechnology companies over the past ten years, have a high rate of repeat business, and contract with pharmaceutical and biotechnology companies across North America, Europe and Asia.",
+          "source": "https://www.sec.gov/Archives/edgar/data/771856/000162828026049834/csbr-20260430.htm",
+          "asOf": "10-K filed 2026-07-27"
+        }
+      ]
+    },
+    "QSEP": {
+      "name": "QS Energy, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "QS Energy operates in oilfield services, developing crude oil pipeline technology as its primary product to reduce viscosity and optimize flow for the upstream and midstream sectors.",
+          "quote": "QS Energy's primary technology (and for now only technology) is called Applied Oil Technology (AOT), a commercial-grade crude oil pipeline transportation flow-assurance product.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1103795/000168316826002551/qsenergy_i10k-123125.htm",
+          "asOf": "10-K filed 2026-03-31"
+        }
+      ]
+    },
+    "ROLR": {
+      "name": "High Roller Technologies, Inc.",
+      "flags": [
+        {
+          "key": "gambling",
+          "summary": "High Roller Technologies operates the HighRoller.com iCasino Platform for online real-money casino gaming, with explicit discussion of competitive wagering products and win/hold rates.",
+          "quote": "We launched our HighRoller.com domain name in January 2022 as our principal iCasino Platform.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1947210/000175392626000462/rolr-20251231.htm",
+          "asOf": "10-K filed 2026-03-10"
+        }
+      ]
+    },
+    "CRT": {
+      "name": "CROSS TIMBERS ROYALTY TRUST",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Cross Timbers Royalty Trust holds and derives material revenue from oil and gas interests (net profits and working interests) in producing properties across Texas, Oklahoma, and New Mexico.",
+          "quote": "The underlying properties include royalty and overriding royalty interests in producing and nonproducing properties in Texas, Oklahoma and New Mexico, and working interests in producing properties located in Texas and Oklahoma.",
+          "source": "https://www.sec.gov/Archives/edgar/data/881787/000119312526128448/crt_2025_10-k.htm",
+          "asOf": "10-K filed 2026-03-27"
+        }
+      ]
+    },
+    "CHUC": {
+      "name": "Charlie's Holdings, Inc.",
+      "flags": [
+        {
+          "key": "tobacco",
+          "summary": "Company manufactures vaping devices and nicotine-containing e-liquids as a core line of business, developing proprietary products in the premium vapor/nicotine products industry.",
+          "quote": "Charlie's has developed a family of proprietary e-liquids as well as an array of compact, easy-to-use disposable vaping devices.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1134765/000143774926010761/chuc20251231_10k.htm",
+          "asOf": "10-K filed 2026-04-01"
+        }
+      ]
+    },
+    "VGAS": {
+      "name": "Verde Clean Fuels, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Company's core technology refines/processes natural gas into gasoline through their STG+\u00ae process, deriving material revenue from converting fossil fuel feedstock into a marketable product.",
+          "quote": "Our technology generates in-basin demand for associated natural gas resulting from oil production, alleviating pipeline and takeaway constraints. This could enable oil and gas companies to transform surplus associated natural gas into a higher-value marketable product",
+          "source": "https://www.sec.gov/Archives/edgar/data/1841425/000162828026021763/vgasw-20251231.htm",
+          "asOf": "10-K filed 2026-03-27"
+        }
+      ]
+    },
+    "BRID": {
+      "name": "BRIDGFORD FOODS CORP",
+      "flags": [
+        {
+          "key": "factory_farming",
+          "summary": "Company operates meat and poultry processing plants as a core business, processing ready-to-eat meat and poultry products subject to industrial food safety regulations.",
+          "quote": "The HACCP program requires all meat and poultry processing plants to develop and implement sanitary operating procedures and other program requirements.",
+          "source": "https://www.sec.gov/Archives/edgar/data/14177/000149315226004079/form10-k.htm",
+          "asOf": "10-K filed 2026-01-28"
         }
       ]
     }
