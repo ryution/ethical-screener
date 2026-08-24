@@ -2476,7 +2476,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "EON Resources is focused on oil and gas exploration and development with crude oil and natural gas producing activities, deriving revenues from crude oil and gas production.",
+          "summary": "EON operates oil and gas production with majority of revenues derived from crude oil and gas extraction and sales from its producing properties.",
           "quote": "A substantial majority of EON's revenues from crude oil and gas producing activities are derived from its operating properties that are based on the price at which crude oil and natural gas produced from the acreage underlying its interests are sold.",
           "source": "https://www.sec.gov/Archives/edgar/data/1842556/000121390025032248/ea0237742-10k_eon.htm",
           "asOf": "10-K filed 2025-04-16"
@@ -2524,8 +2524,8 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Norris Industries develops, produces, and maintains crude oil and natural gas properties in Texas with working interests in multiple producing oil and gas wells and leasehold operations.",
-          "quote": "The Company was formed to conduct operations in the oil and gas industry, and currently focuses on the development, production and maintenance of its existing crude oil and natural gas properties in Texas. On May 4, 2015, the Company initially acquired working interests from the Bend Arch Lion 1A and the Bend Arch Lion 1B Joint Ventures in Coleman County of Texas, encompassing a total production of 7 producing oil and gas wells",
+          "summary": "Core business is oil and natural gas extraction and production with material reserves and producing wells.",
+          "quote": "was formed to conduct operations in the oil and gas industry, and currently focuses on the development, production and maintenance of its existing crude oil and natural gas properties in Texas",
           "source": "https://www.sec.gov/Archives/edgar/data/1603793/000149315226026291/form10-k.htm",
           "asOf": "10-K filed 2026-05-29"
         }
@@ -2536,7 +2536,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Barnwell Industries acquires and develops crude oil and natural gas assets in Alberta, Canada and Oklahoma through subsidiaries, with operations in oil exploration and production.",
+          "summary": "Company acquires and develops crude oil and natural gas assets as a core line of business through multiple entities (Barnwell of Canada, Octavian Oil) in Alberta and Oklahoma, directly operating in oil & gas extraction.",
           "quote": "Barnwell acquires and develops crude oil and natural gas assets in the province of Alberta, Canada via two corporate entities, Barnwell of Canada, Limited and Octavian Oil Limited.",
           "source": "https://www.sec.gov/Archives/edgar/data/10048/000162828025058738/brn-20250930.htm",
           "asOf": "10-K filed 2025-12-23"
@@ -2548,8 +2548,8 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Trio Petroleum is an oil and gas exploration and development company with operations in California, Utah, and Saskatchewan, acquiring and developing oil and gas assets including producing wells and associated infrastructure.",
-          "quote": "We are a California-based oil and gas exploration and development company headquartered in Malibu, California, with our principal executive offices located at 23823 Malibu Road, Suite 304, Malibu, California 90265, with operations in Monterey County, California, Uintah County, Utah and Lloydminster, Saskatchewan.",
+          "summary": "Trio Petroleum is a California-based oil and gas exploration and development company with active operations in oil wells and acquisition of oil and gas assets across multiple regions.",
+          "quote": "We are a California-based oil and gas exploration and development company headquartered in Malibu, California, with our principal executive offices located at 23823 Malibu Road, Suite 304, Malibu, California 90265, with operations in Monterey County, California, Uintah County, Utah and Lloydminster, Saskatchewan",
           "source": "https://www.sec.gov/Archives/edgar/data/1898766/000149315226002848/form10-k.htm",
           "asOf": "10-K filed 2026-01-20"
         }
@@ -2560,8 +2560,8 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Gulf Coast Ultra Deep Royalty Trust holds overriding royalty interests in oil and natural gas producing operations and reserves managed by an underlying operator.",
-          "quote": "Overriding royalty interest. A revenue interest, created out of a working interest, that entitles its owner to a share of revenues, free of any operating or production costs.",
+          "summary": "Gulf Coast Ultra Deep Royalty Trust operates oil and gas properties and derives material revenue from hydrocarbon production interests. The company's core line of business is holding working interests in oil and gas assets.",
+          "quote": "the future plans of HOGA for its remaining oil and gas properties; the risk that the subject interests will not produce additional hydrocarbons",
           "source": "https://www.sec.gov/Archives/edgar/data/1565146/000149315226012669/form10-k.htm",
           "asOf": "10-K filed 2026-03-25"
         }
@@ -2572,7 +2572,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "ECA Marcellus Trust derives all of its income and cash flows from royalty interests in oil and gas producing wells and operations in the Marcellus formation.",
+          "summary": "The trust derives substantially all income from royalty interests in oil and gas operations with proved reserves across producing wells, making fossil fuels its core material line of business.",
           "quote": "The Trust derives all or substantially all of its income and cash flows from the Royalty Interests.",
           "source": "https://www.sec.gov/Archives/edgar/data/1487798/000110465926033852/tm261060d1_10k.htm",
           "asOf": "10-K filed 2026-03-24"
@@ -2608,7 +2608,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "ReoStar Energy is engaged in the exploration, development and acquisition of oil and gas properties primarily located in Texas, with production of crude oil and natural gas.",
+          "summary": "ReoStar is directly engaged in oil and gas exploration, development, and production as its primary business, with material revenue from crude oil and natural gas sales.",
           "quote": "We are engaged in the exploration, development and acquisition of oil and gas properties, primarily located in the state of Texas",
           "source": "https://www.sec.gov/Archives/edgar/data/1335288/000126967810000103/reo10k033110.htm",
           "asOf": "10-K filed 2010-06-29"
@@ -2644,8 +2644,8 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Circle Energy is an exploration-stage oil and gas company holding a 75% working interest in an 80-acre oil and gas property tract in Andrews County, Texas.",
-          "quote": "We currently own a 75% working interest and a 55.5% net revenue interest in an 80-acre tract located in Andrews County, Texas",
+          "summary": "Exploration-stage oil and gas company actively conducting development and acquisition activities with material working interests (75% working interest, 55.5% net revenue interest) in producing properties.",
+          "quote": "The Company's activities are consistent with those of an exploration-stage oil and gas company and are not limited to maintaining corporate existence or identifying a merger candidate.",
           "source": "https://www.sec.gov/Archives/edgar/data/1911467/000109690626000364/crcl-20251231_10k.htm",
           "asOf": "10-K filed 2026-03-24"
         }
@@ -2656,7 +2656,7 @@
       "flags": [
         {
           "key": "tobacco",
-          "summary": "22nd Century Group manufactures and distributes the VLN brand of reduced-nicotine cigarettes authorized by the FDA, and provides contract manufacturing of cigarettes and filtered cigars for other established tobacco brands.",
+          "summary": "22nd Century Group manufactures and distributes tobacco products (reduced-nicotine cigarettes) as its core line of business, meeting the material revenue threshold.",
           "quote": "We manufacture and distribute the only combustible tobacco products containing minimally or non-addictive levels of nicotine that are authorized by the US Food and Drug Administration (FDA) for retail purchase",
           "source": "https://www.sec.gov/Archives/edgar/data/1347858/000110465926034814/xxii-20251231x10k.htm",
           "asOf": "10-K filed 2026-03-26"
@@ -3716,6 +3716,246 @@
           "quote": "The HACCP program requires all meat and poultry processing plants to develop and implement sanitary operating procedures and other program requirements.",
           "source": "https://www.sec.gov/Archives/edgar/data/14177/000149315226004079/form10-k.htm",
           "asOf": "10-K filed 2026-01-28"
+        }
+      ]
+    },
+    "VIPZ": {
+      "name": "VIP Play, Inc.",
+      "flags": [
+        {
+          "key": "gambling",
+          "summary": "VIP Play operates mobile sports wagering and iGaming platforms in Tennessee and West Virginia as core business, generating material revenue from real-money wagering.",
+          "quote": "We are a next-generation mobile sports wagering company focused on delivering secure, innovative, and engaging digital gaming experiences. We operate a proprietary, cloud-native technology platform currently live in Tennessee, where we are licensed to offer mobile sports betting.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1832161/000149315225016043/form10-k.htm",
+          "asOf": "10-K filed 2025-09-29"
+        }
+      ]
+    },
+    "SKYQ": {
+      "name": "Sky Quarry Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "SKYQ operates an oil refinery processing crude oil into diesel and gasoline as a core line of business, with material exposure to refining and fuels production.",
+          "quote": "Risks Related to Oil Refining and Fuels Production \u00b7 Volatility in crude oil and wholesale diesel prices affect our business, financial condition and results of operations. \u00b7 There are difficulties in operating an oil refinery which could adversely affect our business, financial condition and results of operations.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1812447/000109690626000438/skyq-20251231_10k.htm",
+          "asOf": "10-K filed 2026-03-31"
+        }
+      ]
+    },
+    "SST": {
+      "name": "System1, Inc.",
+      "flags": [
+        {
+          "key": "big_tech_surveillance",
+          "summary": "Company relies on consumer data for marketing services, with regulations limiting data access directly impacting service performance, indicating ad-targeting or data-brokerage as core line of business.",
+          "quote": "This could result in us having less access to consumer data, impacting performance of our services",
+          "source": "https://www.sec.gov/Archives/edgar/data/1805833/000180583326000014/sst-20251231.htm",
+          "asOf": "10-K filed 2026-03-11"
+        }
+      ]
+    },
+    "ILLR": {
+      "name": "Triller Group Inc.",
+      "flags": [
+        {
+          "key": "big_tech_surveillance",
+          "summary": "Company explicitly processes personal data for personalized advertising and faces regulatory scrutiny for this practice under GDPR and DSA.",
+          "quote": "The processing of personal data for personalized advertising under EU GDPR and UK GDPR continues to be under increased scrutiny",
+          "source": "https://www.sec.gov/Archives/edgar/data/1769624/000121390026043341/ea0283656-10k_triller.htm",
+          "asOf": "10-K filed 2026-04-14"
+        }
+      ]
+    },
+    "LEXX": {
+      "name": "Lexaria Bioscience Corp.",
+      "flags": [
+        {
+          "key": "tobacco",
+          "summary": "Company develops and formulates nicotine products for oral pouches and nicotine replacement therapy applications through its DehydraTECH delivery technology.",
+          "quote": "successful human and/or animal testing results with DehydraTECH formulations of nicotine for oral pouches and prospective nicotine replacement therapy",
+          "source": "https://www.sec.gov/Archives/edgar/data/1348362/000164033425002225/lxrp_10k.htm",
+          "asOf": "10-K filed 2025-11-28"
+        }
+      ]
+    },
+    "DUKR": {
+      "name": "DUKE Robotics Corp.",
+      "flags": [
+        {
+          "key": "weapons",
+          "summary": "Company designs military weapon systems (armed unmanned aerial systems) specifically for delivering weapons to remote hostile targets in modern warfare.",
+          "quote": "our technology thus addresses a crucial need of modern warfare to bring a wide range of weapons other than bombs and missiles to bear on remote hostile targets",
+          "source": "https://www.sec.gov/Archives/edgar/data/1638911/000121390026026927/ea0279194-10k_duke.htm",
+          "asOf": "10-K filed 2026-03-12"
+        }
+      ]
+    },
+    "VIIQ": {
+      "name": "VisitIQ Corp.",
+      "flags": [
+        {
+          "key": "big_tech_surveillance",
+          "summary": "VisitIQ operates identity resolution and behavioral prediction as a core ad-targeting platform, selling consumer movement and behavioral data derived from real-time web activity and location signals to drive targeted advertising.",
+          "quote": "Enhancements in identity resolution, behavioral prediction, movement-signal vectorization and natural-language interfaces increase VisitIQ's differentiation relative to CDPs, data brokers and legacy targeting systems",
+          "source": "https://www.sec.gov/Archives/edgar/data/1470129/000175392626000917/g085722_10k.htm",
+          "asOf": "10-K filed 2026-05-20"
+        }
+      ]
+    },
+    "CNFN": {
+      "name": "CFN Enterprises Inc.",
+      "flags": [
+        {
+          "key": "tobacco",
+          "summary": "CFN Enterprises manufactures and distributes nicotine-based vaporizer products under exclusive license through Ranco.",
+          "quote": "Ranco entered into a five-year exclusive Packwoods Private Label Services and Intellectual Property Licensing Agreement providing rights to manufacture, package, distribute, and sell hemp-based inhalable and edible products, nicotine-based vaporizer products, and related branded packaging materials.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1352952/000109690626000553/cnfn-20251231_10k.htm",
+          "asOf": "10-K filed 2026-04-15"
+        }
+      ]
+    },
+    "OLOX": {
+      "name": "OLENOX INDUSTRIES INC.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Olenox operates oil and gas extraction as a direct line of business with wells in multiple U.S. states and Canada.",
+          "quote": "Our oil and gas wells operate in multiple states and in Canada.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1023994/000121390026073749/ea0295463-10k_olenox.htm",
+          "asOf": "10-K filed 2026-06-30"
+        }
+      ]
+    },
+    "MMEX": {
+      "name": "MMEX Resources Corp",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "MMEX directly operates crude oil refining projects and develops oil and natural gas infrastructure as its core business line, not as an incidental financing or supply arrangement.",
+          "quote": "We plan to file with the Texas Commission on Environmental Quality (\"TCEQ\") construction and operation permits for the Pecos UltraClean Refining and Trans Permian Projects",
+          "source": "https://www.sec.gov/Archives/edgar/data/1440799/000147793226004593/mmex_10k.htm",
+          "asOf": "10-K filed 2026-07-29"
+        }
+      ]
+    },
+    "AAPI": {
+      "name": "Apple iSports Group, Inc.",
+      "flags": [
+        {
+          "key": "gambling",
+          "summary": "Operates licensed real-money gambling platforms including sports betting and pari-mutuel wagering across multiple jurisdictions.",
+          "quote": "licensed in North Dakota as an (ADW) provider, subject to completion of the TRPB examination, which will allow us to provide pari-mutuel betting on racing in North Dakota and up to an additional 20 states",
+          "source": "https://www.sec.gov/Archives/edgar/data/1134982/000147793226002110/aapi_10k.htm",
+          "asOf": "10-K filed 2026-04-10"
+        }
+      ]
+    },
+    "MDWK": {
+      "name": "MDWerks, Inc.",
+      "flags": [
+        {
+          "key": "alcohol",
+          "summary": "Company operates alcohol distilleries and produces distilled spirits (whiskey) and ready-to-drink cocktails as a core line of business, with registered trademarks and patents for distillery operations.",
+          "quote": "Class 40: Alcohol distillery services; Spirits distillery services; Whisky distillery services",
+          "source": "https://www.sec.gov/Archives/edgar/data/1295514/000149315226014105/form10-k.htm",
+          "asOf": "10-K filed 2026-03-31"
+        }
+      ]
+    },
+    "CETY": {
+      "name": "Clean Energy Technologies, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Company is acquiring and operating natural gas pipeline facilities in China, and sells natural gas to customers at prevailing spot prices\u2014constituting material fossil fuel distribution operations.",
+          "quote": "acquiring natural gas pipeline operator facilities, primarily located in the southwestern part of Sichuan Province and portions of Yunnan Province",
+          "source": "https://www.sec.gov/Archives/edgar/data/1329606/000149315226027409/form10-k.htm",
+          "asOf": "10-K filed 2026-06-05"
+        }
+      ]
+    },
+    "AWX": {
+      "name": "AVALON HOLDINGS CORP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Avalon owns and operates saltwater injection wells through a subsidiary, which constitute oilfield services\u2014a material line of business distinct from the company's golf and hospitality operations.",
+          "quote": "AWMS Holdings, LLC formed its first wholly owned subsidiary, AWMS Rt. 169, LLC, to own and operate two salt water injection wells.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1061069/000143774926009091/awx20251231_10k.htm",
+          "asOf": "10-K filed 2026-03-19"
+        }
+      ]
+    },
+    "MARPS": {
+      "name": "MARINE PETROLEUM TRUST",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Marine Petroleum Trust holds oil and gas leases and derives substantially all distributions from the sale of oil and natural gas production, making this its primary material business.",
+          "quote": "Substantially all of the oil and natural gas produced from the leases are being sold under short-term or multi-month contracts at market clearing prices or on the spot market.",
+          "source": "https://www.sec.gov/Archives/edgar/data/62362/000119312525222224/marps_10-k_2025-06-30.htm",
+          "asOf": "10-K filed 2025-09-29"
+        }
+      ]
+    },
+    "VPRB": {
+      "name": "VPR Brands, LP.",
+      "flags": [
+        {
+          "key": "tobacco",
+          "summary": "VPR Brands designs, markets, and distributes electronic cigarettes and vaporizers containing nicotine solutions as its primary business, making it a manufacturer of nicotine/vaping products.",
+          "quote": "We are a company engaged in the electronic cigarette, electronic cigar, personal vaporizer and pocket lighter industry",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376231/000121390026037425/ea0283694-10k_vprbrands.htm",
+          "asOf": "10-K filed 2026-03-31"
+        }
+      ]
+    },
+    "SEGG": {
+      "name": "Sports Entertainment Gaming Global Corp",
+      "flags": [
+        {
+          "key": "gambling",
+          "summary": "Sports Entertainment Gaming Global operates licensed online lottery and gaming markets in Mexico, selling lottery games and operating casino/sportsbook wagering platforms for real-money bets.",
+          "quote": "Aganar has been operating in the licensed Online Lottery market in Mexico since 2007 and has certain rights to sell Mexican National Lottery draw games, instant win tickets, and other games of chance online with access to a federally approved online casino and sportsbook gaming license",
+          "source": "https://www.sec.gov/Archives/edgar/data/1673481/000149315226032786/form10-k.htm",
+          "asOf": "10-K filed 2026-07-10"
+        }
+      ]
+    },
+    "NMEX": {
+      "name": "NORTHERN MINERALS & EXPLORATION LTD.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Company explicitly states it operates in oil and gas production as its primary business line in central Texas, with active drilling programs and producing assets.",
+          "quote": "Northern Minerals & Exploration Ltd. (the \"Company\") is an emerging natural resource company operating in oil and gas production in central Texas",
+          "source": "https://www.sec.gov/Archives/edgar/data/1415744/000143774925035266/nmex20250731_10k.htm",
+          "asOf": "10-K filed 2025-11-17"
+        }
+      ]
+    },
+    "IPST": {
+      "name": "IP STRATEGY HOLDINGS, INC.",
+      "flags": [
+        {
+          "key": "alcohol",
+          "summary": "Company's wholly-owned subsidiary HDC operates as a craft distillery producing and selling spirits as core business, with distribution through multiple channels.",
+          "quote": "HDC has operated since 2011 as a craft distillery making a variety of whiskeys, vodkas, gins and rums as well as RTD beverages",
+          "source": "https://www.sec.gov/Archives/edgar/data/1788230/000178823026000046/ipst-20251231.htm",
+          "asOf": "10-K filed 2026-04-14"
+        }
+      ]
+    },
+    "NAPD": {
+      "name": "NAPC Defense, Inc.",
+      "flags": [
+        {
+          "key": "weapons",
+          "summary": "Company is engaged in procurement and distribution of small-caliber arms and developing firearms platforms for military, paramilitary, and law enforcement applications.",
+          "quote": "The Company is also engaged in the procurement and distribution of small-caliber arms, including rifles and pistols, along with newly developing firearms technologies.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1703625/000119983526000287/napc_10k.htm",
+          "asOf": "10-K filed 2026-08-13"
         }
       ]
     }
