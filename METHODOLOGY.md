@@ -87,13 +87,6 @@ Each flag: **key** (stable id) · **definition** · **counts as a violation** ·
 - **Detection:** SIC 1220–1221 + full-text `"thermal coal"`, `"steam coal"` (≈650 filings). Confirm mining vs. incidental mention via the filing.
 - **Examples:** Peabody Energy (BTU), Arch Resources, Alpha Metallurgical.
 
-#### Deforestation & palm oil — `deforestation` · ◐ · **Proposed**
-- **Definition:** Business tied to deforestation — palm oil, industrial logging, timberland conversion.
-- **Counts:** Palm oil producers/traders; industrial logging; companies disclosing land conversion as an operation.
-- **Does not count:** A packaged-goods company that merely *buys* palm oil, unless it's a disclosed sourcing controversy meeting the culpability bar.
-- **Detection:** SIC lumber 2400s + full-text `"palm oil"`, `"timberland"` (≈520 filings) with materiality test.
-- **Examples:** (largely non-US-listed; curated + ADR coverage.)
-
 ### Weapons & conflict
 
 #### Weapons & defense — `weapons` · ◐ · **Live**
@@ -109,13 +102,6 @@ Each flag: **key** (stable id) · **definition** · **counts as a violation** ·
 - **Does not count:** Military-only ordnance (that's `weapons`); sporting-goods retailers where firearms are a minor line.
 - **Detection:** Mostly **curated** — real makers register under generic ordnance SIC 3480 (Smith & Wesson, Sturm Ruger both do), which can't separate civilian from military, so SIC is unreliable here. Full-text `"firearms"` for candidates.
 - **Examples:** Smith & Wesson (SWBI), Sturm Ruger (RGR), Olin/Winchester (OLN).
-
-#### Nuclear weapons — `nuclear_weapons` · ○ · **Proposed**
-- **Definition:** Participation in the nuclear-weapons supply chain (warheads, delivery systems, key components).
-- **Counts:** Companies on recognized nuclear-weapons producer lists (e.g. ICAN / "Don't Bank on the Bomb") and those disclosing nuclear-weapons contracts.
-- **Does not count:** Conventional defense with no nuclear-weapons work; **nuclear power** (deliberately excluded — see §5).
-- **Detection:** **Curated** from published lists + full-text confirmation of nuclear-weapons contracts.
-- **Examples:** subset of the defense primes with nuclear programs; curated.
 
 ### Social & human rights
 
@@ -177,7 +163,7 @@ Each flag: **key** (stable id) · **definition** · **counts as a violation** ·
 - **Detection:** **Curated** (few pure-play public names; RCI registers as SIC 5812 "Eating Places") + full-text.
 - **Examples:** RCI Hospitality (RICK).
 
-#### Cannabis — `cannabis` · ⬤ · **Proposed** *(direction-contested)*
+#### Cannabis — `cannabis` · ○ · **Live** *(direction-contested)*
 - **Definition:** Cultivation, processing, and sale of cannabis and cannabis products.
 - **Counts:** Multi-state operators, cultivators, cannabis-derived product makers.
 - **Does not count:** Hemp/CBD wellness only, if the user's line distinguishes it; pharma cannabinoids for medical use (flag separately if desired).
@@ -208,23 +194,12 @@ Each flag: **key** (stable id) · **definition** · **counts as a violation** ·
 - **Detection:** **Curated** + full-text `"animal testing"`, `"preclinical"`, `"animal studies"` with the business test.
 - **Examples:** Charles River Labs (CRL).
 
-#### Fur & exotic leather — `fur` · ○ · **Proposed**
+#### Fur & exotic leather — `fur` · ○ · **Live**
 - **Definition:** Production or primary retail of animal fur and exotic-animal leather.
 - **Counts:** Fur farming/processing; brands whose principal line is fur/exotic skins.
-- **Does not count:** General apparel with incidental leather.
-- **Detection:** **Curated** + full-text `"fur"`, `"exotic leather"`.
-- **Examples:** curated (few pure-play public names).
-
-### Faith-based
-
-> Tradition- and direction-specific; presented neutrally and grouped so they don't
-> clutter the default set. The seed of a larger opt-in faith pack over time.
-
-#### Abortion & contraceptives — `abortion_contraceptives` · ○ · **Proposed**
-- **Definition:** Manufacture of abortifacients or contraceptives, or provision of abortion services (Catholic / pro-life screen).
-- **Counts:** Makers of abortifacient drugs or contraceptives as a material line; for-profit abortion providers.
-- **Does not count:** Diversified pharma or hospital systems where it is not a disclosed principal activity (subject to the user's materiality threshold).
-- **Detection:** **Curated** + full-text confirmation.
+- **Does not count:** General apparel with incidental leather; brands that have gone fur-free (unless exotic skins remain).
+- **Detection:** **Curated.** A genuinely small category — no US-listed pure-plays exist (fur farms and exotic tanneries are private); public exposure is via luxury houses (ADRs) that keep fur or exotic skins as a material line.
+- **Examples:** LVMH (LVMUY), Hermès (HESAY), Ferragamo (SFRGF), Kering/Gucci (PPRUF).
 
 ---
 
@@ -235,7 +210,7 @@ Some flags are screened in **opposite directions** by different users. Our model
 decide. These include:
 
 - **Cannabis** — vice/faith users screen out; others screen in.
-- **Nuclear weapons / defense** — most screen out; some explicitly seek defense exposure.
+- **Defense** — most screen weapons out; some explicitly seek defense exposure.
 - **Nuclear power** — *excluded as a flag* (low demand, genuinely contested as climate-positive).
 
 ---

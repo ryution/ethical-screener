@@ -91,4 +91,6 @@ export const CURATED_ONLY = [
   "opioids", "thermal_coal",
   // Removed from SIC (codes too coarse — see screensForSic); curated + filing only.
   "weapons", "payday_lending",
+  // Curated + filing-cited; no clean SIC signal.
+  "cannabis", "fur",
 ];

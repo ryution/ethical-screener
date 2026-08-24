@@ -20,7 +20,7 @@
         {
           "key": "opioids",
           "summary": "CVS operates one of the largest U.S. pharmacy chains. Over opioid dispensing it reached a ~$5B national settlement in 2022 and continues to record opioid-litigation charges (a $320M charge in 2025). Settled without admitting wrongdoing.",
-          "quote": "a $320 million opioid litigation charge related to a change in the Company\u2019s accrual for ongoing opioid litigation matters",
+          "quote": "a $320 million opioid litigation charge related to a change in the Company’s accrual for ongoing opioid litigation matters",
           "source": "https://www.sec.gov/Archives/edgar/data/64803/000006480326000010/cvs-20251231.htm",
           "asOf": "10-K filed 2026-02-10"
         }
@@ -55,7 +55,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Berkshire owns Berkshire Hathaway Energy, whose utilities operate ~20,900 miles of interstate natural-gas pipelines and generate power from gas \u2014 a material fossil-fuel business most people don't associate with Berkshire.",
+          "summary": "Berkshire owns Berkshire Hathaway Energy, whose utilities operate ~20,900 miles of interstate natural-gas pipelines and generate power from gas — a material fossil-fuel business most people don't associate with Berkshire.",
           "quote": "five U.S. interstate natural gas pipeline companies with approximately 20,900 miles of operated pipeline having a design capacity of approximately 21.6 billion cubic feet of natural gas per day",
           "source": "https://www.sec.gov/Archives/edgar/data/1067983/000119312526083899/brka-20251231.htm",
           "asOf": "10-K filed 2026-03-02"
@@ -98,7 +98,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Southern Company's gas utilities operate ~77,900 miles of natural-gas pipelines and distribution, and it generates power from gas \u2014 a large fossil-fuel business alongside its regulated electric utilities.",
+          "summary": "Southern Company's gas utilities operate ~77,900 miles of natural-gas pipelines and distribution, and it generates power from gas — a large fossil-fuel business alongside its regulated electric utilities.",
           "quote": "operates, constructs, and maintains approximately 77,900 miles of natural gas pipelines",
           "source": "https://www.sec.gov/Archives/edgar/data/92122/000009212226000006/so-20251231.htm",
           "asOf": "10-K filed 2026-02-19"
@@ -117,7 +117,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Duke Energy generates power from natural gas and holds interstate gas-pipeline interests (e.g. a 7.5% stake in the Sabal Trail pipeline) \u2014 a material fossil-fuel business within its utilities.",
+          "summary": "Duke Energy generates power from natural gas and holds interstate gas-pipeline interests (e.g. a 7.5% stake in the Sabal Trail pipeline) — a material fossil-fuel business within its utilities.",
           "quote": "Sabal Trail Natural Gas Pipeline, which is regulated by FERC and traverses Alabama, Georgia, and Florida to transport natural gas to Florida",
           "source": "https://www.sec.gov/Archives/edgar/data/1326160/000132616026000014/duk-20251231.htm",
           "asOf": "10-K filed 2026-02-26"
@@ -148,7 +148,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Constellation Energy, though mostly nuclear, owns ~21 GW of natural-gas-fired generation (via Calpine) \u2014 combined-cycle gas plants in Texas, California and the Northeast.",
+          "summary": "Constellation Energy, though mostly nuclear, owns ~21 GW of natural-gas-fired generation (via Calpine) — combined-cycle gas plants in Texas, California and the Northeast.",
           "quote": "Calpine owns 21 GWs of natural gas-fired generation, primarily consisting of combined cycle gas turbine plants in the Texas, California, and Northeast regions of the United States.",
           "source": "https://www.sec.gov/Archives/edgar/data/1868275/000186827526000032/ceg-20251231.htm",
           "asOf": "10-K filed 2026-02-24"
@@ -281,7 +281,7 @@
         {
           "key": "big_tech_surveillance",
           "summary": "United Airlines operates an ad/data business built on personal-data profiling of travel behaviors.",
-          "quote": "launching Kinective Media SM \u2013 the first media network that uses insights from travel behaviors to connect customers to personalized advertising, experiences and offers from leading brands",
+          "quote": "launching Kinective Media SM – the first media network that uses insights from travel behaviors to connect customers to personalized advertising, experiences and offers from leading brands",
           "source": "https://www.sec.gov/Archives/edgar/data/100517/000010051726000023/ual-20251231.htm",
           "asOf": "10-K filed 2026-02-12"
         }
@@ -392,18 +392,6 @@
         }
       ]
     },
-    "PKG": {
-      "name": "PACKAGING CORP OF AMERICA",
-      "flags": [
-        {
-          "key": "deforestation",
-          "summary": "Packaging Corp operates industrial logging and timber harvesting as a material business.",
-          "quote": "We lease the cutting rights to approximately 41,000 acres of timberland",
-          "source": "https://www.sec.gov/Archives/edgar/data/75677/000119312526074129/pkg-20251231.htm",
-          "asOf": "10-K filed 2026-02-26"
-        }
-      ]
-    },
     "EFX": {
       "name": "EQUIFAX INC",
       "flags": [
@@ -468,13 +456,6 @@
           "quote": "claims with respect to the manufacture, sale, marketing and distribution of opioid products",
           "source": "https://www.sec.gov/Archives/edgar/data/1792044/000179204426000013/vtrs-20251231.htm",
           "asOf": "10-K filed 2026-02-26"
-        },
-        {
-          "key": "abortion_contraceptives",
-          "summary": "Viatris manufactured contraceptive products (oral and injectable); also developing new contraceptive patches.",
-          "quote": "the Company completed the divestiture of its women's healthcare business, primarily related to its oral and injectable contraceptives",
-          "source": "https://www.sec.gov/Archives/edgar/data/1792044/000179204426000013/vtrs-20251231.htm",
-          "asOf": "10-K filed 2026-02-26"
         }
       ]
     },
@@ -530,30 +511,6 @@
           "quote": "Boardwalk Pipelines owns approximately 14,275 miles of natural gas and NGLs pipelines and underground storage caverns",
           "source": "https://www.sec.gov/Archives/edgar/data/60086/000006008626000008/l-20251231.htm",
           "asOf": "10-K filed 2026-02-10"
-        }
-      ]
-    },
-    "COO": {
-      "name": "COOPER COMPANIES, INC.",
-      "flags": [
-        {
-          "key": "abortion_contraceptives",
-          "summary": "Cooper Companies manufactures Paragard, an intrauterine device (IUD) used as a long-acting reversible contraceptive.",
-          "quote": "With Paragard, we compete with manufacturers of hormonal IUDs including Bayer and AbbVie, Long Acting Reversible Contraceptives including Organon, and other forms of birth control.",
-          "source": "https://www.sec.gov/Archives/edgar/data/711404/000162828025055615/coo-20251031.htm",
-          "asOf": "10-K filed 2025-12-05"
-        }
-      ]
-    },
-    "BWXT": {
-      "name": "BWX Technologies, Inc.",
-      "flags": [
-        {
-          "key": "nuclear_weapons",
-          "summary": "BWX Technologies manages and operates U.S. nuclear weapons manufacturing sites and complexes.",
-          "quote": "provides various services to the U.S. and Canadian governments by managing and operating high-consequence operations at U.S. nuclear weapons sites, national laboratories and manufacturing complexes",
-          "source": "https://www.sec.gov/Archives/edgar/data/1486957/000148695726000007/bwxt-20251231.htm",
-          "asOf": "10-K filed 2026-02-23"
         }
       ]
     },
@@ -818,18 +775,6 @@
         }
       ]
     },
-    "OGN": {
-      "name": "Organon & Co.",
-      "flags": [
-        {
-          "key": "abortion_contraceptives",
-          "summary": "Organon produces contraceptive products including Nexplanon, NuvaRing, and Follistim AQ as established brands in its women's health portfolio.",
-          "quote": "Nexplanon is a long-acting reversible contraceptive in a class recognized as one of the most effective types of hormonal contraception available to patients with a low long-term average cost.",
-          "source": "https://www.sec.gov/Archives/edgar/data/1821825/000162828026011125/ogn-20251231.htm",
-          "asOf": "10-K filed 2026-02-24"
-        }
-      ]
-    },
     "AMTM": {
       "name": "Amentum Holdings, Inc.",
       "flags": [
@@ -930,13 +875,6 @@
           "quote": "Perrigo retained certain pre-closing liabilities arising out of antitrust (refer to Note 20 - Contingencies under the header \"Price-Fixing Lawsuits\") and opioid matters",
           "source": "https://www.sec.gov/Archives/edgar/data/1585364/000158536426000009/prgo-20251231.htm",
           "asOf": "10-K filed 2026-02-26"
-        },
-        {
-          "key": "abortion_contraceptives",
-          "summary": "Perrigo affirmatively produces and sells contraceptive products as part of its women's health business line.",
-          "quote": "Women's health products, including feminine hygiene and contraceptives.",
-          "source": "https://www.sec.gov/Archives/edgar/data/1585364/000158536426000009/prgo-20251231.htm",
-          "asOf": "10-K filed 2026-02-26"
         }
       ]
     },
@@ -949,18 +887,6 @@
           "quote": "During fiscal year 2025, we internally brewed approximately 68% of our branded craft beers and flavored malt beverages, with approximately 61% of this amount brewed in our Temple, Texas brewpub locations.",
           "source": "https://www.sec.gov/Archives/edgar/data/1013488/000119312526083331/bjri-20251230.htm",
           "asOf": "10-K filed 2026-03-02"
-        }
-      ]
-    },
-    "GEF": {
-      "name": "GREIF, INC",
-      "flags": [
-        {
-          "key": "deforestation",
-          "summary": "Greif actively harvests and sells timber from its own timberland properties as a material business line.",
-          "quote": "We sell timber to third parties from our timberland in the southeastern United States that we manage to maximize long-term value.",
-          "source": "https://www.sec.gov/Archives/edgar/data/43920/000004392024000056/gef-20241031.htm",
-          "asOf": "10-K filed 2024-12-23"
         }
       ]
     },
@@ -1053,7 +979,7 @@
       "flags": [
         {
           "key": "factory_farming",
-          "summary": "Seaboard operates a vertically integrated industrial pork production business with hog breeding and fattening facilities, plus a pork processing plant\u2014the company's primary revenue-generating activity.",
+          "summary": "Seaboard operates a vertically integrated industrial pork production business with hog breeding and fattening facilities, plus a pork processing plant—the company's primary revenue-generating activity.",
           "quote": "Seaboard, through its subsidiary Seaboard Foods LLC (\"Seaboard Foods\"), is a vertically integrated pork producer.",
           "source": "https://www.sec.gov/Archives/edgar/data/88121/000008812126000012/seb-20251231x10k.htm",
           "asOf": "10-K filed 2026-02-12"
@@ -1678,7 +1604,7 @@
         {
           "key": "fossil_fuels",
           "summary": "CVR Energy operates refineries that process crude oil and various feedstocks into refined petroleum products including gasoline, diesel fuel, jet fuel, and other refined products for commercial distribution.",
-          "quote": "Feedstocks \u2014 Petroleum products, such as crude oil or fluid catalytic cracking unit gasoline, that are processed and blended into refined products, such as gasoline, diesel fuel, and jet fuel during the refining process.",
+          "quote": "Feedstocks — Petroleum products, such as crude oil or fluid catalytic cracking unit gasoline, that are processed and blended into refined products, such as gasoline, diesel fuel, and jet fuel during the refining process.",
           "source": "https://www.sec.gov/Archives/edgar/data/1376139/000137613926000014/cvi-20251231.htm",
           "asOf": "10-K filed 2026-02-18"
         }
@@ -1690,7 +1616,7 @@
         {
           "key": "fossil_fuels",
           "summary": "National Energy Services Reunited provides well testing, engineering, and operational services to support the exploration, appraisal, development, and production phases of oil and natural gas wells across upstream operations.",
-          "quote": "Well Testing Services \u2013 Our well testing services are used to measure solids, gas, oil and water produced from a well. We offer integrated well testing services across the exploration, appraisal and development phases of oil and gas wells.",
+          "quote": "Well Testing Services – Our well testing services are used to measure solids, gas, oil and water produced from a well. We offer integrated well testing services across the exploration, appraisal and development phases of oil and gas wells.",
           "source": "https://www.sec.gov/Archives/edgar/data/1698514/000149315226009139/form10-k.htm",
           "asOf": "10-K filed 2026-03-06"
         }
@@ -1762,7 +1688,7 @@
         {
           "key": "fossil_fuels",
           "summary": "Talos Energy is an oil and natural gas exploration and production company focused on the development and extraction of proved oil and gas reserves from known reservoirs.",
-          "quote": "Proved developed reserves \u2014 In general, proved reserves that can be expected to be recovered from existing wells with existing equipment and operating methods.",
+          "quote": "Proved developed reserves — In general, proved reserves that can be expected to be recovered from existing wells with existing equipment and operating methods.",
           "source": "https://www.sec.gov/Archives/edgar/data/1724965/000119312526067807/talo-20251231.htm",
           "asOf": "10-K filed 2026-02-25"
         }
@@ -2088,7 +2014,7 @@
         {
           "key": "fossil_fuels",
           "summary": "SandRidge Energy is an oil and natural gas exploration and production company subject to commodity price volatility and operating under hydraulic fracturing and regulatory constraints.",
-          "quote": "risks and uncertainties related to the adoption and implementation of regulations restricting oil and gas development in states where we operate; \u2022 competition in the oil and natural gas industry",
+          "quote": "risks and uncertainties related to the adoption and implementation of regulations restricting oil and gas development in states where we operate; • competition in the oil and natural gas industry",
           "source": "https://www.sec.gov/Archives/edgar/data/1349436/000162828026015318/sd-20251231.htm",
           "asOf": "10-K filed 2026-03-05"
         }
@@ -2207,7 +2133,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "RGC Resources operates Roanoke Gas, a natural gas distribution utility, and maintains LNG facilities for production and storage\u2014a direct gas utility & distribution line of business.",
+          "summary": "RGC Resources operates Roanoke Gas, a natural gas distribution utility, and maintains LNG facilities for production and storage—a direct gas utility & distribution line of business.",
           "quote": "operates and maintains a plant capable of producing and storing up to 200,000 DTH of liquefied natural gas",
           "source": "https://www.sec.gov/Archives/edgar/data/1069533/000143774925036827/rgco20250930_10k.htm",
           "asOf": "10-K filed 2025-12-04"
@@ -2244,7 +2170,7 @@
         {
           "key": "fossil_fuels",
           "summary": "Company extracts and produces oil and natural gas as its primary operational business, with direct references to production rates, reserves, and reservoir analysis.",
-          "quote": "All statements that address operating performance, events or developments that we expect or anticipate will occur in the future \u2014 including statements relating to oil and natural gas production rates, commodity prices for crude oil or natural gas",
+          "quote": "All statements that address operating performance, events or developments that we expect or anticipate will occur in the future — including statements relating to oil and natural gas production rates, commodity prices for crude oil or natural gas",
           "source": "https://www.sec.gov/Archives/edgar/data/1726126/000110465926035794/epsn-20251231x10k.htm",
           "asOf": "10-K filed 2026-03-27"
         }
@@ -2255,7 +2181,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Nine operates as a completion services provider for unconventional oil and gas development, providing downhole solutions and wireline services to E&P operators\u2014a core line of business within oilfield services.",
+          "summary": "Nine operates as a completion services provider for unconventional oil and gas development, providing downhole solutions and wireline services to E&P operators—a core line of business within oilfield services.",
           "quote": "Nine is a leading completion services provider that targets unconventional oil and gas resource development across North American basins and abroad.",
           "source": "https://www.sec.gov/Archives/edgar/data/1532286/000153228626000005/nine-20251231.htm",
           "asOf": "10-K filed 2026-03-04"
@@ -2387,7 +2313,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Company directly extracts and produces oil and natural gas through operated properties in North Dakota, New Mexico, Wyoming, Texas, and other regions\u2014a core line of business, not incidental or divested.",
+          "summary": "Company directly extracts and produces oil and natural gas through operated properties in North Dakota, New Mexico, Wyoming, Texas, and other regions—a core line of business, not incidental or divested.",
           "quote": "we previously explored for and produced oil and natural gas through a non-operator business model, however, during 2020 we acquired operated properties in North Dakota, New Mexico, Wyoming and the Texas Gulf Coast, and on January 5, 2022, we closed the acquisitions of certain oil and gas properties from three separate sellers, representing a diversified portfolio of primarily operated, producing, oil-weighted assets",
           "source": "https://www.sec.gov/Archives/edgar/data/101594/000143774926008057/useg20251231_10k.htm",
           "asOf": "10-K filed 2026-03-13"
@@ -2424,7 +2350,7 @@
         {
           "key": "fossil_fuels",
           "summary": "VOC Energy Trust is an oil and natural gas company with operations holding proved and proved developed reserves of crude oil, natural gas, and natural gas liquids.",
-          "quote": "Boe \u2014 One stock tank barrel of oil equivalent, computed on an approximate energy equivalent basis that one Bbl of crude oil equals six Mcf of natural gas and one Bbl of crude oil equals 1.54 Bbls of natural gas liquids.",
+          "quote": "Boe — One stock tank barrel of oil equivalent, computed on an approximate energy equivalent basis that one Bbl of crude oil equals six Mcf of natural gas and one Bbl of crude oil equals 1.54 Bbls of natural gas liquids.",
           "source": "https://www.sec.gov/Archives/edgar/data/1505413/000110465926033870/tm261063-1_10k.htm",
           "asOf": "10-K filed 2026-03-24"
         }
@@ -2851,7 +2777,7 @@
         {
           "key": "fossil_fuels",
           "summary": "Ramaco Resources mines coal in Wyoming, competing directly in markets for both metallurgical and thermal coal production and sales.",
-          "quote": "competition in coal and rare earth elements and critical mineral markets; \u25cf the price and demand for metallurgical coal, thermal coal, and rare earth elements and critical mineral products",
+          "quote": "competition in coal and rare earth elements and critical mineral markets; ● the price and demand for metallurgical coal, thermal coal, and rare earth elements and critical mineral products",
           "source": "https://www.sec.gov/Archives/edgar/data/1687187/000110465926020479/metc-20251231x10k.htm",
           "asOf": "10-K filed 2026-02-26"
         }
@@ -3306,7 +3232,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Clean Energy Fuels sells conventional natural gas in addition to RNG as transportation fuel (CNG and LNG) for medium and heavy-duty vehicles\u2014a material line of business in fossil fuel distribution.",
+          "summary": "Clean Energy Fuels sells conventional natural gas in addition to RNG as transportation fuel (CNG and LNG) for medium and heavy-duty vehicles—a material line of business in fossil fuel distribution.",
           "quote": "We sell RNG and conventional natural gas, in the form of CNG and LNG, as fuel for medium and heavy-duty vehicles.",
           "source": "https://www.sec.gov/Archives/edgar/data/1368265/000110465926019215/clne-20251231x10k.htm",
           "asOf": "10-K filed 2026-02-24"
@@ -3355,7 +3281,7 @@
         {
           "key": "fossil_fuels",
           "summary": "Provides oilfield services including drilling, completion, and transportation services to oil and gas companies as a material business line.",
-          "quote": "we previously idled several service lines, including cementing, acidizing, flowback, contract drilling, rig hauling, coil tubing, pressure control, full\u2011service transportation, and crude oil hauling",
+          "quote": "we previously idled several service lines, including cementing, acidizing, flowback, contract drilling, rig hauling, coil tubing, pressure control, full‑service transportation, and crude oil hauling",
           "source": "https://www.sec.gov/Archives/edgar/data/1679268/000162828026015693/tusk-20251231.htm",
           "asOf": "10-K filed 2026-03-06"
         }
@@ -3378,7 +3304,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "DynaEnergetics, a division of DMC Global, designs, manufactures, and sells perforating systems used in oil and gas well completion operations\u2014a material oilfield services business.",
+          "summary": "DynaEnergetics, a division of DMC Global, designs, manufactures, and sells perforating systems used in oil and gas well completion operations—a material oilfield services business.",
           "quote": "DynaEnergetics designs, manufactures, markets and sells perforating systems and associated hardware for the global oil and gas industry.",
           "source": "https://www.sec.gov/Archives/edgar/data/34067/000003406726000009/boom-20251231.htm",
           "asOf": "10-K filed 2026-02-23"
@@ -3654,7 +3580,7 @@
       "flags": [
         {
           "key": "animal_testing",
-          "summary": "Champions Oncology operates a contract research business performing animal studies as a service for pharmaceutical and biotechnology companies, with ~500 different clients over ten years\u2014a clear line of business.",
+          "summary": "Champions Oncology operates a contract research business performing animal studies as a service for pharmaceutical and biotechnology companies, with ~500 different clients over ten years—a clear line of business.",
           "quote": "We have performed studies for approximately 500 different pharmaceutical and biotechnology companies over the past ten years, have a high rate of repeat business, and contract with pharmaceutical and biotechnology companies across North America, Europe and Asia.",
           "source": "https://www.sec.gov/Archives/edgar/data/771856/000162828026049834/csbr-20260430.htm",
           "asOf": "10-K filed 2026-07-27"
@@ -3714,7 +3640,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Company's core technology refines/processes natural gas into gasoline through their STG+\u00ae process, deriving material revenue from converting fossil fuel feedstock into a marketable product.",
+          "summary": "Company's core technology refines/processes natural gas into gasoline through their STG+® process, deriving material revenue from converting fossil fuel feedstock into a marketable product.",
           "quote": "Our technology generates in-basin demand for associated natural gas resulting from oil production, alleviating pipeline and takeaway constraints. This could enable oil and gas companies to transform surplus associated natural gas into a higher-value marketable product",
           "source": "https://www.sec.gov/Archives/edgar/data/1841425/000162828026021763/vgasw-20251231.htm",
           "asOf": "10-K filed 2026-03-27"
@@ -3751,7 +3677,7 @@
         {
           "key": "fossil_fuels",
           "summary": "SKYQ operates an oil refinery processing crude oil into diesel and gasoline as a core line of business, with material exposure to refining and fuels production.",
-          "quote": "Risks Related to Oil Refining and Fuels Production \u00b7 Volatility in crude oil and wholesale diesel prices affect our business, financial condition and results of operations. \u00b7 There are difficulties in operating an oil refinery which could adversely affect our business, financial condition and results of operations.",
+          "quote": "Risks Related to Oil Refining and Fuels Production · Volatility in crude oil and wholesale diesel prices affect our business, financial condition and results of operations. · There are difficulties in operating an oil refinery which could adversely affect our business, financial condition and results of operations.",
           "source": "https://www.sec.gov/Archives/edgar/data/1812447/000109690626000438/skyq-20251231_10k.htm",
           "asOf": "10-K filed 2026-03-31"
         }
@@ -3882,7 +3808,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Company is acquiring and operating natural gas pipeline facilities in China, and sells natural gas to customers at prevailing spot prices\u2014constituting material fossil fuel distribution operations.",
+          "summary": "Company is acquiring and operating natural gas pipeline facilities in China, and sells natural gas to customers at prevailing spot prices—constituting material fossil fuel distribution operations.",
           "quote": "acquiring natural gas pipeline operator facilities, primarily located in the southwestern part of Sichuan Province and portions of Yunnan Province",
           "source": "https://www.sec.gov/Archives/edgar/data/1329606/000149315226027409/form10-k.htm",
           "asOf": "10-K filed 2026-06-05"
@@ -3894,7 +3820,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Avalon owns and operates saltwater injection wells through a subsidiary, which constitute oilfield services\u2014a material line of business distinct from the company's golf and hospitality operations.",
+          "summary": "Avalon owns and operates saltwater injection wells through a subsidiary, which constitute oilfield services—a material line of business distinct from the company's golf and hospitality operations.",
           "quote": "AWMS Holdings, LLC formed its first wholly owned subsidiary, AWMS Rt. 169, LLC, to own and operate two salt water injection wells.",
           "source": "https://www.sec.gov/Archives/edgar/data/1061069/000143774926009091/awx20251231_10k.htm",
           "asOf": "10-K filed 2026-03-19"
@@ -4015,7 +3941,7 @@
         {
           "key": "tobacco",
           "summary": "Company manufactures, markets, and distributes electronic cigarettes and other tobacco/nicotine products as a primary line of business under the HUSTLER brand licensing agreement.",
-          "quote": "manufacture, distribute, and sell condoms, electronic cigarettes, electronic cigars, cigars, hookahs, hookah tobacco, energy drinks, water beverages, and related merchandise, all using the HUSTLER\u00ae trademark",
+          "quote": "manufacture, distribute, and sell condoms, electronic cigarettes, electronic cigars, cigars, hookahs, hookah tobacco, energy drinks, water beverages, and related merchandise, all using the HUSTLER® trademark",
           "source": "https://www.sec.gov/Archives/edgar/data/813716/000149315226016869/form10-k.htm",
           "asOf": "10-K filed 2026-04-15"
         }

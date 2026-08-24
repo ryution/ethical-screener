@@ -81,6 +81,7 @@ export const SCREENS = [
       BAESY: "BAE Systems — defense prime; weapons and vehicles.",
       DRS: "Leonardo DRS — defense electronics, sensing, and weapons systems.",
       NPK: "National Presto — ammunition and ordnance (Defense segment).",
+      BWXT: "BWX Technologies — defense prime; naval nuclear reactors and U.S. nuclear-weapons-complex operations.",
     },
   },
   {
@@ -224,6 +225,40 @@ export const SCREENS = [
       BTU: "Peabody Energy — thermal and metallurgical coal mining.",
       ARLP: "Alliance Resource Partners — thermal coal mining.",
       HNRG: "Hallador Energy — thermal coal mining and coal-fired power.",
+    },
+  },
+  {
+    key: "cannabis",
+    label: "Cannabis",
+    blurb: "Cultivation, processing, and sale of cannabis and cannabis products.",
+    // Direction-contested: some users screen this out (faith/vice), others screen for it.
+    // We only describe the business; you decide.
+    tickers: {
+      CGC: "Canopy Growth — Canadian licensed cannabis producer.",
+      TLRY: "Tilray Brands — cannabis producer (medical and adult-use).",
+      CRON: "Cronos Group — cannabis producer.",
+      ACB: "Aurora Cannabis — cannabis producer.",
+      SNDL: "SNDL — cannabis producer and retailer.",
+      OGI: "OrganiGram — cannabis producer.",
+      GTBIF: "Green Thumb Industries — U.S. multi-state cannabis operator.",
+      CURLF: "Curaleaf — U.S. multi-state cannabis operator.",
+      TCNNF: "Trulieve — U.S. multi-state cannabis operator.",
+      CRLBF: "Cresco Labs — U.S. multi-state cannabis operator.",
+      VRNO: "Verano Holdings — U.S. multi-state cannabis operator.",
+    },
+  },
+  {
+    key: "fur",
+    label: "Fur & exotic leather",
+    blurb: "Production or primary retail of animal fur and exotic-animal leather.",
+    // Genuinely small category: no US-listed pure-plays exist (fur farms and exotic
+    // tanneries are private). The public exposure is via luxury houses (ADRs) that keep
+    // fur or exotic skins as a material product line.
+    tickers: {
+      LVMUY: "LVMH (Louis Vuitton) — mink fur and exotic skins (crocodile, python, ostrich).",
+      HESAY: "Hermès — controls crocodile/alligator tanneries for its exotic-leather goods.",
+      SFRGF: "Salvatore Ferragamo — ongoing crocodile, alligator, python, and ostrich leather lines.",
+      PPRUF: "Kering (Gucci) — python and crocodile leather goods (fur-free, but exotic skins remain).",
     },
   },
 ];
