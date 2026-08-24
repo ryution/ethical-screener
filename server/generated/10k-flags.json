@@ -2164,8 +2164,8 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "NACCO Industries, through its Catapult subsidiary, owns a diversified portfolio of oil and gas mineral and royalty interests across major U.S. basins, generating recurring revenue from oil, natural gas, and natural gas liquids production without operational costs.",
-          "quote": "Catapult's portfolio of oil and gas mineral and royalty interests provides steady, recurring cash flows, with strategic positions in premier basins, primarily in the Permian Basin, the Haynesville Shale basin and the Appalachian basin.",
+          "summary": "NACCO owns and actively derives material revenues from a diversified portfolio of oil and gas mineral and royalty interests across major basins (Permian, Haynesville Shale, Appalachian). Mineral and royalty interests are a core line of business providing recurring cash flows from oil and natural gas extraction.",
+          "quote": "As an owner of mineral and royalty interests, we are entitled to a portion of the revenues received from the sale of oil, natural gas and associated natural gas liquids.",
           "source": "https://www.sec.gov/Archives/edgar/data/789933/000078993326000070/nacco-20251231.htm",
           "asOf": "10-K filed 2026-03-04"
         }
@@ -2188,8 +2188,8 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Infinity Natural Resources is an oil and natural gas exploration and production company managing reserves, drilling prospects, and production operations across North American basins.",
-          "quote": "our drilling prospects, inventories, projects and programs",
+          "summary": "Company is an upstream oil and gas producer with active drilling operations and reserves replacement through extraction.",
+          "quote": "our ability to replace the reserves we produce through drilling",
           "source": "https://www.sec.gov/Archives/edgar/data/2029118/000202911826000014/inr-20251231.htm",
           "asOf": "10-K filed 2026-03-10"
         }
@@ -2200,8 +2200,8 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "RGC Resources operates a natural gas utility and midstream business through Roanoke Gas, distributing natural gas to residential and commercial customers and investing in interstate natural gas pipelines.",
-          "quote": "Roanoke Gas maintains an integrated natural gas distribution system to deliver natural gas purcha",
+          "summary": "RGC Resources operates Roanoke Gas, a natural gas distribution utility, and maintains LNG facilities for production and storage\u2014a direct gas utility & distribution line of business.",
+          "quote": "operates and maintains a plant capable of producing and storing up to 200,000 DTH of liquefied natural gas",
           "source": "https://www.sec.gov/Archives/edgar/data/1069533/000143774925036827/rgco20250930_10k.htm",
           "asOf": "10-K filed 2025-12-04"
         }
@@ -2212,7 +2212,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Amplify Energy operates and divests oil and gas properties in Oklahoma, East Texas, and Louisiana, focusing on conventional oil and gas asset acquisition and development.",
+          "summary": "Amplify Energy operates in oil and gas exploration and production, with properties and equipment in Oklahoma, East Texas, and Louisiana constituting a material line of business.",
           "quote": "the Revolution Sellers' right, title and interest in and to certain specified oil and gas properties and equipment within or related to certain designated lands in Oklahoma",
           "source": "https://www.sec.gov/Archives/edgar/data/1533924/000110465926025299/ampy-20251231x10k.htm",
           "asOf": "10-K filed 2026-03-09"
@@ -2236,8 +2236,8 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Epsilon Energy is an oil and natural gas exploration and production company managing reserves and production operations, with forward-looking statements regarding production rates and commodity prices.",
-          "quote": "including statements relating to oil and natural gas production rates, commodity prices for crude oil or natural gas, supply and demand for oil and natural gas; the estimated quantity of oil and natural gas reserves, including reserve life",
+          "summary": "Company extracts and produces oil and natural gas as its primary operational business, with direct references to production rates, reserves, and reservoir analysis.",
+          "quote": "All statements that address operating performance, events or developments that we expect or anticipate will occur in the future \u2014 including statements relating to oil and natural gas production rates, commodity prices for crude oil or natural gas",
           "source": "https://www.sec.gov/Archives/edgar/data/1726126/000110465926035794/epsn-20251231x10k.htm",
           "asOf": "10-K filed 2026-03-27"
         }
@@ -2248,7 +2248,7 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Nine Energy Service is a leading provider of completion services and downhole tools for unconventional oil and gas development, supporting horizontal well drilling and multi-stage well completion.",
+          "summary": "Nine operates as a completion services provider for unconventional oil and gas development, providing downhole solutions and wireline services to E&P operators\u2014a core line of business within oilfield services.",
           "quote": "Nine is a leading completion services provider that targets unconventional oil and gas resource development across North American basins and abroad.",
           "source": "https://www.sec.gov/Archives/edgar/data/1532286/000153228626000005/nine-20251231.htm",
           "asOf": "10-K filed 2026-03-04"
@@ -2308,8 +2308,8 @@
       "flags": [
         {
           "key": "fossil_fuels",
-          "summary": "Empire Petroleum Corporation is an independent oil and natural gas exploration and production company managing reserves, production operations, and capital expenditures for reserve replacement.",
-          "quote": "our ability to replace reserves and efficiently develop current reserves",
+          "summary": "Empire Petroleum is an oil and natural gas producer, extracting and producing oil, natural gas, and natural gas liquids as a core line of business.",
+          "quote": "delays and other difficulties related to producing oil, natural gas and natural gas liquids",
           "source": "https://www.sec.gov/Archives/edgar/data/887396/000110465926027675/ep-20251231x10k.htm",
           "asOf": "10-K filed 2026-03-13"
         }
@@ -3272,6 +3272,174 @@
           "quote": "Proved reserves . Those quantities of oil, NGLs and natural gas, which, by analysis of geoscience and engineering data, can be estimated with reasonable certainty to be economically producible",
           "source": "https://www.sec.gov/Archives/edgar/data/1288403/000110465926028315/wti-20251231x10k.htm",
           "asOf": "10-K filed 2026-03-16"
+        }
+      ]
+    },
+    "MGPI": {
+      "name": "MGP INGREDIENTS INC",
+      "flags": [
+        {
+          "key": "alcohol",
+          "summary": "MGP Ingredients operates distilleries as a core line of business, producing bourbon, rye whiskeys, and food-grade spirits for beverage applications with dedicated production capacity and branded retail locations.",
+          "quote": "The majority of our distillery capacities are dedicated to the production of high quality, high purity food grade alcohol for beverage applications, including bourbon, rye and other whiskeys.",
+          "source": "https://www.sec.gov/Archives/edgar/data/835011/000083501126000031/mgpi-20251231.htm",
+          "asOf": "10-K filed 2026-02-25"
+        }
+      ]
+    },
+    "CLNE": {
+      "name": "Clean Energy Fuels Corp.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Clean Energy Fuels sells conventional natural gas in addition to RNG as transportation fuel (CNG and LNG) for medium and heavy-duty vehicles\u2014a material line of business in fossil fuel distribution.",
+          "quote": "We sell RNG and conventional natural gas, in the form of CNG and LNG, as fuel for medium and heavy-duty vehicles.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1368265/000110465926019215/clne-20251231x10k.htm",
+          "asOf": "10-K filed 2026-02-24"
+        }
+      ]
+    },
+    "GTE": {
+      "name": "GRAN TIERRA ENERGY INC.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Gran Tierra Energy is explicitly focused on oil and gas exploration and production as its core business, with proved reserves across three countries.",
+          "quote": "is a company focused on oil and gas exploration and production, with assets in Colombia, Canada and Ecuador.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1273441/000127344126000010/gte-20251231.htm",
+          "asOf": "10-K filed 2026-03-04"
+        }
+      ]
+    },
+    "MRDN": {
+      "name": "Meridian Holdings Inc./NV",
+      "flags": [
+        {
+          "key": "gambling",
+          "summary": "Company directly operates online sports betting, online casino, and gaming operations across 15+ jurisdictions as a core line of business, not as incidental activity.",
+          "quote": "The Company (i) operates online sports betting, online casino, and gaming operations in more than 15 jurisdictions across Europe, Africa and Central and South America",
+          "source": "https://www.sec.gov/Archives/edgar/data/1437925/000147793226001750/meridian_10k.htm",
+          "asOf": "10-K filed 2026-03-31"
+        }
+      ]
+    },
+    "INSE": {
+      "name": "Inspired Entertainment, Inc.",
+      "flags": [
+        {
+          "key": "gambling",
+          "summary": "Supplies gaming terminals, software and game content for real-money wagering venues including casinos, betting offices, and gaming halls as a core line of business.",
+          "quote": "supplies gaming terminals, gaming software and/or games content for terminals located in Licensed Betting Offices (\"LBOs\"), casinos, gaming halls and adult gaming centers (\"AGCs\")",
+          "source": "https://www.sec.gov/Archives/edgar/data/1615063/000149315226009479/form10-k.htm",
+          "asOf": "10-K filed 2026-03-10"
+        }
+      ]
+    },
+    "TUSK": {
+      "name": "MAMMOTH ENERGY SERVICES, INC.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Provides oilfield services including drilling, completion, and transportation services to oil and gas companies as a material business line.",
+          "quote": "we previously idled several service lines, including cementing, acidizing, flowback, contract drilling, rig hauling, coil tubing, pressure control, full\u2011service transportation, and crude oil hauling",
+          "source": "https://www.sec.gov/Archives/edgar/data/1679268/000162828026015693/tusk-20251231.htm",
+          "asOf": "10-K filed 2026-03-06"
+        }
+      ]
+    },
+    "PLBY": {
+      "name": "Playboy, Inc.",
+      "flags": [
+        {
+          "key": "adult",
+          "summary": "Produces and distributes proprietary adult content products and operates a creator platform as explicit business offerings.",
+          "quote": "our proprietary and licensed paid adult content products and our licensed creator platform",
+          "source": "https://www.sec.gov/Archives/edgar/data/1803914/000162828026018238/ply-20251231.htm",
+          "asOf": "10-K filed 2026-03-16"
+        }
+      ]
+    },
+    "BOOM": {
+      "name": "DMC Global Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "DynaEnergetics, a division of DMC Global, designs, manufactures, and sells perforating systems used in oil and gas well completion operations\u2014a material oilfield services business.",
+          "quote": "DynaEnergetics designs, manufactures, markets and sells perforating systems and associated hardware for the global oil and gas industry.",
+          "source": "https://www.sec.gov/Archives/edgar/data/34067/000003406726000009/boom-20251231.htm",
+          "asOf": "10-K filed 2026-02-23"
+        }
+      ]
+    },
+    "PDYN": {
+      "name": "Palladyne AI Corp.",
+      "flags": [
+        {
+          "key": "weapons",
+          "summary": "Palladyne positions itself as a defense prime contractor and explicitly develops weapons as its core business line, including autonomous drone munitions platforms (Gremlin-X mini bomber, SwarmStrike missiles, loitering munitions) designed to deliver lethal strikes.",
+          "quote": "We seek to harness our advanced, ethical embodied AI to provide cost-effective lethality and precision harm mitigation through rapidly delivering scalable, low-cost, intelligent and collaborative attritable weapons, including by developing proprietary, UAVs incorporating our avionics and AI technologies.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1826681/000119312526092443/pdyn-20251231.htm",
+          "asOf": "10-K filed 2026-03-05"
+        }
+      ]
+    },
+    "BUKS": {
+      "name": "BUTLER NATIONAL CORP",
+      "flags": [
+        {
+          "key": "gambling",
+          "summary": "Company operates Boot Hill Casino as a material business segment with gaming revenue exposed to local economic conditions.",
+          "quote": "we could see a reduction in the number of customers who visit our casino, which may adversely affect our financial condition, results of operations",
+          "source": "https://www.sec.gov/Archives/edgar/data/15847/000001584726000020/buks-20260430.htm",
+          "asOf": "10-K filed 2026-07-08"
+        }
+      ]
+    },
+    "POWW": {
+      "name": "Outdoor Holding Co",
+      "flags": [
+        {
+          "key": "firearms",
+          "summary": "Company directly operates Ammunition segment engaged in design, production and marketing of ammunition as core line of business.",
+          "quote": "began its operations in 2017 as a producer of high-performance ammunition and premium components",
+          "source": "https://www.sec.gov/Archives/edgar/data/1015383/000119312526276653/poww-20260331.htm",
+          "asOf": "10-K filed 2026-06-22"
+        }
+      ]
+    },
+    "FGPR": {
+      "name": "FERRELLGAS PARTNERS L P",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Company operates as propane distributor/utility serving residential and commercial customers through equipment rental and distribution infrastructure.",
+          "quote": "approximately 69% of our residential customers utilize our equipment, while the remainder own their tanks",
+          "source": "https://www.sec.gov/Archives/edgar/data/922358/000110465925099508/fgp-20250731x10k.htm",
+          "asOf": "10-K filed 2025-10-15"
+        }
+      ]
+    },
+    "RICK": {
+      "name": "RCI HOSPITALITY HOLDINGS, INC.",
+      "flags": [
+        {
+          "key": "adult",
+          "summary": "RCI Hospitality operates adult entertainment nightclubs as a core line of business through multiple subsidiaries under brands like Rick's Cabaret, Jaguars Club, and Tootsie's Cabaret.",
+          "quote": "RCI Hospitality Holdings, Inc. is a holding company that, through its subsidiaries, engages in businesses that offer live adult entertainment",
+          "source": "https://www.sec.gov/Archives/edgar/data/935419/000162828026019804/rick-20250930.htm",
+          "asOf": "10-K filed 2026-03-19"
+        }
+      ]
+    },
+    "ESOA": {
+      "name": "Energy Services of America CORP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Energy Services of America's primary line of business is construction, replacement, and repair of natural gas pipelines and storage facilities for utility and natural gas companies. The company materially derives revenue from fossil fuel infrastructure services and explicitly states its operations and earnings are significantly affected by changes in oil and gas prices.",
+          "quote": "the Company is primarily engaged in the construction, replacement and repair of natural gas pipelines and storage facilities for utility companies and private natural gas companies. Energy Services is involved in the construction of both interstate and intrastate pipelines, with an emphasis on the latter. For the oil industry, the Company provides a variety of services relating to pipeline, storage facilities and pla",
+          "source": "https://www.sec.gov/Archives/edgar/data/1357971/000110465925121185/esoa-20250930x10k.htm",
+          "asOf": "10-K filed 2025-12-15"
         }
       ]
     }
