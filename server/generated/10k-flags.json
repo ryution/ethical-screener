@@ -690,6 +690,109 @@
           "asOf": "10-K filed 2026-03-02"
         }
       ]
+    },
+    "IDA": {
+      "name": "IDACORP INC",
+      "flags": [
+        {
+          "key": "thermal_coal",
+          "summary": "IDAcorp explicitly states through Idaho Power subsidiary that it operates company-owned coal-fired generation facilities.",
+          "quote": "Idaho Power primarily relies on company-owned hydropower, gas-fired, and coal-fired generation facilities",
+          "source": "https://www.sec.gov/Archives/edgar/data/1057877/000105787726000028/ida-20251231.htm",
+          "asOf": "10-K filed 2026-02-19"
+        }
+      ]
+    },
+    "CNR": {
+      "name": "Core Natural Resources, Inc.",
+      "flags": [
+        {
+          "key": "thermal_coal",
+          "summary": "Core Natural Resources explicitly states it is a producer and exporter of thermal coal through its mining operations.",
+          "quote": "We are a world-class producer and exporter of high-quality, low-cost coals, including metallurgical and thermal coals.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1710366/000171036626000007/cnr-20251231.htm",
+          "asOf": "10-K filed 2026-02-17"
+        }
+      ]
+    },
+    "TXNM": {
+      "name": "TXNM ENERGY INC",
+      "flags": [
+        {
+          "key": "thermal_coal",
+          "summary": "TXNM through its subsidiary PNM operates a coal-fired power plant, constituting a material line of business generating power from thermal coal.",
+          "quote": "PNM has interests in a nuclear power plant, a coal-fired power plant, and several natural gas-fired power plants and is obligated to pay its share of the costs to decommission these facilities.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1108426/000110842626000006/pnm-20251231.htm",
+          "asOf": "10-K filed 2026-02-27"
+        }
+      ]
+    },
+    "BKH": {
+      "name": "BLACK HILLS CORP /SD/",
+      "flags": [
+        {
+          "key": "thermal_coal",
+          "summary": "Black Hills operates coal-fired power generation facilities including the Gillette Energy Complex with 793 MW of coal-fired capacity, constituting a material line of business in thermal coal power generation.",
+          "quote": "We operate and own majority interests in five of the six facilities and own 20% of Wyodak Plant.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1130464/000119312526046028/bkh-20251231.htm",
+          "asOf": "10-K filed 2026-02-11"
+        }
+      ]
+    },
+    "POR": {
+      "name": "PORTLAND GENERAL ELECTRIC CO /OR/",
+      "flags": [
+        {
+          "key": "thermal_coal",
+          "summary": "Portland General Electric operates coal-fired power plants as part of its generating resources, constituting a material line of business in thermal coal power generation.",
+          "quote": "PGE's generating resources consist of six thermal plants (natural gas- and coal-fired), four wind farms, and seven hydroelectric facilities.",
+          "source": "https://www.sec.gov/Archives/edgar/data/784977/000119312526052750/por-20251231.htm",
+          "asOf": "10-K filed 2026-02-17"
+        }
+      ]
+    },
+    "MDU": {
+      "name": "MDU RESOURCES GROUP INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "MDU Resources operates fossil fuel electric-generating facilities and natural gas pipeline and storage systems as core business segments.",
+          "quote": "The Company produces GHG emissions primarily from its fossil fuel electric-generating facilities, as well as from natural gas pipeline and storage systems",
+          "source": "https://www.sec.gov/Archives/edgar/data/67716/000006771626000014/mdu-20251231.htm",
+          "asOf": "10-K filed 2026-02-20"
+        },
+        {
+          "key": "thermal_coal",
+          "summary": "MDU owns and operates coal-fired power generation facilities including Big Stone Station and Coyote Station.",
+          "quote": "Big Stone Station 475-MW coal-fired electric generating facility near Big Stone City, South Dakota (22.7 percent ownership)",
+          "source": "https://www.sec.gov/Archives/edgar/data/67716/000006771626000014/mdu-20251231.htm",
+          "asOf": "10-K filed 2026-02-20"
+        }
+      ]
+    },
+    "OTTR": {
+      "name": "Otter Tail Corp",
+      "flags": [
+        {
+          "key": "thermal_coal",
+          "summary": "Otter Tail operates coal-fired power generation facilities as a core utility business segment.",
+          "quote": "Coal is the principal fuel burned at our jointly owned Big Stone Plant and Coyote Station generating plants",
+          "source": "https://www.sec.gov/Archives/edgar/data/1466593/000146659326000008/ottr-20251231.htm",
+          "asOf": "10-K filed 2026-02-18"
+        }
+      ]
+    },
+    "NWE": {
+      "name": "NorthWestern Energy Group, Inc.",
+      "flags": [
+        {
+          "key": "thermal_coal",
+          "summary": "NorthWestern Energy owns and operates coal-fired electric generation facilities.",
+          "quote": "A jointly owned sub-bituminous coal fired electric generation facility located near Colstrip, Montana, of which, as of January 1, 2026, we have a 55 percent ownership of Units 3 & 4",
+          "source": "https://www.sec.gov/Archives/edgar/data/1993004/000199300426000006/nweg-20251231.htm",
+          "asOf": "10-K filed 2026-02-12"
+        }
+      ]
     }
   }
 }
