@@ -975,6 +975,42 @@
           "asOf": "10-K filed 2026-02-23"
         }
       ]
+    },
+    "EZPW": {
+      "name": "EZCORP INC",
+      "flags": [
+        {
+          "key": "firearms",
+          "summary": "EZCORP operates pawn stores that buy, sell, and trade civilian firearms under federal firearms licenses.",
+          "quote": "Some of our pawn stores in the U.S. deal in firearms and each of those stores maintains a federal firearms license as required by federal law",
+          "source": "https://www.sec.gov/Archives/edgar/data/876523/000087652325000094/ezpw-20250930.htm",
+          "asOf": "10-K filed 2025-11-13"
+        }
+      ]
+    },
+    "DMC": {
+      "name": "DEL MONTE CORP",
+      "flags": [
+        {
+          "key": "factory_farming",
+          "summary": "Del Monte owns and operates vertically-integrated poultry farms and meat processing plants.",
+          "quote": "Our Jordanian poultry and meats business includes a vertically-integrated poultry business, including poultry farms, hatcheries, a feed mill, a slaughterhouse and a meat processing plant.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1047340/000104734026000015/fdp-20251226.htm",
+          "asOf": "10-K filed 2026-02-19"
+        }
+      ]
+    },
+    "UTL": {
+      "name": "UNITIL CORP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Unitil operates Granite State, an interstate natural-gas transmission pipeline.",
+          "quote": "Unitil is the parent company of Granite State, an interstate natural gas transmission pipeline company that provides interstate natural gas pipeline access and transportation services to Northern Utilities in its New Hampshire and Maine service territory.",
+          "source": "https://www.sec.gov/Archives/edgar/data/755001/000119312526042983/utl-20251231.htm",
+          "asOf": "10-K filed 2026-02-09"
+        }
+      ]
     }
   }
 }
