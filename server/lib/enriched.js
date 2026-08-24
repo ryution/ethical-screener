@@ -10,6 +10,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { screenLabel } from "./screens.js";
+import { reasonForSic } from "./sic.js";
 
 const FILE = join(dirname(fileURLToPath(import.meta.url)), "..", "generated", "companies.json");
 
@@ -29,9 +30,12 @@ export function enrichedFlagsFor(ticker, activeKeys) {
   const c = _data.companies[String(ticker).toUpperCase()];
   if (!c) return [];
   const active = new Set(activeKeys);
+  // Prefer a specific, human sentence for the company's registered line of business;
+  // fall back to naming the SIC classification if we don't have a phrasing for the code.
+  const reason = reasonForSic(c.sic) || `Registered under ${c.sicDescription} (SIC ${c.sic}).`;
   return (c.flags || [])
     .filter((k) => active.has(k))
-    .map((k) => ({ key: k, label: screenLabel(k), reason: `Classified under ${c.sicDescription} (SIC ${c.sic}).` }));
+    .map((k) => ({ key: k, label: screenLabel(k), reason }));
 }
 
 /** Name for a ticker if the enriched set knows it. */

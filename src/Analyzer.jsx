@@ -3,7 +3,8 @@
 // Flow: sign in → pick the ethical lines you care about → connect your brokerage
 // (read-only, via SnapTrade) → see which holdings conflict, and why.
 //
-// We never trade and never move money. This is a read-and-explain tool.
+// The analyzer is read-only; we never move money without the user's say-so. (Trading may
+// come later as a paid feature — the free tool only reads and explains.)
 //
 // Visual language: a dark-green "liquid glass" hero for the marketing moment, then a
 // light, high-contrast "paper" theme for everything you actually read and work in —
@@ -376,7 +377,7 @@ function Landing({ onStart }) {
               Even broad market funds hide holdings that might not match your values. Search any stock or ETF ticker to see the full breakdown.
             </p>
             <HeroAnalyzer onStart={onStart} wrap={wrap} />
-            <p style={{ fontFamily: sans, fontSize: 12.5, color: D.faint, marginTop: 18 }}>Read-only. We never trade, and never move your money.</p>
+            <p style={{ fontFamily: sans, fontSize: 12.5, color: D.faint, marginTop: 18 }}>Read-only analysis. We never move your money without your say-so.</p>
           </div>
         </header>
       </Canvas>
@@ -549,7 +550,7 @@ function Dashboard({ user, onSignOut }) {
           </div>
         </LSection>
 
-        <LSection n="2" title="Connect your brokerage" sub="Read-only, through SnapTrade. We can see your holdings — never trade, never move money.">
+        <LSection n="2" title="Connect your brokerage" sub="Read-only, through SnapTrade. We can see your holdings — we only read them, and never move money without your say-so.">
           {analysis ? (
             <div style={card({ padding: "15px 18px", display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" })}>
               <span style={{ color: L.good, fontWeight: 700, fontFamily: sans, fontSize: 14 }}>✓ Connected</span>

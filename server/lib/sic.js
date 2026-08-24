@@ -19,8 +19,11 @@ export function screensForSic(sicRaw) {
   const keys = new Set();
 
   // Fossil fuels — coal, oil & gas extraction, refining, pipelines, gas utilities.
+  // NOTE: 2990 ("misc products of petroleum & coal") is deliberately EXCLUDED — it sweeps
+  // in lubricant blenders (Valvoline) and specialty-fluid chemists (Quaker), which aren't
+  // fossil-fuel producers. Those come through curated/filing only.
   if (inRange(sic, 1220, 1241) || sic === 1311 || inRange(sic, 1381, 1389) || sic === 2911 ||
-      inRange(sic, 4610, 4619) || inRange(sic, 4922, 4925) || sic === 5171 || sic === 2990) {
+      inRange(sic, 4610, 4619) || inRange(sic, 4922, 4925) || sic === 5171) {
     keys.add("fossil_fuels");
   }
   // Tobacco — cigarettes, cigars, chewing/smoking tobacco, stemming & redrying.
@@ -32,31 +35,60 @@ export function screensForSic(sicRaw) {
   // spirits conglomerates) are caught by the curated list instead — precision over recall.
   if (inRange(sic, 2082, 2085) || sic === 5182) keys.add("alcohol");
 
-  // Weapons & defense — ordnance, ammunition, missiles/space vehicles, tanks, and
-  // search/detection/guidance (defense) systems.
-  if (inRange(sic, 3480, 3489) || inRange(sic, 3760, 3769) || sic === 3795 || sic === 3812) {
-    keys.add("weapons");
-  }
-  // Civilian firearms & small-arms ammunition (subset of the ordnance codes).
+  // Civilian firearms & small-arms ammunition — the ONLY weapons-adjacent code narrow
+  // enough to be a plain fact. (See below: the broad "weapons" codes are NOT used.)
   if (sic === 3484 || sic === 3482) keys.add("firearms");
 
   // Factory farming — industrial meat/poultry processing and livestock feedlots.
   if (sic === 2011 || sic === 2013 || sic === 2015 || sic === 211 || sic === 213) {
     keys.add("factory_farming");
   }
-  // Predatory / high-interest consumer lending.
-  if (sic === 6141) keys.add("payday_lending");
 
+  // DELIBERATELY NOT SIC-CLASSIFIED (codes too coarse to be a plain factual claim):
+  //  • weapons — 3480-3489 / 3760-3769 / 3795 / 3812 mix real defense primes with consumer
+  //    GPS (Garmin), space launch (Rocket Lab), Tasers (Axon), and medical/nav instruments.
+  //    Real weapons makers come from the curated list + filing-cited 10-K reading instead.
+  //  • payday_lending — 6141 ("personal credit") lumps student lenders (Sallie Mae, Nelnet),
+  //    BNPL (Affirm), and card banks (Bread) with genuine subprime. Curated only.
   return [...keys];
+}
+
+/** A specific, human-readable reason for a SIC-derived flag (the company's registered line
+ *  of business), replacing the old generic "Classified under X (SIC Y)". Returns null for
+ *  codes we don't classify. */
+export function reasonForSic(sicRaw) {
+  const sic = Number(sicRaw);
+  if (!sic) return null;
+  if (inRange(sic, 1220, 1241)) return "Coal mining.";
+  if (sic === 1311) return "Crude-oil and natural-gas exploration and production.";
+  if (sic === 1381) return "Drills oil and gas wells (oilfield services).";
+  if (sic === 1382) return "Oil and gas field exploration services.";
+  if (inRange(sic, 1383, 1389)) return "Oil and gas field services.";
+  if (sic === 2911) return "Petroleum refining.";
+  if (inRange(sic, 4610, 4619)) return "Operates crude-oil and refined-product pipelines.";
+  if (sic === 4922) return "Natural-gas transmission pipelines.";
+  if (sic === 4923) return "Natural-gas transmission and distribution.";
+  if (inRange(sic, 4924, 4925)) return "Natural-gas distribution utility.";
+  if (sic === 5171) return "Wholesale petroleum bulk stations and terminals.";
+  if (inRange(sic, 2100, 2141)) return "Manufactures tobacco or nicotine products.";
+  if (inRange(sic, 2082, 2085)) return "Produces beer, wine, or spirits.";
+  if (sic === 5182) return "Wholesale distribution of alcoholic beverages.";
+  if (sic === 3482 || sic === 3484) return "Manufactures small arms or ammunition.";
+  if (sic === 2011 || sic === 2013) return "Industrial meat packing and processing.";
+  if (sic === 2015) return "Poultry slaughtering and processing.";
+  if (sic === 211 || sic === 213) return "Industrial livestock and feedlot operations.";
+  return null;
 }
 
 // Which screens EDGAR/SIC can classify, vs which stay curated + AI. Used in the UI so we
 // can honestly say how each flag was determined.
 export const SIC_CLASSIFIED = [
-  "fossil_fuels", "tobacco", "alcohol", "weapons", "firearms", "factory_farming", "payday_lending",
+  "fossil_fuels", "tobacco", "alcohol", "firearms", "factory_farming",
 ];
 export const CURATED_ONLY = [
   "gambling", "big_tech_surveillance", "adult", "animal_testing", "private_prisons",
   // Curated seeds + filing-cited (10-K) detection; no clean SIC signal we use today.
   "opioids", "thermal_coal",
+  // Removed from SIC (codes too coarse — see screensForSic); curated + filing only.
+  "weapons", "payday_lending",
 ];

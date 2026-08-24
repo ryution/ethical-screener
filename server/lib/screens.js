@@ -79,6 +79,8 @@ export const SCREENS = [
       KTOS: "Kratos — drones and defense systems.",
       AVAV: "AeroVironment — military drones.",
       BAESY: "BAE Systems — defense prime; weapons and vehicles.",
+      DRS: "Leonardo DRS — defense electronics, sensing, and weapons systems.",
+      NPK: "National Presto — ammunition and ordnance (Defense segment).",
     },
   },
   {
@@ -198,6 +200,8 @@ export const SCREENS = [
       ENVA: "Enova — online subprime consumer lending.",
       CURO: "CURO Group — payday and title loans.",
       OPRT: "Oportun — subprime consumer lending.",
+      CACC: "Credit Acceptance — subprime auto lending; CFPB and state predatory-lending actions.",
+      OMF: "OneMain — high-rate subprime consumer installment lending.",
     },
   },
   {
@@ -214,8 +218,8 @@ export const SCREENS = [
   },
   {
     key: "thermal_coal",
-    label: "Thermal coal",
-    blurb: "Mining of coal burned for power, and coal-fired power generation.",
+    label: "Coal",
+    blurb: "Coal mining and coal-fired power generation.",
     tickers: {
       BTU: "Peabody Energy — thermal and metallurgical coal mining.",
       ARLP: "Alliance Resource Partners — thermal coal mining.",
