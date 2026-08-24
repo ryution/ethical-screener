@@ -57,13 +57,15 @@ const GROWTH = ["META", "GOOGL", "GOOG", "PLTR"];
 // Large-cap value split — energy, defense, and tobacco are classic value sectors.
 const VALUE = ["XOM", "CVX", "COP", "OXY", "SLB", "HAL", "MPC", "VLO", "PSX", "WMB", "OKE",
   "LMT", "RTX", "NOC", "GD", "LHX", "MO", "PM"];
+// Health-care sector — mostly opioid culpability (makers + distributors).
+const HEALTHCARE = ["JNJ", "MCK", "CAH", "COR"];
 
 // Each fund tracks one BASIS. The screened constituents for a basis come, when we've
 // fetched them, from the issuer's daily holdings (see holdings.js / fetch-holdings.mjs);
 // otherwise from the conservative curated fallback above. Grouping by basis means one
 // authoritative live source refreshes every fund that tracks it (SPY→S&P 500, SPTM→total,
 // SPYG→growth, SPYV→value). The Nasdaq-100 has no free live source, so it stays curated.
-const FALLBACK = { sp500: SP500, total: TOTAL, nasdaq100: NASDAQ100, large_growth: GROWTH, large_value: VALUE };
+const FALLBACK = { sp500: SP500, total: TOTAL, nasdaq100: NASDAQ100, large_growth: GROWTH, large_value: VALUE, healthcare: HEALTHCARE };
 const holdsFor = (basisKey) => basketFor(basisKey) || FALLBACK[basisKey];
 
 const CATALOGUE = {
@@ -77,7 +79,9 @@ const CATALOGUE = {
   VTI:   { name: "Vanguard Total Stock Market ETF",         basis: "the total US market",     basisKey: "total" },
   ITOT:  { name: "iShares Core S&P Total US Stock Market",  basis: "the total US market",     basisKey: "total" },
   VTSAX: { name: "Vanguard Total Stock Market Index Fund",  basis: "the total US market",     basisKey: "total" },
+  SCHB:  { name: "Schwab U.S. Broad Market ETF",            basis: "the total US market",     basisKey: "total" },
   QQQ:   { name: "Invesco QQQ Trust (Nasdaq-100)",          basis: "the Nasdaq-100",          basisKey: "nasdaq100" },
+  XLV:   { name: "Health Care Select Sector SPDR",          basis: "the U.S. health-care sector", basisKey: "healthcare" },
   VUG:   { name: "Vanguard Growth ETF",                     basis: "large-cap US growth",     basisKey: "large_growth" },
   IWF:   { name: "iShares Russell 1000 Growth ETF",         basis: "large-cap US growth",     basisKey: "large_growth" },
   SCHG:  { name: "Schwab U.S. Large-Cap Growth ETF",        basis: "large-cap US growth",     basisKey: "large_growth" },

@@ -7,12 +7,30 @@
 //
 // Pure function of (positions, activeScreenKeys). No network, no state.
 
-import { flagsFor, companyName, SCREEN_KEYS } from "./screens.js";
+import { flagsFor, companyName, SCREEN_KEYS, SCREEN_TICKERS } from "./screens.js";
 import { knownFund, unanalyzedFund } from "./funds.js";
-import { enrichedFlagsFor, enrichedName, dataMeta } from "./enriched.js";
-import { filingFlagsFor, filingName } from "./filings.js";
+import { enrichedFlagsFor, enrichedName, enrichedTickers, dataMeta } from "./enriched.js";
+import { filingFlagsFor, filingName, filingTickers, filingMeta } from "./filings.js";
 
 export { dataMeta };
+
+/**
+ * True coverage across ALL three layers, for the public "N companies" stat.
+ * Counts the DISTINCT companies we flag (curated ∪ EDGAR-SIC ∪ filing-cited),
+ * normalizing class-share punctuation so BRK.B and BRK-B aren't double-counted,
+ * and reports the freshest of the underlying datasets. Understating this (as the
+ * enriched-only count did) reads as thinner coverage than we actually have.
+ */
+export function coverageMeta() {
+  const norm = (t) => String(t).toUpperCase().replace(/[.-]/g, "");
+  const set = new Set();
+  for (const t of SCREEN_TICKERS) set.add(norm(t));
+  for (const t of enrichedTickers()) set.add(norm(t));
+  for (const t of filingTickers()) set.add(norm(t));
+  const dates = [dataMeta().lastUpdated, filingMeta().lastUpdated].filter(Boolean);
+  const lastUpdated = dates.sort().at(-1) || null;
+  return { count: set.size, lastUpdated };
+}
 
 // Flags for a ticker across all THREE layers, deduped by screen key so a company on more
 // than one isn't flagged twice for the same screen. Precedence is by richness of the

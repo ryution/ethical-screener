@@ -130,12 +130,12 @@ function HeroAnalyzer({ onStart }) {
   // Auto-load VOO on mount so a visitor sees the surprise immediately.
   useEffect(() => { run("VOO"); /* eslint-disable-next-line */ }, []);
 
-  const examples = ["VOO", "QQQ", "XOM", "AAPL"];
+  const examples = ["VOO", "QQQ", "SCHB", "XLV"];
   return (
     <div style={{ maxWidth: 560, margin: "30px auto 0", textAlign: "left" }}>
       <div style={{ display: "flex", gap: 8 }}>
         <input value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => e.key === "Enter" && run()}
-          placeholder="Try a ticker — VOO, QQQ, XOM…" aria-label="Ticker symbol"
+          placeholder="Try a ticker — VOO, QQQ, SCHB, XLV…" aria-label="Ticker symbol"
           style={{ flex: 1, minWidth: 0, fontFamily: sans, fontSize: 15, color: D.ink, background: "rgba(255,255,255,0.08)",
             border: `1px solid ${D.glassBorder}`, borderRadius: 12, padding: "14px 15px", outline: "none",
             backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", textTransform: "uppercase" }} />

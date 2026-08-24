@@ -40,6 +40,7 @@ const SOURCES = {
   total:        { fund: "SPTM", label: "SPDR Portfolio S&P 1500 Composite Stock Market ETF", url: ssga("sptm") },
   large_growth: { fund: "SPYG", label: "SPDR Portfolio S&P 500 Growth ETF",                  url: ssga("spyg") },
   large_value:  { fund: "SPYV", label: "SPDR Portfolio S&P 500 Value ETF",                   url: ssga("spyv") },
+  healthcare:   { fund: "XLV",  label: "Health Care Select Sector SPDR",                     url: ssga("xlv") },
 };
 
 // A holding counts as screened if EITHER layer flags it. Class shares differ by dot vs

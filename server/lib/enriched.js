@@ -37,6 +37,9 @@ export function enrichedFlagsFor(ticker, activeKeys) {
 /** Name for a ticker if the enriched set knows it. */
 export const enrichedName = (t) => _data.companies[String(t || "").toUpperCase()]?.name || null;
 
+/** Every ticker the enriched set flags — for the true coverage count. */
+export const enrichedTickers = () => Object.keys(_data.companies);
+
 /** Every ticker the enriched set flags for a given screen — used by fund look-through. */
 export function enrichedTickersForScreen(key) {
   const out = [];
