@@ -329,7 +329,10 @@
       "sicDescription": "Natural Gas Distribution",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Cheniere Energy owns and operates LNG liquefaction and export terminals that convert natural gas into liquefied natural gas for international maritime transport."
+      }
     },
     "WDS": {
       "name": "WOODSIDE ENERGY GROUP LTD",
@@ -425,7 +428,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Permian Resources Corp is engaged in the exploration and production of crude oil, natural gas, and NGLs across the Permian Basin."
+      }
     },
     "OVV": {
       "name": "Ovintiv Inc.",
@@ -497,7 +503,10 @@
       "sicDescription": "Natural Gas Transmission",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Antero Midstream operates midstream infrastructure including gathering and processing systems, water handling services, and fluid logistics for oil and gas producers."
+      }
     },
     "RRC": {
       "name": "RANGE RESOURCES CORP",
@@ -521,7 +530,10 @@
       "sicDescription": "Petroleum Refining",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "PBF Energy operates petroleum refineries that process crude oil into refined products including gasoline, diesel, and heating oil through distillation and cracking processes."
+      }
     },
     "SFD": {
       "name": "SMITHFIELD FOODS INC",
@@ -593,7 +605,10 @@
       "sicDescription": "Drilling Oil & Gas Wells",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Noble Corporation is an offshore contract drilling contractor providing drilling services using deepwater drillships and harsh-environment semisubmersibles."
+      }
     },
     "UGP": {
       "name": "ULTRAPAR HOLDINGS INC",
@@ -609,7 +624,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Matador Resources produces oil and natural gas while operating gathering, processing, and crude oil transportation infrastructure across major basins."
+      }
     },
     "PPC": {
       "name": "PILGRIMS PRIDE CORP",
@@ -633,7 +651,10 @@
       "sicDescription": "Natural Gas Transmisison & Distribution",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Southwest Gas operates natural gas distribution and transmission pipelines delivering natural gas safely and reliably to residential and commercial customers."
+      }
     },
     "RIG": {
       "name": "Transocean Ltd.",
@@ -673,7 +694,10 @@
       "sicDescription": "Pipe Lines (No Natural Gas)",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Plains GP Holdings is a midstream operator that gathers, processes, transports, stores, and fractionates crude oil, natural gas liquids, and refined products."
+      }
     },
     "NJR": {
       "name": "NEW JERSEY RESOURCES CORP",
@@ -745,7 +769,10 @@
       "sicDescription": "Natural Gas Distribution",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Spire operates natural gas distribution utilities and midstream infrastructure including transmission pipelines and underground storage facilities."
+      }
     },
     "BIPC": {
       "name": "Brookfield Infrastructure Corp",
@@ -777,7 +804,10 @@
       "sicDescription": "Drilling Oil & Gas Wells",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Patterson UTI Energy provides onshore contract drilling services to oil and gas operators using actively deployed drilling rigs across major U.S. basins."
+      }
     },
     "HP": {
       "name": "Helmerich & Payne, Inc.",
@@ -833,7 +863,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Comstock Resources is engaged in the exploration, development, and production of crude oil, natural gas, and natural gas liquids from proved reserves across its operating properties."
+      }
     },
     "SUNC": {
       "name": "SunocoCorp LLC",
@@ -985,7 +1018,10 @@
       "sicDescription": "Natural Gas Transmission",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "NGL Energy Partners engages in the gathering, blending, storing, and logistics of transporting crude oil, natural gas liquids, gasoline, diesel, renewable fuels, and propane through pipelines, barges, trucks, and rail."
+      }
     },
     "RLX": {
       "name": "RLX Technology Inc.",
@@ -1081,7 +1117,10 @@
       "sicDescription": "Wholesale-Petroleum Bulk Stations & Terminals",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Global Partners engages in the purchasing, selling, gathering, blending, storing, and logistics of transporting refined petroleum products, gasoline, diesel, propane, and crude oil through multiple distribution channels and transportation methods."
+      }
     },
     "TPB": {
       "name": "Turning Point Brands, Inc.",
@@ -1169,7 +1208,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Tamboran Resources is an oil and gas exploration company developing natural gas reserves in the Beetaloo Basin of Australia with the objective of supplying natural gas to both Australian domestic and international LNG markets."
+      }
     },
     "AIIR": {
       "name": "AIR Global PLC",
@@ -1185,7 +1227,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "TETRA Technologies provides equipment and services for oil and gas well development and production, including hydraulic fracturing operations and abandonment management for oil and gas properties."
+      }
     },
     "PDS": {
       "name": "PRECISION DRILLING Corp",
@@ -1209,7 +1254,10 @@
       "sicDescription": "Drilling Oil & Gas Wells",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "HighPeak Energy is an oil and gas exploration and production company conducting development and completion operations to produce crude oil and natural gas from reservoirs."
+      }
     },
     "ACDC": {
       "name": "ProFrac Holding Corp.",
@@ -1289,7 +1337,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Granite Ridge Resources is an oil and gas exploration and production company extracting crude oil and natural gas from proved reserves using hydraulic fracturing and other development techniques."
+      }
     },
     "GPRK": {
       "name": "GeoPark Ltd",
@@ -1329,7 +1380,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "W&T Offshore is an oil and natural gas company producing crude oil, natural gas, and natural gas liquids from properties on the Outer Continental Shelf and other fields."
+      }
     },
     "NUAI": {
       "name": "New ERA Energy & Digital, Inc.",
@@ -1409,7 +1463,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "PrimeEnergy Resources is an oil and gas exploration and production company managing reserves and drilling programs, exposed to volatility in commodity prices for oil and natural gas."
+      }
     },
     "FTW": {
       "name": "PRESIDIO PRODUCTION Co",
@@ -1425,7 +1482,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Gran Tierra Energy is an oil and gas exploration and production company with operations in Colombia, Canada, and Ecuador, generating revenue from crude oil and natural gas production across multiple basins."
+      }
     },
     "NC": {
       "name": "NACCO INDUSTRIES INC",
@@ -1497,7 +1557,10 @@
       "sicDescription": "Oil & Gas Field Services, NEC",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Mammoth Energy Services provides oilfield services to oil and gas companies, including sand proppant supply and completion services such as cementing, acidizing, and coil tubing for unconventional well development."
+      }
     },
     "NINE": {
       "name": "Nine Energy Service, Inc.",
@@ -1625,7 +1688,10 @@
       "sicDescription": "Sausages & Other Prepared Meat Products",
       "flags": [
         "factory_farming"
-      ]
+      ],
+      "reasons": {
+        "factory_farming": "Bridgford Foods Corporation is a meat and poultry processing company producing ready-to-eat meat and poultry products subject to HACCP food safety regulations."
+      }
     },
     "VOC": {
       "name": "VOC Energy Trust",
@@ -1673,7 +1739,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Abundia Global Impact Group holds legacy oil and gas assets from its predecessor Houston American Energy Corp., continuing to operate crude oil and natural gas production in the Permian Basin and U.S. Gulf Coast."
+      }
     },
     "KLXE": {
       "name": "KLX Energy Services Holdings, Inc.",
@@ -1697,7 +1766,10 @@
       "sicDescription": "Oil & Gas Field Exploration Services",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "NXT Energy Solutions is a technology company providing oil and gas exploration services using proprietary Stress Field Detection technology for hydrocarbon exploration."
+      }
     },
     "BATL": {
       "name": "BATTALION OIL CORP",
@@ -1705,7 +1777,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Battalion Oil Corp is an oil and natural gas company with proved reserves of approximately 59.7 million barrels of oil equivalent consisting of crude oil, natural gas liquids, and natural gas."
+      }
     },
     "PRT": {
       "name": "PermRock Royalty Trust",
@@ -1713,7 +1788,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "PermRock Royalty Trust holds royalty interests in oil and natural gas properties with operations focused on drilling activity and extracting oil and natural gas reserves."
+      }
     },
     "EONR": {
       "name": "EON Resources Inc.",
@@ -1737,7 +1815,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "CKX Lands derives income from mineral royalties in oil and gas production by leasing its property to oil and gas operators and collecting royalty interests from unrelated third parties' extraction activities."
+      }
     },
     "GNOLF": {
       "name": "GENOIL INC",
@@ -1785,7 +1866,10 @@
       "sicDescription": "Natural Gas Distribution",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Clean Energy Technologies operates natural gas infrastructure and sales, acquiring natural gas pipeline operator assets and selling natural gas to customers at spot prices."
+      }
     },
     "TPET": {
       "name": "Trio Petroleum Corp",
@@ -1825,7 +1909,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Trillion Energy International is focused on offshore and onshore oil and gas exploration and production in Turkey and Bulgaria, with plans to expand natural gas production from the SASB Gas Field in the Black Sea."
+      }
     },
     "GBR": {
       "name": "New Concept Energy, Inc.",
@@ -1977,7 +2064,10 @@
       "sicDescription": "Pipe Lines (No Natural Gas)",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Enbridge is a leading North American provider of midstream energy services including operations of natural gas liquids pipelines, crude oil pipelines, natural gas pipelines, and petrochemical and refined products services."
+      }
     },
     "STOHF": {
       "name": "EQUINOR ASA",
@@ -2089,7 +2179,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "AleAnna Inc. holds oil and gas exploration and production assets with subsidiaries engaged in renewable natural gas development and holds hydrocarbon production contracts for exploration and development."
+      }
     },
     "PPLOF": {
       "name": "PEMBINA PIPELINE CORP",
@@ -2473,7 +2566,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Tamboran Resources is an oil and gas exploration and development company with operations in the Beetaloo Basin, managing working interests in oil and natural gas reserves and resources."
+      }
     },
     "NUAIW": {
       "name": "New ERA Energy & Digital, Inc.",

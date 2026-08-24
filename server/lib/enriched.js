@@ -30,12 +30,12 @@ export function enrichedFlagsFor(ticker, activeKeys) {
   const c = _data.companies[String(ticker).toUpperCase()];
   if (!c) return [];
   const active = new Set(activeKeys);
-  // Prefer a specific, human sentence for the company's registered line of business;
-  // fall back to naming the SIC classification if we don't have a phrasing for the code.
-  const reason = reasonForSic(c.sic) || `Registered under ${c.sicDescription} (SIC ${c.sic}).`;
+  // Reason precedence: a per-company sentence written from the company's own 10-K (when we
+  // enriched it), then a specific per-SIC-code sentence, then naming the classification.
+  const codeReason = reasonForSic(c.sic) || `Registered under ${c.sicDescription} (SIC ${c.sic}).`;
   return (c.flags || [])
     .filter((k) => active.has(k))
-    .map((k) => ({ key: k, label: screenLabel(k), reason }));
+    .map((k) => ({ key: k, label: screenLabel(k), reason: (c.reasons && c.reasons[k]) || codeReason }));
 }
 
 /** Name for a ticker if the enriched set knows it. */

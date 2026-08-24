@@ -464,13 +464,6 @@ const METHOD_CATALOGUE = [
     { name: "Abortion & contraceptives", status: "Planned", def: "Manufacture of abortifacients or contraceptives, or provision of abortion services.", counts: "Makers of abortifacient drugs or contraceptives as a material line; for-profit abortion providers.", not: "Diversified pharma where it isn’t a disclosed principal activity.", ex: "Curated + filing-cited.", contested: true },
   ]],
 ];
-const METHOD_EXCLUDED = [
-  ["Nuclear power", "Genuinely contested (many consider it climate-positive) and low screening demand."],
-  ["Interest-based finance / Sharia", "Already well served by dedicated tools; the valuable part needs a fundamentals data feed we don’t source, and the cheap piece (flag all banks by code) is too blunt to ship honestly."],
-  ["For-profit education, sugar / ultra-processed food, pork", "Little real divestment constituency, or a signal too noisy to be honest."],
-  ["Mining, pesticides, conflict minerals, governance", "No clean, free signal yet — these need external datasets we don’t source. Silence is honest; a bad guess isn’t."],
-];
-
 function Methodology({ onStart }) {
   const wrap = { maxWidth: 900, margin: "0 auto", padding: "0 24px" };
   const StatusBadge = ({ s }) => (
@@ -565,17 +558,8 @@ function Methodology({ onStart }) {
       </section>
 
       <section style={{ background: L.card, borderTop: `1px solid ${L.line}` }}>
-        <div style={{ ...wrap, padding: "clamp(48px,7vw,72px) 24px" }}>
-          <SectionHead n="04" title="What we deliberately excluded" sub="Where we can’t meet the plain-cited-fact bar, we don’t flag — silence beats a bad guess." />
-          <div style={{ display: "grid", gap: 14 }}>
-            {METHOD_EXCLUDED.map(([t, d]) => (
-              <div key={t} style={{ display: "grid", gridTemplateColumns: "minmax(120px,220px) 1fr", gap: 16, alignItems: "baseline", paddingBottom: 14, borderBottom: `1px solid ${L.line}` }}>
-                <span style={{ fontFamily: serif, fontSize: 16, fontWeight: 700, color: L.pine }}>{t}</span>
-                <span style={{ fontFamily: sans, fontSize: 14.5, color: L.muted, lineHeight: 1.55 }}>{d}</span>
-              </div>
-            ))}
-          </div>
-          <p style={{ fontFamily: serif, fontStyle: "italic", fontSize: 17, color: L.pine, lineHeight: 1.6, margin: "32px 0 0", textAlign: "center", maxWidth: 640, marginLeft: "auto", marginRight: "auto" }}>
+        <div style={{ ...wrap, padding: "clamp(48px,7vw,72px) 24px", textAlign: "center" }}>
+          <p style={{ fontFamily: serif, fontStyle: "italic", fontSize: "clamp(18px,2.4vw,22px)", color: L.pine, lineHeight: 1.6, margin: 0, maxWidth: 660, marginLeft: "auto", marginRight: "auto" }}>
             Every flag resolves to a plain, checkable, cited fact. Where we can’t meet that bar, we don’t flag it — silence means “not one of the names we track,” never “audited clean.”
           </p>
         </div>

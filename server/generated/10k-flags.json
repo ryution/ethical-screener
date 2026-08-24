@@ -1179,6 +1179,1878 @@
           "asOf": "10-K filed 2026-03-12"
         }
       ]
+    },
+    "IMO": {
+      "name": "IMPERIAL OIL LTD",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Imperial Oil engages in upstream oil and gas exploration, production, and development, as well as downstream refining, distribution, and marketing of crude oil and refined products.",
+          "quote": "Upstream 7 Disclosure of reserves 7 Proved undeveloped reserves 8 Oil and gas production, production prices and production costs 9 Drilling and other exploratory and development activities 11 Present activities 13 Oil and gas properties, wells, operations and acreage 14 Downstream 16 Supply and trading 16 Transportation 16 Refining 16 Distribution 16 Marketing 17 Chemical 17",
+          "source": "https://www.sec.gov/Archives/edgar/data/49938/000004993826000009/imo-20251231.htm",
+          "asOf": "10-K filed 2026-02-18"
+        }
+      ]
+    },
+    "MPLX": {
+      "name": "MPLX LP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "MPLX LP operates as a midstream logistics and marketing company focused on transportation, storage, and trading of crude oil, refined petroleum products, natural gas, and NGLs.",
+          "quote": "crude oil, natural gas, NGLs, renewable diesel and other renewable fuels",
+          "source": "https://www.sec.gov/Archives/edgar/data/1552000/000155200026000009/mplx-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "TRGP": {
+      "name": "Targa Resources Corp.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Targa Resources operates gathering and processing systems that extract natural gas liquids from raw natural gas production, and handles crude oil gathering, terminaling and transportation across major U.S. shale basins.",
+          "quote": "gathering and/or purchase and sale of natural gas produced from oil and gas wells, removing impurities and processing this raw natural gas into merchantable natural gas by extracting NGLs; and assets used for the gathering and terminaling and/or purchase and sale of crude oil",
+          "source": "https://www.sec.gov/Archives/edgar/data/1389170/000119312526059296/trgp-20251231.htm",
+          "asOf": "10-K filed 2026-02-19"
+        }
+      ]
+    },
+    "VG": {
+      "name": "Venture Global, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Venture Global develops and operates natural gas liquefaction projects that process natural gas into LNG for export via interstate and regional pipeline networks.",
+          "quote": "the construction and operations of natural gas pipelines and pipeline connections for our projects",
+          "source": "https://www.sec.gov/Archives/edgar/data/2007855/000200785526000013/vg-20251231.htm",
+          "asOf": "10-K filed 2026-03-02"
+        }
+      ]
+    },
+    "EQT": {
+      "name": "EQT Corp",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "EQT Corp is an independent energy company engaged in exploration, development, and production of natural gas, NGLs, and oil reserves across the Appalachian Basin and other regions.",
+          "quote": "our development plans, which would increase or decrease the pace of the development and the level of our reserves, as well as our revenues, earnings or liquidity. Lower prices and changes in our development plans could also result in non-cash impairments in the book value of our oil and gas properties",
+          "source": "https://www.sec.gov/Archives/edgar/data/33213/000003321326000018/eqt-20251231.htm",
+          "asOf": "10-K filed 2026-02-18"
+        }
+      ]
+    },
+    "CQP": {
+      "name": "Cheniere Energy Partners, L.P.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Cheniere Energy Partners operates LNG terminals and interstate natural gas pipelines that transport and liquefy natural gas for export to international markets.",
+          "quote": "the transportation of natural gas in interstate commerce, to the sale for resale of natural gas in interstate commerce, to natural gas companies engaged in such transportation or sale and to the construction, operation, maintenance and expansion of LNG terminals and interstate natural gas pipelines",
+          "source": "https://www.sec.gov/Archives/edgar/data/1383650/000138365026000005/cqp-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "ATO": {
+      "name": "ATMOS ENERGY CORP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Atmos Energy operates interstate natural gas pipelines, transmission systems, and storage facilities that distribute and transport natural gas to customers.",
+          "quote": "If a substantial disruption to or reduction in interstate natural gas pipelines' transmission and storage capacity occurred due to operational failures or disruptions",
+          "source": "https://www.sec.gov/Archives/edgar/data/731802/000073180225000056/ato-20250930.htm",
+          "asOf": "10-K filed 2025-11-14"
+        }
+      ]
+    },
+    "VNOM": {
+      "name": "Viper Energy, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Viper Energy is engaged in the acquisition and operation of crude oil and natural gas producing properties, conducting exploration and development drilling activities.",
+          "quote": "Crude oil Liquid hydrocarbons retrieved from geological structures underground to be refined into fuel sources.",
+          "source": "https://www.sec.gov/Archives/edgar/data/2074176/000207417626000010/vnom-20251231.htm",
+          "asOf": "10-K filed 2026-02-25"
+        }
+      ]
+    },
+    "EXE": {
+      "name": "EXPAND ENERGY Corp",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Expand Energy operates in oil and gas exploration, development, and production activities with technical expertise in reservoir engineering and drilling operations.",
+          "quote": "Over 18 years of practical experience in the oil and gas industry, with over 16 years in reservoir engineering",
+          "source": "https://www.sec.gov/Archives/edgar/data/895126/000089512626000011/exe-20251231.htm",
+          "asOf": "10-K filed 2026-02-18"
+        }
+      ]
+    },
+    "WES": {
+      "name": "Western Midstream Partners, LP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Western Midstream Partners engages in the gathering, compression, treatment, and processing of natural gas, and the transportation of condensate, NGLs, and crude oil through dedicated gathering systems.",
+          "quote": "We are engaged in the business of gathering, compressing, treating, processing, and transporting natural gas; gathering, stabilizing, and transporting condensate, NGLs, and crude oil",
+          "source": "https://www.sec.gov/Archives/edgar/data/1423902/000142390226000030/wes-20251231.htm",
+          "asOf": "10-K filed 2026-02-18"
+        }
+      ]
+    },
+    "OVV": {
+      "name": "Ovintiv Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Ovintiv operates oil and natural gas production and development activities across multiple unconventional plays, including the Montney and other liquids-rich formations.",
+          "quote": "The Montney formation is characterized by up to six stacked horizons spanning over 1,000 feet of stratigraphy and is",
+          "source": "https://www.sec.gov/Archives/edgar/data/1792580/000119312526064309/ovv-20251231.htm",
+          "asOf": "10-K filed 2026-02-23"
+        }
+      ]
+    },
+    "DINO": {
+      "name": "HF Sinclair Corp",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "HF Sinclair operates petroleum refineries that process crude oil into refined products including gasoline, diesel, and specialty lubricants.",
+          "quote": "purifying feedstock by separating and recovering aromatic compounds from the production process. These aromatic compounds are valuable due to their use in producing a range of chemicals and products like solvents, plastics, and synthetic materials",
+          "source": "https://www.sec.gov/Archives/edgar/data/1915657/000191565726000016/dino-20251231.htm",
+          "asOf": "10-K filed 2026-02-27"
+        }
+      ]
+    },
+    "PAA": {
+      "name": "PLAINS ALL AMERICAN PIPELINE LP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Plains All American Pipeline operates midstream infrastructure for gathering, transporting, storing, and fractionating crude oil and natural gas liquids across North America.",
+          "quote": "declines in global crude oil demand and/or crude oil prices or other factors that correspondingly lead to a significant reduction of North American crude oil and natural gas liquids (\"NGL\") production",
+          "source": "https://www.sec.gov/Archives/edgar/data/1070423/000107042326000014/paa-20251231.htm",
+          "asOf": "10-K filed 2026-02-27"
+        }
+      ]
+    },
+    "APA": {
+      "name": "APA Corp",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "APA Corporation is an independent energy company engaged in the exploration, development, and production of crude oil, natural gas, and NGLs with operations in the U.S., Egypt, and offshore North Sea.",
+          "quote": "APA Corporation (APA or the Company) is an independent energy company that owns subsidiaries that explore for, develop, and produce crude oil, natural gas, and NGLs",
+          "source": "https://www.sec.gov/Archives/edgar/data/1841666/000184166626000015/apa-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "SUN": {
+      "name": "Sunoco LP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Sunoco LP operates an integrated pipeline and terminal network for transporting refined products, crude oil, and ammonia, and is engaged in energy midstream operations.",
+          "quote": "Our Pipeline Systems segment includes an integrated pipeline and terminal network comprised of approximately 6,000 miles of refined product pipeline",
+          "source": "https://www.sec.gov/Archives/edgar/data/1552275/000155227526000021/sun-20251231.htm",
+          "asOf": "10-K filed 2026-02-19"
+        }
+      ]
+    },
+    "DTM": {
+      "name": "DT Midstream, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "DT Midstream owns and operates interstate natural gas pipelines and compression facilities that transport natural gas from major shale regions to southeastern U.S. markets.",
+          "quote": "through its wholly owned subsidiary, Millennium Pipeline Company, LLC, owns a 266-mile interstate transportation pipeline and compression facilities serving markets in the northeast and supply from the northeast Marcellus region",
+          "source": "https://www.sec.gov/Archives/edgar/data/1842022/000184202226000003/dtm-20251231.htm",
+          "asOf": "10-K filed 2026-02-19"
+        }
+      ]
+    },
+    "AR": {
+      "name": "ANTERO RESOURCES Corp",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Antero Resources is engaged in the exploration and production of natural gas and NGLs with focus on unconventional shale plays.",
+          "quote": "Bbl. One stock tank barrel, of 42 U.S. gallons liquid volume, used herein in reference to crude oil, condensate, NGLs or water",
+          "source": "https://www.sec.gov/Archives/edgar/data/1433270/000110465926013386/ar-20251231x10k.htm",
+          "asOf": "10-K filed 2026-02-11"
+        }
+      ]
+    },
+    "RRC": {
+      "name": "RANGE RESOURCES CORP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Range Resources Corp engages in the exploration, development, and production of natural gas, NGLs, and oil reserves, primarily in unconventional shale formations.",
+          "quote": "bbl. One stock tank barrel, or 42 U.S. gallons liquid volumes, used herein in reference to crude oil or other liquid hydrocarbons",
+          "source": "https://www.sec.gov/Archives/edgar/data/315852/000119312526067292/rrc-20251231.htm",
+          "asOf": "10-K filed 2026-02-24"
+        }
+      ]
+    },
+    "KNTK": {
+      "name": "Kinetik Holdings Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Kinetik Holdings operates midstream infrastructure including gathering systems, processing plants, pipelines, and terminals for crude oil, natural gas, and NGLs.",
+          "quote": "Throughput. The volume of crude oil, natural gas, NGLs, water and refined petroleum products transported or passing through a pipeline, plant, terminal or other facility during a particular period",
+          "source": "https://www.sec.gov/Archives/edgar/data/1692787/000169278726000048/apa-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "SFD": {
+      "name": "SMITHFIELD FOODS INC",
+      "flags": [
+        {
+          "key": "factory_farming",
+          "summary": "Smithfield Foods operates large-scale pork production and processing facilities that produce fresh and processed pork products through industrial-scale agriculture and manufacturing.",
+          "quote": "We continue to optimize our operations by reconfiguring our manufacturing footprint, closing high-cost operating lines and creating gr",
+          "source": "https://www.sec.gov/Archives/edgar/data/91388/000009138826000014/smf-20251228.htm",
+          "asOf": "10-K filed 2026-03-24"
+        }
+      ]
+    },
+    "SM": {
+      "name": "SM Energy Co",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "SM Energy is an oil and gas exploration and production company that develops crude oil, natural gas, and natural gas liquids from underground reserves.",
+          "quote": "crude oil, natural gas, and natural gas liquids (also referred to throughout this report as \"oil,\" \"gas,\" and \"NGLs,\" respectively)",
+          "source": "https://www.sec.gov/Archives/edgar/data/893538/000089353826000032/sm-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "HESM": {
+      "name": "Hess Midstream LP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Hess Midstream gathers, processes, terminals, and stores crude oil, natural gas, and NGLs as midstream infrastructure serving oil and gas producers.",
+          "quote": "reductions in the volumes of crude oil, natural gas, NGLs and produced water we gather, process, terminal or store",
+          "source": "https://www.sec.gov/Archives/edgar/data/1789832/000119312526071592/hesm-20251231.htm",
+          "asOf": "10-K filed 2026-02-25"
+        }
+      ]
+    },
+    "CHRD": {
+      "name": "Chord Energy Corp",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Chord Energy is an upstream oil and gas company that develops proved reserves of crude oil and natural gas using conventional recovery methods.",
+          "quote": "proved reserves that can be expected to be recovered through existing wells with existing equipment and operating methods",
+          "source": "https://www.sec.gov/Archives/edgar/data/1486159/000148615926000005/chrd-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "NFG": {
+      "name": "NATIONAL FUEL GAS CO",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "National Fuel Gas operates natural gas distribution and transmission systems serving residential and commercial customers across its service territories.",
+          "quote": "the federal law regulating interstate natural gas pipeline and storage companies",
+          "source": "https://www.sec.gov/Archives/edgar/data/70145/000007014525000039/nfg-20250930.htm",
+          "asOf": "10-K filed 2025-11-21"
+        }
+      ]
+    },
+    "PPC": {
+      "name": "PILGRIMS PRIDE CORP",
+      "flags": [
+        {
+          "key": "factory_farming",
+          "summary": "Pilgrim's Pride is an industrial poultry processor operating large-scale chicken production and meat processing facilities throughout the United States.",
+          "quote": "meat processing industry",
+          "source": "https://www.sec.gov/Archives/edgar/data/802481/000080248126000011/ppc-20251228.htm",
+          "asOf": "10-K filed 2026-02-12"
+        }
+      ]
+    },
+    "KGS": {
+      "name": "Kodiak Gas Services, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Kodiak Gas Services provides compression equipment and services to oil and gas producers to enhance production efficiency across unconventional basins.",
+          "quote": "The use of centralized gas lift as one of the more effective and efficient artificial lift technologies for the production of crude oil and is widely used by U.S. oil and gas producers",
+          "source": "https://www.sec.gov/Archives/edgar/data/1767042/000176704226000012/kgs-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "RIG": {
+      "name": "Transocean Ltd.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Transocean is a leading offshore drilling contractor operating one of the world's most advanced fleets of ultra-deepwater drillships and semisubmersibles.",
+          "quote": "is a leading international provider of offshore contract drilling services for oil and gas wells. As of February 17, 2026, we owned or had partial ownership interests in and operated 27 mobile offshore drilling units, consisting of 20 ultra-deepwater drillships and seven harsh environment semisubmersibles.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1451505/000145150526000018/rig-20251231x10k.htm",
+          "asOf": "10-K filed 2026-02-23"
+        }
+      ]
+    },
+    "MGY": {
+      "name": "Magnolia Oil & Gas Corp",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Magnolia Oil & Gas explores for and produces crude oil, natural gas, and natural gas liquids from reserves in major U.S. basins.",
+          "quote": "One boe is equal to one Bbl, six thousand cubic feet of natural gas, or 42 gallons of natural gas liquids",
+          "source": "https://www.sec.gov/Archives/edgar/data/1698990/000169899026000005/mgy-20251231.htm",
+          "asOf": "10-K filed 2026-02-12"
+        }
+      ]
+    },
+    "AROC": {
+      "name": "Archrock, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Archrock provides contract compression services and equipment to natural gas and crude oil producers throughout major U.S. producing regions.",
+          "quote": "We have strong relationships with a deep base of midstream companies and natural gas and crude oil producers.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1389050/000138905026000009/aroc-20251231x10k.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "VAL": {
+      "name": "Valaris Ltd",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Valaris is an offshore contract drilling company providing drilling services to oil and gas operators in deepwater and harsh-environment regions globally.",
+          "quote": "Our ability to enter into, and the terms of, future drilling contracts for rigs currently idled and for rigs whose contracts are expiring",
+          "source": "https://www.sec.gov/Archives/edgar/data/314808/000031480826000029/val-20251231.htm",
+          "asOf": "10-K filed 2026-02-20"
+        }
+      ]
+    },
+    "NJR": {
+      "name": "NEW JERSEY RESOURCES CORP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "New Jersey Resources operates regulated natural gas distribution and transmission utilities serving residential, commercial, and industrial customers.",
+          "quote": "NJNG is not currently subject to competition from other natural gas distribution utilities with regard to the transportation of natural gas in its service territory.",
+          "source": "https://www.sec.gov/Archives/edgar/data/356309/000035630925000093/njr-20250930.htm",
+          "asOf": "10-K filed 2025-11-20"
+        }
+      ]
+    },
+    "OII": {
+      "name": "OCEANEERING INTERNATIONAL INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Oceaneering International provides subsea robotics, manufactured products, and offshore project services primarily to oil and gas operators worldwide.",
+          "quote": "services and products provided primarily to the oil and gas industry",
+          "source": "https://www.sec.gov/Archives/edgar/data/73756/000007375626000016/oii-20251231.htm",
+          "asOf": "10-K filed 2026-02-20"
+        }
+      ]
+    },
+    "CNX": {
+      "name": "CNX Resources Corp",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "CNX Resources is an oil and gas exploration and production company operating in conventional and unconventional oil and gas formations.",
+          "quote": "oil or other liquid hydrocarbons",
+          "source": "https://www.sec.gov/Archives/edgar/data/1070412/000107041226000038/cnx-20251231.htm",
+          "asOf": "10-K filed 2026-02-10"
+        }
+      ]
+    },
+    "HCC": {
+      "name": "WARRIOR MET COAL, INC.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Warrior Met Coal mines metallurgical-grade steelmaking coal used by steel manufacturers and coke producers in integrated steel mills.",
+          "quote": "The Company's asset retirement obligations also include estimates to reclaim gas wells in accordance with the Oil and Gas Board of Alabama.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1691303/000119312526048914/hcc-20251231.htm",
+          "asOf": "10-K filed 2026-02-12"
+        }
+      ]
+    },
+    "OGS": {
+      "name": "ONE Gas, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "ONE Gas operates natural gas distribution systems supplying natural gas to residential, commercial, and industrial customers in Oklahoma.",
+          "quote": "The unavailability of adequate natural gas pipeline transportation and storage capacity or a decrease in natural gas supply may decrease and impair our ability to meet customers' natural gas requirements",
+          "source": "https://www.sec.gov/Archives/edgar/data/1587732/000158773226000009/ogs-20251231.htm",
+          "asOf": "10-K filed 2026-02-19"
+        }
+      ]
+    },
+    "MUR": {
+      "name": "MURPHY OIL CORP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Murphy Oil explores for and produces crude oil, natural gas, and natural gas liquids primarily in the U.S. and Canada.",
+          "quote": "The Company produces crude oil and condensate (collectively, crude oil), natural gas and natural gas liquids (NGLs) primarily in the U.S. and Canada",
+          "source": "https://www.sec.gov/Archives/edgar/data/717423/000162828026011709/mur-20251231.htm",
+          "asOf": "10-K filed 2026-02-25"
+        }
+      ]
+    },
+    "CRGY": {
+      "name": "Crescent Energy Co",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Crescent Energy is an oil and gas exploration and production company developing oil and gas properties and reserves.",
+          "quote": "We acquired from unaffiliated third parties certain interests in oil and gas properties, rights and related assets located in",
+          "source": "https://www.sec.gov/Archives/edgar/data/1866175/000186617526000026/crgy-20251231.htm",
+          "asOf": "10-K filed 2026-02-25"
+        }
+      ]
+    },
+    "CRC": {
+      "name": "California Resources Corp",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "California Resources is the largest oil and gas operator in California, operating and developing crude oil and natural gas fields throughout the state.",
+          "quote": "We are the largest operator in California and currently operate all of our core oil and gas fields.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1609253/000160925326000051/crc-20251231.htm",
+          "asOf": "10-K filed 2026-03-02"
+        }
+      ]
+    },
+    "HP": {
+      "name": "Helmerich & Payne, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Helmerich & Payne provides performance-driven drilling solutions and technologies to oil and gas exploration and production companies, focusing on improving the efficiency and accuracy of drilling operations in the oil and gas production value chain.",
+          "quote": "We provide performance-driven drilling solutions and technologies that are intended to make hydrocarbon recovery safer and more economical for oil and gas exploration and production companies.",
+          "source": "https://www.sec.gov/Archives/edgar/data/46765/000004676525000071/hp-20250930.htm",
+          "asOf": "10-K filed 2025-11-21"
+        }
+      ]
+    },
+    "PARR": {
+      "name": "PAR PACIFIC HOLDINGS, INC.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "PAR Pacific operates four crude oil refineries in Hawaii, Wyoming, Washington, and Montana that process crude oil into gasoline, distillate, asphalt, and other refined products for distribution across the western United States.",
+          "quote": "We own and operate four refineries with total operating crude oil throughput capacity of 219 Mbpd. Our refineries in Kapolei, Hawaii, Newcastle, Wyoming, Tacoma, Washington, and Billings, Montana, convert crude oil into gasoline, distillate, asphalt and other products to serve the state of Hawaii and areas ranging from Washington state to the Dakotas and Wyoming.",
+          "source": "https://www.sec.gov/Archives/edgar/data/821483/000082148326000005/parr-20251231.htm",
+          "asOf": "10-K filed 2026-02-25"
+        }
+      ]
+    },
+    "EE": {
+      "name": "Excelerate Energy, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Excelerate Energy provides floating liquefied natural gas (LNG) regasification terminals and infrastructure that enable the import and distribution of LNG to international markets, supporting natural gas and LNG supply chains.",
+          "quote": "Our business and the development of energy-related infrastructure and projects generally is based on assumptions about the future availability and price of natural gas, LNG, and crude oil and the prospects for international and domestic natural gas and LNG markets.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1888447/000119312526078407/ee-20251231.htm",
+          "asOf": "10-K filed 2026-02-27"
+        }
+      ]
+    },
+    "CVI": {
+      "name": "CVR ENERGY INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "CVR Energy operates refineries that process crude oil and various feedstocks into refined petroleum products including gasoline, diesel fuel, jet fuel, and other refined products for commercial distribution.",
+          "quote": "Feedstocks \u2014 Petroleum products, such as crude oil or fluid catalytic cracking unit gasoline, that are processed and blended into refined products, such as gasoline, diesel fuel, and jet fuel during the refining process.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376139/000137613926000014/cvi-20251231.htm",
+          "asOf": "10-K filed 2026-02-18"
+        }
+      ]
+    },
+    "NESR": {
+      "name": "National Energy Services Reunited Corp.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "National Energy Services Reunited provides well testing, engineering, and operational services to support the exploration, appraisal, development, and production phases of oil and natural gas wells across upstream operations.",
+          "quote": "Well Testing Services \u2013 Our well testing services are used to measure solids, gas, oil and water produced from a well. We offer integrated well testing services across the exploration, appraisal and development phases of oil and gas wells.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1698514/000149315226009139/form10-k.htm",
+          "asOf": "10-K filed 2026-03-06"
+        }
+      ]
+    },
+    "LBRT": {
+      "name": "Liberty Energy Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Liberty Energy operates in the oil and gas industry providing services that reflect global oil and gas supply and demand dynamics, with exposure to commodity price volatility and drilling and completions activity cycles.",
+          "quote": "We operate in a cyclical industry reflecting global oil and gas supply and demand dynamics, current and expected future oil and gas commodity prices, and the perceived stability and sustainability of those prices.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1694028/000169402826000006/lbrt-20251231.htm",
+          "asOf": "10-K filed 2026-02-02"
+        }
+      ]
+    },
+    "CPK": {
+      "name": "CHESAPEAKE UTILITIES CORP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Chesapeake Utilities operates regulated natural gas distribution pipelines serving residential, commercial, and industrial customers, and also supplies propane for heating and other energy needs across multiple states.",
+          "quote": "Aspire Energy owns approximately 2,800 miles of natural gas pipeline systems in 40 counties in Ohio. The majority of Aspire Energy's revenues are derived from long-term supply agreements with Columbia Gas of Ohio and Consumers Gas Cooperative (\"CGC\"), which together serve more than 23,000 end-use customers.",
+          "source": "https://www.sec.gov/Archives/edgar/data/19745/000162828026011753/cpk-20251231.htm",
+          "asOf": "10-K filed 2026-02-25"
+        }
+      ]
+    },
+    "BSM": {
+      "name": "Black Stone Minerals, L.P.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Black Stone Minerals holds mineral and royalty interests in oil and natural gas properties and receives cash distributions from the production and sale of crude oil and natural gas by operating companies on its properties.",
+          "quote": "Oil and natural gas properties. Tracts of land consisting of properties to be developed for oil and natural gas resource extraction.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1621434/000162143426000018/bsm-20251231.htm",
+          "asOf": "10-K filed 2026-02-24"
+        }
+      ]
+    },
+    "WTTR": {
+      "name": "Select Water Solutions, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Select Water Solutions provides water handling and produced water management services to support oil and gas drilling and completion operations, with revenues directly dependent on capital spending by oil and gas companies.",
+          "quote": "Our business depends on capital spending by the oil and gas industry in the U.S. and reductions in capital spending could have a material adverse effect on our liquidity, results of operations and financial condition.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1693256/000110465926017085/wttr-20251231x10k.htm",
+          "asOf": "10-K filed 2026-02-18"
+        }
+      ]
+    },
+    "GPOR": {
+      "name": "GULFPORT ENERGY CORP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Gulfport Energy is an oil and natural gas exploration and production company engaged in the development and production of crude oil, natural gas, and natural gas liquids from proved reserves.",
+          "quote": "Proved Reserves . Quantities of oil and gas, which, by analysis of geoscience and engineering data, can be estimated with reasonable certainty to be economically producible, from a given date forward, from known reservoirs, and under existing economic conditions, operating methods and government regulations prior to the time at which contracts providing the rig",
+          "source": "https://www.sec.gov/Archives/edgar/data/874499/000162828026011487/gpor-20251231.htm",
+          "asOf": "10-K filed 2026-02-25"
+        }
+      ]
+    },
+    "TALO": {
+      "name": "TALOS ENERGY INC.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Talos Energy is an oil and natural gas exploration and production company focused on the development and extraction of proved oil and gas reserves from known reservoirs.",
+          "quote": "Proved developed reserves \u2014 In general, proved reserves that can be expected to be recovered from existing wells with existing equipment and operating methods.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1724965/000119312526067807/talo-20251231.htm",
+          "asOf": "10-K filed 2026-02-25"
+        }
+      ]
+    },
+    "NOG": {
+      "name": "NORTHERN OIL & GAS, INC.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Northern Oil and Gas is engaged in the drilling, completion, and development of oil and natural gas properties, with revenues and operations dependent on commodity prices and drilling activity levels.",
+          "quote": "changes in crude oil and natural gas prices, the pace of drilling and completions activity on our current properties and properties pending acquisition",
+          "source": "https://www.sec.gov/Archives/edgar/data/1104485/000110448526000008/nog-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "CTRI": {
+      "name": "Centuri Holdings, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Centuri Holdings modernizes natural gas pipeline infrastructure by replacing aging pipes and equipment to reduce hazardous gas leaks, methane emissions, and improve the safety and reliability of natural gas distribution systems.",
+          "quote": "Our core operations are focused on modernizing utility infrastructure, which reduces risks of hazardous gas leaks, reduces methane emissions from natural gas pipelines, hardens electric infrastructure from weather events",
+          "source": "https://www.sec.gov/Archives/edgar/data/1981599/000198159926000020/ctri-20251228.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "NWN": {
+      "name": "Northwest Natural Holding Co",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Northwest Natural operates a natural gas distribution and transmission system serving residential and commercial customers across Oregon and southwestern Washington through approximately 14,500 miles of distribution mains.",
+          "quote": "NW Natural's natural gas pipeline system consists of approximately 14,500 miles of distribution mains, approximately 700 miles of transmission mains and approximately 10,400 miles of service lines located in its territory in Oregon and southwest Washington.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1733998/000173399826000012/nwn-20251231.htm",
+          "asOf": "10-K filed 2026-02-27"
+        }
+      ]
+    },
+    "GEL": {
+      "name": "GENESIS ENERGY LP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Genesis Energy operates midstream pipelines and transportation systems that transport and distribute crude oil, petroleum products, natural gas, and natural gas liquids to refineries, petrochemical plants, and end-use customers.",
+          "quote": "shutdowns or cutbacks at refineries, petrochemical plants, utilities, individual plants or other businesses for which we transport crude oil, petroleum, natural gas or other products or to whom we sell petroleum or other products",
+          "source": "https://www.sec.gov/Archives/edgar/data/1022321/000102232126000008/gel-20251231.htm",
+          "asOf": "10-K filed 2026-02-18"
+        }
+      ]
+    },
+    "KRP": {
+      "name": "Kimbell Royalty Partners, LP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Kimbell Royalty Partners holds mineral and royalty interests in oil and natural gas producing properties and receives cash distributions from the production and sale of crude oil and natural gas reserves.",
+          "quote": "Crude oil. Liquid hydrocarbons retrieved from geological structures underground to be refined into fuel sources.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1657788/000110465926020477/krp-20251231x10k.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "NEXT": {
+      "name": "NextDecade Corp",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "NextDecade is developing the Rio Grande liquefied natural gas (LNG) export facility to liquefy, process, and export natural gas from domestic sources to international markets.",
+          "quote": "any U.S. import tariffs or quotas on steel, aluminum, pipe or other component parts of the Rio Grande LNG Facility or any CCS projects, which may raise the prices of certain materials used in the Rio Grande LNG Facility",
+          "source": "https://www.sec.gov/Archives/edgar/data/1612720/000161272026000009/next-20251231.htm",
+          "asOf": "10-K filed 2026-03-02"
+        }
+      ]
+    },
+    "WBI": {
+      "name": "WaterBridge Infrastructure LLC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "WaterBridge Infrastructure operates produced water handling and disposal facilities that treat, process, and manage water produced from oil and natural gas wells in the Permian Basin.",
+          "quote": "Produced water . Water that comes out of an oil and natural gas well with crude oil and natural gas.",
+          "source": "https://www.sec.gov/Archives/edgar/data/2064947/000119312526106541/wbi-20251231.htm",
+          "asOf": "10-K filed 2026-03-16"
+        }
+      ]
+    },
+    "AESI": {
+      "name": "Atlas Energy Solutions Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Atlas Energy Solutions provides proppant materials, specialized transportation services, and distributed power solutions (via natural gas-powered generators) to support oil and gas drilling and production operations across U.S. resource basins.",
+          "quote": "Power We provide distributed power solutions through a fleet of natural gas-powered reciprocating generators primarily supporting production and artificial lift operations across major United States resource basins.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1984060/000119312526067145/aesi-20251231.htm",
+          "asOf": "10-K filed 2026-02-24"
+        }
+      ]
+    },
+    "HLX": {
+      "name": "HELIX ENERGY SOLUTIONS GROUP INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Helix Energy Solutions is an offshore energy services company providing well intervention, robotics, inspection, repair, maintenance, and decommissioning services to support oil and gas production and field abandonment operations globally.",
+          "quote": "We are an international offshore energy services company that provides specialty services to the offshore energy industry, with a focus on well intervention, robotics and decommissioning operations.",
+          "source": "https://www.sec.gov/Archives/edgar/data/866829/000086682926000008/hlx-20251231x10k.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "PUMP": {
+      "name": "ProPetro Holding Corp.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "ProPetro provides hydraulic fracturing and pressure pumping services to oil and gas exploration and production companies to enhance hydrocarbon recovery from oil and natural gas wells.",
+          "quote": "the level of production and resulting market prices for crude oil, natural gas and other hydrocarbons, including a potential increase in Venezuelan oil supply and any related impact on global oil prices and domestic oil production",
+          "source": "https://www.sec.gov/Archives/edgar/data/1680247/000168024726000028/pump-20251231.htm",
+          "asOf": "10-K filed 2026-02-19"
+        }
+      ]
+    },
+    "KOS": {
+      "name": "Kosmos Energy Ltd.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Kosmos Energy is an oil and gas exploration and production company focused on deepwater prospects in West Africa, including the Deepwater Tano, Tweneboa and Tortue fields off Ghana, and operates long-term LNG sale agreements for natural gas commercialization.",
+          "quote": "\"Proved reserves\" Estimated quantities of crude oil, natural gas and natural gas liquids that geological and engineering data demonstrate with reasonable certainty to be economically recoverable in future years from known reservoirs under existing economic and operating conditions",
+          "source": "https://www.sec.gov/Archives/edgar/data/1509991/000150999126000017/kos-20251231.htm",
+          "asOf": "10-K filed 2026-03-02"
+        }
+      ]
+    },
+    "RES": {
+      "name": "RPC INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "RPC provides a broad range of specialized oilfield services and equipment to independent and major oil and gas companies engaged in exploration, production and development of oil and gas properties.",
+          "quote": "RPC provides a broad range of specialized oilfield services and equipment primarily to independent and major oil and gas companies engaged in the exploration, production and development of oil and gas properties throughout the United States, including the southwest, mid-continent, Gulf of America, Rocky Mountain and Appalachian regions, and in selected international markets.",
+          "source": "https://www.sec.gov/Archives/edgar/data/742278/000110465926021480/res-20251231x10k.htm",
+          "asOf": "10-K filed 2026-02-27"
+        }
+      ]
+    },
+    "NBR": {
+      "name": "NABORS INDUSTRIES LTD",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Nabors Industries manufactures and operates drilling rigs, including the PACE-X Ultra rig, designed to drill the longest and most challenging oil and gas wells for operators throughout the Lower 48 and international markets.",
+          "quote": "We believe it is the Lower 48 drilling industry's most powerful rig. It is designed to enable operators to drill their longest, most challenging oil and gas wells.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1163739/000110465926014997/nbr-20251231x10k.htm",
+          "asOf": "10-K filed 2026-02-13"
+        }
+      ]
+    },
+    "DMLP": {
+      "name": "DORCHESTER MINERALS, L.P.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Dorchester Minerals owns and leases royalty and mineral interests in oil and gas properties, generating revenues from lease payments and production royalties.",
+          "quote": "In our discretion, we may elect not to incur the expense of retaining lawyers to examine the title to our royalty and mineral interests.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1172358/000143774926005376/dmlp20251231_10k.htm",
+          "asOf": "10-K filed 2026-02-24"
+        }
+      ]
+    },
+    "NRP": {
+      "name": "NATURAL RESOURCE PARTNERS LP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "NRP owns and manages coal-related transportation and processing infrastructure and oil and gas royalty interests in the Illinois Basin and Louisiana, generating revenues from leases to third-party operators.",
+          "quote": "We also own and manage coal-related transportation and processing assets in the Illinois Basin that generate additional revenues generally based on throughput or rents.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1171486/000143774926006147/nrp20251231_10k.htm",
+          "asOf": "10-K filed 2026-02-27"
+        }
+      ]
+    },
+    "DEC": {
+      "name": "Diversified Energy Co",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Diversified Energy Company engages in upstream exploration and production of crude oil, natural gas, and natural gas liquids from proved reserves across multiple producing properties.",
+          "quote": "Upstream - Upstream activities include exploration, discovery, and extracting of natural gas, NGLS, and oil. Often referred to as exploration and production activities, or E&P.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1922446/000192244626000020/dec-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "ACDC": {
+      "name": "ProFrac Holding Corp.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "ProFrac Holding provides hydraulic fracturing services, specialized equipment, and chemicals to oil and gas operators for well completions and production enhancement.",
+          "quote": "able proppant and chemicals in sufficient quantities for use in hydraulic fracturing fluids",
+          "source": "https://www.sec.gov/Archives/edgar/data/1881487/000119312526106120/acdc-20251231.htm",
+          "asOf": "10-K filed 2026-03-13"
+        }
+      ]
+    },
+    "REPX": {
+      "name": "Riley Exploration Permian, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Riley Exploration Permian acquires and operates oil and natural gas properties in the Yeso trend of the Permian Basin in New Mexico and operates transportation agreements for crude oil, natural gas and NGLs production.",
+          "quote": "On April 3, 2023, the Company completed an acquisition of oil and natural gas properties in the Yeso trend of the Permian Basin in Eddy County, New Mexico (\"2023 New Mexico Acquisition\") from Pecos Oil & Gas, LLC.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1001614/000100161426000011/rep-20251231.htm",
+          "asOf": "10-K filed 2026-03-04"
+        }
+      ]
+    },
+    "TXO": {
+      "name": "TXO Partners, L.P.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "TXO Partners acquires and operates oil and gas assets, including properties in the Elm Coulee field and maintains a portfolio of proved oil and gas reserves across multiple productive fields.",
+          "quote": "In July 2025, we completed the acquisition of certain oil and gas assets from White Rock Energy, LLC, which are located in the Elm Coulee field in Montana and North Dakota for cash consideration of $331.6 million",
+          "source": "https://www.sec.gov/Archives/edgar/data/1559432/000119312526076813/txo-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "SOC": {
+      "name": "Sable Offshore Corp.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Sable Offshore Corp. restores and operates offshore oil and natural gas production facilities in federal waters and California, including the Santa Ynez Unit platform and onshore crude oil processing infrastructure.",
+          "quote": "The future operating and financial performance of the Company is expected to be driven primarily by our ability to establish a lawful, reliable, and economic pathway to market crude oil and natural gas produced from the SYU, resume sustained offshore production, and manage regulatory, legal, and commodity price risks associated with its federal offshore and California onshore and offshore assets.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1831481/000183148126000026/socc-20251231.htm",
+          "asOf": "10-K filed 2026-02-27"
+        }
+      ]
+    },
+    "METC": {
+      "name": "Ramaco Resources, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Ramaco Resources operates thermal coal mining with major operations in Wyoming and Appalachia, and develops rare earth elements and advanced carbon products derived from coal assets.",
+          "quote": "The property includes a thermal coal deposit as well as a large unconventional deposit of rare earth elements and critical minerals sourced from coal and carbonaceous ore.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1687187/000110465926020479/metc-20251231x10k.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "VTS": {
+      "name": "Vitesse Energy, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Vitesse Energy engages in oil and gas exploration and production operations with an internal reserves engineering department overseeing reserve evaluation and production optimization across multiple basins.",
+          "quote": "Our Senior Reserves Engineer has a B.S. in Chemical Engineering from the University of Tulsa, over twenty years of oil and gas experience, including 15 years with a focus on reserve evaluation, and additional experience with operations and production engineering in multiple basins.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1944558/000194455826000009/vitesse-20251231.htm",
+          "asOf": "10-K filed 2026-03-02"
+        }
+      ]
+    },
+    "EGY": {
+      "name": "VAALCO ENERGY INC /DE/",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "VAALCO Energy is an international oil and gas exploration and production company operating in Gabon, Egypt and previously Canada, producing crude oil and natural gas from concession agreements.",
+          "quote": "The Canada Asset Divestment closed on February 19, 2026 with an effective date of February 1, 2026 for an adjusted purchase price of $25.5 million (C$34.9 million), subject to additional customary post-closing adjustments. The Canada Asset Divestment represents the Company's complete exit of its Canadian oil and gas operations.",
+          "source": "https://www.sec.gov/Archives/edgar/data/894627/000089462726000013/egy-20251231.htm",
+          "asOf": "10-K filed 2026-03-16"
+        }
+      ]
+    },
+    "CLB": {
+      "name": "Core Laboratories Inc. /DE/",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Core Laboratories is a leading provider of reservoir description and production enhancement services and products to the oil and gas industry, helping clients evaluate and improve reservoir performance.",
+          "quote": "We were established in 1936 and are one of the world's leading providers of proprietary and patented reservoir description and production enhancement services and products to the oil and gas industry, primarily through client relationships with many of the world's major, national and independent oil companies.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1958086/000119312526118177/clb-20251231.htm",
+          "asOf": "10-K filed 2026-03-23"
+        }
+      ]
+    },
+    "NUAI": {
+      "name": "New ERA Energy & Digital, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "New ERA Energy & Digital engages in oil and gas exploration and production, including extraction and sale of crude oil, natural gas, and helium from developed and undeveloped reserves.",
+          "quote": "Developed oil and gas reserves . Developed oil and gas reserves are reserves of any category that can be expected to be recovered: (i) through existing wells with existing equipment and operating methods or in which the cost of the required equipment is relatively minor compared to the cost of a new well",
+          "source": "https://www.sec.gov/Archives/edgar/data/2028336/000121390026026501/ea0276741-10k_newera.htm",
+          "asOf": "10-K filed 2026-03-12"
+        }
+      ]
+    },
+    "SD": {
+      "name": "SANDRIDGE ENERGY INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "SandRidge Energy is an oil and natural gas exploration and production company subject to commodity price volatility and operating under hydraulic fracturing and regulatory constraints.",
+          "quote": "risks and uncertainties related to the adoption and implementation of regulations restricting oil and gas development in states where we operate; \u2022 competition in the oil and natural gas industry",
+          "source": "https://www.sec.gov/Archives/edgar/data/1349436/000162828026015318/sd-20251231.htm",
+          "asOf": "10-K filed 2026-03-05"
+        }
+      ]
+    },
+    "NGS": {
+      "name": "NATURAL GAS SERVICES GROUP INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Natural Gas Services provides compression equipment and gas-related services for oil and gas production operations, renting compressor units of various horsepowers to producers.",
+          "quote": "Our large horsepower compressor units are 400 horsepower or more, medium horsepower units are 200 to 399 horsepower and small horsepower units are below 200 horsepower.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1084991/000108499126000015/ngs-20251231.htm",
+          "asOf": "10-K filed 2026-03-16"
+        }
+      ]
+    },
+    "ZNOG": {
+      "name": "ZION OIL & GAS INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Zion Oil and Gas is an oil and gas exploration company with 25 years of history focused on oil and gas exploration in Israel, exploring for oil and natural gas reserves.",
+          "quote": "Zion Oil and Gas, Inc., a Texas corporation, is an oil and gas exploration company with a history of 25 years of oil and gas exploration in Israel.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1131312/000143774926009073/znog20251231_10k.htm",
+          "asOf": "10-K filed 2026-03-19"
+        }
+      ]
+    },
+    "SMC": {
+      "name": "Summit Midstream Corp",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Summit Midstream provides gathering, processing, and transmission services for natural gas and crude oil produced in the Permian Basin, including operation of the 70%-owned Double E Pipeline.",
+          "quote": "We also provide natural gas transmission services via the Double E Pipeline, a long-haul natural gas pipeline in which we indirectly own a 70% equity interest and serve as the pipeline's operator.",
+          "source": "https://www.sec.gov/Archives/edgar/data/2024218/000202421826000017/smlp-20251231.htm",
+          "asOf": "10-K filed 2026-03-16"
+        }
+      ]
+    },
+    "RNGR": {
+      "name": "Ranger Energy Services, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Ranger Energy Services provides equipment and specialized services to oil and gas drilling operations, with revenue directly dependent on commodity prices and activity levels in oil and natural gas production.",
+          "quote": "The demand for our services is primarily determined by current and anticipated oil and natural gas prices and the related levels of capital spending and drilling activity in the areas in which we have operations.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1699039/000162828026015248/rngr-20251231.htm",
+          "asOf": "10-K filed 2026-03-05"
+        }
+      ]
+    },
+    "SCGX": {
+      "name": "SAXON CAPITAL GROUP INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "SAXON CAPITAL operates USA Superior Energy Holdings, which acquires and operates shallow oil and gas fields using enhanced oil recovery techniques and applies workover and stimulation services to increase production.",
+          "quote": "USA Superior Energy Holdings, Inc. (the \"Company\") operates in the energy industry, focusing on acquiring, owning, operating and applying enhanced oil recovery (\"EOR\") techniques to existing shallow fields of oil and gas.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1277575/000137774208000030/form10k_2007.htm",
+          "asOf": "10-K filed 2008-05-16"
+        }
+      ]
+    },
+    "REI": {
+      "name": "RING ENERGY, INC.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Ring Energy is an independent oil and natural gas exploration and production company operating properties in onshore U.S. basins, generating revenue from crude oil, natural gas, and natural gas liquids sales.",
+          "quote": "Ring Energy, Inc., a Nevada corporation (\"Ring,\" \"Ring Energy,\" the \"Company,\" \"we,\" \"us,\" \"our,\" or similar terms), is a growth oriented independent oil and natural gas exploration and production company based in The Woodlands, Tex",
+          "source": "https://www.sec.gov/Archives/edgar/data/1384195/000138419526000050/rei-20251231.htm",
+          "asOf": "10-K filed 2026-03-04"
+        }
+      ]
+    },
+    "NC": {
+      "name": "NACCO INDUSTRIES INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "NACCO Industries, through its Catapult subsidiary, owns a diversified portfolio of oil and gas mineral and royalty interests across major U.S. basins, generating recurring revenue from oil, natural gas, and natural gas liquids production without operational costs.",
+          "quote": "Catapult's portfolio of oil and gas mineral and royalty interests provides steady, recurring cash flows, with strategic positions in premier basins, primarily in the Permian Basin, the Haynesville Shale basin and the Appalachian basin.",
+          "source": "https://www.sec.gov/Archives/edgar/data/789933/000078993326000070/nacco-20251231.htm",
+          "asOf": "10-K filed 2026-03-04"
+        }
+      ]
+    },
+    "AREC": {
+      "name": "American Resources Corp",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "American Resources Corp holds investments in coal mining operations and oil and gas wells across Texas and the Appalachia region, diversifying across energy resources.",
+          "quote": "Prior he had been an investor and partner in various natural resources assets over the last seven years including coal mining operations and various oil and gas wells throughout Texas and the Appalachia region.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1590715/000147793226003317/arec_10k.htm",
+          "asOf": "10-K filed 2026-05-20"
+        }
+      ]
+    },
+    "INR": {
+      "name": "INFINITY NATURAL RESOURCES, INC.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Infinity Natural Resources is an oil and natural gas exploration and production company managing reserves, drilling prospects, and production operations across North American basins.",
+          "quote": "our drilling prospects, inventories, projects and programs",
+          "source": "https://www.sec.gov/Archives/edgar/data/2029118/000202911826000014/inr-20251231.htm",
+          "asOf": "10-K filed 2026-03-10"
+        }
+      ]
+    },
+    "RGCO": {
+      "name": "RGC RESOURCES INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "RGC Resources operates a natural gas utility and midstream business through Roanoke Gas, distributing natural gas to residential and commercial customers and investing in interstate natural gas pipelines.",
+          "quote": "Roanoke Gas maintains an integrated natural gas distribution system to deliver natural gas purcha",
+          "source": "https://www.sec.gov/Archives/edgar/data/1069533/000143774925036827/rgco20250930_10k.htm",
+          "asOf": "10-K filed 2025-12-04"
+        }
+      ]
+    },
+    "AMPY": {
+      "name": "Amplify Energy Corp.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Amplify Energy operates and divests oil and gas properties in Oklahoma, East Texas, and Louisiana, focusing on conventional oil and gas asset acquisition and development.",
+          "quote": "the Revolution Sellers' right, title and interest in and to certain specified oil and gas properties and equipment within or related to certain designated lands in Oklahoma",
+          "source": "https://www.sec.gov/Archives/edgar/data/1533924/000110465926025299/ampy-20251231x10k.htm",
+          "asOf": "10-K filed 2026-03-09"
+        }
+      ]
+    },
+    "PED": {
+      "name": "PEDEVCO CORP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "PEDEVCO Corp is an oil and gas exploration and production company with operations focused on managing proved oil and natural gas reserves and production operations.",
+          "quote": "oil and oil and gas industry in general from market research reports",
+          "source": "https://www.sec.gov/Archives/edgar/data/1141197/000165495426003098/ped_10k.htm",
+          "asOf": "10-K filed 2026-03-31"
+        }
+      ]
+    },
+    "EPSN": {
+      "name": "Epsilon Energy Ltd.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Epsilon Energy is an oil and natural gas exploration and production company managing reserves and production operations, with forward-looking statements regarding production rates and commodity prices.",
+          "quote": "including statements relating to oil and natural gas production rates, commodity prices for crude oil or natural gas, supply and demand for oil and natural gas; the estimated quantity of oil and natural gas reserves, including reserve life",
+          "source": "https://www.sec.gov/Archives/edgar/data/1726126/000110465926035794/epsn-20251231x10k.htm",
+          "asOf": "10-K filed 2026-03-27"
+        }
+      ]
+    },
+    "NINE": {
+      "name": "Nine Energy Service, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Nine Energy Service is a leading provider of completion services and downhole tools for unconventional oil and gas development, supporting horizontal well drilling and multi-stage well completion.",
+          "quote": "Nine is a leading completion services provider that targets unconventional oil and gas resource development across North American basins and abroad.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1532286/000153228626000005/nine-20251231.htm",
+          "asOf": "10-K filed 2026-03-04"
+        }
+      ]
+    },
+    "EPM": {
+      "name": "EVOLUTION PETROLEUM CORP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Evolution Petroleum is an independent oil and natural gas exploration and production company operating properties across U.S. onshore basins including Oklahoma and Wyoming.",
+          "quote": "In the United States market where our properties are operated, crude oil, natural gas, and NGLs are readily transportable and marketable.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1006655/000110465925090839/epm-20250630x10k.htm",
+          "asOf": "10-K filed 2025-09-17"
+        }
+      ]
+    },
+    "NCSM": {
+      "name": "NCS Multistage Holdings, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "NCS Multistage provides completion services to oil and natural gas exploration and production companies in U.S. and Canadian basins, supporting drilling and well completion activity.",
+          "quote": "the level of global oil and natural gas E&P capital spending",
+          "source": "https://www.sec.gov/Archives/edgar/data/1692427/000143774926007065/ncsm20251231_10k.htm",
+          "asOf": "10-K filed 2026-03-05"
+        }
+      ]
+    },
+    "SLNG": {
+      "name": "Stabilis Solutions, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Stabilis Solutions provides liquefied natural gas (LNG) production and transportation logistics services to diverse end-markets including oil and gas operators, utilities, and industrial customers.",
+          "quote": "The Company provides LNG solutions to customers in diverse end markets, including aerospace, agriculture, industrial, marine bunkering, mining, oil and gas, pipeline, remote power and utility markets.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1043186/000143774926007090/slng20251231_10k.htm",
+          "asOf": "10-K filed 2026-03-05"
+        }
+      ]
+    },
+    "ANNA": {
+      "name": "AleAnna, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "AleAnna, Inc. holds oil and gas properties and produces renewable natural gas from waste sources through its AleAnna Renewable Energy subsidiaries.",
+          "quote": "AleAnna Renewable is comprised of various subsidiaries that hold its renewable natural gas assets (the \"RNG Subsidiaries\").",
+          "source": "https://www.sec.gov/Archives/edgar/data/1845123/000121390026036606/ea0281737-10k_aleanna.htm",
+          "asOf": "10-K filed 2026-03-31"
+        }
+      ]
+    },
+    "EP": {
+      "name": "EMPIRE PETROLEUM CORP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Empire Petroleum Corporation is an independent oil and natural gas exploration and production company managing reserves, production operations, and capital expenditures for reserve replacement.",
+          "quote": "our ability to replace reserves and efficiently develop current reserves",
+          "source": "https://www.sec.gov/Archives/edgar/data/887396/000110465926027675/ep-20251231x10k.htm",
+          "asOf": "10-K filed 2026-03-13"
+        }
+      ]
+    },
+    "MMLP": {
+      "name": "MARTIN MIDSTREAM PARTNERS L.P.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Martin Midstream Partners provides integrated pipeline, storage, and logistics services for crude oil, natural gas, natural gas liquids, and refined petroleum products throughout the U.S. Gulf Coast region.",
+          "quote": "petroleum products and by-products we gather, transport, store and market are produced primarily by major and independent oil and gas companies",
+          "source": "https://www.sec.gov/Archives/edgar/data/1176334/000117633426000012/mmlp-20251231.htm",
+          "asOf": "10-K filed 2026-02-23"
+        }
+      ]
+    },
+    "ISPR": {
+      "name": "Ispire Technology Inc.",
+      "flags": [
+        {
+          "key": "tobacco",
+          "summary": "Ispire Technology manufactures and distributes the Aspire brand of nicotine vaporizer hardware and cannabis vaping devices globally, with products sold through a network of over 150 distributors across more than 30 countries.",
+          "quote": "We sell the Aspire brand of tobacco vaporizer technology products in more than 30 countries through our global network of more than 150 distributors.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1948455/000121390025087632/ea0255094-10k_ispire.htm",
+          "asOf": "10-K filed 2025-09-15"
+        }
+      ]
+    },
+    "DWSN": {
+      "name": "DAWSON GEOPHYSICAL CO",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Dawson Geophysical provides seismic data acquisition and processing services to oil and natural gas exploration and production companies across North American onshore basins.",
+          "quote": "is a leading provider of North American onshore seismic data acquisition services with operations throughout the continental United States (\"U.S.\") and Canada. We acquire and process 2-D, 3-D and multi-component seismic data for our clients, ranging from major oil and gas companies to independent oil and gas operators",
+          "source": "https://www.sec.gov/Archives/edgar/data/799165/000110465926037886/dwsn-20251231x10k.htm",
+          "asOf": "10-K filed 2026-03-31"
+        }
+      ]
+    },
+    "NFE": {
+      "name": "New Fortress Energy Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "New Fortress Energy develops and operates liquefied natural gas (LNG) infrastructure and logistics, supplying LNG to customers globally including utilities, industrial facilities, and power generation.",
+          "quote": "oil and gas producers who sell or control LNG derived from their international oil and gas properties",
+          "source": "https://www.sec.gov/Archives/edgar/data/1749723/000174972326000032/nfe-20251231.htm",
+          "asOf": "10-K filed 2026-04-13"
+        }
+      ]
+    },
+    "BDCO": {
+      "name": "BLUE DOLPHIN ENERGY CO",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Blue Dolphin Energy operates crude oil refining and processing facilities, converting crude oil and condensate into refined petroleum products through complex distillation and conversion operations.",
+          "quote": "For refinery operations, calculated as crude oil, fuel use, and chemicals plus other conversion costs plus intercompany processing fees plus associated depreciation and amortization.",
+          "source": "https://www.sec.gov/Archives/edgar/data/793306/000143774926010712/bdco20251231_10k.htm",
+          "asOf": "10-K filed 2026-03-31"
+        }
+      ]
+    },
+    "BSIN": {
+      "name": "BIG SKY INDUSTRIAL INC.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Big Sky Industrial is an independent oil and gas exploration and production company acquiring and operating crude oil and natural gas properties across multiple U.S. regions.",
+          "quote": "we acquired operated properties in North Dakota, New Mexico, Wyoming and the Texas Gulf Coast, and on January 5, 2022, we closed the acquisitions of certain oil and gas properties from three separate sellers, representing a diversified portfolio of primarily operated, producing, oil-weighted assets located across the Rockies, West Texas, Eagle Ford, and Mid-Continent regions.",
+          "source": "https://www.sec.gov/Archives/edgar/data/101594/000143774926008057/useg20251231_10k.htm",
+          "asOf": "10-K filed 2026-03-13"
+        }
+      ]
+    },
+    "PROP": {
+      "name": "Prairie Operating Co.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Prairie Operating Co. is an independent oil and natural gas company focused on acquiring and developing crude oil, natural gas, and natural gas liquids in the Denver-Julesburg Basin of Colorado.",
+          "quote": "Prairie Operating Co. (the \"Company,\" \"we,\" \"our\" or \"us\") is an independent oil and natural gas company focused on the acquisition and development of crude oil, natural gas, and NGLs.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1162896/000114036126012036/ef20060649_10k.htm",
+          "asOf": "10-K filed 2026-03-31"
+        }
+      ]
+    },
+    "PVL": {
+      "name": "Permianville Royalty Trust",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Permianville Royalty Trust holds oil and gas royalty interests that generate revenues from proved crude oil and natural gas reserves and production.",
+          "quote": "Those quantities of oil and gas, which, by analysis of geoscience and engineering data, can be estimated with reasonable certainty to be economically producible from a given date forward, from known reservoirs",
+          "source": "https://www.sec.gov/Archives/edgar/data/1520048/000110465926033412/tm269527d1_10k.htm",
+          "asOf": "10-K filed 2026-03-23"
+        }
+      ]
+    },
+    "VOC": {
+      "name": "VOC Energy Trust",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "VOC Energy Trust is an oil and natural gas company with operations holding proved and proved developed reserves of crude oil, natural gas, and natural gas liquids.",
+          "quote": "Boe \u2014 One stock tank barrel of oil equivalent, computed on an approximate energy equivalent basis that one Bbl of crude oil equals six Mcf of natural gas and one Bbl of crude oil equals 1.54 Bbls of natural gas liquids.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1505413/000110465926033870/tm261063-1_10k.htm",
+          "asOf": "10-K filed 2026-03-24"
+        }
+      ]
+    },
+    "LRDC": {
+      "name": "Laredo Oil, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Laredo Oil is an oil and gas exploration and development company acquiring and operating crude oil and natural gas properties, with experience in drilling conventional oil wells and evaluating oil and gas properties.",
+          "quote": "we gained specialized know-how, intellectual property and operational experience in evaluating, acquiring, operating and developing oil and gas properties, as well as expertise in designing, drilling and producing conventional oil wells.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1442492/000119983525000313/lrdc-10k.htm",
+          "asOf": "10-K filed 2025-09-15"
+        }
+      ]
+    },
+    "HCMC": {
+      "name": "Healthier Choices Management Corp.",
+      "flags": [
+        {
+          "key": "tobacco",
+          "summary": "Healthier Choices Management Corp. manufactures and markets electronic cigarettes and e-liquids that compete against conventional tobacco cigarettes and vaporizers.",
+          "quote": "we compete against \"big tobacco\", U.S. cigarette manufacturers of both conventional tobacco cigarettes and electronic cigarettes like Altria Group, Inc., JT International, Imperial Tobacco, and Reynolds American, Inc.",
+          "source": "https://www.sec.gov/Archives/edgar/data/844856/000149315226013232/form10-k.htm",
+          "asOf": "10-K filed 2026-03-27"
+        }
+      ]
+    },
+    "KLXE": {
+      "name": "KLX Energy Services Holdings, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "KLX Energy Services provides oilfield services including directional drilling, coiled tubing, hydraulic fracturing, and pressure control equipment to oil and gas operators for drilling and production activities.",
+          "quote": "We deliver mission critical oilfield services to primarily independent major oil and gas companies focused on drilling, completion, production and intervention activities for technically demanding wells from over 60 service facilities located in the United States. Our primary services include directional drilling, coiled tubing, thru tubing, hydraulic frac rentals, fishing, pressure control, wireline",
+          "source": "https://www.sec.gov/Archives/edgar/data/1738827/000173882726000013/klxe-20251231.htm",
+          "asOf": "10-K filed 2026-03-12"
+        }
+      ]
+    },
+    "RSRV": {
+      "name": "RESERVE PETROLEUM CO",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Reserve Petroleum is focused on exploration for and development of oil and natural gas properties, with a significant portion of revenue derived from its owned mineral property interests across multiple states.",
+          "quote": "the Company is a corporation organized under the laws of the State of Delaware in 1931. 3 Table of Contents Oil and Natural Gas Properties For a summary of certain data relating to our oil and gas properties, including production, undeveloped acreage, producing and dry wells drilled and recent activity, see Item 2, \"Properties.\"",
+          "source": "https://www.sec.gov/Archives/edgar/data/83350/000008335026000003/rsrv-20251231.htm",
+          "asOf": "10-K filed 2026-03-31"
+        }
+      ]
+    },
+    "EONR": {
+      "name": "EON Resources Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "EON Resources is focused on oil and gas exploration and development with crude oil and natural gas producing activities, deriving revenues from crude oil and gas production.",
+          "quote": "A substantial majority of EON's revenues from crude oil and gas producing activities are derived from its operating properties that are based on the price at which crude oil and natural gas produced from the acreage underlying its interests are sold.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1842556/000121390025032248/ea0237742-10k_eon.htm",
+          "asOf": "10-K filed 2025-04-16"
+        }
+      ]
+    },
+    "SPND": {
+      "name": "SPINDLETOP OIL & GAS CO",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Spindletop Oil & Gas Co. is an independent oil and gas company engaged in exploration, development, production, and acquisition of crude oil and natural gas with operations in five states.",
+          "quote": "Spindletop Oil & Gas Co. is an independent oil and gas company engaged in the exploration, development, production and acquisition of oil and natural gas; and through one of its subsidiaries, the rental of oilfield equipment and the gathering and marketing of natural gas.",
+          "source": "https://www.sec.gov/Archives/edgar/data/867038/000101738626000048/spnd_2025dec31-10k.htm",
+          "asOf": "10-K filed 2026-04-15"
+        }
+      ]
+    },
+    "CHKR": {
+      "name": "CHESAPEAKE GRANITE WASH TRUST",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Chesapeake Granite Wash Trust holds royalty interests in oil and natural gas producing operations and reserves held by the underlying operator.",
+          "quote": "Bbl. One stock tank barrel, or 42 U.S. gallons liquid volume, used herein in reference to crude oil or other liquid hydrocarbons. Boe. Barrel of oil equivalent. Oil equivalent is based on six mcf of natural gas to one barrel of oil or one barrel of NGL.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1524769/000152476924000005/chkr-2023x1231x10k.htm",
+          "asOf": "10-K filed 2024-04-01"
+        }
+      ]
+    },
+    "MXC": {
+      "name": "MEXCO ENERGY CORP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Mexco Energy Corporation is focused on development, exploitation, and exploration activities in oil and gas, with estimated reserves of crude oil and natural gas.",
+          "quote": "our success in development, exploitation and exploration activities; our ability to make planned capital expenditures; declines in our production or prices of oil and gas",
+          "source": "https://www.sec.gov/Archives/edgar/data/66418/000149315226030386/form10-k.htm",
+          "asOf": "10-K filed 2026-06-29"
+        }
+      ]
+    },
+    "NRIS": {
+      "name": "Norris Industries, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Norris Industries develops, produces, and maintains crude oil and natural gas properties in Texas with working interests in multiple producing oil and gas wells and leasehold operations.",
+          "quote": "The Company was formed to conduct operations in the oil and gas industry, and currently focuses on the development, production and maintenance of its existing crude oil and natural gas properties in Texas. On May 4, 2015, the Company initially acquired working interests from the Bend Arch Lion 1A and the Bend Arch Lion 1B Joint Ventures in Coleman County of Texas, encompassing a total production of 7 producing oil and gas wells",
+          "source": "https://www.sec.gov/Archives/edgar/data/1603793/000149315226026291/form10-k.htm",
+          "asOf": "10-K filed 2026-05-29"
+        }
+      ]
+    },
+    "BRN": {
+      "name": "BARNWELL INDUSTRIES INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Barnwell Industries acquires and develops crude oil and natural gas assets in Alberta, Canada and Oklahoma through subsidiaries, with operations in oil exploration and production.",
+          "quote": "Barnwell acquires and develops crude oil and natural gas assets in the province of Alberta, Canada via two corporate entities, Barnwell of Canada, Limited and Octavian Oil Limited.",
+          "source": "https://www.sec.gov/Archives/edgar/data/10048/000162828025058738/brn-20250930.htm",
+          "asOf": "10-K filed 2025-12-23"
+        }
+      ]
+    },
+    "TPET": {
+      "name": "Trio Petroleum Corp",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Trio Petroleum is an oil and gas exploration and development company with operations in California, Utah, and Saskatchewan, acquiring and developing oil and gas assets including producing wells and associated infrastructure.",
+          "quote": "We are a California-based oil and gas exploration and development company headquartered in Malibu, California, with our principal executive offices located at 23823 Malibu Road, Suite 304, Malibu, California 90265, with operations in Monterey County, California, Uintah County, Utah and Lloydminster, Saskatchewan.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1898766/000149315226002848/form10-k.htm",
+          "asOf": "10-K filed 2026-01-20"
+        }
+      ]
+    },
+    "GULTU": {
+      "name": "Gulf Coast Ultra Deep Royalty Trust",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Gulf Coast Ultra Deep Royalty Trust holds overriding royalty interests in oil and natural gas producing operations and reserves managed by an underlying operator.",
+          "quote": "Overriding royalty interest. A revenue interest, created out of a working interest, that entitles its owner to a share of revenues, free of any operating or production costs.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1565146/000149315226012669/form10-k.htm",
+          "asOf": "10-K filed 2026-03-25"
+        }
+      ]
+    },
+    "ECTM": {
+      "name": "ECA Marcellus Trust I",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "ECA Marcellus Trust derives all of its income and cash flows from royalty interests in oil and gas producing wells and operations in the Marcellus formation.",
+          "quote": "The Trust derives all or substantially all of its income and cash flows from the Royalty Interests.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1487798/000110465926033852/tm261060d1_10k.htm",
+          "asOf": "10-K filed 2026-03-24"
+        }
+      ]
+    },
+    "CEIN": {
+      "name": "CAMBER ENERGY, INC.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Camber Energy previously operated in oil and gas exploration and production but disposed of its remaining oil and gas assets in 2024, pivoting to power generation as its sole reportable business segment.",
+          "quote": "the disposal of the Company's remaining oil and gas assets in 2024, the Company now operates as a single reporting segment",
+          "source": "https://www.sec.gov/Archives/edgar/data/1309082/000147793226001710/cei_10k.htm",
+          "asOf": "10-K filed 2026-03-30"
+        }
+      ]
+    },
+    "GBR": {
+      "name": "New Concept Energy, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "New Concept Energy provides consulting, accounting, and management services to an independent oil and gas operator, receiving 10% of oil and gas revenues under a management agreement.",
+          "quote": "Effective 1/1/2022 the Company entered into a Consulting Management Agreement with the current owner of the oil and gas wells whereby the Company will receive 10% of the revenue received from these wells in exchange for providing advisory, accounting and management services",
+          "source": "https://www.sec.gov/Archives/edgar/data/105744/000121465926004135/nc32026010k.htm",
+          "asOf": "10-K filed 2026-03-31"
+        }
+      ]
+    },
+    "REOS": {
+      "name": "ReoStar Energy CORP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "ReoStar Energy is engaged in the exploration, development and acquisition of oil and gas properties primarily located in Texas, with production of crude oil and natural gas.",
+          "quote": "We are engaged in the exploration, development and acquisition of oil and gas properties, primarily located in the state of Texas",
+          "source": "https://www.sec.gov/Archives/edgar/data/1335288/000126967810000103/reo10k033110.htm",
+          "asOf": "10-K filed 2010-06-29"
+        }
+      ]
+    },
+    "RCON": {
+      "name": "Recon Technology, Ltd",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Recon Technology provides integrated products and services to oil and gas companies, including equipment for extraction, heating furnaces, and techniques for tertiary oil recovery and crude oil transportation.",
+          "quote": "our solutions allow our customers to locate productive oilfields more easily and accurately, improve control over the extraction process, increase oil yield efficiency in tertiary stage oil recovery, and improve the transportation of crude oil",
+          "source": "https://www.sec.gov/Archives/edgar/data/1442620/000114420416125768/v448648_10k.htm",
+          "asOf": "10-K filed 2016-09-28"
+        }
+      ]
+    },
+    "ALTX": {
+      "name": "ALTEX INDUSTRIES INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Altex Industries owns non-working and non-operating interests in onshore oil and gas properties located in Utah and Wyoming, generating revenue from the sale of produced oil and gas.",
+          "quote": "the Company currently owns interests in onshore oil and gas properties, has bought and sold producing oil and gas properties",
+          "source": "https://www.sec.gov/Archives/edgar/data/775057/000109690625001949/altx-20250930_10k.htm",
+          "asOf": "10-K filed 2025-11-28"
+        }
+      ]
+    },
+    "CRCE": {
+      "name": "Circle Energy, Inc./NV",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Circle Energy is an exploration-stage oil and gas company holding a 75% working interest in an 80-acre oil and gas property tract in Andrews County, Texas.",
+          "quote": "We currently own a 75% working interest and a 55.5% net revenue interest in an 80-acre tract located in Andrews County, Texas",
+          "source": "https://www.sec.gov/Archives/edgar/data/1911467/000109690626000364/crcl-20251231_10k.htm",
+          "asOf": "10-K filed 2026-03-24"
+        }
+      ]
+    },
+    "XXII": {
+      "name": "22nd Century Group, Inc.",
+      "flags": [
+        {
+          "key": "tobacco",
+          "summary": "22nd Century Group manufactures and distributes the VLN brand of reduced-nicotine cigarettes authorized by the FDA, and provides contract manufacturing of cigarettes and filtered cigars for other established tobacco brands.",
+          "quote": "We manufacture and distribute the only combustible tobacco products containing minimally or non-addictive levels of nicotine that are authorized by the US Food and Drug Administration (FDA) for retail purchase",
+          "source": "https://www.sec.gov/Archives/edgar/data/1347858/000110465926034814/xxii-20251231x10k.htm",
+          "asOf": "10-K filed 2026-03-26"
+        }
+      ]
+    },
+    "ROYL": {
+      "name": "Royale Energy, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Royale Energy is an independent oil and natural gas producer engaged in exploration, development, acquisition of proved reserves and drilling operations, as well as sales of fractional working interests in wells.",
+          "quote": "Royale's principal lines of business are the production and sale of oil and natural gas, acquisition of oil and gas lease interests and proved reserves, drilling of both exploratory and development wells, and sales of fractional working interests in wells to be drilled by Royale",
+          "source": "https://www.sec.gov/Archives/edgar/data/1694617/000118518526002897/royl10k123125.htm",
+          "asOf": "10-K filed 2026-07-13"
+        }
+      ]
+    },
+    "PTCO": {
+      "name": "PetroGas Co",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "PetroGas Co entered the oil and gas industry through acquisition of oil and gas leases in Texas and Ohio, and continues to seek additional lease acquisitions to develop production operations.",
+          "quote": "At the completion of the Asset Purchase Agreement, we entered into the oil and gas industry",
+          "source": "https://www.sec.gov/Archives/edgar/data/1609258/000164033425001087/ptco_10k.htm",
+          "asOf": "10-K filed 2025-06-30"
+        }
+      ]
+    },
+    "GRVE": {
+      "name": "GROOVE BOTANICALS INC.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Groove Botanicals was formerly incorporated as Avalon Oil and Gas, Inc. and engaged in oil and gas operations until changing its name and business focus in 2018 and suspending SEC reporting in 2021.",
+          "quote": "On May 14, 2018, the Company changed its name from Avalon Oil and Gas, Inc., to Groove Botanicals, Inc.",
+          "source": "https://www.sec.gov/Archives/edgar/data/918573/000147793226004080/grve_10k.htm",
+          "asOf": "10-K filed 2026-06-29"
+        }
+      ]
+    },
+    "CODQL": {
+      "name": "Coronado Global Resources Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Coronado Global Resources encounters oil and gas infrastructure during its coal mining operations and may incur costs related to plugging or purchasing oil and gas wells that intersect with mining permits.",
+          "quote": "competition and conflicts with other natural resource extraction and production activities within overlapping operating areas, such as natural gas extraction or oil and gas development",
+          "source": "https://www.sec.gov/Archives/edgar/data/1770561/000156276226000024/c561202510K.htm",
+          "asOf": "10-K filed 2026-03-03"
+        }
+      ]
+    },
+    "APHD": {
+      "name": "VERDE BIO HOLDINGS, INC.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Verde Bio Holdings is engaged in the acquisition and development of non-operating oil and gas royalty interests and mineral interests in major onshore oil and gas plays across the United States.",
+          "quote": "The Company is a growing U.S. energy company based in Frisco, Texas, engaged in the acquisition and development of high-probability, lower risk onshore oil and gas properties within the major oil and gas plays in the U.S.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1490054/000109690623001489/vbhi-20230430.htm",
+          "asOf": "10-K filed 2023-08-02"
+        }
+      ]
+    },
+    "CJAX": {
+      "name": "CoJax Oil & Gas Corp",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "CoJax Oil and Gas Corporation engages in oil and natural gas exploration, development, and production operations with exposure to crude oil and natural gas commodity price volatility.",
+          "quote": "The supply and demand for oil, natural gas, and other products or services, including impacts of actions taken by OPEC and other state-controlled oil companies",
+          "source": "https://www.sec.gov/Archives/edgar/data/1763925/000175392626000536/g085455_10-k.htm",
+          "asOf": "10-K filed 2026-03-25"
+        }
+      ]
+    },
+    "BRLL": {
+      "name": "Barrel Energy Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Barrel Energy was formed to invest in the oil and gas sector and leased an unproven oil and gas property in Alberta, Canada, but subsequently relinquished claims and ceased its oil and gas exploration plans.",
+          "quote": "The Company was formed to invest in the energy sector. On September 26, 2014, the Company leased the Bison Property, an unproven oil and gas project in the province of Alberta, Canada",
+          "source": "https://www.sec.gov/Archives/edgar/data/1631463/000147793222000607/brll_10k.htm",
+          "asOf": "10-K filed 2022-02-07"
+        }
+      ]
+    },
+    "OKMN": {
+      "name": "OKMIN RESOURCES, INC.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Okmin Resources engages in oil and gas exploration and development, focusing on lower-cost rework and recompletion opportunities in Oklahoma and Kansas with operations through wholly-owned subsidiaries.",
+          "quote": "Okmin has been focused on the acquisition and development of domestic oil and gas fields, investing in lower profile rework and recompletion opportunities with lower entry costs",
+          "source": "https://www.sec.gov/Archives/edgar/data/1848334/000107997325001512/okmin_10k.htm",
+          "asOf": "10-K filed 2025-09-29"
+        }
+      ]
+    },
+    "MPLXP": {
+      "name": "MPLX LP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "MPLX LP operates midstream energy infrastructure serving the crude oil, refined products, natural gas liquids, and renewable fuels sectors, with exposure to commodity price changes for crude oil and natural gas.",
+          "quote": "the timing and extent of changes in commodity prices and demand for crude oil, refined products, feedstocks or other hydrocarbon-based products or renewable diesel and other renewable fuels",
+          "source": "https://www.sec.gov/Archives/edgar/data/1552000/000155200026000009/mplx-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "PAAPU": {
+      "name": "PLAINS ALL AMERICAN PIPELINE LP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Plains All American Pipeline is a major midstream infrastructure company providing crude oil and natural gas liquids transportation, processing, storage, fractionation, and gathering services to producers and refiners.",
+          "quote": "declines in global crude oil demand and/or crude oil prices or other factors that correspondingly lead to a significant reduction of North American crude oil and natural gas liquids (\"NGL\") production",
+          "source": "https://www.sec.gov/Archives/edgar/data/1070423/000107042326000014/paa-20251231.htm",
+          "asOf": "10-K filed 2026-02-27"
+        }
+      ]
+    },
+    "SRJN": {
+      "name": "SPIRE INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Spire Inc. operates as a natural gas utility company providing natural gas distribution services to residential and commercial customers across multiple states, with supporting FERC-regulated pipeline and storage operations.",
+          "quote": "Spire MoGas Pipeline or MoGas Spire MoGas Pipeline LLC, a 263-mile FERC-regulated natural gas pipeline, together with Omega Pipeline, a connected 75-mile distribution system in Missouri",
+          "source": "https://www.sec.gov/Archives/edgar/data/1126956/000119312525282583/sr-20250930.htm",
+          "asOf": "10-K filed 2025-11-14"
+        }
+      ]
+    },
+    "EPDU": {
+      "name": "ENTERPRISE PRODUCTS PARTNERS L.P.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Enterprise Products Partners is a leading North American provider of midstream energy services operating natural gas liquids pipelines, crude oil pipelines, natural gas pipelines, and petrochemical and refined products services.",
+          "quote": "a leading North American provider of midstream energy services to producers and consumers of natural gas, NGLs, crude oil, petrochemicals and refined products",
+          "source": "https://www.sec.gov/Archives/edgar/data/1061219/000106121926000006/epd-20251231.htm",
+          "asOf": "10-K filed 2026-02-27"
+        }
+      ]
+    },
+    "METCI": {
+      "name": "Ramaco Resources, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Ramaco Resources encounters and must manage oil and gas infrastructure including wells that may exist on its mining properties, potentially requiring purchase or plugging of wells in the mining path.",
+          "quote": "If a well is in the path of our mining for coal on land that has not yet been permitted for our mining activities, we may not be able to mine through the well unless we purchase it",
+          "source": "https://www.sec.gov/Archives/edgar/data/1687187/000110465926020479/metc-20251231x10k.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "METCB": {
+      "name": "Ramaco Resources, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Ramaco Resources encounters and must manage oil and gas infrastructure including wells that may exist on its mining properties, potentially requiring purchase or plugging of wells in the mining path.",
+          "quote": "If a well is in the path of our mining for coal on land that has not yet been permitted for our mining activities, we may not be able to mine through the well unless we purchase it",
+          "source": "https://www.sec.gov/Archives/edgar/data/1687187/000110465926020479/metc-20251231x10k.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "METCZ": {
+      "name": "Ramaco Resources, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Ramaco Resources mines coal in Wyoming, competing directly in markets for both metallurgical and thermal coal production and sales.",
+          "quote": "competition in coal and rare earth elements and critical mineral markets; \u25cf the price and demand for metallurgical coal, thermal coal, and rare earth elements and critical mineral products",
+          "source": "https://www.sec.gov/Archives/edgar/data/1687187/000110465926020479/metc-20251231x10k.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "EBGEF": {
+      "name": "ENBRIDGE INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Enbridge operates pipelines and infrastructure for transporting and exporting crude oil, natural gas, natural gas liquids, and liquefied natural gas globally.",
+          "quote": "expected supply of, demand for, exports of and prices of crude oil, natural gas, natural gas liquids (NGL), liquefied natural gas (LNG), renewable natural gas (RNG) and renewable energy",
+          "source": "https://www.sec.gov/Archives/edgar/data/895728/000119312526049810/enb-20251231.htm",
+          "asOf": "10-K filed 2026-02-13"
+        }
+      ]
+    },
+    "EBRGF": {
+      "name": "ENBRIDGE INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Enbridge operates pipelines and infrastructure for transporting and exporting crude oil, natural gas, natural gas liquids, and liquefied natural gas globally.",
+          "quote": "expected supply of, demand for, exports of and prices of crude oil, natural gas, natural gas liquids (NGL), liquefied natural gas (LNG), renewable natural gas (RNG) and renewable energy",
+          "source": "https://www.sec.gov/Archives/edgar/data/895728/000119312526049810/enb-20251231.htm",
+          "asOf": "10-K filed 2026-02-13"
+        }
+      ]
+    },
+    "EBRZF": {
+      "name": "ENBRIDGE INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Enbridge operates pipelines and infrastructure for transporting and exporting crude oil, natural gas, natural gas liquids, and liquefied natural gas globally.",
+          "quote": "expected supply of, demand for, exports of and prices of crude oil, natural gas, natural gas liquids (NGL), liquefied natural gas (LNG), renewable natural gas (RNG) and renewable energy",
+          "source": "https://www.sec.gov/Archives/edgar/data/895728/000119312526049810/enb-20251231.htm",
+          "asOf": "10-K filed 2026-02-13"
+        }
+      ]
+    },
+    "ENBFF": {
+      "name": "ENBRIDGE INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Enbridge operates pipelines and infrastructure for transporting and exporting crude oil, natural gas, natural gas liquids, and liquefied natural gas globally.",
+          "quote": "expected supply of, demand for, exports of and prices of crude oil, natural gas, natural gas liquids (NGL), liquefied natural gas (LNG), renewable natural gas (RNG) and renewable energy",
+          "source": "https://www.sec.gov/Archives/edgar/data/895728/000119312526049810/enb-20251231.htm",
+          "asOf": "10-K filed 2026-02-13"
+        }
+      ]
+    },
+    "ENBGF": {
+      "name": "ENBRIDGE INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Enbridge operates pipelines and infrastructure for transporting and exporting crude oil, natural gas, natural gas liquids, and liquefied natural gas globally.",
+          "quote": "expected supply of, demand for, exports of and prices of crude oil, natural gas, natural gas liquids (NGL), liquefied natural gas (LNG), renewable natural gas (RNG) and renewable energy",
+          "source": "https://www.sec.gov/Archives/edgar/data/895728/000119312526049810/enb-20251231.htm",
+          "asOf": "10-K filed 2026-02-13"
+        }
+      ]
+    },
+    "ENBRF": {
+      "name": "ENBRIDGE INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Enbridge operates pipelines and infrastructure for transporting and exporting crude oil, natural gas, natural gas liquids, and liquefied natural gas globally.",
+          "quote": "expected supply of, demand for, exports of and prices of crude oil, natural gas, natural gas liquids (NGL), liquefied natural gas (LNG), renewable natural gas (RNG) and renewable energy",
+          "source": "https://www.sec.gov/Archives/edgar/data/895728/000119312526049810/enb-20251231.htm",
+          "asOf": "10-K filed 2026-02-13"
+        }
+      ]
+    },
+    "ENNPF": {
+      "name": "ENBRIDGE INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Enbridge operates pipelines and infrastructure for transporting and exporting crude oil, natural gas, natural gas liquids, and liquefied natural gas globally.",
+          "quote": "expected supply of, demand for, exports of and prices of crude oil, natural gas, natural gas liquids (NGL), liquefied natural gas (LNG), renewable natural gas (RNG) and renewable energy",
+          "source": "https://www.sec.gov/Archives/edgar/data/895728/000119312526049810/enb-20251231.htm",
+          "asOf": "10-K filed 2026-02-13"
+        }
+      ]
+    },
+    "EBBGF": {
+      "name": "ENBRIDGE INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Enbridge operates pipelines and infrastructure for transporting and exporting crude oil, natural gas, natural gas liquids, and liquefied natural gas globally.",
+          "quote": "expected supply of, demand for, exports of and prices of crude oil, natural gas, natural gas liquids (NGL), liquefied natural gas (LNG), renewable natural gas (RNG) and renewable energy",
+          "source": "https://www.sec.gov/Archives/edgar/data/895728/000119312526049810/enb-20251231.htm",
+          "asOf": "10-K filed 2026-02-13"
+        }
+      ]
+    },
+    "ENFFF": {
+      "name": "ENBRIDGE INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Enbridge operates pipelines and infrastructure for transporting and exporting crude oil, natural gas, natural gas liquids, and liquefied natural gas globally.",
+          "quote": "expected supply of, demand for, exports of and prices of crude oil, natural gas, natural gas liquids (NGL), liquefied natural gas (LNG), renewable natural gas (RNG) and renewable energy",
+          "source": "https://www.sec.gov/Archives/edgar/data/895728/000119312526049810/enb-20251231.htm",
+          "asOf": "10-K filed 2026-02-13"
+        }
+      ]
+    },
+    "ENBHF": {
+      "name": "ENBRIDGE INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Enbridge operates pipelines and infrastructure for transporting and exporting crude oil, natural gas, natural gas liquids, and liquefied natural gas globally.",
+          "quote": "expected supply of, demand for, exports of and prices of crude oil, natural gas, natural gas liquids (NGL), liquefied natural gas (LNG), renewable natural gas (RNG) and renewable energy",
+          "source": "https://www.sec.gov/Archives/edgar/data/895728/000119312526049810/enb-20251231.htm",
+          "asOf": "10-K filed 2026-02-13"
+        }
+      ]
+    },
+    "ENBMF": {
+      "name": "ENBRIDGE INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Enbridge operates pipelines and infrastructure for transporting and exporting crude oil, natural gas, natural gas liquids, and liquefied natural gas globally.",
+          "quote": "expected supply of, demand for, exports of and prices of crude oil, natural gas, natural gas liquids (NGL), liquefied natural gas (LNG), renewable natural gas (RNG) and renewable energy",
+          "source": "https://www.sec.gov/Archives/edgar/data/895728/000119312526049810/enb-20251231.htm",
+          "asOf": "10-K filed 2026-02-13"
+        }
+      ]
+    },
+    "ENBOF": {
+      "name": "ENBRIDGE INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Enbridge operates pipelines and infrastructure for transporting and exporting crude oil, natural gas, natural gas liquids, and liquefied natural gas globally.",
+          "quote": "expected supply of, demand for, exports of and prices of crude oil, natural gas, natural gas liquids (NGL), liquefied natural gas (LNG), renewable natural gas (RNG) and renewable energy",
+          "source": "https://www.sec.gov/Archives/edgar/data/895728/000119312526049810/enb-20251231.htm",
+          "asOf": "10-K filed 2026-02-13"
+        }
+      ]
+    },
+    "ENBSF": {
+      "name": "ENBRIDGE INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Enbridge operates pipelines and infrastructure for transporting and exporting crude oil, natural gas, natural gas liquids, and liquefied natural gas globally.",
+          "quote": "expected supply of, demand for, exports of and prices of crude oil, natural gas, natural gas liquids (NGL), liquefied natural gas (LNG), renewable natural gas (RNG) and renewable energy",
+          "source": "https://www.sec.gov/Archives/edgar/data/895728/000119312526049810/enb-20251231.htm",
+          "asOf": "10-K filed 2026-02-13"
+        }
+      ]
+    },
+    "ENBNF": {
+      "name": "ENBRIDGE INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Enbridge operates pipelines and infrastructure for transporting and exporting crude oil, natural gas, natural gas liquids, and liquefied natural gas globally.",
+          "quote": "expected supply of, demand for, exports of and prices of crude oil, natural gas, natural gas liquids (NGL), liquefied natural gas (LNG), renewable natural gas (RNG) and renewable energy",
+          "source": "https://www.sec.gov/Archives/edgar/data/895728/000119312526049810/enb-20251231.htm",
+          "asOf": "10-K filed 2026-02-13"
+        }
+      ]
+    },
+    "SOCGM": {
+      "name": "SOUTHERN CALIFORNIA GAS CO",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Southern California Gas operates natural gas pipelines, including the Cameron Interstate Pipeline linking LNG facilities to major feed gas supply basins across the United States.",
+          "quote": "SI Partners owns the Cameron Interstate Pipeline, a 40-mile natural gas pipeline in south Louisiana that links the Cameron LNG Phase 1 facility in Cameron Parish in Louisiana to seven pipelines that offer access to major feed gas supply basins in Texas and the northeast, midcontinent and southeast regions of the U.S.",
+          "source": "https://www.sec.gov/Archives/edgar/data/92108/000103220826000010/sre-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "SOCGP": {
+      "name": "SOUTHERN CALIFORNIA GAS CO",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Southern California Gas operates natural gas pipelines, including the Cameron Interstate Pipeline linking LNG facilities to major feed gas supply basins across the United States.",
+          "quote": "SI Partners owns the Cameron Interstate Pipeline, a 40-mile natural gas pipeline in south Louisiana that links the Cameron LNG Phase 1 facility in Cameron Parish in Louisiana to seven pipelines that offer access to major feed gas supply basins in Texas and the northeast, midcontinent and southeast regions of the U.S.",
+          "source": "https://www.sec.gov/Archives/edgar/data/92108/000103220826000010/sre-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "ZNOGW": {
+      "name": "ZION OIL & GAS INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Zion Oil & Gas is an oil and gas exploration company with 25 years of operating history in Israel, focused on identifying and developing crude oil and natural gas reserves.",
+          "quote": "Zion Oil and Gas, Inc., a Texas corporation, is an oil and gas exploration company with a history of 25 years of oil and gas exploration in Israel.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1131312/000143774926009073/znog20251231_10k.htm",
+          "asOf": "10-K filed 2026-03-19"
+        }
+      ]
+    },
+    "NUAIW": {
+      "name": "New ERA Energy & Digital, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "New ERA Energy & Digital operates in crude oil, natural gas, and natural gas liquids production and extraction, with reserves estimation using standardized industry metrics.",
+          "quote": "Oil. Crude oil, condensate, and natural gas liquids.",
+          "source": "https://www.sec.gov/Archives/edgar/data/2028336/000121390026026501/ea0276741-10k_newera.htm",
+          "asOf": "10-K filed 2026-03-12"
+        }
+      ]
     }
   }
 }
