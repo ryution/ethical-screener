@@ -18,7 +18,7 @@
 import { writeFileSync, mkdirSync, readFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { screensForSic } from "../server/lib/sic.js";
+import { screensForSic, SIC_FALSE_POSITIVES } from "../server/lib/sic.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const OUT = join(HERE, "..", "server", "generated", "companies.json");
@@ -62,9 +62,10 @@ async function main() {
   for (const r of rows) {
     const ticker = String(r.ticker).toUpperCase();
     if (!isCommonTicker(ticker)) continue;
+    if (SIC_FALSE_POSITIVES.has(ticker)) continue; // known SEC miscode — don't flag
     try {
       const sub = await getJson(`https://data.sec.gov/submissions/CIK${pad10(r.cik_str)}.json`);
-      const flags = screensForSic(sub.sic);
+      const flags = screensForSic(sub.sic, ticker);
       if (flags.length) {
         companies[ticker] = { name: sub.name || r.title, sic: sub.sic, sicDescription: sub.sicDescription, flags };
         flagged++;
@@ -80,6 +81,15 @@ async function main() {
 
   // Merge: keep prior entries we didn't re-fetch (e.g. on a --limit/--seed run).
   const merged = { ...prev, ...companies };
+  // Purge known false positives even if a prior run stored them.
+  for (const t of SIC_FALSE_POSITIVES) delete merged[t];
+  // Drop duplicate securities: a warrant/unit/right (TICKER + W/U/R) whose underlying common
+  // stock is itself flagged and present. These add symbol noise, not coverage — the issuer's
+  // flag already lives on the base ticker. Only removes the suffixed symbol when the exact
+  // base exists in the set, so standalone tickers that merely end in those letters are kept.
+  for (const t of Object.keys(merged)) {
+    if (t.length >= 5 && /[WUR]$/.test(t) && merged[t.slice(0, -1)]) delete merged[t];
+  }
   mkdirSync(dirname(OUT), { recursive: true });
   writeFileSync(OUT, JSON.stringify({
     lastUpdated: new Date().toISOString(),

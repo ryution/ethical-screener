@@ -12,8 +12,21 @@
 
 const inRange = (sic, lo, hi) => sic >= lo && sic <= hi;
 
+// Tickers whose SEC-registered SIC code is simply wrong for the company, so the automatic
+// mapping would produce a false positive. These are individual data errors at the source,
+// not a fault in the code→screen map, so we deny-list the ticker rather than un-map a code
+// that's correct for everyone else. Keep the reason with each entry.
+//   RKDA — Arcadia Biosciences is an agricultural-food science company (GoodWheat, body care),
+//          but SEC codes it 1311 "Crude Petroleum & Natural Gas" — a legacy registration
+//          artifact. It is not an oil & gas company.
+//   SCGX — Saxon Capital Group is a dormant SEC-reporting shell with no operations (latest
+//          10-K says so; SEC now codes it 7374 data-processing). An old filing referenced an
+//          energy subsidiary, but the company has no oil & gas business today.
+export const SIC_FALSE_POSITIVES = new Set(["RKDA", "SCGX"]);
+
 /** Screen keys implied by a company's SIC code (may be empty). */
-export function screensForSic(sicRaw) {
+export function screensForSic(sicRaw, ticker) {
+  if (ticker && SIC_FALSE_POSITIVES.has(String(ticker).toUpperCase())) return [];
   const sic = Number(sicRaw);
   if (!sic) return [];
   const keys = new Set();
@@ -40,7 +53,12 @@ export function screensForSic(sicRaw) {
   if (sic === 3484 || sic === 3482) keys.add("firearms");
 
   // Factory farming — industrial meat/poultry processing and livestock feedlots.
-  if (sic === 2011 || sic === 2013 || sic === 2015 || sic === 211 || sic === 213) {
+  // NOTE: 2013 ("sausages & other prepared meat products") is deliberately EXCLUDED — it
+  // catches downstream prepared-foods brands that buy meat and make meals (Mama's Creations,
+  // Bridgford jerky, Wing Yip sauces), not companies that raise or slaughter animals. Those
+  // aren't "factory farming" in the sense this screen means (the harm is upstream slaughter,
+  // not prepared-food manufacturing). Meat packing (2011) and poultry slaughter (2015) stay.
+  if (sic === 2011 || sic === 2015 || sic === 211 || sic === 213) {
     keys.add("factory_farming");
   }
 
@@ -74,7 +92,7 @@ export function reasonForSic(sicRaw) {
   if (inRange(sic, 2082, 2085)) return "Produces beer, wine, or spirits.";
   if (sic === 5182) return "Wholesale distribution of alcoholic beverages.";
   if (sic === 3482 || sic === 3484) return "Manufactures small arms or ammunition.";
-  if (sic === 2011 || sic === 2013) return "Industrial meat packing and processing.";
+  if (sic === 2011) return "Industrial meat packing and processing.";
   if (sic === 2015) return "Poultry slaughtering and processing.";
   if (sic === 211 || sic === 213) return "Industrial livestock and feedlot operations.";
   return null;

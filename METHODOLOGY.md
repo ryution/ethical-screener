@@ -182,9 +182,9 @@ Each flag: **key** (stable id) · **definition** · **counts as a violation** ·
 
 #### Factory farming — `factory_farming` · ⬤ · **Live**
 - **Definition:** Industrial animal agriculture and meat/poultry processing.
-- **Counts:** Large-scale meat/poultry processing, industrial feedlots.
-- **Does not count:** Plant-based food; small/pasture operations.
-- **Detection:** SIC meat 2011/2013/2015, livestock 0211/0213. Plus curated.
+- **Counts:** Large-scale meat/poultry slaughter and packing, industrial feedlots.
+- **Does not count:** Plant-based food; small/pasture operations; prepared-food brands that buy meat to make jerky or deli meals (the slaughter is upstream).
+- **Detection:** SIC meat packing 2011, poultry slaughter 2015, livestock 0211/0213. Plus curated. (SIC 2013 "prepared meat products" is deliberately excluded — it catches downstream jerky/deli-meal brands, not slaughter.)
 - **Examples:** Tyson Foods (TSN), Hormel (HRL), BRF (BRFS).
 
 #### Animal testing — `animal_testing` · ◐ · **Live**
