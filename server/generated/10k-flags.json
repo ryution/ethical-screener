@@ -793,6 +793,188 @@
           "asOf": "10-K filed 2026-02-12"
         }
       ]
+    },
+    "ASO": {
+      "name": "Academy Sports & Outdoors, Inc.",
+      "flags": [
+        {
+          "key": "firearms",
+          "summary": "Academy Sports & Outdoors retails firearms and ammunition as a core product category in their Hunting division.",
+          "quote": "Firearms, ammunition, archery and archery equipment, camouflage apparel, waders, shooting accessories, gun safes, optics, airguns and hunting equipment",
+          "source": "https://www.sec.gov/Archives/edgar/data/1817358/000181735826000031/aso-20260131.htm",
+          "asOf": "10-K filed 2026-03-17"
+        }
+      ]
+    },
+    "CWEN": {
+      "name": "Clearway Energy, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Clearway Energy operates generation facilities that produce power from fuel, with a Flexible Generation segment dependent on fuel supplies.",
+          "quote": "Delivery of fuel supplies to the Company's facilities in the Flexible Generation segment is dependent upon the infrastructure (including natural gas pipelines) available to serve each such generation facility",
+          "source": "https://www.sec.gov/Archives/edgar/data/1567683/000162828026010952/cwen-20251231.htm",
+          "asOf": "10-K filed 2026-02-24"
+        }
+      ]
+    },
+    "OGN": {
+      "name": "Organon & Co.",
+      "flags": [
+        {
+          "key": "abortion_contraceptives",
+          "summary": "Organon produces contraceptive products including Nexplanon, NuvaRing, and Follistim AQ as established brands in its women's health portfolio.",
+          "quote": "Nexplanon is a long-acting reversible contraceptive in a class recognized as one of the most effective types of hormonal contraception available to patients with a low long-term average cost.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1821825/000162828026011125/ogn-20251231.htm",
+          "asOf": "10-K filed 2026-02-24"
+        }
+      ]
+    },
+    "AMTM": {
+      "name": "Amentum Holdings, Inc.",
+      "flags": [
+        {
+          "key": "weapons",
+          "summary": "Amentum is a defense prime contractor developing missile defense systems and hypersonic technologies for government agencies (MDA, USSF).",
+          "quote": "Our technology capabilities, agility, track record of renewal rates and new program wins make Amentum a logical partner for customers in these key growth markets, including cybersecurity; hypersonics; autonomy; space-based missile defense; environmental remediation and nuclear power",
+          "source": "https://www.sec.gov/Archives/edgar/data/2011286/000162828025053993/amtm-20251003.htm",
+          "asOf": "10-K filed 2025-11-25"
+        }
+      ]
+    },
+    "AMRX": {
+      "name": "Amneal Pharmaceuticals, Inc.",
+      "flags": [
+        {
+          "key": "opioids",
+          "summary": "Amneal manufactures opioid pharmaceutical products and received a DEA subpoena in December 2025 for controlled substance-related activities, constituting DEA enforcement action.",
+          "quote": "We manufacture and derive a portion of our revenue from the sale of pharmaceutical products in the opioid class of drugs.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1723128/000172312826000011/amrx-20251231.htm",
+          "asOf": "10-K filed 2026-02-27"
+        }
+      ]
+    },
+    "MGEE": {
+      "name": "MGE ENERGY INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "MGE Energy operates fossil fuel power generation facilities and a natural gas pipeline system as a material line of business.",
+          "quote": "MGE produces greenhouse gas (GHG) emissions, primarily from the fossil fuel generating facilities it uses to meet customers' energy needs, as well as from its natural gas pipeline system",
+          "source": "https://www.sec.gov/Archives/edgar/data/1161728/000119312526067036/mgee-20251231.htm",
+          "asOf": "10-K filed 2026-02-24"
+        },
+        {
+          "key": "thermal_coal",
+          "summary": "MGE Energy operates coal-fired power generation facilities.",
+          "quote": "an undivided interest in two coal-fired generating units located in Oak Creek, Wisconsin",
+          "source": "https://www.sec.gov/Archives/edgar/data/1161728/000119312526067036/mgee-20251231.htm",
+          "asOf": "10-K filed 2026-02-24"
+        }
+      ]
+    },
+    "RAMP": {
+      "name": "LiveRamp Holdings, Inc.",
+      "flags": [
+        {
+          "key": "big_tech_surveillance",
+          "summary": "LiveRamp Holdings is explicitly subject to data broker legislation, indicating a business model built on personal-data collection and use.",
+          "quote": "definitions in enacted or proposed state-level data broker legislation apply to us",
+          "source": "https://www.sec.gov/Archives/edgar/data/733269/000073326926000025/ramp-20260331.htm",
+          "asOf": "10-K filed 2026-05-21"
+        }
+      ]
+    },
+    "AMR": {
+      "name": "Alpha Metallurgical Resources, Inc.",
+      "flags": [
+        {
+          "key": "thermal_coal",
+          "summary": "Alpha Metallurgical Resources mines and produces thermal coal sold to utilities and industrial customers.",
+          "quote": "we also produce thermal coal as byproduct and it is primarily sold to large utilities and industrial customers both in the United States and across the world.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1704715/000170471526000010/amr-20251231.htm",
+          "asOf": "10-K filed 2026-02-27"
+        }
+      ]
+    },
+    "ZD": {
+      "name": "ZIFF DAVIS, INC.",
+      "flags": [
+        {
+          "key": "big_tech_surveillance",
+          "summary": "ZD operates a data broker business that buys and sells personal data, requiring registration under state data broker laws.",
+          "quote": "as a data supplier, a portion of our business is currently required to register as a data broker under California, Oregon, Texas, and Vermont law",
+          "source": "https://www.sec.gov/Archives/edgar/data/1084048/000108404826000005/zd-20251231.htm",
+          "asOf": "10-K filed 2026-02-24"
+        }
+      ]
+    },
+    "SAM": {
+      "name": "BOSTON BEER CO INC",
+      "flags": [
+        {
+          "key": "cannabis",
+          "summary": "SAM sells cannabis beverage products under the TeaPot brand in Canada and launched additional cannabis products including Emerald Hour gummies.",
+          "quote": "The Company began selling limited quantities of cannabis beverage products in Canada under the TeaPot brand during the second half of 2022",
+          "source": "https://www.sec.gov/Archives/edgar/data/949870/000119312526067467/sam-20251227.htm",
+          "asOf": "10-K filed 2026-02-24"
+        }
+      ]
+    },
+    "PRGO": {
+      "name": "PERRIGO Co plc",
+      "flags": [
+        {
+          "key": "opioids",
+          "summary": "Perrigo retained liabilities related to opioid matters following the sale of its Rx business, indicating prior opioid-related legal/settlement exposure.",
+          "quote": "Perrigo retained certain pre-closing liabilities arising out of antitrust (refer to Note 20 - Contingencies under the header \"Price-Fixing Lawsuits\") and opioid matters",
+          "source": "https://www.sec.gov/Archives/edgar/data/1585364/000158536426000009/prgo-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        },
+        {
+          "key": "abortion_contraceptives",
+          "summary": "Perrigo affirmatively produces and sells contraceptive products as part of its women's health business line.",
+          "quote": "Women's health products, including feminine hygiene and contraceptives.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1585364/000158536426000009/prgo-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "BJRI": {
+      "name": "BJs RESTAURANTS INC",
+      "flags": [
+        {
+          "key": "alcohol",
+          "summary": "BJ's Restaurants affirmatively brews and produces beer as a core part of its brewpub operations.",
+          "quote": "During fiscal year 2025, we internally brewed approximately 68% of our branded craft beers and flavored malt beverages, with approximately 61% of this amount brewed in our Temple, Texas brewpub locations.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1013488/000119312526083331/bjri-20251230.htm",
+          "asOf": "10-K filed 2026-03-02"
+        }
+      ]
+    },
+    "GEF": {
+      "name": "GREIF, INC",
+      "flags": [
+        {
+          "key": "deforestation",
+          "summary": "Greif actively harvests and sells timber from its own timberland properties as a material business line.",
+          "quote": "We sell timber to third parties from our timberland in the southeastern United States that we manage to maximize long-term value.",
+          "source": "https://www.sec.gov/Archives/edgar/data/43920/000004392024000056/gef-20241031.htm",
+          "asOf": "10-K filed 2024-12-23"
+        }
+      ]
+    },
+    "VVX": {
+      "name": "V2X, Inc.",
+      "flags": [
+        {
+          "key": "weapons",
+          "summary": "V2X affirmatively manufactures, integrates, and sustains missile launchers and related weapons systems as core business operations.",
+          "quote": "we specialize in development, integration, production, repair, and sustainment, covering situational awareness products, missile launchers, and tactical aircraft radar systems and components.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1601548/000160154826000015/vec-20251231.htm",
+          "asOf": "10-K filed 2026-02-23"
+        }
+      ]
     }
   }
 }
