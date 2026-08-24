@@ -169,7 +169,7 @@ function HeroResult({ result, onStart }) {
           No flags for <b>{result.symbol}</b> among the names we track.
         </div>
         <p style={{ fontFamily: sans, fontSize: 13, color: D.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
-          That doesn't mean it's audited clean — only that it isn't a company (or a fund we can see inside) on our lists. Connect your brokerage to check everything at once.
+          That doesn't mean it's audited clean — only that it isn't a company (or a fund we can see inside) on our lists. We cover U.S.-listed companies that file with the SEC, so foreign-listed names may simply be out of scope. Connect your brokerage to check everything at once.
         </p>
         <HeroCTA onStart={onStart} />
       </div>
@@ -402,7 +402,7 @@ function Landing({ onStart }) {
         <div style={{ ...wrap, maxWidth: 720, textAlign: "center", padding: "clamp(48px,8vw,80px) 24px" }}>
           <h2 style={{ fontFamily: serif, fontSize: "clamp(24px,4vw,32px)", color: L.pine, fontWeight: 700, margin: 0, letterSpacing: "-0.02em" }}>We'd rather under-claim than mislead.</h2>
           <p style={{ fontFamily: sans, fontSize: 16, color: L.muted, lineHeight: 1.7, margin: "16px 0 0" }}>
-            We check individual stocks against a curated list of companies, and give the reason for every flag. We don't peer inside broad index funds and pretend we can — an unanalyzed fund is labeled as such, not called clean. A clean result means "none of the names we track," never "audited pure." You draw the lines; we show you where your money already sits.
+            We check individual stocks against a curated list of companies, and give the reason for every flag. Our coverage is U.S.-listed companies that file with the SEC — foreign-listed companies aren't analyzed yet, so an ADR or overseas name may come back empty simply because we haven't reached it. We don't peer inside broad index funds and pretend we can — an unanalyzed fund is labeled as such, not called clean. A clean result means "none of the names we track," never "audited pure." You draw the lines; we show you where your money already sits.
           </p>
         </div>
       </section>

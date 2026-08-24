@@ -40,6 +40,11 @@ These are non-negotiable — they are the product's whole premise.
    never "audited pure." A fund we can't see inside is "not analyzed," never "clean." We
    name companies inside funds; we never fake a per-company dollar amount.
 7. **Honest freshness.** Every dataset carries a "last updated" date, shown in the UI.
+8. **Honest scope — U.S.-listed only.** Our universe is companies that file with the SEC
+   (10-K filers on EDGAR). Foreign-listed companies — which file 20-F or nothing with the
+   SEC — are **not analyzed**, and neither are most ADRs. An overseas name coming back
+   empty means "out of our scope," never "clean." We say so in the report rather than
+   imply coverage we don't have.
 
 ---
 
