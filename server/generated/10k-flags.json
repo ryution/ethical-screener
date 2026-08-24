@@ -2715,6 +2715,13 @@
           "quote": "competition and conflicts with other natural resource extraction and production activities within overlapping operating areas, such as natural gas extraction or oil and gas development",
           "source": "https://www.sec.gov/Archives/edgar/data/1770561/000156276226000024/c561202510K.htm",
           "asOf": "10-K filed 2026-03-03"
+        },
+        {
+          "key": "thermal_coal",
+          "summary": "Coronado sells thermal coal as a material product under long-term contracts, primarily for power generation.",
+          "quote": "our Australian Operations sell thermal coal under a long-term, legacy contract assumed in the acquisition of Curragh to Stanwell Corporation Limited",
+          "source": "https://www.sec.gov/Archives/edgar/data/1770561/000156276226000024/c561202510K.htm",
+          "asOf": "10-K filed 2026-03-03"
         }
       ]
     },
@@ -4171,6 +4178,92 @@
           "quote": "coal-fired generating plants located in Louisiana",
           "source": "https://www.sec.gov/Archives/edgar/data/1348952/000006598426000174/etr-20251231.htm",
           "asOf": "10-K filed 2026-02-19"
+        }
+      ]
+    },
+    "CMSA": {
+      "name": "CMS ENERGY CORP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "CMS Energy operates electric transmission and natural gas pipeline infrastructure through regulated utilities serving customers with FERC-authorized wholesale services.",
+          "quote": "electric transmission and natural gas pipeline rates paid by Consumers and other CMS Energy subsidiaries are also set by FERC",
+          "source": "https://www.sec.gov/Archives/edgar/data/811156/000081115626000004/cms-20251231.htm",
+          "asOf": "10-K filed 2026-02-10"
+        }
+      ]
+    },
+    "WELPP": {
+      "name": "WISCONSIN ELECTRIC POWER CO",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Wisconsin Electric Power operates natural gas distribution and pipeline infrastructure with material throughput capacity serving customers year-round.",
+          "quote": "Our forecasted design peak-day throughput is 12.4 million therms for the 2025 through 2026 heating season",
+          "source": "https://www.sec.gov/Archives/edgar/data/107815/000010781526000003/wep-20251231.htm",
+          "asOf": "10-K filed 2026-02-20"
+        },
+        {
+          "key": "thermal_coal",
+          "summary": "Wisconsin Electric Power owns and operates coal-fired generation facilities as part of its diverse generation portfolio.",
+          "quote": "Our generation facilities include natural gas-fired plants, coal-fired plants, renewable generation, and BESSs",
+          "source": "https://www.sec.gov/Archives/edgar/data/107815/000010781526000003/wep-20251231.htm",
+          "asOf": "10-K filed 2026-02-20"
+        }
+      ]
+    },
+    "BH": {
+      "name": "Biglari Holdings Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Biglari Holdings operates oil and gas extraction through subsidiaries Southern Oil and Abraxas Petroleum as a core line of business.",
+          "quote": "Southern Oil primarily operates oil and natural gas properties offshore in Louisiana state waters.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1726173/000162828026012987/bh-20251231.htm",
+          "asOf": "10-K filed 2026-03-02"
+        }
+      ]
+    },
+    "CNTHP": {
+      "name": "CONNECTICUT LIGHT & POWER CO",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Connecticut Light & Power owns and operates natural gas liquefaction, vaporization plants, and transmission pipelines, generating material revenue from natural gas distribution and sales to customers.",
+          "quote": "Yankee Gas also owns a liquefaction and vaporization plant and above ground storage tank with a storage capacity equivalent of 1.2 Bcf of natural gas in Waterbury, Connecticut",
+          "source": "https://www.sec.gov/Archives/edgar/data/23426/000162828026008461/es-20251231.htm",
+          "asOf": "10-K filed 2026-02-17"
+        }
+      ]
+    },
+    "HCIL": {
+      "name": "Hongchang International Co., Ltd",
+      "flags": [
+        {
+          "key": "factory_farming",
+          "summary": "Company directly operates meat processing facilities as a core business line through subsidiaries including Hongchang Food and Hongfu Food.",
+          "quote": "Provision of Food Industry Park operation, food trade and meat processing",
+          "source": "https://www.sec.gov/Archives/edgar/data/1086303/000101376225004096/ea0235568-10k_hongchang.htm",
+          "asOf": "10-K filed 2025-03-28"
+        }
+      ]
+    },
+    "TVE": {
+      "name": "Tennessee Valley Authority",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "TVA operates natural gas power generation plants and is a gas utility purchasing and distributing natural gas through interstate pipelines.",
+          "quote": "TVA purchases a significant amount of its natural gas requirements through contracts with a variety of suppliers and purchases substantially all of its fuel oil requirements on the spot market. TVA delivers to its gas fleet under firm and non-firm transportation contracts on multiple interstate natural gas pipelines",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698625000056/tve-20250930.htm",
+          "asOf": "10-K filed 2025-11-13"
+        },
+        {
+          "key": "thermal_coal",
+          "summary": "TVA operates coal-fired power generation facilities as part of its generating portfolio.",
+          "quote": "Power generating facilities operated by TVA at September 30, 2025, included three nuclear sites, 18 natural gas and/or oil-fired sites, four coal-fired sites",
+          "source": "https://www.sec.gov/Archives/edgar/data/1376986/000137698625000056/tve-20250930.htm",
+          "asOf": "10-K filed 2025-11-13"
         }
       ]
     }
