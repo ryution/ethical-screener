@@ -4266,6 +4266,54 @@
           "asOf": "10-K filed 2025-11-13"
         }
       ]
+    },
+    "LNWO": {
+      "name": "Light & Wonder, Inc.",
+      "flags": [
+        {
+          "key": "gambling",
+          "summary": "Light & Wonder operates casinos and gaming machine businesses across multiple jurisdictions with real-money wagering as a core business line.",
+          "quote": "slow addition of casinos in existing jurisdictions and declines in the replacement cycle of gaming machines",
+          "source": "https://www.sec.gov/Archives/edgar/data/750004/000075000426000012/lnw-20251231.htm",
+          "asOf": "10-K filed 2026-02-24"
+        }
+      ]
+    },
+    "ASBPW": {
+      "name": "Aspire Biopharma Holdings, Inc.",
+      "flags": [
+        {
+          "key": "tobacco",
+          "summary": "Aspire manufactures microdose nicotine products as a core line of business, filing patents for nicotine formulations under their proprietary sublingual delivery technology.",
+          "quote": "Aspire's scientists have created formulations for anti-nausea products (meclizine and ondansetron), alprazolam, clopidogrel, microdose nicotine, and semaglutide",
+          "source": "https://www.sec.gov/Archives/edgar/data/1847345/000149315226013682/form10-k.htm",
+          "asOf": "10-K filed 2026-03-30"
+        }
+      ]
+    },
+    "XELLL": {
+      "name": "XCEL ENERGY INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Xcel Energy is a regulated utility company with material fossil fuel operations, distributing natural gas to millions of customers through dedicated utility subsidiaries and operating natural gas pipeline and storage infrastructure.",
+          "quote": "electric customers and 2.2 million natural gas customers through four utility subsidiaries",
+          "source": "https://www.sec.gov/Archives/edgar/data/72903/000007290326000009/xel-20251231.htm",
+          "asOf": "10-K filed 2026-02-25"
+        }
+      ]
+    },
+    "NSARO": {
+      "name": "NSTAR ELECTRIC CO",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "NSTAR operates as a natural gas utility owning liquefaction plants, vaporization infrastructure, and transmission pipelines for natural gas distribution.",
+          "quote": "Yankee Gas also owns a liquefaction and vaporization plant and above ground storage tank with a storage capacity equivalent of 1.2 Bcf of natural gas in Waterbury, Connecticut. Natural Gas Transmission System As of December 31, 2025, NSTAR Gas owned 0.65 miles of intrastate transmission natural gas pipeline.",
+          "source": "https://www.sec.gov/Archives/edgar/data/13372/000162828026008461/es-20251231.htm",
+          "asOf": "10-K filed 2026-02-17"
+        }
+      ]
     }
   }
 }
