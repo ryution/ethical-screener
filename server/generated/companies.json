@@ -1,7 +1,7 @@
 {
   "lastUpdated": "2026-08-18T19:24:45.232Z",
   "source": "SEC EDGAR (SIC classification)",
-  "count": 311,
+  "count": 310,
   "companies": {
     "CVX": {
       "name": "CHEVRON CORP",
@@ -25,7 +25,10 @@
       "sicDescription": "Malt Beverages",
       "flags": [
         "alcohol"
-      ]
+      ],
+      "reasons": {
+        "alcohol": "Anheuser-Busch InBev is the world's largest beer brewer with a portfolio of 400 beer brands including Budweiser, Corona, Stella Artois, and others, producing approximately 506 million hectoliters annually across 50+ countries."
+      }
     },
     "COP": {
       "name": "CONOCOPHILLIPS",
@@ -41,7 +44,10 @@
       "sicDescription": "Cigarettes",
       "flags": [
         "tobacco"
-      ]
+      ],
+      "reasons": {
+        "tobacco": "British American Tobacco is one of the world's largest tobacco manufacturers producing and marketing cigarettes, cigars, heated tobacco products, oral tobacco, and vapor products under major brands including Pall Mall, Newport, Lucky Strike, Dunhill, and Camel."
+      }
     },
     "MO": {
       "name": "ALTRIA GROUP, INC.",
@@ -161,7 +167,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Shell plc is a British-Dutch integrated oil and gas major with global upstream operations (exploration and extraction of crude oil, natural gas, and NGLs), downstream refining and marketing, and liquefied natural gas production across over 70 countries."
+      }
     },
     "TTE": {
       "name": "TotalEnergies SE",
@@ -169,7 +178,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "French integrated oil and gas major with global exploration, production, and refining operations across Africa, Middle East, Europe, and Americas. Operates 14 refineries worldwide processing crude oil into fuels and petrochemical products."
+      }
     },
     "PBR": {
       "name": "PETROBRAS - PETROLEO BRASILEIRO SA",
@@ -177,7 +189,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Brazil's state-controlled oil and gas company engaged in upstream exploration and production of crude oil and natural gas, particularly in deepwater pre-salt basins, with downstream refining and transportation operations. Planning $91 billion in upstream E&P investment through 2030."
+      }
     },
     "ENB": {
       "name": "ENBRIDGE INC",
@@ -193,7 +208,10 @@
       "sicDescription": "Petroleum Refining",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "BP is a British integrated energy company engaged in oil and gas exploration, development, production, refining, and marketing globally, with operations in more than 60 countries and approximately 93,700 employees worldwide."
+      }
     },
     "CNQ": {
       "name": "CANADIAN NATURAL RESOURCES Ltd",
@@ -201,7 +219,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Major oil sands producer operating thermal extraction facilities (Primrose, Kirby, Peace River) in Alberta's Athabasca region with current production of ~840,000 barrels per day and expansion projects planned to increase output to 1.59-1.65 million boepd by 2026."
+      }
     },
     "EQNR": {
       "name": "EQUINOR ASA",
@@ -209,7 +230,10 @@
       "sicDescription": "Petroleum Refining",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Norwegian integrated energy company and leading operator on the Norwegian Continental Shelf, producing 2.1 million barrels of oil equivalent daily through exploration, production, refining, and gas transportation infrastructure serving European markets."
+      }
     },
     "WMB": {
       "name": "WILLIAMS COMPANIES, INC.",
@@ -233,7 +257,10 @@
       "sicDescription": "Natural Gas Transmission",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "UK utility company operating the high-pressure natural gas transmission network across Great Britain serving 11+ million customers, plus electricity transmission operations and LNG storage and transportation assets in the United States."
+      }
     },
     "E": {
       "name": "ENI SPA",
@@ -241,7 +268,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Italian multinational energy company with oil and gas exploration and production operations across 70+ countries in Africa, North Sea, Gulf of Mexico, Kazakhstan, and Australia, plus refining and petrochemical operations with exploration and production as its most profitable segment."
+      }
     },
     "SU": {
       "name": "SUNCOR ENERGY INC",
@@ -249,7 +279,10 @@
       "sicDescription": "Petroleum Refining",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Canadian integrated energy company focused on extracting and upgrading synthetic crude oil from Alberta's oil sands, operating three major refineries (Edmonton, Sarnia, Montreal) with combined capacity of ~381,000 barrels per day."
+      }
     },
     "KMI": {
       "name": "KINDER MORGAN, INC.",
@@ -281,7 +314,10 @@
       "sicDescription": "Natural Gas Transmission",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "TC Energy operates a 93,600 km network of natural gas pipelines across North America including the 14,082 km Canadian Mainline, supplying more than 30% of the clean-burning natural gas consumed daily across the continent for heating, industry, and power generation."
+      }
     },
     "OKE": {
       "name": "ONEOK INC /NEW/",
@@ -313,7 +349,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Oil sands producer with record 2024 output of 610,700 barrels of oil equivalent daily from expanding Christina Lake and Sunrise assets in Alberta, with production forecast to exceed 1 million boepd following recent MEG Energy acquisition."
+      }
     },
     "FANG": {
       "name": "Diamondback Energy, Inc.",
@@ -340,7 +379,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Australian oil and gas company operating as the country's largest LNG producer and natural gas producer, with flagship North West Shelf and Pluto LNG projects plus additional assets in the US, Mexico, Africa, and the Caribbean."
+      }
     },
     "EC": {
       "name": "ECOPETROL S.A.",
@@ -348,7 +390,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Colombia's largest energy company responsible for over 60% of the nation's hydrocarbon production, operating three major refineries with 50%+ of country's refining capacity plus extensive oil and multi-purpose pipeline networks."
+      }
     },
     "VG": {
       "name": "Venture Global, Inc.",
@@ -388,7 +433,10 @@
       "sicDescription": "Oil & Gas Field Exploration Services",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Canadian midstream infrastructure company operating conventional oil, heavy crude, and natural gas pipelines plus gas processing and liquids handling facilities transporting hydrocarbons produced in western Canada and North Dakota across an integrated network."
+      }
     },
     "VNOM": {
       "name": "Viper Energy, Inc.",
@@ -412,7 +460,10 @@
       "sicDescription": "Petroleum Refining",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Argentina's largest energy company producing approximately 30% of the nation's oil and gas output, operating three refineries with 50%+ refining capacity, and distributing 25% of Argentina's natural gas through subsidiary Metrogas."
+      }
     },
     "WES": {
       "name": "Western Midstream Partners, LP",
@@ -471,7 +522,10 @@
       "sicDescription": "Meat Packing Plants",
       "flags": [
         "factory_farming"
-      ]
+      ],
+      "reasons": {
+        "factory_farming": "World's largest meat processing company with 250+ production facilities across 180 countries processing approximately 75,000 heads of cattle daily, plus industrial-scale poultry and pork production serving global food retail and foodservice systems."
+      }
     },
     "SUN": {
       "name": "Sunoco LP",
@@ -565,7 +619,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Vista Energy is a Latin American oil and gas exploration and production company focused on unconventional hydrocarbon resources in the Vaca Muerta shale formation in Argentina's Neuquén Basin, with operations also in Mexico, Brazil, and Colombia."
+      }
     },
     "CHRD": {
       "name": "Chord Energy Corp",
@@ -589,7 +646,10 @@
       "sicDescription": "Pipe Lines (No Natural Gas)",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "South Bow operates the Keystone Pipeline System, a 4,900-kilometre crude oil liquids pipeline transporting crude oil from Alberta to key U.S. markets including the Gulf Coast and Midwest."
+      }
     },
     "SSL": {
       "name": "SASOL LTD",
@@ -597,7 +657,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "SASOL is a South African integrated energy company that converts coal to synthetic fuels including diesel, gasoline, and jet fuel; the company also operates six coal mines supplying feedstock for its production complexes."
+      }
     },
     "NE": {
       "name": "Noble Corp plc",
@@ -616,7 +679,10 @@
       "sicDescription": "Natural Gas Distribution",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "ULTRAPAR operates Ipiranga, the second-largest fuel distributor in Brazil with approximately 5,812 service stations distributing gasoline, diesel, and biofuels across the country with roughly 25% of Brazil's fuel retail market share."
+      }
     },
     "MTDR": {
       "name": "Matador Resources Co",
@@ -780,7 +846,10 @@
       "sicDescription": "Natural Gas Transmisison & Distribution",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Brookfield Infrastructure invests in fossil fuel pipeline and transportation infrastructure including oil sands pipelines, LNG export terminals in Louisiana, and the Colonial Pipeline in the United States."
+      }
     },
     "CNR": {
       "name": "Core Natural Resources, Inc.",
@@ -823,7 +892,10 @@
       "sicDescription": "Natural Gas Transmission",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Transportadora de Gas del Sur operates over 9,248 kilometres of natural gas pipelines in Argentina, delivering approximately 60% of the country's consumed natural gas and processing natural gas liquids through its Cerri Complex."
+      }
     },
     "CLMT": {
       "name": "Calumet, Inc. /DE",
@@ -938,7 +1010,10 @@
       "sicDescription": "Drilling Oil & Gas Wells",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Baytex is a Canadian oil and gas producer generating 67,000–69,000 barrels of oil equivalent per day (82% crude oil) from liquids-rich assets in the Western Canadian Sedimentary Basin and Montney formation."
+      }
     },
     "BSM": {
       "name": "Black Stone Minerals, L.P.",
@@ -1029,7 +1104,10 @@
       "sicDescription": "Cigarettes",
       "flags": [
         "tobacco"
-      ]
+      ],
+      "reasons": {
+        "tobacco": "RLX Technology is a Chinese vaping company holding 62.6% market share in China's closed-system e-cigarette market, with state-licensed manufacturing capacity for millions of units of e-vapor rechargeable devices and cartridge products annually."
+      }
     },
     "CCU": {
       "name": "UNITED BREWERIES CO INC",
@@ -1037,7 +1115,10 @@
       "sicDescription": "Malt Beverages",
       "flags": [
         "alcohol"
-      ]
+      ],
+      "reasons": {
+        "alcohol": "United Breweries is India's largest beer manufacturer with over 50% market share, producing flagship brands Kingfisher and Heineken across 79 bottling and brewing facilities worldwide."
+      }
     },
     "AMR": {
       "name": "Alpha Metallurgical Resources, Inc.",
@@ -1069,7 +1150,10 @@
       "sicDescription": "Oil & Gas Field Services, NEC",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Expro is an oilfield services company providing well testing, subsea operations, wireline intervention, tubular running services, and production optimization technology for oil and gas exploration and production worldwide."
+      }
     },
     "GEL": {
       "name": "GENESIS ENERGY LP",
@@ -1101,7 +1185,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Vermilion Energy is a Canadian oil and gas producer generating 83,994 barrels of oil equivalent per day, with 70% of production from Canadian liquids-rich gas assets in the Deep Basin, Montney, and other Western Canadian formations."
+      }
     },
     "WBI": {
       "name": "WaterBridge Infrastructure LLC",
@@ -1184,7 +1271,10 @@
       "sicDescription": "Drilling Oil & Gas Wells",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Borr Drilling is an offshore drilling contractor operating 24 modern jack-up rigs providing exploration, production, and workover drilling services for oil and gas companies in shallow-water operations globally."
+      }
     },
     "DMLP": {
       "name": "DORCHESTER MINERALS, L.P.",
@@ -1219,7 +1309,10 @@
       "sicDescription": "Tobacco Products",
       "flags": [
         "tobacco"
-      ]
+      ],
+      "reasons": {
+        "tobacco": "AIR Global is a global leader in tobacco-based hookah and shisha products, operating under tobacco monopoly licensing with branded flavored molasses products including Al Fakher, Shisha Kartel, and inhalation devices like OOKA and VANT."
+      }
     },
     "TTI": {
       "name": "TETRA TECHNOLOGIES INC",
@@ -1238,7 +1331,10 @@
       "sicDescription": "Drilling Oil & Gas Wells",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Precision Drilling is Canada's largest drilling rig contractor, providing contract drilling services, well servicing, and oilfield equipment distribution to the oil and gas industry across North America and internationally."
+      }
     },
     "DEC": {
       "name": "Diversified Energy Co",
@@ -1281,7 +1377,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Greenfire Resources is an Athabasca oil sands producer in Alberta, Canada, operating producing assets using steam-assisted gravity drainage extraction methods to develop oil reserves."
+      }
     },
     "MAMA": {
       "name": "Mama's Creations, Inc.",
@@ -1313,7 +1412,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Obsidian Energy is an intermediate-sized oil and gas producer with operations throughout the Western Canada Sedimentary Basin, producing light oil, heavy oil, and natural gas at approximately 30,000 barrels of oil equivalent per day."
+      }
     },
     "METC": {
       "name": "Ramaco Resources, Inc.",
@@ -1348,7 +1450,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "GeoPark Limited is a Latin American oil and gas exploration and production operator, the third-largest oil operator in Colombia and leading private E&P company in Chile, with operations across six countries spanning over 700,000 acres."
+      }
     },
     "EGY": {
       "name": "VAALCO ENERGY INC /DE/",
@@ -1364,7 +1469,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "WhiteHawk Minerals owns and manages natural gas mineral and royalty interests in premium U.S. basins including the Marcellus and Haynesville Shales, earning revenue from production volumes and commodity prices."
+      }
     },
     "CLB": {
       "name": "Core Laboratories Inc. /DE/",
@@ -1447,7 +1555,10 @@
       "sicDescription": "Oil & Gas Field Services, NEC",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "North American Construction Group, through its subsidiary ML Northern Services, provides heavy equipment services and mobile fueling support for ultra-class mining equipment fleets in Canadian oil sands operations in Fort McMurray."
+      }
     },
     "REI": {
       "name": "RING ENERGY, INC.",
@@ -1474,7 +1585,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Presidio Production Company is a Fort Worth-based oil and gas operator focused on acquiring and optimizing producing oil and natural gas wells across the U.S. Mid-Continent region without drilling new wells."
+      }
     },
     "GTE": {
       "name": "GRAN TIERRA ENERGY INC.",
@@ -1525,7 +1639,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Kolibri Global Energy operates the Tishomingo oil field in Oklahoma, a liquids-rich asset in the Southern SCOOP play producing over 6,000 barrels of oil equivalent per day."
+      }
     },
     "AMPY": {
       "name": "Amplify Energy Corp.",
@@ -1672,7 +1789,10 @@
       "sicDescription": "Sausages & Other Prepared Meat Products",
       "flags": [
         "factory_farming"
-      ]
+      ],
+      "reasons": {
+        "factory_farming": "Wing Yip Food Holdings Group processes and distributes cured meat products including pork sausages, poultry, seafood, and frozen meat products through multiple distribution channels in mainland China."
+      }
     },
     "PVL": {
       "name": "Permianville Royalty Trust",
@@ -1715,7 +1835,10 @@
       "sicDescription": "Drilling Oil & Gas Wells",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Greenland Energy is an early-stage oil and gas exploration company in the Jameson Land Basin of East Greenland, with identified potential for approximately 13 billion barrels of recoverable oil."
+      }
     },
     "HCMC": {
       "name": "Healthier Choices Management Corp.",
@@ -1731,7 +1854,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Indonesia Energy Corp engages in oil and gas exploration and production in Indonesia, with principal assets including the producing Kruh Block in South Sumatra and exploration blocks in West Java."
+      }
     },
     "AGIG": {
       "name": "ABUNDIA GLOBAL IMPACT GROUP, INC.",
@@ -1826,7 +1952,10 @@
       "sicDescription": "Oil & Gas Field Services, NEC",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Genoil develops heavy oil upgrading technologies that convert sour and heavy hydrocarbon feedstocks such as oil sands bitumen into lighter crude suitable for conventional refining."
+      }
     },
     "CHKR": {
       "name": "CHESAPEAKE GRANITE WASH TRUST",
@@ -1960,7 +2089,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "FEC Resources pursues oil and natural gas exploration and development in the Philippines, holding interests in offshore blocks including the Sampaguita natural gas discovery in West Palawan."
+      }
     },
     "XXII": {
       "name": "22nd Century Group, Inc.",
@@ -2008,7 +2140,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Strata Power is an exploration stage company engaged in acquiring and developing heavy oil and bitumen deposits in the Peace River oil sands region of northern Alberta, Canada, holding partial and royalty interests in multiple oil sands leases."
+      }
     },
     "PCCYF": {
       "name": "PETROCHINA CO LTD",
@@ -2016,7 +2151,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "PetroChina is China's largest oil and gas producer with extensive operations including exploration, development, and production of crude oil and natural gas in major domestic regions and across more than 20 countries internationally, plus refining and petrochemical operations."
+      }
     },
     "RYDAF": {
       "name": "Shell plc",
@@ -2024,7 +2162,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Shell plc is a British-Dutch integrated oil and gas major with global upstream operations (exploration and extraction of crude oil, natural gas, and NGLs), downstream refining and marketing, and liquefied natural gas production across over 70 countries."
+      }
     },
     "BUDFF": {
       "name": "Anheuser-Busch InBev SA/NV",
@@ -2032,7 +2173,10 @@
       "sicDescription": "Malt Beverages",
       "flags": [
         "alcohol"
-      ]
+      ],
+      "reasons": {
+        "alcohol": "Anheuser-Busch InBev is the world's largest beer brewer with a portfolio of 400 beer brands including Budweiser, Corona, Stella Artois, and others, producing approximately 506 million hectoliters annually across 50+ countries."
+      }
     },
     "BTAFF": {
       "name": "British American Tobacco p.l.c.",
@@ -2040,7 +2184,10 @@
       "sicDescription": "Cigarettes",
       "flags": [
         "tobacco"
-      ]
+      ],
+      "reasons": {
+        "tobacco": "British American Tobacco is one of the world's largest tobacco manufacturers producing and marketing cigarettes, cigars, heated tobacco products, oral tobacco, and vapor products under major brands including Pall Mall, Newport, Lucky Strike, Dunhill, and Camel."
+      }
     },
     "BPAQF": {
       "name": "BP PLC",
@@ -2048,7 +2195,10 @@
       "sicDescription": "Petroleum Refining",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "BP is a British integrated energy company engaged in oil and gas exploration, development, production, refining, and marketing globally, with operations in more than 60 countries and approximately 93,700 employees worldwide."
+      }
     },
     "SNPMF": {
       "name": "CHINA PETROLEUM & CHEMICAL CORP",
@@ -2056,7 +2206,10 @@
       "sicDescription": "Petroleum Refining",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Sinopec is China's second-largest oil and gas producer and the world's largest oil refining conglomerate, with operations spanning exploration, development, production, and transportation of crude oil and natural gas, plus large-scale chemical manufacturing."
+      }
     },
     "EBBNF": {
       "name": "ENBRIDGE INC",
@@ -2075,7 +2228,10 @@
       "sicDescription": "Petroleum Refining",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Norwegian integrated energy company and leading operator on the Norwegian Continental Shelf, producing 2.1 million barrels of oil equivalent daily through exploration, production, refining, and gas transportation infrastructure serving European markets."
+      }
     },
     "EIPAF": {
       "name": "ENI SPA",
@@ -2083,7 +2239,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Italian multinational energy company with oil and gas exploration and production operations across 70+ countries in Africa, North Sea, Gulf of Mexico, Kazakhstan, and Australia, plus refining and petrochemical operations with exploration and production as its most profitable segment."
+      }
     },
     "NGGTF": {
       "name": "NATIONAL GRID PLC",
@@ -2091,7 +2250,10 @@
       "sicDescription": "Natural Gas Transmission",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "UK utility company operating the high-pressure natural gas transmission network across Great Britain serving 11+ million customers, plus electricity transmission operations and LNG storage and transportation assets in the United States."
+      }
     },
     "TNCAF": {
       "name": "TC ENERGY CORP",
@@ -2099,7 +2261,10 @@
       "sicDescription": "Natural Gas Transmission",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "TC Energy operates a 93,600 km network of natural gas pipelines across North America including the 14,082 km Canadian Mainline, supplying more than 30% of the clean-burning natural gas consumed daily across the continent for heating, industry, and power generation."
+      }
     },
     "TCANF": {
       "name": "TC ENERGY CORP",
@@ -2107,7 +2272,10 @@
       "sicDescription": "Natural Gas Transmission",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "TC Energy operates a 93,600 km network of natural gas pipelines across North America including the 14,082 km Canadian Mainline, supplying more than 30% of the clean-burning natural gas consumed daily across the continent for heating, industry, and power generation."
+      }
     },
     "WOPEF": {
       "name": "WOODSIDE ENERGY GROUP LTD",
@@ -2115,7 +2283,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Australian oil and gas company operating as the country's largest LNG producer and natural gas producer, with flagship North West Shelf and Pluto LNG projects plus additional assets in the US, Mexico, Africa, and the Caribbean."
+      }
     },
     "SASOF": {
       "name": "SASOL LTD",
@@ -2123,7 +2294,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "SASOL is a South African integrated energy company that converts coal to synthetic fuels including diesel, gasoline, and jet fuel; the company also operates six coal mines supplying feedstock for its production complexes."
+      }
     },
     "CODQL": {
       "name": "Coronado Global Resources Inc.",
@@ -2139,7 +2313,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Vista Energy is a Latin American oil and gas exploration and production company focused on unconventional hydrocarbon resources in the Vaca Muerta shale formation in Argentina's Neuquén Basin, with operations also in Mexico, Brazil, and Colombia."
+      }
     },
     "APHD": {
       "name": "VERDE BIO HOLDINGS, INC.",
@@ -2165,14 +2342,6 @@
         "fossil_fuels"
       ]
     },
-    "MNZO": {
-      "name": "Exxsun Corp",
-      "sic": "1311",
-      "sicDescription": "Crude Petroleum & Natural Gas",
-      "flags": [
-        "fossil_fuels"
-      ]
-    },
     "ANNAW": {
       "name": "AleAnna, Inc.",
       "sic": "1311",
@@ -2190,7 +2359,10 @@
       "sicDescription": "Oil & Gas Field Exploration Services",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Canadian midstream infrastructure company operating conventional oil, heavy crude, and natural gas pipelines plus gas processing and liquids handling facilities transporting hydrocarbons produced in western Canada and North Dakota across an integrated network."
+      }
     },
     "PBPRF": {
       "name": "PEMBINA PIPELINE CORP",
@@ -2198,7 +2370,10 @@
       "sicDescription": "Oil & Gas Field Exploration Services",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Canadian midstream infrastructure company operating conventional oil, heavy crude, and natural gas pipelines plus gas processing and liquids handling facilities transporting hydrocarbons produced in western Canada and North Dakota across an integrated network."
+      }
     },
     "PMMBF": {
       "name": "PEMBINA PIPELINE CORP",
@@ -2206,7 +2381,10 @@
       "sicDescription": "Oil & Gas Field Exploration Services",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Canadian midstream infrastructure company operating conventional oil, heavy crude, and natural gas pipelines plus gas processing and liquids handling facilities transporting hydrocarbons produced in western Canada and North Dakota across an integrated network."
+      }
     },
     "PPLAF": {
       "name": "PEMBINA PIPELINE CORP",
@@ -2214,7 +2392,10 @@
       "sicDescription": "Oil & Gas Field Exploration Services",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Canadian midstream infrastructure company operating conventional oil, heavy crude, and natural gas pipelines plus gas processing and liquids handling facilities transporting hydrocarbons produced in western Canada and North Dakota across an integrated network."
+      }
     },
     "PBNAF": {
       "name": "PEMBINA PIPELINE CORP",
@@ -2222,7 +2403,10 @@
       "sicDescription": "Oil & Gas Field Exploration Services",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Canadian midstream infrastructure company operating conventional oil, heavy crude, and natural gas pipelines plus gas processing and liquids handling facilities transporting hydrocarbons produced in western Canada and North Dakota across an integrated network."
+      }
     },
     "PMBPF": {
       "name": "PEMBINA PIPELINE CORP",
@@ -2230,7 +2414,10 @@
       "sicDescription": "Oil & Gas Field Exploration Services",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Canadian midstream infrastructure company operating conventional oil, heavy crude, and natural gas pipelines plus gas processing and liquids handling facilities transporting hydrocarbons produced in western Canada and North Dakota across an integrated network."
+      }
     },
     "GFRWF": {
       "name": "Greenfire Resources Ltd.",
@@ -2238,7 +2425,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Greenfire Resources is an Athabasca oil sands producer in Alberta, Canada, operating producing assets using steam-assisted gravity drainage extraction methods to develop oil reserves."
+      }
     },
     "OKMN": {
       "name": "OKMIN RESOURCES, INC.",
@@ -2254,7 +2444,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Strathcona Resources is a major Alberta-based oil and gas producer focused on thermal oil extraction (SAGD bitumen production) from oil sands deposits in the Cold Lake region, including the Lindbergh, Orion, and Tucker assets."
+      }
     },
     "MPLXP": {
       "name": "MPLX LP",
@@ -2294,7 +2487,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "PetroChina is China's largest oil and gas producer with extensive operations including exploration, development, and production of crude oil and natural gas in major domestic regions and across more than 20 countries internationally, plus refining and petrochemical operations."
+      }
     },
     "METCI": {
       "name": "Ramaco Resources, Inc.",
@@ -2326,7 +2522,10 @@
       "sicDescription": "Crude Petroleum & Natural Gas",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Whitecap Resources is a leading Canadian oil and natural gas producer operating in western Canada with significant holdings in the Montney and Duvernay formations, producing approximately 307,245 barrels of oil equivalent daily as of 2025."
+      }
     },
     "TCEYF": {
       "name": "TC ENERGY CORP",
@@ -2334,7 +2533,10 @@
       "sicDescription": "Natural Gas Transmission",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "TC Energy operates a 93,600 km network of natural gas pipelines across North America including the 14,082 km Canadian Mainline, supplying more than 30% of the clean-burning natural gas consumed daily across the continent for heating, industry, and power generation."
+      }
     },
     "TRPPF": {
       "name": "TC ENERGY CORP",
@@ -2342,7 +2544,10 @@
       "sicDescription": "Natural Gas Transmission",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "TC Energy operates a 93,600 km network of natural gas pipelines across North America including the 14,082 km Canadian Mainline, supplying more than 30% of the clean-burning natural gas consumed daily across the continent for heating, industry, and power generation."
+      }
     },
     "TRPEF": {
       "name": "TC ENERGY CORP",
@@ -2350,7 +2555,10 @@
       "sicDescription": "Natural Gas Transmission",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "TC Energy operates a 93,600 km network of natural gas pipelines across North America including the 14,082 km Canadian Mainline, supplying more than 30% of the clean-burning natural gas consumed daily across the continent for heating, industry, and power generation."
+      }
     },
     "TCENF": {
       "name": "TC ENERGY CORP",
@@ -2358,7 +2566,10 @@
       "sicDescription": "Natural Gas Transmission",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "TC Energy operates a 93,600 km network of natural gas pipelines across North America including the 14,082 km Canadian Mainline, supplying more than 30% of the clean-burning natural gas consumed daily across the continent for heating, industry, and power generation."
+      }
     },
     "TCNCF": {
       "name": "TC ENERGY CORP",
@@ -2366,7 +2577,10 @@
       "sicDescription": "Natural Gas Transmission",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "TC Energy operates a 93,600 km network of natural gas pipelines across North America including the 14,082 km Canadian Mainline, supplying more than 30% of the clean-burning natural gas consumed daily across the continent for heating, industry, and power generation."
+      }
     },
     "TRPRF": {
       "name": "TC ENERGY CORP",
@@ -2374,7 +2588,10 @@
       "sicDescription": "Natural Gas Transmission",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "TC Energy operates a 93,600 km network of natural gas pipelines across North America including the 14,082 km Canadian Mainline, supplying more than 30% of the clean-burning natural gas consumed daily across the continent for heating, industry, and power generation."
+      }
     },
     "NMPWP": {
       "name": "NATIONAL GRID PLC",
@@ -2382,7 +2599,10 @@
       "sicDescription": "Natural Gas Transmission",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "UK utility company operating the high-pressure natural gas transmission network across Great Britain serving 11+ million customers, plus electricity transmission operations and LNG storage and transportation assets in the United States."
+      }
     },
     "NEWEN": {
       "name": "NATIONAL GRID PLC",
@@ -2390,7 +2610,10 @@
       "sicDescription": "Natural Gas Transmission",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "UK utility company operating the high-pressure natural gas transmission network across Great Britain serving 11+ million customers, plus electricity transmission operations and LNG storage and transportation assets in the United States."
+      }
     },
     "NMKCP": {
       "name": "NATIONAL GRID PLC",
@@ -2398,7 +2621,10 @@
       "sicDescription": "Natural Gas Transmission",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "UK utility company operating the high-pressure natural gas transmission network across Great Britain serving 11+ million customers, plus electricity transmission operations and LNG storage and transportation assets in the United States."
+      }
     },
     "NMKBP": {
       "name": "NATIONAL GRID PLC",
@@ -2406,7 +2632,10 @@
       "sicDescription": "Natural Gas Transmission",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "UK utility company operating the high-pressure natural gas transmission network across Great Britain serving 11+ million customers, plus electricity transmission operations and LNG storage and transportation assets in the United States."
+      }
     },
     "EBGEF": {
       "name": "ENBRIDGE INC",
@@ -2526,7 +2755,10 @@
       "sicDescription": "Petroleum Refining",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "BP is a British integrated energy company engaged in oil and gas exploration, development, production, refining, and marketing globally, with operations in more than 60 countries and approximately 93,700 employees worldwide."
+      }
     },
     "TCPA": {
       "name": "TRANSCANADA PIPELINES LTD",
@@ -2534,7 +2766,10 @@
       "sicDescription": "Natural Gas Transmission",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "TransCanada Pipelines (now TC Energy) operates the 14,082 km Canadian Mainline pipeline that transports natural gas from Alberta and British Columbia to eastern Canadian and U.S. markets, part of a major North American gas transmission network."
+      }
     },
     "SOCGM": {
       "name": "SOUTHERN CALIFORNIA GAS CO",
@@ -2585,7 +2820,10 @@
       "sicDescription": "Drilling Oil & Gas Wells",
       "flags": [
         "fossil_fuels"
-      ]
+      ],
+      "reasons": {
+        "fossil_fuels": "Greenland Energy is an early-stage oil and gas exploration company in the Jameson Land Basin of East Greenland, with identified potential for approximately 13 billion barrels of recoverable oil."
+      }
     }
   }
 }
