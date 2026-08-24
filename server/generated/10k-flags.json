@@ -2017,6 +2017,13 @@
           "quote": "The property includes a thermal coal deposit as well as a large unconventional deposit of rare earth elements and critical minerals sourced from coal and carbonaceous ore.",
           "source": "https://www.sec.gov/Archives/edgar/data/1687187/000110465926020479/metc-20251231x10k.htm",
           "asOf": "10-K filed 2026-02-26"
+        },
+        {
+          "key": "thermal_coal",
+          "summary": "Company owns and mines thermal coal deposits as part of its core mining operations on controlled properties.",
+          "quote": "The property includes a thermal coal deposit as well as a large unconventional deposit of rare earth elements and critical minerals sourced from coal and carbonaceous ore.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1687187/000110465926020479/metc-20251231x10k.htm",
+          "asOf": "10-K filed 2026-02-26"
         }
       ]
     },
@@ -3049,6 +3056,222 @@
           "quote": "Oil. Crude oil, condensate, and natural gas liquids.",
           "source": "https://www.sec.gov/Archives/edgar/data/2028336/000121390026026501/ea0276741-10k_newera.htm",
           "asOf": "10-K filed 2026-03-12"
+        }
+      ]
+    },
+    "APC": {
+      "name": "ARKO Petroleum Corp.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "ARKO Petroleum operates as a wholesale motor fuel distributor, buying refined petroleum from integrated oil companies and selling to customers as a core line of business.",
+          "quote": "We sell motor fuels to our customers at prices that represent our cost of motor fuels plus a profit margin",
+          "source": "https://www.sec.gov/Archives/edgar/data/2080921/000119312526131747/apc_10k_12312025.htm",
+          "asOf": "10-K filed 2026-03-30"
+        }
+      ]
+    },
+    "RCAT": {
+      "name": "Red Cat Holdings, Inc.",
+      "flags": [
+        {
+          "key": "weapons",
+          "summary": "Red Cat Holdings manufactures tactical unmanned aircraft systems (military drones) for defense customers as a core product line.",
+          "quote": "Teal designs and manufactures small, tactical unmanned aircraft systems for defense and public safety customers",
+          "source": "https://www.sec.gov/Archives/edgar/data/748268/000162828026019861/rcat-20251231.htm",
+          "asOf": "10-K filed 2026-03-19"
+        }
+      ]
+    },
+    "OIS": {
+      "name": "OIL STATES INTERNATIONAL, INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Oil States provides oilfield services to the oil and gas industry as a material line of business with revenue cyclically dependent on oil/gas activity.",
+          "quote": "Demand for our products and services is cyclical and substantially dependent upon activity levels in the oil and natural gas industry",
+          "source": "https://www.sec.gov/Archives/edgar/data/1121484/000112148426000007/ois-20251231.htm",
+          "asOf": "10-K filed 2026-03-04"
+        }
+      ]
+    },
+    "SGU": {
+      "name": "STAR GROUP, L.P.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Company distributes propane (fossil fuel byproduct of natural gas/petroleum refining) to residential, commercial, and industrial customers across all three major use categories.",
+          "quote": "Propane is a by-product of natural gas processing and petroleum refining. Propane use falls into three broad categories: residential and commercial applications; industrial applications; and agricultural uses.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1002590/000119312525311490/sgu-20250930.htm",
+          "asOf": "10-K filed 2025-12-09"
+        }
+      ]
+    },
+    "SPH": {
+      "name": "SUBURBAN PROPANE PARTNERS LP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Suburban Propane operates a propane utility business, transporting and distributing propane (a fossil fuel extracted from natural gas and oil refining) to residential, commercial, industrial, and agricultural customers as a core line of business.",
+          "quote": "Propane is extracted from natural gas or oil wellhead gas at processing plants or separated from crude oil during the refining process. It is normally transported and stored in a liquid state under moderate pressure or refrigeration for ease of handling in shipping and distribution.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1005210/000119312525298630/sph-20250927.htm",
+          "asOf": "10-K filed 2025-11-26"
+        }
+      ]
+    },
+    "ACEL": {
+      "name": "Accel Entertainment, Inc.",
+      "flags": [
+        {
+          "key": "gambling",
+          "summary": "Accel operates casinos and gaming entertainment facilities as a material line of business, including facilities like 24th Street Station Casino and Toucan Gaming LLC.",
+          "quote": "Accel's expansion into casino operations and horse racing",
+          "source": "https://www.sec.gov/Archives/edgar/data/1698991/000169899126000018/acel-20251231.htm",
+          "asOf": "10-K filed 2026-03-03"
+        }
+      ]
+    },
+    "MNTN": {
+      "name": "MNTN, Inc.",
+      "flags": [
+        {
+          "key": "big_tech_surveillance",
+          "summary": "MNTN collects and uses personal data to infer user interests and deliver targeted advertising as a core business function, engaging in behavioral and personalized advertising practices.",
+          "quote": "use of data to draw inferences about a user's interests and deliver relevant advertising to that user, and similar or related practices (sometimes referred to as behavioral advertising or personalized advertising)",
+          "source": "https://www.sec.gov/Archives/edgar/data/1891027/000189102726000019/mntn-20251231.htm",
+          "asOf": "10-K filed 2026-02-19"
+        }
+      ]
+    },
+    "NXDR": {
+      "name": "Nextdoor Holdings, Inc.",
+      "flags": [
+        {
+          "key": "big_tech_surveillance",
+          "summary": "Nextdoor collects personal data for targeted marketing and personalized advertising, which directly impacts their advertising revenue model.",
+          "quote": "which may impact our advertising revenue and data collection capabilities for targeted marketing and personalized advertising",
+          "source": "https://www.sec.gov/Archives/edgar/data/1846069/000184606926000023/kind-20251231.htm",
+          "asOf": "10-K filed 2026-02-18"
+        }
+      ]
+    },
+    "CAPL": {
+      "name": "CrossAmerica Partners LP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "CrossAmerica derives 87% of total revenues from motor fuel sales and operations, operating as a fuel distributor/retailer dependent on crude oil supply chain.",
+          "quote": "For 2025, motor fuel revenues accounted for 87% of our total revenues and motor fuel gross profit accounted for 55% of total gross profit",
+          "source": "https://www.sec.gov/Archives/edgar/data/1538849/000119312526071870/capl-20251231.htm",
+          "asOf": "10-K filed 2026-02-25"
+        }
+      ]
+    },
+    "CRTO": {
+      "name": "Criteo S.A.",
+      "flags": [
+        {
+          "key": "big_tech_surveillance",
+          "summary": "Criteo operates a core business line in ad-targeting powered by personal data and identity profiling. The company explicitly states it uses a 'unique commerce data foundation' and 'AI-driven performance engine' to deliver 'personalized advertising' informed by '$1 trillion in annual commerce transactions,' matching the definition of ad-targeting on personal profiling as a primary line of business.",
+          "quote": "Powered by Artificial intelligence (\"AI\") and inform ed by $1 trillion in an nual commerce transactions, our technology enables discovery, engagement, and conversion across the shopper journey. We reach shoppers wherever they are with personalized advertising",
+          "source": "https://www.sec.gov/Archives/edgar/data/1576427/000157642726000014/crto-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "DSP": {
+      "name": "Viant Technology Inc.",
+      "flags": [
+        {
+          "key": "big_tech_surveillance",
+          "summary": "Viant operates as a data broker and identity-resolution company whose core business is matching consumers to advertising through personal profiling. The company explicitly uses patented identity-resolution technology (HHID and identity graph) to enable 'personalized advertising' and is governed as a 'data broker' under state law, making this a material line of business.",
+          "quote": "Using our identity resolution capabilities led by our patented HHID and identity graph, marketers and their advertising agencies can identify targeted consumers using real-world identifiers rather than relying primarily on cookies to track users.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1828791/000182879126000019/dsp-20251231.htm",
+          "asOf": "10-K filed 2026-03-11"
+        }
+      ]
+    },
+    "PUBM": {
+      "name": "PubMatic, Inc.",
+      "flags": [
+        {
+          "key": "big_tech_surveillance",
+          "summary": "Company explicitly registers as a data broker and derives material revenue from interest-based advertising using personal data collection and behavioral targeting as a core line of business.",
+          "quote": "We have registered as a data broker in California, Texas and Oregon with each respective state's Attorney General",
+          "source": "https://www.sec.gov/Archives/edgar/data/1422930/000142293026000010/pubm-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "HNRG": {
+      "name": "HALLADOR ENERGY CO",
+      "flags": [
+        {
+          "key": "thermal_coal",
+          "summary": "Company owns and operates a 1,080 MW coal-fired power generation facility (Merom Power Plant) as a core business line delivering electric energy.",
+          "quote": "Hallador Power, the Company's wholly-owned electric subsidiary, owns and operates the Merom Power Plant (\"Merom\"), a 1,080 MW coal-fired power generating station",
+          "source": "https://www.sec.gov/Archives/edgar/data/788965/000110465926027174/hnrg-20251231x10k.htm",
+          "asOf": "10-K filed 2026-03-12"
+        }
+      ]
+    },
+    "GRNT": {
+      "name": "Granite Ridge Resources, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Granite Ridge Resources extracts and produces crude oil and natural gas as a primary line of business, with proven reserves and active drilling operations.",
+          "quote": "Reserves are estimated remaining quantities of oil and gas and related substances anticipated to be economically producible, as of a given date, by application of development projects to known accumulations",
+          "source": "https://www.sec.gov/Archives/edgar/data/1928446/000192844626000007/grnt-20251231.htm",
+          "asOf": "10-K filed 2026-03-06"
+        }
+      ]
+    },
+    "CNNE": {
+      "name": "Cannae Holdings, Inc.",
+      "flags": [
+        {
+          "key": "alcohol",
+          "summary": "Cannae Holdings owns and operates Minden Mill, which operates distilleries producing American Whiskey and white spirits as a core business.",
+          "quote": "Minden Mill's facilities include an American Whiskey and white spirits distillery, housed in a 100-year-old creamery, and an American Single Malt Whiskey distillery housed in a 100-year-old flour mill",
+          "source": "https://www.sec.gov/Archives/edgar/data/1704720/000170472026000045/cnne-20251231.htm",
+          "asOf": "10-K filed 2026-03-02"
+        }
+      ]
+    },
+    "TLRY": {
+      "name": "Tilray Brands, Inc.",
+      "flags": [
+        {
+          "key": "alcohol",
+          "summary": "Tilray Brands owns and operates multiple breweries and distilleries producing beer and spirits as a primary line of business.",
+          "quote": "portfolio includes some of the most well-known and beloved brands in their respective industries and markets including SweetWater Brewing, Montauk Brewing, BrewDog, Shock Top, 10 Barrell, Breckenridge Brewery, Blue Point Brewing, Breckenridge Distillery, Revolver",
+          "source": "https://www.sec.gov/Archives/edgar/data/1731348/000143774926024698/tlry20260531_10k.htm",
+          "asOf": "10-K filed 2026-07-28"
+        }
+      ]
+    },
+    "SWBI": {
+      "name": "SMITH & WESSON BRANDS, INC.",
+      "flags": [
+        {
+          "key": "firearms",
+          "summary": "Company manufactures and sells firearms as core business line, with stated objective to lead the firearm industry market.",
+          "quote": "our objective to be the undisputed market leader in the firearm industry",
+          "source": "https://www.sec.gov/Archives/edgar/data/1092796/000119312526274254/swbi-20260430.htm",
+          "asOf": "10-K filed 2026-06-17"
+        }
+      ]
+    },
+    "WTI": {
+      "name": "W&T OFFSHORE INC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Company engaged in exploration, development and production of crude oil and natural gas reserves, as evidenced by reserve classification terminology.",
+          "quote": "Proved reserves . Those quantities of oil, NGLs and natural gas, which, by analysis of geoscience and engineering data, can be estimated with reasonable certainty to be economically producible",
+          "source": "https://www.sec.gov/Archives/edgar/data/1288403/000110465926028315/wti-20251231x10k.htm",
+          "asOf": "10-K filed 2026-03-16"
         }
       ]
     }
