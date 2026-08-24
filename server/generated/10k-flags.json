@@ -1011,6 +1011,174 @@
           "asOf": "10-K filed 2026-02-09"
         }
       ]
+    },
+    "SNAP": {
+      "name": "Snap Inc",
+      "flags": [
+        {
+          "key": "big_tech_surveillance",
+          "summary": "Snap's core business model relies on processing personal data for personalized advertising, which the company explicitly acknowledges faces regulatory scrutiny as a major technology platform.",
+          "quote": "The processing of personal data for personalized advertising continues to be under increased scrutiny from regulators, which includes ongoing regulatory action against large technology companies like ours",
+          "source": "https://www.sec.gov/Archives/edgar/data/1564408/000156440826000013/snap-20251231.htm",
+          "asOf": "10-K filed 2026-02-05"
+        }
+      ]
+    },
+    "IEP": {
+      "name": "ICAHN ENTERPRISES L.P.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "CVR Energy, a material part of the company's operations, operates oil refineries with combined capacity of 206,500 barrels per day, producing gasoline, diesel, jet fuel and other petroleum products for commercial sale.",
+          "quote": "CVR Energy is an independent petroleum refiner and is a marketer of high value transportation fuels primarily in the form of gasoline, diesel, j",
+          "source": "https://www.sec.gov/Archives/edgar/data/813762/000110465926019821/tmb-20251231x10k.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "CLMT": {
+      "name": "Calumet, Inc. /DE",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Calumet operates oil refineries and processing facilities that convert crude oil into conventional gasoline, diesel, jet fuel, and specialty asphalt products as a core line of business.",
+          "quote": "At our Montana specialty asphalt facility, we process Canadian crude oil into conventional gasoline, diesel, jet fuel and specialty grades of asphalt, with production sized to serve local markets.",
+          "source": "https://www.sec.gov/Archives/edgar/data/2013745/000201374526000007/clmt-20251231x10k.htm",
+          "asOf": "10-K filed 2026-02-27"
+        }
+      ]
+    },
+    "SEB": {
+      "name": "SEABOARD CORP /DE/",
+      "flags": [
+        {
+          "key": "factory_farming",
+          "summary": "Seaboard operates a vertically integrated industrial pork production business with hog breeding and fattening facilities, plus a pork processing plant\u2014the company's primary revenue-generating activity.",
+          "quote": "Seaboard, through its subsidiary Seaboard Foods LLC (\"Seaboard Foods\"), is a vertically integrated pork producer.",
+          "source": "https://www.sec.gov/Archives/edgar/data/88121/000008812126000012/seb-20251231x10k.htm",
+          "asOf": "10-K filed 2026-02-12"
+        }
+      ]
+    },
+    "SUNC": {
+      "name": "SunocoCorp LLC",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Sunoco operates an integrated pipeline and terminal network of crude oil and refined product pipelines as its primary business, including approximately 6,000 miles of crude oil pipeline.",
+          "quote": "crude oil and water gathering pipelines and storage assets in the Permian Basin",
+          "source": "https://www.sec.gov/Archives/edgar/data/2089661/000208966126000016/sunc-20251231.htm",
+          "asOf": "10-K filed 2026-02-19"
+        }
+      ]
+    },
+    "DK": {
+      "name": "Delek US Holdings, Inc.",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Delek operates oil refineries with cracking units that process crude oil into refined products, making refining its core business.",
+          "quote": "A refinery unit that processes (\"cracks\") heavy oils, such as the bottom cuts of crude oil from the crude or vacuum units, to produce blendstocks for light transportation fuels or feedstocks for other units and petroleum coke.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1694426/000162828026012664/dk-20251231.htm",
+          "asOf": "10-K filed 2026-02-27"
+        }
+      ]
+    },
+    "USAC": {
+      "name": "USA Compression Partners, LP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "USA Compression provides compression services for oil and gas production and transportation as its primary business line, serving unconventional shale plays.",
+          "quote": "compression services to our customers primarily in connection with infrastructure applications, including both allowing for the processing and transportation of natural gas through the domestic pipeline system and enhancing crude oil production through artificial lift processes",
+          "source": "https://www.sec.gov/Archives/edgar/data/1522727/000152272726000015/usac-20251231.htm",
+          "asOf": "10-K filed 2026-02-17"
+        }
+      ]
+    },
+    "ARLP": {
+      "name": "ALLIANCE RESOURCE PARTNERS LP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Alliance Resource Partners operates oil and gas mineral extraction as a core line of business through wholly owned subsidiaries that hold mineral interests and manage coal/oil/gas properties.",
+          "quote": "Alliance Minerals, LLC, an indirect wholly owned subsidiary of ARLP and the holding company for our oil & gas minerals interests",
+          "source": "https://www.sec.gov/Archives/edgar/data/1086600/000110465926020468/arlp-20251231x10k.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "MGNI": {
+      "name": "MAGNITE, INC.",
+      "flags": [
+        {
+          "key": "big_tech_surveillance",
+          "summary": "Magnite is explicitly registered and operates as a data broker collecting, processing, and monetizing consumer personal data as its core business model.",
+          "quote": "companies registered as data brokers in California (including Magnite), must honor universal deletion requests consumers make of all data brokers via the state's Delete Request and Opt-out Platform mechanism.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1595974/000159597426000007/mgni-20251231.htm",
+          "asOf": "10-K filed 2026-02-25"
+        }
+      ]
+    },
+    "DKL": {
+      "name": "Delek Logistics Partners, LP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Delek Logistics operates owned pipelines that gather, process, and transport crude oil and natural gas as its primary business line.",
+          "quote": "The Partnership provides gathering, processing, pipeline and other transportation services primarily for crude oil and natural gas customers",
+          "source": "https://www.sec.gov/Archives/edgar/data/1552797/000162828026012666/dkl-20251231.htm",
+          "asOf": "10-K filed 2026-02-27"
+        }
+      ]
+    },
+    "SDRL": {
+      "name": "Seadrill Ltd",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Seadrill provides oilfield services as its primary business, owning and operating offshore drilling rigs to drill oil and gas wells on a commercial basis worldwide.",
+          "quote": "We are an offshore drilling contractor providing worldwide offshore drilling services to the oil and gas industry.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1737706/000173770626000010/sdrl-20251231.htm",
+          "asOf": "10-K filed 2026-02-26"
+        }
+      ]
+    },
+    "BKV": {
+      "name": "BKV Corp",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "BKV Corp directly operates oil and gas producing properties with 96,000 net acres and 1,121 operated wells, extracting material revenue from fossil fuel production.",
+          "quote": "BKV Barnett II and its subsidiaries own certain oil and gas producing properties and midstream assets in the Barnett Shale, including approximately 96,000 net acres, 1,121 operated wells, and related natural gas upstream, midstream, and other assets.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1838406/000162828026015661/bkv-20251231.htm",
+          "asOf": "10-K filed 2026-03-06"
+        }
+      ]
+    },
+    "VOYG": {
+      "name": "Voyager Technologies, Inc./TX",
+      "flags": [
+        {
+          "key": "weapons",
+          "summary": "Voyager Technologies explicitly designs, develops and operates missile-defense systems and advanced defense infrastructure as core business lines. Also owns Estes, which manufactures energetics and propulsion materials for U.S. defense systems.",
+          "quote": "We design, develop and operate advanced systems and infrastructure that support defense, intelligence, civil and commercial missions. Our capabilities span communications and intelligence systems, missile-defense-enabling technologies, advanced propulsion and energetics, in-space infrastructure and end-to-end space mission services.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1788060/000162828026016543/voyg-20251231.htm",
+          "asOf": "10-K filed 2026-03-10"
+        }
+      ]
+    },
+    "MNR": {
+      "name": "MACH NATURAL RESOURCES LP",
+      "flags": [
+        {
+          "key": "fossil_fuels",
+          "summary": "Mach Natural Resources is an oil and gas extraction and production company with proved reserves. Its 10-K glossary defines oil and gas industry terms used throughout the filing, and explicitly references 'our PV-10' calculations for reserves.",
+          "quote": "When used with respect to oil and natural gas reserves, PV-10 represents the present value of estimated future cash inflows from proved oil and gas reserves, less future development and production costs, discounted at 10% per annum to reflect the timing of future cash flows.",
+          "source": "https://www.sec.gov/Archives/edgar/data/1980088/000162828026017249/mnr-20251231.htm",
+          "asOf": "10-K filed 2026-03-12"
+        }
+      ]
     }
   }
 }
