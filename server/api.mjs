@@ -14,6 +14,7 @@ import { hashPassword, verifyPassword, dummyVerify, newToken, sessionFromCookie,
 import { mailerEnabled, siteUrl, sendMail, resetEmail, verifyEmail } from "./lib/mailer.js";
 import { snaptradeEnabled, registerUser as stRegister, connectionPortalUrl, allPositions } from "./lib/snaptrade.js";
 import { analyze, lookupSymbol, coverageMeta } from "./lib/analyzer.js";
+import { suggest } from "./lib/suggest.js";
 import { screenCatalogue, isScreenKey } from "./lib/screens.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -216,6 +217,13 @@ export async function handler(req, res) {
   // ---- the ethical screens catalogue (public reference data) ----
   if (req.method === "GET" && path === "/api/screens") {
     return sendJson(res, 200, { screens: screenCatalogue, snaptrade: snaptradeEnabled(), data: coverageMeta() });
+  }
+
+  // ---- search autocomplete (ticker / company-name suggestions) ----
+  if (req.method === "GET" && path === "/api/suggest") {
+    const rl = rateLimit("suggest", ip, 600, 60 * 60 * 1000);
+    if (rl.limited) return sendJson(res, 429, { error: "Slow down." }, { "Retry-After": String(rl.retryAfter) });
+    return sendJson(res, 200, { results: suggest(url.searchParams.get("q"), 8) });
   }
 
   // ---- public single-ticker lookup (the no-login hero widget) ----

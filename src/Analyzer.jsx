@@ -10,7 +10,7 @@
 // light, high-contrast "paper" theme for everything you actually read and work in —
 // so the data doesn't blur into a green wash.
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 // ── Dark palette (hero + auth) ───────────────────────────────────────────────
 const D = {
@@ -102,8 +102,13 @@ function Splash() {
 }
 
 // ── The live hero analyzer: type a ticker, see inside it, no login ───────────
+// Initial ticker: from the ?symbol= URL param (shareable/bookmarkable), else VOO.
+const initialSymbol = () => {
+  try { return (new URLSearchParams(window.location.search).get("symbol") || "VOO").toUpperCase(); }
+  catch { return "VOO"; }
+};
 function HeroAnalyzer({ onStart }) {
-  const [q, setQ] = useState("VOO");
+  const [q, setQ] = useState(initialSymbol);
   const [result, setResult] = useState(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
@@ -122,27 +127,77 @@ function HeroAnalyzer({ onStart }) {
   const allOn = selected && screens.length && selected.size === screens.length;
   const setAll = (on) => setSelected(on ? new Set(screens.map((s) => s.key)) : new Set());
 
+  // ── search autocomplete ──
+  const [sugg, setSugg] = useState([]);
+  const [showSug, setShowSug] = useState(false);
+  const [activeIdx, setActiveIdx] = useState(-1);
+  const sugTimer = useRef(null);
+  const onInput = (e) => {
+    const v = e.target.value; setQ(v); setActiveIdx(-1);
+    const s = v.trim();
+    if (sugTimer.current) clearTimeout(sugTimer.current);
+    if (!s) { setSugg([]); setShowSug(false); return; }
+    sugTimer.current = setTimeout(async () => {
+      try { const d = await api(`/api/suggest?q=${encodeURIComponent(s)}`); setSugg(d.results || []); setShowSug(true); }
+      catch { setSugg([]); setShowSug(false); }
+    }, 110);
+  };
+  const pick = (s) => { setQ(s.symbol); setSugg([]); setShowSug(false); setActiveIdx(-1); run(s.symbol); };
+  const onKey = (e) => {
+    if (showSug && sugg.length) {
+      if (e.key === "ArrowDown") { e.preventDefault(); setActiveIdx((i) => Math.min(i + 1, sugg.length - 1)); return; }
+      if (e.key === "ArrowUp") { e.preventDefault(); setActiveIdx((i) => Math.max(i - 1, -1)); return; }
+      if (e.key === "Enter" && activeIdx >= 0) { e.preventDefault(); pick(sugg[activeIdx]); return; }
+      if (e.key === "Escape") { setShowSug(false); return; }
+    }
+    if (e.key === "Enter") { setShowSug(false); run(); }
+  };
+
   const run = async (symbol) => {
     const sym = (symbol ?? q).trim().toUpperCase();
     if (!sym) return;
     setBusy(true); setErr(""); setResult(null);
+    // Reflect the search in the URL so a result is shareable / bookmarkable.
+    try { window.history.replaceState(null, "", `?symbol=${encodeURIComponent(sym)}`); } catch { /* ignore */ }
     try { setResult(await api(`/api/lookup?symbol=${encodeURIComponent(sym)}`)); }
     catch (e) { setErr(e.message); }
     finally { setBusy(false); }
   };
-  // Auto-load VOO on mount so a visitor sees the surprise immediately.
-  useEffect(() => { run("VOO"); /* eslint-disable-next-line */ }, []);
+  // Auto-load the initial symbol (from the URL, or VOO) so a visitor sees the surprise immediately.
+  useEffect(() => { run(initialSymbol()); /* eslint-disable-next-line */ }, []);
 
   const examples = ["VOO", "QQQ", "SCHB", "XLV"];
   return (
     <div style={{ maxWidth: 560, margin: "30px auto 0", textAlign: "left" }}>
       <div style={{ display: "flex", gap: 8 }}>
-        <input value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => e.key === "Enter" && run()}
-          placeholder="Try a ticker — VOO, QQQ, SCHB, XLV…" aria-label="Ticker symbol"
-          style={{ flex: 1, minWidth: 0, fontFamily: sans, fontSize: 15, color: D.ink, background: "rgba(255,255,255,0.08)",
-            border: `1px solid ${D.glassBorder}`, borderRadius: 12, padding: "14px 15px", outline: "none",
-            backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", textTransform: "uppercase" }} />
-        <button onClick={() => run()} disabled={busy} style={brassBtn(12, "14px 22px", 15)}>{busy ? "…" : "Check"}</button>
+        <div style={{ flex: 1, minWidth: 0, position: "relative" }}>
+          <input value={q} onChange={onInput} onKeyDown={onKey}
+            onFocus={() => { if (sugg.length) setShowSug(true); }}
+            onBlur={() => setTimeout(() => setShowSug(false), 140)}
+            placeholder="Search a stock or ETF — try “Apple”, VOO, XLV…" aria-label="Search a stock or ETF"
+            autoComplete="off" role="combobox" aria-expanded={showSug} aria-autocomplete="list"
+            style={{ width: "100%", boxSizing: "border-box", fontFamily: sans, fontSize: 15, color: D.ink, background: "rgba(255,255,255,0.08)",
+              border: `1px solid ${D.glassBorder}`, borderRadius: 12, padding: "14px 15px", outline: "none",
+              backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }} />
+          {showSug && sugg.length > 0 && (
+            <ul role="listbox" style={{ position: "absolute", zIndex: 30, top: "calc(100% + 6px)", left: 0, right: 0, margin: 0, padding: 4, listStyle: "none",
+              background: "rgba(10,24,18,0.96)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+              border: `1px solid ${D.glassBorder}`, borderRadius: 12, boxShadow: "0 16px 40px -12px rgba(0,0,0,0.6)", maxHeight: 320, overflowY: "auto" }}>
+              {sugg.map((s, i) => (
+                <li key={s.symbol} role="option" aria-selected={i === activeIdx}
+                  onMouseDown={(e) => { e.preventDefault(); pick(s); }}
+                  onMouseEnter={() => setActiveIdx(i)}
+                  style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 11px", borderRadius: 8, cursor: "pointer",
+                    background: i === activeIdx ? "rgba(99,214,166,0.14)" : "transparent" }}>
+                  <span style={{ fontFamily: sans, fontWeight: 700, fontSize: 13, color: "#F4FAF6", minWidth: 52 }}>{s.symbol}</span>
+                  <span style={{ fontFamily: sans, fontSize: 12.5, color: D.muted, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", flex: 1 }}>{s.name}</span>
+                  {s.kind === "fund" && <span style={{ fontFamily: sans, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", color: "#0A2A20", background: D.brassSoft, borderRadius: 5, padding: "1px 6px" }}>FUND</span>}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <button onClick={() => { setShowSug(false); run(); }} disabled={busy} style={brassBtn(12, "14px 22px", 15)}>{busy ? "…" : "Check"}</button>
       </div>
       <div style={{ display: "flex", gap: 7, marginTop: 10, flexWrap: "wrap", alignItems: "center" }}>
         <span style={{ fontFamily: sans, fontSize: 12, color: D.faint }}>Try:</span>
@@ -302,9 +357,11 @@ const groupByFlag = (contains) => {
     if (!m.has(f.key)) m.set(f.key, { key: f.key, label: f.label, items: [] });
     m.get(f.key).items.push({ name: c.name, ticker: c.ticker, reason: f.reason, quote: f.quote, source: f.source, asOf: f.asOf });
   }
-  // Alphabetical by category label, so the list order is predictable — not "whatever we
-  // happen to have the most of."
-  return [...m.values()].sort((a, b) => a.label.localeCompare(b.label));
+  // Alphabetical by category label, and alphabetical by company name within each category,
+  // so the list order is predictable — not "whatever we happen to have the most of."
+  const groups = [...m.values()];
+  for (const g of groups) g.items.sort((a, b) => (a.name || a.ticker).localeCompare(b.name || b.ticker));
+  return groups.sort((a, b) => a.label.localeCompare(b.label));
 };
 
 // The clickable fund breakdown: every flagged holding is a quiet link; clicking one

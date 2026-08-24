@@ -125,3 +125,9 @@ export function unanalyzedFund(t) {
   const f = NOT_ANALYZED[String(t || "").toUpperCase()];
   return f ? { name: f.name, reason: NOT_ANALYZED_REASON[f.kind] } : null;
 }
+
+/** [ticker, name] for every fund we recognize — for search autocomplete. */
+export const fundNames = () => [
+  ...Object.entries(FUNDS).map(([s, f]) => [s, f.name]),
+  ...Object.entries(NOT_ANALYZED).map(([s, f]) => [s, f.name]),
+];

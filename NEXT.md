@@ -73,6 +73,10 @@ The analyzer is live, tested end-to-end, and deployed-ready.
 9. **Encrypt the stored SnapTrade `userSecret`** at rest (it reads holdings, can't move
    money, but still).
 10. **2FA**, durable error monitoring (Sentry/Datadog), Terms of Service + Privacy Policy.
+11. **Mobile-workable UI** — make the whole thing genuinely usable on a phone (result lists
+    reflow, tap targets, filter/selector layout, sticky search). Deferred on purpose: the
+    *web* design isn't dialed in yet, so lock that first, then adapt down to mobile rather
+    than fixing mobile twice.
 
 ### Much later
 11. **Giving rail** (RoundUp.org model — round-ups → monthly Stripe charge → third-party DAF)
