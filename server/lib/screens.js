@@ -245,6 +245,7 @@ export const SCREENS = [
       TCNNF: "Trulieve — U.S. multi-state cannabis operator.",
       CRLBF: "Cresco Labs — U.S. multi-state cannabis operator.",
       VRNO: "Verano Holdings — U.S. multi-state cannabis operator.",
+      HCMC: "Healthier Choices Management — patented Q-Cup and Q-Unit concentrate vaporizers marketed for cannabis and CBD, plus related vaping-patent licensing. (Also flagged tobacco for its nicotine vape retail.)",
     },
   },
   {
