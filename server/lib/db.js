@@ -41,7 +41,7 @@ const forStorage = (dbObj) => withUserSecrets(dbObj, encryptSecret);
 const fromStorage = (dbObj) => withUserSecrets(dbObj, decryptSecret);
 
 function empty() {
-  return { users: {}, byEmail: {}, sessions: {}, waitlist: [], events: {}, meta: {}, tokens: {} };
+  return { users: {}, byEmail: {}, sessions: {}, waitlist: [], events: {}, meta: {}, tokens: {}, reports: [] };
 }
 
 let db = empty();
@@ -335,6 +335,22 @@ export function logEvent(name) {
   db.events[name] = (db.events[name] || 0) + 1;
   save();
 }
+// A user-submitted "this flag looks wrong" report. Stored for human review — we never
+// auto-remove a flag on a report; a flag is a checkable fact and only changes on review.
+export function addReport({ ticker, flag, label, reason, note }) {
+  db.reports = db.reports || [];
+  db.reports.push({
+    ticker: String(ticker || "").toUpperCase().slice(0, 12),
+    flag: String(flag || "").slice(0, 48),
+    label: String(label || "").slice(0, 80),
+    reason: String(reason || "").slice(0, 500),
+    note: String(note || "").slice(0, 1000),
+    at: Date.now(),
+  });
+  save();
+  return { total: db.reports.length };
+}
+export const reports = () => [...(db.reports || [])];
 export const funnel = () => ({ ...(db.events || {}), waitlist: (db.waitlist || []).length });
 
 export const stats = () => ({

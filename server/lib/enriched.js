@@ -10,6 +10,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { screenLabel } from "./screens.js";
+import { reasonForSic } from "./sic.js";
 
 const FILE = join(dirname(fileURLToPath(import.meta.url)), "..", "generated", "companies.json");
 
@@ -29,13 +30,19 @@ export function enrichedFlagsFor(ticker, activeKeys) {
   const c = _data.companies[String(ticker).toUpperCase()];
   if (!c) return [];
   const active = new Set(activeKeys);
+  // Reason precedence: a per-company sentence written from the company's own 10-K (when we
+  // enriched it), then a specific per-SIC-code sentence, then naming the classification.
+  const codeReason = reasonForSic(c.sic) || `Registered under ${c.sicDescription} (SIC ${c.sic}).`;
   return (c.flags || [])
     .filter((k) => active.has(k))
-    .map((k) => ({ key: k, label: screenLabel(k), reason: `Classified under ${c.sicDescription} (SIC ${c.sic}).` }));
+    .map((k) => ({ key: k, label: screenLabel(k), reason: (c.reasons && c.reasons[k]) || codeReason }));
 }
 
 /** Name for a ticker if the enriched set knows it. */
 export const enrichedName = (t) => _data.companies[String(t || "").toUpperCase()]?.name || null;
+
+/** Every ticker the enriched set flags — for the true coverage count. */
+export const enrichedTickers = () => Object.keys(_data.companies);
 
 /** Every ticker the enriched set flags for a given screen — used by fund look-through. */
 export function enrichedTickersForScreen(key) {
@@ -43,6 +50,3 @@ export function enrichedTickersForScreen(key) {
   for (const [ticker, c] of Object.entries(_data.companies)) if ((c.flags || []).includes(key)) out.push(ticker);
   return out;
 }
-
-/** Every ticker the enriched set knows about — used to build the symbol-normalization table. */
-export const enrichedTickers = () => Object.keys(_data.companies);

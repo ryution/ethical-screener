@@ -7,24 +7,46 @@
 //
 // Pure function of (positions, activeScreenKeys). No network, no state.
 
-import { flagsFor, companyName, SCREEN_KEYS } from "./screens.js";
-import { knownFund } from "./funds.js";
-import { enrichedFlagsFor, enrichedName, dataMeta } from "./enriched.js";
+import { flagsFor, companyName, SCREEN_KEYS, SCREEN_TICKERS } from "./screens.js";
+import { knownFund, unanalyzedFund } from "./funds.js";
+import { enrichedFlagsFor, enrichedName, enrichedTickers, dataMeta } from "./enriched.js";
+import { filingFlagsFor, filingName, filingTickers, filingMeta } from "./filings.js";
 import { normalizeTicker } from "./symbols.js";
 
 export { dataMeta };
 
-// Flags for a ticker from BOTH layers: curated (precise, reasoned) takes precedence, and
-// EDGAR industry-classification fills in everything the curated list doesn't name. Deduped
-// by screen key, so a company on both lists isn't flagged twice for the same screen.
+/**
+ * True coverage across ALL three layers, for the public "N companies" stat.
+ * Counts the DISTINCT companies we flag (curated ∪ EDGAR-SIC ∪ filing-cited),
+ * normalizing class-share punctuation so BRK.B and BRK-B aren't double-counted,
+ * and reports the freshest of the underlying datasets. Understating this (as the
+ * enriched-only count did) reads as thinner coverage than we actually have.
+ */
+export function coverageMeta() {
+  const norm = (t) => String(t).toUpperCase().replace(/[.-]/g, "");
+  const set = new Set();
+  for (const t of SCREEN_TICKERS) set.add(norm(t));
+  for (const t of enrichedTickers()) set.add(norm(t));
+  for (const t of filingTickers()) set.add(norm(t));
+  const dates = [dataMeta().lastUpdated, filingMeta().lastUpdated].filter(Boolean);
+  const lastUpdated = dates.sort().at(-1) || null;
+  return { count: set.size, lastUpdated };
+}
+
+// Flags for a ticker across all THREE layers, deduped by screen key so a company on more
+// than one isn't flagged twice for the same screen. Precedence is by richness of the
+// reason: filing-cited (a summary + verbatim 10-K quote + source) wins, then curated
+// (precise hand-written reason), then EDGAR industry-classification (breadth).
 function allFlagsFor(ticker, activeKeys) {
   const out = [];
   const seen = new Set();
+  for (const f of filingFlagsFor(ticker, activeKeys)) { if (!seen.has(f.key)) { seen.add(f.key); out.push(f); } }
   for (const f of flagsFor(ticker, activeKeys)) { if (!seen.has(f.key)) { seen.add(f.key); out.push(f); } }
   for (const f of enrichedFlagsFor(ticker, activeKeys)) { if (!seen.has(f.key)) { seen.add(f.key); out.push(f); } }
   return out;
 }
-const nameFor = (ticker, fallback) => (companyName(ticker) !== ticker ? companyName(ticker) : (enrichedName(ticker) || fallback || ticker));
+const nameFor = (ticker, fallback) =>
+  (companyName(ticker) !== ticker ? companyName(ticker) : (filingName(ticker) || enrichedName(ticker) || fallback || ticker));
 
 /**
  * Analyze a single ticker against ALL screens — for the public, no-login hero widget.
@@ -43,6 +65,8 @@ export function lookupSymbol(symbol) {
     }
     return { symbol: sym, type: "fund", name: fund.name, basis: fund.basis, contains };
   }
+  const na = unanalyzedFund(sym);
+  if (na) return { symbol: sym, type: "fund", name: na.name, analyzable: false, notAnalyzedReason: na.reason, contains: [] };
   const flags = allFlagsFor(sym, SCREEN_KEYS);
   if (flags.length) return { symbol: sym, type: "stock", name: nameFor(sym), flags };
   return { symbol: sym, type: "none" };
@@ -73,7 +97,9 @@ export function analyze(positions, activeKeys) {
         return { ...p, type: "fund", fundBasis: fund.basis, contains,
           flags: distinctLabels(contains), analyzable: true, lookThrough: true, conflicted: contains.length > 0 };
       }
-      return { ...p, type: "fund", analyzable: false, contains: [], flags: [], conflicted: false };
+      const na = unanalyzedFund(p.symbol);
+      return { ...p, type: "fund", analyzable: false, contains: [], flags: [], conflicted: false,
+        notAnalyzedReason: na?.reason || null };
     }
     // Crypto, options, cash, anything else — not screened.
     return { ...p, type: p.kind, analyzable: false, flags: [], conflicted: false };

@@ -67,19 +67,21 @@ export const SCREENS = [
     label: "Weapons & defense",
     blurb: "Military weapons manufacturing and defense contracting.",
     tickers: {
-      LMT: "Lockheed Martin — defense prime; missiles, fighter aircraft.",
-      RTX: "RTX (Raytheon) — missiles and defense systems.",
-      NOC: "Northrop Grumman — defense prime; weapons systems.",
-      GD: "General Dynamics — defense prime; combat systems, munitions.",
-      BA: "Boeing — commercial and military aircraft, defense.",
-      LHX: "L3Harris — defense electronics and systems.",
-      HII: "Huntington Ingalls — naval warships.",
-      LDOS: "Leidos — defense and intelligence contracting.",
-      TXT: "Textron — military aircraft and armored vehicles.",
-      KTOS: "Kratos — drones and defense systems.",
-      AVAV: "AeroVironment — military drones.",
-      BAESY: "BAE Systems — defense prime; weapons and vehicles.",
-      DRS: "Leonardo DRS — combat vehicle electronics and fire-control/targeting systems for the US military.",
+      LMT: "Lockheed Martin — F-35 and F-22 fighter jets, THAAD and PAC-3 missile defense, Hellfire and Javelin missiles, and the Trident II submarine-launched nuclear ballistic missile.",
+      RTX: "RTX (Raytheon) — Tomahawk and AMRAAM missiles, the Patriot air-defense system, and StormBreaker precision-guided bombs.",
+      NOC: "Northrop Grumman — the B-21 Raider stealth bomber, the Sentinel intercontinental ballistic missile, and sustainment of the Minuteman III nuclear force.",
+      GD: "General Dynamics — M1 Abrams tanks and Stryker combat vehicles, and (via Electric Boat) Columbia-, Ohio-, and Virginia-class nuclear submarines.",
+      BA: "Boeing — F-15 and F/A-18 fighter jets, the AH-64 Apache attack helicopter, and Harpoon and SLAM missiles, alongside its commercial jets.",
+      LHX: "L3Harris — tactical battlefield radios, electronic-warfare systems, and (via Aerojet Rocketdyne) missile and rocket propulsion.",
+      HII: "Huntington Ingalls — the sole U.S. builder of aircraft carriers, and a builder of nuclear submarines and amphibious warships.",
+      LDOS: "Leidos — systems and software for the Pentagon and intelligence agencies, including sensors, surveillance, and battle-management systems.",
+      TXT: "Textron — Bell military helicopters (V-22 Osprey, UH-1), plus Textron Systems armored vehicles, munitions, and drones.",
+      KTOS: "Kratos — target and attack drones, and hypersonic and missile-defense systems.",
+      AVAV: "AeroVironment — Switchblade loitering munitions ('kamikaze drones') and small military reconnaissance UAVs.",
+      BAESY: "BAE Systems — combat vehicles, naval guns, precision munitions, and F-35 electronic-warfare and airframe work.",
+      DRS: "Leonardo DRS — infrared sensors, electro-optical targeting systems, and naval power and weapons-control systems.",
+      NPK: "National Presto — 40mm ammunition, precision-guided munitions, and ordnance for the U.S. military (Defense segment).",
+      BWXT: "BWX Technologies — nuclear reactors for U.S. Navy submarines and carriers, and operations across the U.S. nuclear-weapons complex.",
       AERG: "Applied Energetics — develops directed-energy (laser) weapons for defense use.",
     },
   },
@@ -88,12 +90,12 @@ export const SCREENS = [
     label: "Civilian firearms",
     blurb: "Manufacturers and large retailers of civilian guns and ammunition.",
     tickers: {
-      SWBI: "Smith & Wesson — civilian firearms manufacturer.",
-      RGR: "Sturm Ruger — civilian firearms manufacturer.",
-      OLN: "Olin — Winchester ammunition.",
-      VSTO: "Vista Outdoor — ammunition and firearms accessories.",
-      POWW: "AMMO Inc — ammunition manufacturer.",
-      AOUT: "American Outdoor Brands — shooting and outdoor accessories.",
+      SWBI: "Smith & Wesson — handguns, revolvers, and M&P-line pistols and AR-15-style rifles.",
+      RGR: "Sturm Ruger — handguns, revolvers, and rifles, including AR-15-pattern rifles.",
+      OLN: "Olin — Winchester-brand ammunition, and operator of the U.S. Army's Lake City small-arms ammunition plant.",
+      VSTO: "Vista Outdoor — Federal, CCI, Remington, and Speer ammunition brands.",
+      POWW: "AMMO Inc — rifle and handgun ammunition manufacturer.",
+      AOUT: "American Outdoor Brands — shooting and hunting accessories, spun off from Smith & Wesson.",
     },
   },
   {
@@ -155,10 +157,10 @@ export const SCREENS = [
     label: "Surveillance & data",
     blurb: "Business models built on large-scale personal-data collection.",
     tickers: {
-      META: "Meta — advertising built on personal-data profiling.",
-      GOOGL: "Alphabet — advertising built on personal-data profiling.",
-      GOOG: "Alphabet — advertising built on personal-data profiling.",
-      PLTR: "Palantir — government and defense data analytics.",
+      META: "Meta — targets advertising by profiling billions of users across Facebook, Instagram, and WhatsApp and tracking them around the web.",
+      GOOGL: "Alphabet — targets advertising by profiling users across Search, YouTube, Android, Chrome, and third-party sites and apps.",
+      GOOG: "Alphabet — targets advertising by profiling users across Search, YouTube, Android, Chrome, and third-party sites and apps.",
+      PLTR: "Palantir — Gotham and Foundry platforms used for military targeting, policing, and immigration enforcement (ICE) surveillance.",
     },
   },
   {
@@ -166,9 +168,9 @@ export const SCREENS = [
     label: "Factory farming",
     blurb: "Industrial animal agriculture and meat processing.",
     tickers: {
-      TSN: "Tyson Foods — industrial meat processing.",
-      HRL: "Hormel — industrial meat processing.",
-      BRFS: "BRF — industrial poultry and pork.",
+      TSN: "Tyson Foods — industrial-scale slaughter and processing of chicken, beef, and pork.",
+      HRL: "Hormel — industrial slaughter and meatpacking of pork and turkey (Spam, packaged meats).",
+      BRFS: "BRF — industrial-scale poultry and pork slaughter and processing.",
     },
   },
   {
@@ -177,7 +179,7 @@ export const SCREENS = [
     blurb: "Cosmetics and contract research involving animal testing.",
     tickers: {
       // Contract research orgs whose core business includes animal studies.
-      CRL: "Charles River Labs — preclinical animal research services.",
+      CRL: "Charles River Labs — breeds and sells purpose-bred research animals, including beagles and non-human primates, and runs preclinical toxicity and safety studies on live animals for drug developers.",
     },
   },
   {
@@ -185,8 +187,8 @@ export const SCREENS = [
     label: "Private prisons",
     blurb: "For-profit incarceration and detention.",
     tickers: {
-      GEO: "GEO Group — private prisons and detention centers.",
-      CXW: "CoreCivic — private prisons and detention centers.",
+      GEO: "GEO Group — operates private prisons and ICE immigration-detention centers, and electronically monitors migrants awaiting hearings (BI Inc.).",
+      CXW: "CoreCivic — operates private prisons and ICE immigration-detention facilities under government contracts.",
     },
   },
   {
@@ -200,6 +202,65 @@ export const SCREENS = [
       ENVA: "Enova — online subprime consumer lending.",
       CURO: "CURO Group — payday and title loans.",
       OPRT: "Oportun — subprime consumer lending.",
+      CACC: "Credit Acceptance — subprime auto lending; CFPB and state predatory-lending actions.",
+      OMF: "OneMain — high-rate subprime consumer installment lending.",
+    },
+  },
+  {
+    key: "opioids",
+    label: "Opioid crisis",
+    blurb: "Culpability in the opioid epidemic — settlements, litigation, or enforcement (not legitimate pain medicine).",
+    tickers: {
+      TEVA: "Teva Pharmaceutical — opioid manufacturer; national opioid settlement.",
+      MNK: "Mallinckrodt — opioid manufacturer; opioid-driven bankruptcy settlements.",
+      MCK: "McKesson — opioid distributor; national opioid settlement.",
+      CAH: "Cardinal Health — opioid distributor; national opioid settlement.",
+      COR: "Cencora (AmerisourceBergen) — opioid distributor; national opioid settlement.",
+    },
+  },
+  {
+    key: "thermal_coal",
+    label: "Coal",
+    blurb: "Coal mining and coal-fired power generation.",
+    tickers: {
+      BTU: "Peabody Energy — thermal and metallurgical coal mining.",
+      ARLP: "Alliance Resource Partners — thermal coal mining.",
+      HNRG: "Hallador Energy — thermal coal mining and coal-fired power.",
+    },
+  },
+  {
+    key: "cannabis",
+    label: "Cannabis",
+    blurb: "Cultivation, processing, and sale of cannabis and cannabis products.",
+    // Direction-contested: some users screen this out (faith/vice), others screen for it.
+    // We only describe the business; you decide.
+    tickers: {
+      CGC: "Canopy Growth — Canadian licensed cannabis producer.",
+      TLRY: "Tilray Brands — cannabis producer (medical and adult-use).",
+      CRON: "Cronos Group — cannabis producer.",
+      ACB: "Aurora Cannabis — cannabis producer.",
+      SNDL: "SNDL — cannabis producer and retailer.",
+      OGI: "OrganiGram — cannabis producer.",
+      GTBIF: "Green Thumb Industries — U.S. multi-state cannabis operator.",
+      CURLF: "Curaleaf — U.S. multi-state cannabis operator.",
+      TCNNF: "Trulieve — U.S. multi-state cannabis operator.",
+      CRLBF: "Cresco Labs — U.S. multi-state cannabis operator.",
+      VRNO: "Verano Holdings — U.S. multi-state cannabis operator.",
+      HCMC: "Healthier Choices Management — patented Q-Cup and Q-Unit concentrate vaporizers marketed for cannabis and CBD, plus related vaping-patent licensing. (Also flagged tobacco for its nicotine vape retail.)",
+    },
+  },
+  {
+    key: "fur",
+    label: "Fur & exotic leather",
+    blurb: "Production or primary retail of animal fur and exotic-animal leather.",
+    // Genuinely small category: no US-listed pure-plays exist (fur farms and exotic
+    // tanneries are private). The public exposure is via luxury houses (ADRs) that keep
+    // fur or exotic skins as a material product line.
+    tickers: {
+      LVMUY: "LVMH (Louis Vuitton) — mink fur and exotic skins (crocodile, python, ostrich).",
+      HESAY: "Hermès — controls crocodile/alligator tanneries for its exotic-leather goods.",
+      SFRGF: "Salvatore Ferragamo — ongoing crocodile, alligator, python, and ostrich leather lines.",
+      PPRUF: "Kering (Gucci) — python and crocodile leather goods (fur-free, but exotic skins remain).",
     },
   },
   {
@@ -305,6 +366,8 @@ export const companyName = (t) => _names.get(String(t || "").toUpperCase()) || t
 
 export const SCREEN_KEYS = SCREENS.map((s) => s.key);
 export const isScreenKey = (k) => SCREEN_KEYS.includes(k);
+/** Every ticker any curated screen flags — the hand-curated half of the screened universe. */
+export const SCREEN_TICKERS = [..._index.keys()];
 const _labels = new Map(SCREENS.map((s) => [s.key, s.label]));
 /** UI label for a screen key. */
 export const screenLabel = (k) => _labels.get(k) || k;

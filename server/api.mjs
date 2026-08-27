@@ -13,7 +13,8 @@ import * as db from "./lib/db.js";
 import { hashPassword, verifyPassword, dummyVerify, newToken, sessionFromCookie, sessionCookie, validateCredentials } from "./lib/auth.js";
 import { mailerEnabled, siteUrl, sendMail, resetEmail, verifyEmail } from "./lib/mailer.js";
 import { snaptradeEnabled, registerUser as stRegister, connectionPortalUrl, allPositions } from "./lib/snaptrade.js";
-import { analyze, lookupSymbol, dataMeta } from "./lib/analyzer.js";
+import { analyze, lookupSymbol, coverageMeta } from "./lib/analyzer.js";
+import { suggest } from "./lib/suggest.js";
 import { screenCatalogue, isScreenKey } from "./lib/screens.js";
 import { hotNews } from "./lib/news.js";
 import { tickerTape } from "./lib/quotes.js";
@@ -219,7 +220,14 @@ export async function handler(req, res) {
 
   // ---- the ethical screens catalogue (public reference data) ----
   if (req.method === "GET" && path === "/api/screens") {
-    return sendJson(res, 200, { screens: screenCatalogue, snaptrade: snaptradeEnabled(), data: dataMeta() });
+    return sendJson(res, 200, { screens: screenCatalogue, snaptrade: snaptradeEnabled(), data: coverageMeta() });
+  }
+
+  // ---- search autocomplete (ticker / company-name suggestions) ----
+  if (req.method === "GET" && path === "/api/suggest") {
+    const rl = rateLimit("suggest", ip, 600, 60 * 60 * 1000);
+    if (rl.limited) return sendJson(res, 429, { error: "Slow down." }, { "Retry-After": String(rl.retryAfter) });
+    return sendJson(res, 200, { results: suggest(url.searchParams.get("q"), 8) });
   }
 
   // ---- public single-ticker lookup (the no-login hero widget) ----
@@ -269,6 +277,16 @@ export async function handler(req, res) {
     }
     const r = db.addWaitlist(body.email);
     return sendJson(res, 200, { ok: true, position: r.total });
+  }
+
+  // ---- flag dispute: "I think this flag is wrong" (public, stored for human review) ----
+  if (req.method === "POST" && path === "/api/report") {
+    const rl = rateLimit("report", ip, 20, 60 * 60 * 1000);
+    if (rl.limited) return sendJson(res, 429, { error: "Too many reports. Try again later." }, { "Retry-After": String(rl.retryAfter) });
+    const body = await readBody(req);
+    if (!body?.ticker || !body?.flag) return sendJson(res, 400, { error: "ticker and flag are required." });
+    db.addReport({ ticker: body.ticker, flag: body.flag, label: body.label, reason: body.reason, note: body.note });
+    return sendJson(res, 200, { ok: true });
   }
 
   // ---- funnel event (lightweight, name-only) ----

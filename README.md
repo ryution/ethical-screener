@@ -73,26 +73,35 @@ holdings — no real brokerage needed.
 | `server/lib/funds.js` | fund look-through — known index funds and their constituents |
 | `server/lib/sic.js` | SIC industry code → screens (the EDGAR enrichment mapping) |
 | `server/lib/enriched.js` | loads the generated EDGAR dataset; industry-classified flags |
+| `server/lib/holdings.js` | loads live issuer holdings; overlays each fund's constituents |
 | `server/lib/analyzer.js` | matches holdings (and fund contents) against chosen screens |
 | `server/lib/snaptrade.js` | read-only brokerage connection (register, portal, positions) |
 | `server/generated/companies.json` | EDGAR-classified companies (built by the enrich script) |
+| `server/generated/fund-holdings.json` | live screened fund baskets (built by the holdings script) |
 | `server/api.mjs` | the HTTP server: auth, screens, lookup, connect, analysis |
 | `src/Analyzer.jsx` | the entire frontend — landing, hero lookup, auth, dashboard |
 | `scripts/enrich-edgar.mjs` | pull SEC data → `companies.json` (`npm run enrich`) |
+| `scripts/fetch-holdings.mjs` | pull issuer holdings → `fund-holdings.json` (`npm run enrich:holdings`) |
 | `scripts/lint-data.mjs` | validate the dataset (`npm run lint:data`) |
 
 ## The data
 
-Two layers feed the analyzer:
+Two layers feed the analyzer, plus a live fund-holdings overlay:
 
 - **Curated** (`screens.js`) — well-known companies, each with a precise, reasoned flag.
 - **Enriched** (`companies.json`, built from free SEC EDGAR data by `npm run enrich`) —
   industry-classified flags across the market, for the clear-cut industries. Fuzzy
   categories (surveillance, gambling, private prisons) stay curated + AI-classified.
+- **Live holdings** (`fund-holdings.json`, built by `npm run enrich:holdings`) — each
+  index fund's constituents pulled from the issuer's daily-published holdings (State
+  Street SPDR), filtered to the names the two layers above flag. Keeps fund look-through
+  current as index membership drifts; `funds.js` falls back to curated baskets if absent.
 
-`allFlagsFor()` unions the two, curated winning. The UI shows when the dataset was last
-updated. Run `npm run enrich` to (re)build it (~20 min for the full ~10.4k filers, no API
-key), and `npm run lint:data` to validate it.
+`allFlagsFor()` unions curated + enriched (curated winning). The UI shows when each dataset
+was last updated. Rebuild both with `npm run refresh:data` (~20 min for the full ~10.4k
+filers + holdings, no API key), or validate with `npm run lint:data`. A monthly GitHub
+Action (`.github/workflows/refresh-data.yml`) runs the refresh and commits the result, so
+the deployed data stays fresh without manual steps.
 
 ## API (the routes that matter)
 

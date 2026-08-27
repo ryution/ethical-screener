@@ -18,7 +18,7 @@
 import { writeFileSync, mkdirSync, readFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { screensForSic } from "../server/lib/sic.js";
+import { screensForSic, SIC_FALSE_POSITIVES } from "../server/lib/sic.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const OUT = join(HERE, "..", "server", "generated", "companies.json");
@@ -56,15 +56,24 @@ async function main() {
   // Reuse anything we already have so a re-run is incremental, not a full refetch.
   const prev = existsSync(OUT) ? JSON.parse(readFileSync(OUT, "utf8")).companies || {} : {};
 
+  // Plain common-stock tickers only. SEC's universe also lists preferred shares (BFH-PA),
+  // warrants (OXY-WT), rights (GFR-RW) and separately-quoted class lines (PBR-A) with a
+  // dash suffix — secondary securities whose issuer's common stock already carries the
+  // flag, so they add symbol-format noise, not coverage. Skipping them pre-fetch also
+  // spares SEC the request. (Matches lint-data.mjs's TICKER_RE.)
+  const isCommonTicker = (t) => /^[A-Z][A-Z.]{0,6}$/.test(t);
+
   const companies = {};
   const reclassified = new Set(); // tickers successfully re-fetched this run, whatever the result
   let flagged = 0, done = 0;
   for (const r of rows) {
     const ticker = String(r.ticker).toUpperCase();
+    if (!isCommonTicker(ticker)) continue;
+    if (SIC_FALSE_POSITIVES.has(ticker)) continue; // known SEC miscode — don't flag
     try {
       const sub = await getJson(`https://data.sec.gov/submissions/CIK${pad10(r.cik_str)}.json`);
       reclassified.add(ticker);
-      const flags = screensForSic(sub.sic);
+      const flags = screensForSic(sub.sic, ticker);
       if (flags.length) {
         companies[ticker] = { name: sub.name || r.title, sic: sub.sic, sicDescription: sub.sicDescription, flags };
         flagged++;
@@ -86,11 +95,20 @@ async function main() {
   // a prior entry for anything we DID successfully reclassify this run and found no
   // longer flags — otherwise a narrowed SIC rule can never actually un-flag a company,
   // since its stale flag would just survive every future merge forever.
-  const merged = Object.fromEntries(
+  let merged = Object.fromEntries(
     Object.entries({ ...prev, ...companies })
       .filter(([t]) => TICKER_RE.test(t))
       .filter(([t]) => companies[t] || !reclassified.has(t))
   );
+  // Purge known false positives even if a prior run stored them.
+  for (const t of SIC_FALSE_POSITIVES) delete merged[t];
+  // Drop duplicate securities: a warrant/unit/right (TICKER + W/U/R) whose underlying common
+  // stock is itself flagged and present. These add symbol noise, not coverage — the issuer's
+  // flag already lives on the base ticker. Only removes the suffixed symbol when the exact
+  // base exists in the set, so standalone tickers that merely end in those letters are kept.
+  for (const t of Object.keys(merged)) {
+    if (t.length >= 5 && /[WUR]$/.test(t) && merged[t.slice(0, -1)]) delete merged[t];
+  }
   mkdirSync(dirname(OUT), { recursive: true });
   writeFileSync(OUT, JSON.stringify({
     lastUpdated: new Date().toISOString(),

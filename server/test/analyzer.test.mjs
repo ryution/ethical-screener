@@ -151,11 +151,12 @@ test("petroleum refining → fossil fuels", () => assert.deepEqual(screensForSic
 test("cigarettes → tobacco", () => assert.deepEqual(screensForSic(2111), ["tobacco"]));
 test("malt beverages → alcohol", () => assert.deepEqual(screensForSic(2082), ["alcohol"]));
 test("generic 'Beverages' (2080) does NOT flag alcohol — Coca-Cola false positive", () => assert.deepEqual(screensForSic(2080), []));
-test("guided missiles → weapons", () => assert.deepEqual(screensForSic(3760), ["weapons"]));
-test("SIC 3812 (nav/guidance) does NOT auto-flag weapons — too broad, sweeps in civilian GPS makers like Garmin", () => assert.deepEqual(screensForSic(3812), []));
-test("small arms → weapons + firearms", () => assert.deepEqual(screensForSic(3484).sort(), ["firearms", "weapons"]));
+test("small arms → firearms (narrow, clean code)", () => assert.deepEqual(screensForSic(3484), ["firearms"]));
+test("guided missiles (3760) NOT auto-flagged — coarse code, curated only (Garmin/space false positives)", () => assert.deepEqual(screensForSic(3760), []));
+test("nav/detection/aero (3812) NOT auto-flagged — sweeps in Garmin, curated only", () => assert.deepEqual(screensForSic(3812), []));
 test("poultry processing → factory farming", () => assert.deepEqual(screensForSic(2015), ["factory_farming"]));
-test("personal credit → predatory lending", () => assert.deepEqual(screensForSic(6141), ["payday_lending"]));
+test("personal credit (6141) NOT auto-flagged — sweeps in student/BNPL/cards, curated only", () => assert.deepEqual(screensForSic(6141), []));
+test("misc petroleum & coal (2990) NOT auto-flagged — sweeps in lubricants/chemicals", () => assert.deepEqual(screensForSic(2990), []));
 test("electronic computers (Apple) → nothing", () => assert.deepEqual(screensForSic(3571), []));
 test("empty/zero SIC → nothing", () => { assert.deepEqual(screensForSic(0), []); assert.deepEqual(screensForSic(null), []); });
 
