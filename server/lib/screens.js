@@ -79,6 +79,8 @@ export const SCREENS = [
       KTOS: "Kratos — drones and defense systems.",
       AVAV: "AeroVironment — military drones.",
       BAESY: "BAE Systems — defense prime; weapons and vehicles.",
+      DRS: "Leonardo DRS — combat vehicle electronics and fire-control/targeting systems for the US military.",
+      AERG: "Applied Energetics — develops directed-energy (laser) weapons for defense use.",
     },
   },
   {
@@ -198,6 +200,89 @@ export const SCREENS = [
       ENVA: "Enova — online subprime consumer lending.",
       CURO: "CURO Group — payday and title loans.",
       OPRT: "Oportun — subprime consumer lending.",
+    },
+  },
+  {
+    // A different kind of fact than the other screens: not what the company DOES, but a
+    // verifiable government enforcement action against its CURRENT top executive. Kept to
+    // a strict, narrow bar:
+    //   1. The action is real and checkable — an actual SEC/DOJ/AG proceeding, not news
+    //      "controversy" or a political dispute. Every reason states what happened and its
+    //      resolution (settled without admission, convicted, etc.) — never implies more
+    //      than what was actually adjudicated or admitted.
+    //   2. The named executive must be CURRENTLY in that role. This list needs active
+    //      maintenance — a departure, pardon, dismissal, or bankruptcy makes an entry
+    //      stale and it should be removed. (Trevor Milton / Nikola was the leading
+    //      candidate for this screen until research turned up all three: pardoned in
+    //      2025, the SEC dismissed its own case against him, and Nikola itself went
+    //      bankrupt and delisted in 2025 — a real-time example of why this list can't be
+    //      "set and forget" like the others.)
+    key: "executive_enforcement",
+    label: "Leadership enforcement actions",
+    blurb: "Current top executives who have faced real SEC, DOJ, or government fraud enforcement.",
+    tickers: {
+      TSLA: "Tesla — CEO Elon Musk settled SEC securities-fraud charges in 2018 over a misleading 'funding secured' go-private tweet; paid a $20M personal fine and stepped down as board chairman for three years, without admitting or denying wrongdoing.",
+      IEP: "Icahn Enterprises — Chairman and controlling shareholder Carl Icahn settled SEC charges in 2024 for failing to disclose billions in personal margin loans secured by his IEP units; paid a $500K personal fine, without admitting or denying wrongdoing.",
+      MSTR: "Strategy (formerly MicroStrategy) — Executive Chairman Michael Saylor and the company settled a DC Attorney General tax-fraud lawsuit in 2024 for $40M over falsely claiming residency outside DC to avoid paying DC income taxes; both denied wrongdoing.",
+    },
+  },
+  {
+    // Historical, not current-business, and deliberately NOT framed as "avoid this" —
+    // informational context the user can weigh however they want. Two rules unique to
+    // this screen:
+    //   1. Every entry pairs the documented historical fact with whatever restitution or
+    //      acknowledgment (or lack of it) is on the record, so it's never one-sided. Some
+    //      companies here made early, substantial amends; at least one made none — both
+    //      are stated as plainly as the history itself, not editorialized.
+    //   2. Sourced to the serious historical record (USHMM's Holocaust Encyclopedia,
+    //      historian-led studies commissioned by the companies themselves, the German
+    //      government's "Remembrance, Responsibility and Future" restitution foundation's
+    //      own public records) — not news-cycle "controversy." This is exactly the kind
+    //      of narrow, well-documented case that a vaguer "controversial past" standard
+    //      would NOT meet for most companies, which is why this list stays this short.
+    key: "historical_forced_labor",
+    label: "WWII-era forced labor",
+    blurb: "Documented use of forced or slave labor during the Nazi era, by the company or a direct predecessor — shown alongside what restitution was made, if any.",
+    tickers: {
+      VWAGY: "Volkswagen — used an estimated 20,000 forced laborers, including concentration-camp prisoners, at its Wolfsburg plant during WWII. Became the first German company to fund restitution (1991), later folded into Germany's national forced-labor compensation program.",
+      F: "Ford — its German subsidiary, Ford-Werke, used over 2,000 forced and slave laborers during WWII. A 2001 independent historian-led study (commissioned and funded by Ford) found the company did not profit from this labor; Ford called its use 'wrong and cannot be justified' and contributed $13M to Germany's restitution fund plus $4M to related human-rights research.",
+      IBM: "IBM — its German subsidiary, Dehomag, supplied Hollerith tabulating machines used by the Nazi regime for population registration and camp logistics (documented in Edwin Black's 'IBM and the Holocaust'). IBM has not made a public apology or restitution payment specific to this; related lawsuits were dismissed in 2006 on statute-of-limitations grounds, not on the merits.",
+      BAYRY: "Bayer — as a legal successor to IG Farben, which built and operated the Auschwitz-Monowitz forced-labor camp (~25,000 deaths). Bayer is a founding member of Germany's national forced-labor restitution foundation.",
+      BASFY: "BASF — as a legal successor to IG Farben, which built and operated the Auschwitz-Monowitz forced-labor camp (~25,000 deaths). BASF contributed roughly €70M to Germany's national forced-labor restitution foundation.",
+    },
+  },
+  {
+    // Current, not historical — and a NARROW bar, same spirit as executive_enforcement:
+    // only a named subsidiary actually placed on an official US government forced-labor
+    // determination (DHS's UFLPA Entity List, or an active CBP Withhold Release Order),
+    // not general supply-chain criticism or NGO reports. Researching this turned up a
+    // structural finding worth recording: the ~200 UFLPA entities and ~60 active CBP WROs
+    // are almost entirely private companies or foreign-exchange-only listings (Taiwan,
+    // Shanghai, Shenzhen, Hong Kong) that a US brokerage can't actually hold — this list
+    // is short because very few named entities are reachable through a US ticker at all,
+    // not because forced-labor findings are rare.
+    key: "forced_labor_supply_chain",
+    label: "Supply-chain forced labor",
+    blurb: "A subsidiary is named on a current US government forced-labor determination (UFLPA Entity List or CBP Withhold Release Order) — not the parent's own direct conduct, but real, active US enforcement against a company it controls.",
+    tickers: {
+      ZIJMY: "Zijin Mining Group — two Xinjiang subsidiaries (Xinjiang Zijin Nonferrous Metals; Xinjiang Zijin Zinc Industry) are on the US DHS's UFLPA Entity List for presumed Uyghur forced labor; a separate, 63%-owned Serbian subsidiary (Serbia Zijin Copper) is under an active US CBP Withhold Release Order (issued June 2026) for forced labor in copper production.",
+      ZIJMF: "Zijin Mining Group — two Xinjiang subsidiaries (Xinjiang Zijin Nonferrous Metals; Xinjiang Zijin Zinc Industry) are on the US DHS's UFLPA Entity List for presumed Uyghur forced labor; a separate, 63%-owned Serbian subsidiary (Serbia Zijin Copper) is under an active US CBP Withhold Release Order (issued June 2026) for forced labor in copper production.",
+    },
+  },
+  {
+    // A different, WEAKER evidentiary tier than forced_labor_supply_chain, and labeled as
+    // such — not a government finding, but the company's OWN disclosure in its own
+    // published supplier-audit report. That's still a checkable, citable fact (a specific
+    // report, a specific page, a specific number), just a lower bar than "a government
+    // agency determined this." Most large electronics/apparel/auto companies with complex
+    // supply chains (Apple, Nike, HP, Dell, Samsung, Intel, ...) publish something like
+    // this; only Apple is researched and added so far. Always states what was found AND
+    // what the company says it did about it — never just the violation count in isolation.
+    key: "supplier_audit_violations",
+    label: "Self-reported supply-chain violations",
+    blurb: "Labor violations the company's own supplier audits found and disclosed in its own published report — a lower bar than a government finding, but the company's own admission, remediation included.",
+    tickers: {
+      AAPL: "Apple — its own 2025 supply-chain report disclosed 10 'Core Violations' (its most serious category) in 2024: nine from suppliers falsifying working-hours records, one a health-and-safety violation. Since 2008, Apple has had suppliers repay $34.5M in recruitment fees to over 37,700 workers under its zero-fees policy (recruitment fees are a recognized forced-labor risk indicator). Apple states it found no instances of forced labor in 2024 and no cases of underage labor in over five years.",
     },
   },
 ];

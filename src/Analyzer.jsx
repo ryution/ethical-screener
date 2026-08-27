@@ -9,7 +9,7 @@
 // light, high-contrast "paper" theme for everything you actually read and work in —
 // so the data doesn't blur into a green wash.
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // ── Dark palette (hero + auth) ───────────────────────────────────────────────
 const D = {
@@ -94,7 +94,7 @@ function Splash() {
   return (
     <Canvas>
       <div style={{ minHeight: "100dvh", display: "grid", placeItems: "center" }}>
-        <span style={{ fontFamily: serif, fontSize: 28, color: D.brassSoft, letterSpacing: "-0.02em" }}>Steward</span>
+        <span style={{ fontFamily: serif, fontSize: 28, color: D.brassSoft, letterSpacing: "-0.02em" }}>PlainStreet</span>
       </div>
     </Canvas>
   );
@@ -237,6 +237,113 @@ const HeroCTA = ({ onStart }) => (
   </div>
 );
 
+// ── Ticker tape: a scrolling marquee of live-ish prices across the top of the page,
+// Wall-Street-display style. Purely decorative/informational — it isn't tied to the
+// ethical screens, just sets the "this is a real market" tone before the hero.
+function TickerTape() {
+  const [quotes, setQuotes] = useState([]);
+  useEffect(() => {
+    const load = () => api("/api/ticker-tape").then((d) => setQuotes(d.quotes || [])).catch(() => {});
+    load();
+    const id = setInterval(load, 60_000); // matches the server's own cache TTL
+    return () => clearInterval(id);
+  }, []);
+  if (!quotes.length) return null;
+
+  const Item = ({ q, keySuffix }) => {
+    const up = q.changePercent >= 0;
+    const color = up ? "#4ADE80" : "#F87171";
+    return (
+      <span key={q.symbol + keySuffix} style={{ display: "inline-flex", alignItems: "baseline", gap: 8, padding: "0 22px", fontFamily: sans, fontSize: 13, whiteSpace: "nowrap" }}>
+        <span style={{ fontWeight: 700, color: "#EAF3EE", letterSpacing: "0.02em" }}>{q.symbol}</span>
+        <span style={{ color: "#9FB6AB" }}>${q.price.toFixed(2)}</span>
+        <span style={{ color, fontWeight: 600 }}>{up ? "▲" : "▼"} {Math.abs(q.changePercent).toFixed(2)}%</span>
+      </span>
+    );
+  };
+
+  return (
+    <div style={{ background: "#081812", borderBottom: "1px solid rgba(255,255,255,0.08)", overflow: "hidden", padding: "9px 0" }}>
+      <style>{`
+        @keyframes ps-ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        .ps-ticker-track { display: inline-flex; animation: ps-ticker-scroll 45s linear infinite; }
+        .ps-ticker-track:hover { animation-play-state: paused; }
+      `}</style>
+      <div className="ps-ticker-track">
+        {quotes.map((q) => <Item q={q} keySuffix="a" key={q.symbol + "a"} />)}
+        {quotes.map((q) => <Item q={q} keySuffix="b" key={q.symbol + "b"} />)}
+      </div>
+    </div>
+  );
+}
+
+// ── Hot news: recent headlines mentioning a company we track (BBC + NYT). We only
+// ever show the headline, outlet, and a link out — never a summary we wrote.
+function HotNews({ wrap }) {
+  const [items, setItems] = useState(null); // null = loading, [] = loaded empty
+  const trackRef = useRef(null);
+  useEffect(() => {
+    api("/api/news").then((d) => setItems(d.items || [])).catch(() => setItems([]));
+  }, []);
+  const scrollByCards = (dir) => {
+    const el = trackRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * el.clientWidth * 0.95, behavior: "smooth" });
+  };
+  const arrowBtn = (side) => ({
+    position: "absolute", top: "50%", [side]: -4, transform: "translateY(-50%)",
+    width: 40, height: 40, borderRadius: "50%", border: `1px solid ${L.line}`,
+    background: L.card, color: L.pine, fontFamily: sans, fontSize: 18, cursor: "pointer",
+    boxShadow: "0 4px 16px -6px rgba(20,39,31,0.25)", display: "grid", placeItems: "center", zIndex: 2,
+  });
+
+  if (items && items.length === 0) return null; // nothing tracked is in the news right now
+  return (
+    <section style={{ ...wrap, padding: "clamp(56px,9vw,96px) 24px 0" }}>
+      <div style={{ textAlign: "center", marginBottom: 34 }}>
+        <p style={{ fontFamily: sans, fontSize: 12.5, letterSpacing: "0.16em", textTransform: "uppercase", color: L.brass, marginBottom: 10 }}>From BBC &amp; The New York Times</p>
+        <h2 style={{ fontFamily: serif, fontSize: "clamp(26px,4vw,38px)", color: L.pine, fontWeight: 700, margin: 0, letterSpacing: "-0.02em" }}>Hot off the wire.</h2>
+        <p style={{ fontFamily: sans, fontSize: 14.5, color: L.muted, margin: "10px 0 0" }}>Recent reporting on companies we track — headline and source, always linking to the original story.</p>
+      </div>
+      {!items ? (
+        <p style={{ textAlign: "center", fontFamily: sans, color: L.faint, fontSize: 14 }}>Loading…</p>
+      ) : (
+        <div style={{ position: "relative" }}>
+          <button onClick={() => scrollByCards(-1)} aria-label="Scroll left" style={arrowBtn("left")}>‹</button>
+          <button onClick={() => scrollByCards(1)} aria-label="Scroll right" style={arrowBtn("right")}>›</button>
+          <div ref={trackRef} style={{
+            display: "flex", gap: 18, overflowX: "auto", scrollSnapType: "x mandatory",
+            padding: "4px 4px 14px", margin: "0 -4px", scrollbarWidth: "none",
+          }}>
+            {items.map((it, i) => (
+              <a key={i} href={it.link} target="_blank" rel="noopener noreferrer"
+                 style={{
+                   ...card({ padding: 0, overflow: "hidden" }), display: "block", textDecoration: "none", color: "inherit",
+                   flex: "0 0 clamp(250px, 31%, 340px)", scrollSnapAlign: "start",
+                 }}>
+                <div style={{ padding: "16px 18px 14px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
+                    <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: "0.04em", color: L.teal, background: L.lineSoft, borderRadius: 999, padding: "3px 10px" }}>{it.source}</span>
+                    {it.companies.slice(0, 2).map((c) => (
+                      <span key={c.ticker} style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: L.muted }}>{c.name}</span>
+                    ))}
+                    {agoLabel(it.publishedAt) && <span style={{ fontFamily: sans, fontSize: 11, color: L.faint, marginLeft: "auto" }}>{agoLabel(it.publishedAt)}</span>}
+                  </div>
+                  <div style={{ fontFamily: serif, fontSize: 16.5, color: L.ink, fontWeight: 600, lineHeight: 1.35, letterSpacing: "-0.01em", minHeight: "2.7em" }}>{it.title}</div>
+                </div>
+                {it.image && (
+                  <img src={it.image} alt="" loading="lazy"
+                       style={{ width: "100%", height: 150, objectFit: "cover", display: "block", borderTop: `1px solid ${L.lineSoft}` }} />
+                )}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
 // ── Landing ─────────────────────────────────────────────────────────────────
 function Landing({ onStart }) {
   const wrap = { maxWidth: 1000, margin: "0 auto", padding: "0 24px" };
@@ -247,11 +354,12 @@ function Landing({ onStart }) {
   ];
   return (
     <div style={{ fontFamily: sans, background: L.bg }}>
+      <TickerTape />
       {/* ── Dark hero with the live analyzer ── */}
       <Canvas>
         <nav style={{ position: "sticky", top: 0, zIndex: 20, borderBottom: `1px solid ${D.glassBorder}`, background: "rgba(8,20,16,0.5)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
           <div style={{ ...wrap, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 24px" }}>
-            <span style={{ fontFamily: serif, fontSize: 21, fontWeight: 700, color: D.ink, letterSpacing: "-0.02em" }}>Steward</span>
+            <span style={{ fontFamily: serif, fontSize: 21, fontWeight: 700, color: D.ink, letterSpacing: "-0.02em" }}>PlainStreet</span>
             <button onClick={onStart} style={brassBtn(9, "9px 18px", 14)}>Get started</button>
           </div>
         </nav>
@@ -270,6 +378,9 @@ function Landing({ onStart }) {
           </div>
         </header>
       </Canvas>
+
+      {/* ── Light body: hot news ── */}
+      <HotNews wrap={wrap} />
 
       {/* ── Light body: how it works ── */}
       <section style={{ ...wrap, padding: "clamp(56px,9vw,96px) 24px" }}>
@@ -305,7 +416,7 @@ function Landing({ onStart }) {
       </section>
 
       <footer style={{ ...wrap, borderTop: `1px solid ${L.line}`, padding: "22px 24px", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
-        <span style={{ fontFamily: serif, fontSize: 15, fontWeight: 700, color: L.muted }}>Steward</span>
+        <span style={{ fontFamily: serif, fontSize: 15, fontWeight: 700, color: L.muted }}>PlainStreet</span>
         <span style={{ fontFamily: sans, fontSize: 12.5, color: L.faint }}>Read-only portfolio analysis. Not investment advice.</span>
       </footer>
     </div>
@@ -398,7 +509,7 @@ function Dashboard({ user, onSignOut }) {
       {/* light top bar */}
       <div style={{ position: "sticky", top: 0, zIndex: 20, background: "rgba(244,241,233,0.85)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", borderBottom: `1px solid ${L.line}` }}>
         <div style={{ maxWidth: 800, margin: "0 auto", padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <span style={{ fontFamily: serif, fontSize: 20, fontWeight: 700, color: L.pine, letterSpacing: "-0.02em" }}>Steward</span>
+          <span style={{ fontFamily: serif, fontSize: 20, fontWeight: 700, color: L.pine, letterSpacing: "-0.02em" }}>PlainStreet</span>
           <span style={{ display: "flex", alignItems: "center", gap: 14 }}>
             <span style={{ fontFamily: sans, fontSize: 12.5, color: L.muted }}>{user.email}</span>
             <button onClick={async () => { try { await api("/api/logout", { method: "POST" }); } catch { /* noop */ } onSignOut(); }} style={linkBtn(L.teal)}>Sign out</button>

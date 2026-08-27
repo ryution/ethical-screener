@@ -1,6 +1,6 @@
 # NEXT — project status & what's left
 
-Snapshot of where Steward (the ethical portfolio analyzer) stands, and the work ahead.
+Snapshot of where PlainStreet (the ethical portfolio analyzer) stands, and the work ahead.
 Living doc — update as things land. See [`PLAN.md`](PLAN.md) for the why, this for the what.
 
 ---

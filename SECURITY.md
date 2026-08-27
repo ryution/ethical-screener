@@ -1,6 +1,6 @@
 # Security
 
-Steward is a read-only analyzer. It holds far less sensitive data than a typical fintech —
+PlainStreet is a read-only analyzer. It holds far less sensitive data than a typical fintech —
 no money, no SSNs, no brokerage credentials — which shrinks the attack surface to two
 things worth protecting: **user accounts** and the **SnapTrade connection secret**.
 
@@ -50,7 +50,7 @@ things worth protecting: **user accounts** and the **SnapTrade connection secret
 ## The honest scope line
 
 There is no investment-adviser, broker-dealer, or money-transmitter surface here, because
-Steward gives no advice, holds no money, and opens no accounts — see
+PlainStreet gives no advice, holds no money, and opens no accounts — see
 [`compliance/REGULATORY.md`](compliance/REGULATORY.md). The security work above is about
 protecting logins and the one read-only token per user, which is the real exposure.
 

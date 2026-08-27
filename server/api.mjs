@@ -1,4 +1,4 @@
-// Steward — the ethical portfolio analyzer.
+// PlainStreet — the ethical portfolio analyzer.
 //
 // Multi-user accounts (email + password), a read-only SnapTrade brokerage connection,
 // and an ethical-screen analysis of the user's holdings. We never trade and never move
@@ -15,6 +15,8 @@ import { mailerEnabled, siteUrl, sendMail, resetEmail, verifyEmail } from "./lib
 import { snaptradeEnabled, registerUser as stRegister, connectionPortalUrl, allPositions } from "./lib/snaptrade.js";
 import { analyze, lookupSymbol, dataMeta } from "./lib/analyzer.js";
 import { screenCatalogue, isScreenKey } from "./lib/screens.js";
+import { hotNews } from "./lib/news.js";
+import { tickerTape } from "./lib/quotes.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 8787;
@@ -138,7 +140,9 @@ const CSP = [
   "script-src 'self'",
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self' data:",
-  "img-src 'self' data:",
+  // News thumbnails come straight from the publisher (BBC, NYT) — no proxying, so their
+  // image hosts need an explicit CSP allowance.
+  "img-src 'self' data: https://ichef.bbci.co.uk https://static01.nyt.com https://static.nytimes.com",
   "connect-src 'self'",
   "form-action 'self'",
   "frame-ancestors 'none'",
@@ -225,6 +229,29 @@ export async function handler(req, res) {
     const result = lookupSymbol(url.searchParams.get("symbol"));
     if (!result) return sendJson(res, 400, { error: "Enter a ticker symbol." });
     return sendJson(res, 200, result);
+  }
+
+  // ---- recent headlines mentioning a tracked company (BBC + NYT, headline+link only) ----
+  if (req.method === "GET" && path === "/api/news") {
+    const rl = rateLimit("news", ip, 60, 60 * 60 * 1000);
+    if (rl.limited) return sendJson(res, 429, { error: "Too many requests. Try again shortly." }, { "Retry-After": String(rl.retryAfter) });
+    try {
+      const items = await hotNews({ symbol: url.searchParams.get("symbol") });
+      return sendJson(res, 200, { items });
+    } catch (e) {
+      captureError(e, "news");
+      return sendJson(res, 502, { error: "Couldn't load news right now." });
+    }
+  }
+
+  // ---- ticker-tape prices for the marquee (public, cached) ----
+  if (req.method === "GET" && path === "/api/ticker-tape") {
+    try {
+      return sendJson(res, 200, { quotes: await tickerTape() });
+    } catch (e) {
+      captureError(e, "ticker-tape");
+      return sendJson(res, 502, { error: "Couldn't load prices right now." });
+    }
   }
 
   // ---- health ----
@@ -382,7 +409,7 @@ export async function handler(req, res) {
   // ===== everything below requires a session =====
   // Only routes this product actually implements. The v1 round-up app's money routes
   // (deposit/withdraw/purchase/transfers/bank/plaid) were listed here with no handlers —
-  // they 401'd then 404'd. Steward moves no money and holds no accounts, so advertising
+  // they 401'd then 404'd. PlainStreet moves no money and holds no accounts, so advertising
   // money endpoints contradicts compliance/REGULATORY.md and is needless attack surface.
   const authRoutes = ["/api/audit", "/api/verify/request",
                       "/api/screens/select", "/api/brokerage/connect", "/api/analysis"];
@@ -520,7 +547,7 @@ if (isMain) {
   const dbInfo = await db.initDb();
 
   server.listen(PORT, () => {
-  console.log(`Steward on http://localhost:${PORT}`);
+  console.log(`PlainStreet on http://localhost:${PORT}`);
   console.log(`  db:        ${dbInfo.backend} · ${dbInfo.users} users`);
   console.log(`  snaptrade: ${snaptradeEnabled() ? "on" : "OFF — set SNAPTRADE_CLIENT_ID / SNAPTRADE_CONSUMER_KEY"}`);
   console.log(`  mail:   ${mailerEnabled() ? "resend" : "OFF — verification/reset links are logged, not emailed"}`);

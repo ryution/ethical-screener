@@ -9,7 +9,7 @@
 // email anyone, verify a domain and set MAIL_FROM to a sender on it.
 
 const API = "https://api.resend.com/emails";
-const FROM = process.env.MAIL_FROM || "Good Steward <onboarding@resend.dev>";
+const FROM = process.env.MAIL_FROM || "PlainStreet <onboarding@resend.dev>";
 
 export function mailerEnabled() {
   return !!process.env.RESEND_API_KEY;
@@ -60,7 +60,7 @@ function layout({ heading, lead, buttonLabel, url, footer }) {
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
     <table role="presentation" width="480" cellpadding="0" cellspacing="0" style="background:#FBF8F0;border:1px solid #E4DDCB;border-radius:20px;overflow:hidden">
       <tr><td style="padding:32px 34px 8px">
-        <div style="font-family:Georgia,'Times New Roman',serif;font-size:19px;font-weight:600;color:${PINE};letter-spacing:-0.01em">Good Steward</div>
+        <div style="font-family:Georgia,'Times New Roman',serif;font-size:19px;font-weight:600;color:${PINE};letter-spacing:-0.01em">PlainStreet</div>
       </td></tr>
       <tr><td style="padding:8px 34px 4px">
         <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:500;color:${PINE};margin:0 0 10px;letter-spacing:-0.01em">${heading}</h1>
@@ -70,7 +70,7 @@ function layout({ heading, lead, buttonLabel, url, footer }) {
         <p style="font-size:11.5px;line-height:1.5;color:${MUTED};margin:14px 0 0;word-break:break-all">Or paste this link into your browser:<br><a href="${url}" style="color:${BRASS}">${url}</a></p>
       </td></tr>
       <tr><td style="padding:22px 34px 30px">
-        <div style="border-top:1px solid #E4DDCB;padding-top:16px;font-size:11px;color:${MUTED}">Good Steward — a stewardship layer for your money.</div>
+        <div style="border-top:1px solid #E4DDCB;padding-top:16px;font-size:11px;color:${MUTED}">PlainStreet — read-only clarity for your money.</div>
       </td></tr>
     </table>
   </td></tr></table>
@@ -79,28 +79,28 @@ function layout({ heading, lead, buttonLabel, url, footer }) {
 
 export function resetEmail(url) {
   return {
-    subject: "Reset your Good Steward password",
+    subject: "Reset your PlainStreet password",
     html: layout({
       heading: "Reset your password",
-      lead: "We got a request to reset the password on your Good Steward account. Click below to choose a new one.",
+      lead: "We got a request to reset the password on your PlainStreet account. Click below to choose a new one.",
       buttonLabel: "Choose a new password",
       url,
       footer: "This link expires in 30 minutes and can be used once. If you didn't ask for this, you can safely ignore this email — your password won't change.",
     }),
-    text: `Reset your Good Steward password.\n\nOpen this link to choose a new password (expires in 30 minutes, single use):\n${url}\n\nIf you didn't request this, ignore this email.`,
+    text: `Reset your PlainStreet password.\n\nOpen this link to choose a new password (expires in 30 minutes, single use):\n${url}\n\nIf you didn't request this, ignore this email.`,
   };
 }
 
 export function verifyEmail(url) {
   return {
-    subject: "Verify your email for Good Steward",
+    subject: "Verify your email for PlainStreet",
     html: layout({
       heading: "Verify your email",
-      lead: "Confirm this address to secure your Good Steward account.",
+      lead: "Confirm this address to secure your PlainStreet account.",
       buttonLabel: "Verify my email",
       url,
-      footer: "This link expires in 24 hours. If you didn't create a Good Steward account, you can ignore this email.",
+      footer: "This link expires in 24 hours. If you didn't create a PlainStreet account, you can ignore this email.",
     }),
-    text: `Verify your email for Good Steward.\n\nOpen this link to confirm your address (expires in 24 hours):\n${url}\n\nIf you didn't create an account, ignore this email.`,
+    text: `Verify your email for PlainStreet.\n\nOpen this link to confirm your address (expires in 24 hours):\n${url}\n\nIf you didn't create an account, ignore this email.`,
   };
 }

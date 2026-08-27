@@ -21,7 +21,7 @@ Postgres. Everything is same-origin on Vercel, so the app's `/api/...` calls jus
    open many short connections, and the pooler is built for that.
 3. That string is your `DATABASE_URL`. It already contains the password.
 
-The app creates its own table (`steward_state`) on first run — no SQL to run by hand.
+The app creates its own table (`plainstreet_state`) on first run — no SQL to run by hand.
 
 ### 2. GitHub
 ```bash
@@ -41,9 +41,10 @@ git push -u origin main
    | `DATABASE_URL` | the Supabase pooler URI | accounts, sessions, connections |
    | `SNAPTRADE_CLIENT_ID` | from dashboard.snaptrade.com | connecting a brokerage |
    | `SNAPTRADE_CONSUMER_KEY` | from dashboard.snaptrade.com | connecting a brokerage |
-   | `APP_URL` | your final URL, e.g. `https://steward.vercel.app` | email links, CSRF |
+   | `ENCRYPTION_KEY` | `openssl rand -hex 32` | encrypts the stored SnapTrade userSecret |
+   | `APP_URL` | your final URL, e.g. `https://plainstreet.vercel.app` | email links, CSRF |
    | `RESEND_API_KEY` | from resend.com (optional) | verification / reset email |
-   | `MAIL_FROM` | e.g. `Steward <hello@yourdomain>` (optional) | email sender |
+   | `MAIL_FROM` | e.g. `PlainStreet <hello@yourdomain>` (optional) | email sender |
 
    `VERCEL_URL` is set automatically; the app falls back to it for links if `APP_URL`
    isn't set, but set `APP_URL` once you know the domain.

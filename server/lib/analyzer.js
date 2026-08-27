@@ -10,6 +10,7 @@
 import { flagsFor, companyName, SCREEN_KEYS } from "./screens.js";
 import { knownFund } from "./funds.js";
 import { enrichedFlagsFor, enrichedName, dataMeta } from "./enriched.js";
+import { normalizeTicker } from "./symbols.js";
 
 export { dataMeta };
 
@@ -31,7 +32,7 @@ const nameFor = (ticker, fallback) => (companyName(ticker) !== ticker ? companyN
  * Returns { type: "fund" | "stock" | "none", ... }.
  */
 export function lookupSymbol(symbol) {
-  const sym = String(symbol || "").trim().toUpperCase();
+  const sym = normalizeTicker(symbol);
   if (!sym) return null;
   const fund = knownFund(sym);
   if (fund) {

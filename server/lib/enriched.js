@@ -43,3 +43,6 @@ export function enrichedTickersForScreen(key) {
   for (const [ticker, c] of Object.entries(_data.companies)) if ((c.flags || []).includes(key)) out.push(ticker);
   return out;
 }
+
+/** Every ticker the enriched set knows about — used to build the symbol-normalization table. */
+export const enrichedTickers = () => Object.keys(_data.companies);

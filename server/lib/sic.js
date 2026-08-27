@@ -32,9 +32,15 @@ export function screensForSic(sicRaw) {
   // spirits conglomerates) are caught by the curated list instead — precision over recall.
   if (inRange(sic, 2082, 2085) || sic === 5182) keys.add("alcohol");
 
-  // Weapons & defense — ordnance, ammunition, missiles/space vehicles, tanks, and
-  // search/detection/guidance (defense) systems.
-  if (inRange(sic, 3480, 3489) || inRange(sic, 3760, 3769) || sic === 3795 || sic === 3812) {
+  // Weapons & defense — ordnance, ammunition, missiles/space vehicles, tanks.
+  // NOTE: SIC 3812 ("Search, Detection, Navigation, Guidance, Aeronautical Systems") was
+  // tried here and removed — it doesn't cleanly imply weapons-making the way this file's
+  // own rule requires (line 7). It sweeps in civilian GPS/instrument makers (Garmin,
+  // NextNav) alongside real defense contractors, and even one company that sells
+  // weapons-*detection* screening systems (Liberty Defense) — the opposite of what the
+  // flag claims. Genuine weapons/key-combat-component makers that would've been caught by
+  // 3812 are hand-curated instead (see screens.js): DRS, AERG.
+  if (inRange(sic, 3480, 3489) || inRange(sic, 3760, 3769) || sic === 3795) {
     keys.add("weapons");
   }
   // Civilian firearms & small-arms ammunition (subset of the ordnance codes).
@@ -57,4 +63,6 @@ export const SIC_CLASSIFIED = [
 ];
 export const CURATED_ONLY = [
   "gambling", "big_tech_surveillance", "adult", "animal_testing", "private_prisons",
+  "executive_enforcement", "historical_forced_labor", "forced_labor_supply_chain",
+  "supplier_audit_violations",
 ];

@@ -3,6 +3,7 @@ import { analyze } from "../lib/analyzer.js";
 import { flagsFor, isScreenKey, screenCatalogue, companyName } from "../lib/screens.js";
 import { knownFund } from "../lib/funds.js";
 import { screensForSic } from "../lib/sic.js";
+import { normalizeTicker } from "../lib/symbols.js";
 
 let passed = 0;
 const test = (name, fn) => { fn(); console.log(`  ✓ ${name}`); passed++; };
@@ -21,10 +22,61 @@ console.log("screens:");
 test("keys are recognized", () => assert.ok(isScreenKey("fossil_fuels") && isScreenKey("weapons")));
 test("unknown key rejected", () => assert.equal(isScreenKey("nonsense"), false));
 test("XOM flags fossil fuels when active", () => assert.equal(flagsFor("XOM", ["fossil_fuels"]).length, 1));
+test("DRS and AERG are curated as weapons (moved off the too-broad SIC 3812 rule)", () => {
+  assert.equal(flagsFor("DRS", ["weapons"]).length, 1);
+  assert.equal(flagsFor("AERG", ["weapons"]).length, 1);
+});
 test("XOM does not flag if screen is off", () => assert.equal(flagsFor("XOM", ["weapons"]).length, 0));
 test("case-insensitive ticker match", () => assert.equal(flagsFor("xom", ["fossil_fuels"]).length, 1));
 test("companyName resolves from reason", () => assert.equal(companyName("XOM"), "ExxonMobil"));
 test("catalogue exposes counts, not reasons", () => assert.ok(screenCatalogue.every((s) => typeof s.count === "number" && s.tickers === undefined)));
+test("executive_enforcement is a recognized screen key", () => assert.ok(isScreenKey("executive_enforcement")));
+test("TSLA/IEP/MSTR flag executive_enforcement", () => {
+  assert.equal(flagsFor("TSLA", ["executive_enforcement"]).length, 1);
+  assert.equal(flagsFor("IEP", ["executive_enforcement"]).length, 1);
+  assert.equal(flagsFor("MSTR", ["executive_enforcement"]).length, 1);
+});
+test("companyName resolves to the COMPANY, not the executive, for executive_enforcement tickers", () => {
+  // Reason format is "Company — Exec did X"; a bug here would leak the exec's name into
+  // the company-name slot used elsewhere in the UI (e.g. inside fund look-through).
+  assert.equal(companyName("TSLA"), "Tesla");
+  assert.equal(companyName("IEP"), "Icahn Enterprises");
+});
+test("historical_forced_labor is a recognized screen key", () => assert.ok(isScreenKey("historical_forced_labor")));
+test("WWII-era forced labor entries flag correctly, each with its own company name", () => {
+  for (const [ticker, name] of [["VWAGY", "Volkswagen"], ["F", "Ford"], ["IBM", "IBM"], ["BAYRY", "Bayer"], ["BASFY", "BASF"]]) {
+    assert.equal(flagsFor(ticker, ["historical_forced_labor"]).length, 1);
+    assert.equal(companyName(ticker), name);
+  }
+});
+test("WWII-era forced labor reasons state restitution status either way, not one-sided", () => {
+  const reasonFor = (t) => flagsFor(t, ["historical_forced_labor"])[0].reason;
+  assert.ok(/restitution|compensation/i.test(reasonFor("VWAGY")));
+  assert.ok(/not made a public apology|restitution/i.test(reasonFor("IBM")));
+});
+test("forced_labor_supply_chain is a recognized screen key", () => assert.ok(isScreenKey("forced_labor_supply_chain")));
+test("Zijin Mining (both ADR tickers) flags forced_labor_supply_chain, citing UFLPA and CBP by name", () => {
+  for (const t of ["ZIJMY", "ZIJMF"]) {
+    const f = flagsFor(t, ["forced_labor_supply_chain"]);
+    assert.equal(f.length, 1);
+    assert.match(f[0].reason, /UFLPA/);
+    assert.match(f[0].reason, /Withhold Release Order/);
+    assert.equal(companyName(t), "Zijin Mining Group");
+  }
+});
+test("supplier_audit_violations is a recognized screen key", () => assert.ok(isScreenKey("supplier_audit_violations")));
+test("AAPL flags supplier_audit_violations, citing Apple's own disclosed figures", () => {
+  const f = flagsFor("AAPL", ["supplier_audit_violations"]);
+  assert.equal(f.length, 1);
+  assert.match(f[0].reason, /Core Violations/);
+  assert.match(f[0].reason, /\$34\.5M/);
+  assert.equal(companyName("AAPL"), "Apple");
+});
+test("supplier_audit_violations reason states remediation, not just the violation count", () => {
+  const reason = flagsFor("AAPL", ["supplier_audit_violations"])[0].reason;
+  assert.match(reason, /repay/i);
+  assert.match(reason, /no instances of forced labor/i);
+});
 
 console.log("funds:");
 test("VOO is a known fund", () => assert.ok(knownFund("VOO")));
@@ -100,10 +152,20 @@ test("cigarettes → tobacco", () => assert.deepEqual(screensForSic(2111), ["tob
 test("malt beverages → alcohol", () => assert.deepEqual(screensForSic(2082), ["alcohol"]));
 test("generic 'Beverages' (2080) does NOT flag alcohol — Coca-Cola false positive", () => assert.deepEqual(screensForSic(2080), []));
 test("guided missiles → weapons", () => assert.deepEqual(screensForSic(3760), ["weapons"]));
+test("SIC 3812 (nav/guidance) does NOT auto-flag weapons — too broad, sweeps in civilian GPS makers like Garmin", () => assert.deepEqual(screensForSic(3812), []));
 test("small arms → weapons + firearms", () => assert.deepEqual(screensForSic(3484).sort(), ["firearms", "weapons"]));
 test("poultry processing → factory farming", () => assert.deepEqual(screensForSic(2015), ["factory_farming"]));
 test("personal credit → predatory lending", () => assert.deepEqual(screensForSic(6141), ["payday_lending"]));
 test("electronic computers (Apple) → nothing", () => assert.deepEqual(screensForSic(3571), []));
 test("empty/zero SIC → nothing", () => { assert.deepEqual(screensForSic(0), []); assert.deepEqual(screensForSic(null), []); });
+
+console.log("symbol normalization:");
+test("dash class share -> dot (BF-B -> BF.B)", () => assert.equal(normalizeTicker("BF-B"), "BF.B"));
+test("squashed class share -> dot (BFB -> BF.B)", () => assert.equal(normalizeTicker("BFB"), "BF.B"));
+test("spaced class share -> dot (BF B -> BF.B)", () => assert.equal(normalizeTicker("BF B"), "BF.B"));
+test("already-canonical ticker passes through", () => assert.equal(normalizeTicker("BF.B"), "BF.B"));
+test("lowercase input normalized", () => assert.equal(normalizeTicker("bf-b"), "BF.B"));
+test("unrelated ticker is untouched, not guessed at", () => assert.equal(normalizeTicker("BRKB"), "BRKB"));
+test("empty/null input", () => { assert.equal(normalizeTicker(""), ""); assert.equal(normalizeTicker(null), ""); });
 
 console.log(`\n${passed} analyzer tests passed ✓`);

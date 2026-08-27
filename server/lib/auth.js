@@ -44,7 +44,7 @@ const COMMON_PASSWORDS = new Set([
   "password", "password1", "password123", "passw0rd", "12345678", "123456789",
   "1234567890", "qwertyuiop", "qwerty123", "iloveyou", "admin123", "welcome1",
   "letmein1", "abc12345", "football", "baseball", "sunshine", "princess",
-  "monkey123", "trustno1", "steward123", "goodsteward",
+  "monkey123", "trustno1", "plainstreet123", "goodplainstreet",
 ]);
 
 // Basic validation shared by signup.

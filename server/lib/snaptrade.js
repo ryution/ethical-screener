@@ -11,6 +11,7 @@
 // that by hand is the classic SnapTrade time-sink, so we lean on the official client.
 
 import { Snaptrade } from "snaptrade-typescript-sdk";
+import { normalizeTicker } from "./symbols.js";
 
 const CLIENT_ID = process.env.SNAPTRADE_CLIENT_ID;
 const CONSUMER_KEY = process.env.SNAPTRADE_CONSUMER_KEY;
@@ -96,7 +97,7 @@ export async function allPositions(userId, userSecret) {
       const price = Number(p.price) || 0;
       out.push({
         account: acct.name,
-        symbol: inst.symbol || inst.raw_symbol || null,
+        symbol: inst.symbol || inst.raw_symbol ? normalizeTicker(inst.symbol || inst.raw_symbol) : null,
         description: inst.description || null,
         kind: inst.kind || "unknown", // stock | etf | mutualfund | crypto | option
         units,

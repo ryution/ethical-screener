@@ -1,8 +1,8 @@
-# Steward — the ethical portfolio analyzer
+# PlainStreet — the ethical portfolio analyzer
 
 **Connect your brokerage, read-only, and see which of your holdings conflict with the
 ethical lines you care about — including the companies hiding inside your index funds.**
-Steward never trades and never moves money.
+PlainStreet never trades and never moves money.
 
 Try it without an account: type any ticker on the home page and see what's inside it.
 Even a plain S&P 500 fund holds oil majors, weapons makers, and tobacco giants.
@@ -25,7 +25,7 @@ Even a plain S&P 500 fund holds oil majors, weapons makers, and tobacco giants.
 - **No accounts, no SSNs.** We never open a brokerage account or collect identity data —
   your existing broker already did that.
 
-These three "don'ts" are why Steward isn't an investment adviser, a money transmitter, or
+These three "don'ts" are why PlainStreet isn't an investment adviser, a money transmitter, or
 a broker-dealer. See [`compliance/REGULATORY.md`](compliance/REGULATORY.md).
 
 ## Honesty rules (the product's whole premise)

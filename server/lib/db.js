@@ -19,9 +19,26 @@ import { readFileSync, writeFileSync, renameSync, mkdirSync, existsSync } from "
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { randomUUID } from "node:crypto";
+import { encryptSecret, decryptSecret } from "./secretBox.js";
 
 const FILE = join(dirname(fileURLToPath(import.meta.url)), "..", "data", "db.json");
 const DATABASE_URL = process.env.DATABASE_URL;
+
+// The SnapTrade userSecret is only ever encrypted at the storage boundary — in memory
+// it stays plaintext so every call site (api.mjs, snaptrade.js) is unaffected. These
+// transform a db-shaped object without mutating it, so the live `db` in memory never
+// accidentally ends up holding ciphertext.
+function withUserSecrets(dbObj, transform) {
+  const users = {};
+  for (const [id, u] of Object.entries(dbObj.users || {})) {
+    users[id] = u.snaptrade?.userSecret
+      ? { ...u, snaptrade: { ...u.snaptrade, userSecret: transform(u.snaptrade.userSecret) } }
+      : u;
+  }
+  return { ...dbObj, users };
+}
+const forStorage = (dbObj) => withUserSecrets(dbObj, encryptSecret);
+const fromStorage = (dbObj) => withUserSecrets(dbObj, decryptSecret);
 
 function empty() {
   return { users: {}, byEmail: {}, sessions: {}, waitlist: [], events: {}, meta: {}, tokens: {} };
@@ -47,7 +64,7 @@ async function ensurePool() {
     ssl: DATABASE_URL.includes("localhost") ? false : { rejectUnauthorized: false },
     max: 3, // serverless: keep the per-instance pool small
   });
-  await pool.query(`CREATE TABLE IF NOT EXISTS steward_state (
+  await pool.query(`CREATE TABLE IF NOT EXISTS plainstreet_state (
     id INT PRIMARY KEY,
     data JSONB NOT NULL,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -65,10 +82,10 @@ export async function initPool() {
  *  serverless request so writes from other instances are visible. */
 export async function reload() {
   if (pool) {
-    const { rows } = await pool.query("SELECT data FROM steward_state WHERE id = 1");
-    db = rows.length ? { ...empty(), ...rows[0].data } : empty();
+    const { rows } = await pool.query("SELECT data FROM plainstreet_state WHERE id = 1");
+    db = rows.length ? fromStorage({ ...empty(), ...rows[0].data }) : empty();
   } else {
-    try { db = { ...empty(), ...JSON.parse(readFileSync(FILE, "utf8")) }; } catch { db = empty(); }
+    try { db = fromStorage({ ...empty(), ...JSON.parse(readFileSync(FILE, "utf8")) }); } catch { db = empty(); }
   }
 }
 
@@ -82,8 +99,8 @@ export async function initDb() {
   if (DATABASE_URL) {
     try {
       await ensurePool();
-      const { rows } = await pool.query("SELECT data FROM steward_state WHERE id = 1");
-      db = rows.length ? { ...empty(), ...rows[0].data } : empty();
+      const { rows } = await pool.query("SELECT data FROM plainstreet_state WHERE id = 1");
+      db = rows.length ? fromStorage({ ...empty(), ...rows[0].data }) : empty();
 
       // Persist on an interval rather than on every mutation, so a burst of round-ups
       // doesn't become a burst of writes.
@@ -104,7 +121,7 @@ export async function initDb() {
   }
 
   try {
-    db = { ...empty(), ...JSON.parse(readFileSync(FILE, "utf8")) };
+    db = fromStorage({ ...empty(), ...JSON.parse(readFileSync(FILE, "utf8")) });
   } catch {
     db = empty();
   }
@@ -162,13 +179,13 @@ async function flush() {
     // SELECT ... FOR UPDATE locks the row so concurrent flushes queue instead of
     // clobbering each other. Transaction-mode pooling (Supabase port 6543) supports this.
     await client.query("BEGIN");
-    const { rows } = await client.query("SELECT data FROM steward_state WHERE id = 1 FOR UPDATE");
-    const fresh = rows.length ? { ...empty(), ...rows[0].data } : empty();
+    const { rows } = await client.query("SELECT data FROM plainstreet_state WHERE id = 1 FOR UPDATE");
+    const fresh = rows.length ? fromStorage({ ...empty(), ...rows[0].data }) : empty();
     db = mergeState(fresh, db);
     await client.query(
-      `INSERT INTO steward_state (id, data, updated_at) VALUES (1, $1, now())
+      `INSERT INTO plainstreet_state (id, data, updated_at) VALUES (1, $1, now())
        ON CONFLICT (id) DO UPDATE SET data = $1, updated_at = now()`,
-      [JSON.stringify(db)]
+      [JSON.stringify(forStorage(db))]
     );
     await client.query("COMMIT");
   } catch (err) {
@@ -189,7 +206,7 @@ function save() {
   const dir = dirname(FILE);
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
   const tmp = FILE + ".tmp";
-  writeFileSync(tmp, JSON.stringify(db, null, 2));
+  writeFileSync(tmp, JSON.stringify(forStorage(db), null, 2));
   renameSync(tmp, FILE); // atomic replace
 }
 
@@ -218,7 +235,7 @@ export function createUser({ email, passHash, salt }) {
     id, email, passHash, salt, createdAt: now,
     emailVerified: false,
     // SnapTrade read-only brokerage connection. userSecret is a credential issued
-    // once by SnapTrade; in production it must be encrypted at rest.
+    // once by SnapTrade; encrypted at rest via secretBox.js (needs ENCRYPTION_KEY set).
     snaptrade: null,      // { userId, userSecret, connectedAt } once registered
     // Which ethical screens the user turned on, e.g. ["fossil_fuels","weapons"].
     screens: [],
