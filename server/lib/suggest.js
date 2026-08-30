@@ -25,7 +25,10 @@ export function suggest(q, limit = 8) {
       if (t === s) hits.push({ t, n: name, kind, rank: base });
       else if (t.startsWith(s)) hits.push({ t, n: name, kind, rank: base + 1 });
       else if (N.startsWith(s)) hits.push({ t, n: name, kind, rank: base + 2 });
-      else if (N.includes(s)) hits.push({ t, n: name, kind, rank: base + 4 });
+      // A WORD in the name starts with the query — not just any substring position.
+      // Plain .includes() here matched "tes" inside "STATES" or "ASSOCIATES", burying
+      // the one relevant hit (Tesla) under four unrelated companies.
+      else if (N.split(/[^A-Z0-9]+/).some((w) => w.startsWith(s))) hits.push({ t, n: name, kind, rank: base + 3 });
     }
   };
   scan(_funds, "fund", 0);   // small, high-signal — surface ETFs first

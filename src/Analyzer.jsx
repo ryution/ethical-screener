@@ -782,10 +782,14 @@ function LandingHome({ onStart }) {
       {/* ── Dark hero with the live analyzer ── */}
       <Canvas>
         <nav style={{ position: "sticky", top: 0, zIndex: 20, borderBottom: `1px solid ${D.glassBorder}`, background: "rgba(23,46,34,0.55)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
+          {/* Below ~480px, "PlainStreet" + "Methodology" + "Get started" don't fit on one
+              line and crowd together with no gap. Methodology is already in the footer,
+              so it's the one to drop on narrow screens rather than wrap the sticky nav. */}
+          <style>{`@media (max-width: 480px) { .ps-nav-methodology { display: none; } }`}</style>
           <div style={{ ...wrap, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 24px" }}>
             <span style={{ fontFamily: serif, fontSize: 21, fontWeight: 700, color: D.ink, letterSpacing: "-0.02em" }}>PlainStreet</span>
             <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-              <a href="#methodology" style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, textDecoration: "none" }}>Methodology</a>
+              <a href="#methodology" className="ps-nav-methodology" style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, textDecoration: "none" }}>Methodology</a>
               <button onClick={onStart} style={brassBtn(9, "9px 18px", 14)}>Get started</button>
             </div>
           </div>
@@ -937,11 +941,15 @@ function Dashboard({ user, onSignOut, onGoHome }) {
     <div style={{ minHeight: "100dvh", background: L.bg, fontFamily: sans, color: L.ink }}>
       {/* light top bar */}
       <div style={{ position: "sticky", top: 0, zIndex: 20, background: "rgba(241,236,225,0.85)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", borderBottom: `1px solid ${L.line}` }}>
-        <div style={{ maxWidth: 800, margin: "0 auto", padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        {/* Logo + "Search a ticker" + email + "Sign out" don't all fit below ~480px — the
+            email (unbounded length) was the worst offender, overflowing off-screen. Hide
+            it on narrow screens; flexWrap is a safety net if it's still tight. */}
+        <style>{`@media (max-width: 480px) { .ps-dash-email { display: none; } }`}</style>
+        <div style={{ maxWidth: 800, margin: "0 auto", padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
           <button onClick={onGoHome} style={{ ...linkBtn(L.pine), fontFamily: serif, fontSize: 20, fontWeight: 700, letterSpacing: "-0.02em" }}>PlainStreet</button>
-          <span style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <span style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
             <button onClick={onGoHome} style={linkBtn(L.teal)}>Search a ticker</button>
-            <span style={{ fontFamily: sans, fontSize: 12.5, color: L.muted }}>{user.email}</span>
+            <span className="ps-dash-email" style={{ fontFamily: sans, fontSize: 12.5, color: L.muted }}>{user.email}</span>
             <button onClick={async () => { try { await api("/api/logout", { method: "POST" }); } catch { /* noop */ } onSignOut(); }} style={linkBtn(L.teal)}>Sign out</button>
           </span>
         </div>

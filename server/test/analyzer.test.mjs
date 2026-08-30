@@ -4,6 +4,7 @@ import { flagsFor, isScreenKey, screenCatalogue, companyName } from "../lib/scre
 import { knownFund } from "../lib/funds.js";
 import { screensForSic } from "../lib/sic.js";
 import { normalizeTicker } from "../lib/symbols.js";
+import { suggest } from "../lib/suggest.js";
 
 let passed = 0;
 const test = (name, fn) => { fn(); console.log(`  ✓ ${name}`); passed++; };
@@ -168,5 +169,14 @@ test("already-canonical ticker passes through", () => assert.equal(normalizeTick
 test("lowercase input normalized", () => assert.equal(normalizeTicker("bf-b"), "BF.B"));
 test("unrelated ticker is untouched, not guessed at", () => assert.equal(normalizeTicker("BRKB"), "BRKB"));
 test("empty/null input", () => { assert.equal(normalizeTicker(""), ""); assert.equal(normalizeTicker(null), ""); });
+
+console.log("search autocomplete:");
+test("'tes' surfaces Tesla, not mid-word noise like AMERICAN STATES WATER", () => {
+  const symbols = suggest("tes").map((r) => r.symbol);
+  assert.ok(symbols.includes("TSLA"));
+  assert.ok(!symbols.includes("AWR")); // "STATES" contains "tes" mid-word, not a real match
+});
+test("exact ticker match ranks first", () => assert.equal(suggest("VOO")[0]?.symbol, "VOO"));
+test("a query with no matches returns empty, not an error", () => assert.deepEqual(suggest("zzzzzzznotarealquery"), []));
 
 console.log(`\n${passed} analyzer tests passed ✓`);
