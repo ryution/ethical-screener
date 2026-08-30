@@ -6,33 +6,34 @@
 // The analyzer is read-only; we never move money without the user's say-so. (Trading may
 // come later as a paid feature — the free tool only reads and explains.)
 //
-// Visual language — "Mission Green": a flat deep-forest hero (Patagonia-grade, no neon
-// glass), then a warm sand "paper" theme for everything you actually read and work in.
-// One family — Libre Franklin — carries the whole thing; gold and forest are the accents,
-// and terracotta is reserved strictly for flags and alerts.
+// Visual language — "Financial Press": a deep-navy hero (institutional, not outdoorsy),
+// then a clean paper-white theme for everything you actually read and work in. Headlines
+// run in a real serif (Source Serif 4) against a sans-serif body/UI voice (Libre Franklin)
+// — the contrast a serious publication uses to signal "this is analysis, not marketing."
+// Gold is the one accent, used sparingly; terracotta is reserved strictly for flags.
 
 import { useEffect, useRef, useState } from "react";
 
-// ── Dark palette (forest hero + auth) ────────────────────────────────────────
+// ── Dark palette (navy hero + auth) ──────────────────────────────────────────
 const D = {
-  ink: "#F0EBE0", muted: "#B4C1B3", faint: "#7E9080",
-  mint: "#D8C9A3", brass: "#D8C9A3", brassSoft: "#E4D8B8",
-  glassBorder: "rgba(240,235,224,0.16)",
+  ink: "#EDEFF3", muted: "#8D96A8", faint: "#5E6879",
+  mint: "#C9A768", brass: "#C9A768", brassSoft: "#D9BE84",
+  glassBorder: "rgba(237,239,243,0.14)",
 };
-// ── Light palette (sand paper body + app) ────────────────────────────────────
+// ── Light palette (paper body + app) ──────────────────────────────────────────
 const L = {
-  bg: "#F1ECE1", card: "#FCFAF4", line: "#E2DAC9", lineSoft: "#ECE5D6",
-  ink: "#22332A", muted: "#5A6A5E", faint: "#93A08F",
-  pine: "#20402F", teal: "#2E6B4E", mint: "#3B8A63", brass: "#9A7B3F",
+  bg: "#F7F7F5", card: "#FFFFFF", line: "#E3E5E9", lineSoft: "#EEEFF1",
+  ink: "#1B1E27", muted: "#5B6270", faint: "#8B92A0",
+  pine: "#1D2B45", teal: "#2C5C8A", mint: "#2E7D52", brass: "#96793E",
   flag: "#BE4F36", flagBg: "#F7E9E2", flagBorder: "#EBCFC3", good: "#2E7D52",
 };
 const sans = "'Libre Franklin', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-// Same family, heavy weights, for display headings — keeps the wordmark and body as one voice.
-const serif = "'Libre Franklin', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+// A real serif for display — the font-pairing contrast a body-text-only page can't fake.
+const serif = "'Source Serif 4', Georgia, 'Times New Roman', serif";
 
-// A quiet frosted panel over the flat forest — restrained blur, sand border, no orbs.
+// A quiet frosted panel over the navy field — restrained blur, cool border, no orbs.
 const glass = (o = {}) => ({
-  background: "rgba(240,235,224,0.06)",
+  background: "rgba(237,239,243,0.06)",
   backdropFilter: "blur(10px)",
   WebkitBackdropFilter: "blur(10px)",
   border: `1px solid ${D.glassBorder}`,
@@ -40,10 +41,10 @@ const glass = (o = {}) => ({
   boxShadow: "0 18px 40px -22px rgba(0,0,0,0.55)",
   ...o,
 });
-// Solid warm card with a soft lift.
+// Solid card with a soft lift.
 const card = (o = {}) => ({
   background: L.card, border: `1px solid ${L.line}`, borderRadius: 12,
-  boxShadow: "0 1px 2px rgba(20,39,31,0.04), 0 8px 24px -18px rgba(20,39,31,0.16)",
+  boxShadow: "0 1px 2px rgba(20,25,35,0.04), 0 8px 24px -18px rgba(20,25,35,0.14)",
   ...o,
 });
 
@@ -77,13 +78,13 @@ export default function Analyzer() {
   return <Landing onStart={() => (user ? setViewHome(false) : setShowAuth(true))} />;
 }
 
-// ── The forest canvas: flat deep green, one soft top-left highlight, no orbs ──
+// ── The navy canvas: flat deep charcoal-navy, one soft top-left highlight, no orbs ──
 function Canvas({ children }) {
   return (
     <div style={{ position: "relative", fontFamily: sans, color: D.ink, overflow: "hidden" }}>
       <div aria-hidden style={{ position: "absolute", inset: 0, zIndex: 0, background:
-        "radial-gradient(1100px 620px at 14% -12%, #2C5842 0%, transparent 62%)," +
-        "linear-gradient(180deg, #224330 0%, #1D3829 62%, #172E22 100%)" }} />
+        "radial-gradient(1100px 620px at 14% -12%, #24304A 0%, transparent 62%)," +
+        "linear-gradient(180deg, #1B2437 0%, #161D2C 62%, #12161F 100%)" }} />
       <div style={{ position: "relative", zIndex: 1 }}>{children}</div>
     </div>
   );
@@ -179,17 +180,17 @@ function HeroAnalyzer({ onStart }) {
               backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }} />
           {showSug && sugg.length > 0 && (
             <ul role="listbox" style={{ position: "absolute", zIndex: 30, top: "calc(100% + 6px)", left: 0, right: 0, margin: 0, padding: 4, listStyle: "none",
-              background: "rgba(24,46,34,0.97)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+              background: "rgba(18,22,31,0.97)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
               border: `1px solid ${D.glassBorder}`, borderRadius: 12, boxShadow: "0 16px 40px -12px rgba(0,0,0,0.6)", maxHeight: 320, overflowY: "auto" }}>
               {sugg.map((s, i) => (
                 <li key={s.symbol} role="option" aria-selected={i === activeIdx}
                   onMouseDown={(e) => { e.preventDefault(); pick(s); }}
                   onMouseEnter={() => setActiveIdx(i)}
                   style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 11px", borderRadius: 8, cursor: "pointer",
-                    background: i === activeIdx ? "rgba(216,201,163,0.18)" : "transparent" }}>
-                  <span style={{ fontFamily: sans, fontWeight: 700, fontSize: 13, color: "#F5F1E7", minWidth: 52 }}>{s.symbol}</span>
+                    background: i === activeIdx ? "rgba(201,167,104,0.16)" : "transparent" }}>
+                  <span style={{ fontFamily: sans, fontWeight: 700, fontSize: 13, color: "#EDEFF3", minWidth: 52 }}>{s.symbol}</span>
                   <span style={{ fontFamily: sans, fontSize: 12.5, color: D.muted, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", flex: 1 }}>{s.name}</span>
-                  {s.kind === "fund" && <span style={{ fontFamily: sans, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", color: "#0A2A20", background: D.brassSoft, borderRadius: 5, padding: "1px 6px" }}>FUND</span>}
+                  {s.kind === "fund" && <span style={{ fontFamily: sans, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", color: "#20283C", background: D.brassSoft, borderRadius: 5, padding: "1px 6px" }}>FUND</span>}
                 </li>
               ))}
             </ul>
@@ -218,9 +219,9 @@ function HeroAnalyzer({ onStart }) {
               return (
                 <button key={s.key} onClick={() => toggle(s.key)} title={s.blurb}
                   style={{ fontFamily: sans, fontSize: 12, fontWeight: 600, cursor: "pointer", borderRadius: 20, padding: "4px 12px",
-                    border: `1px solid ${on ? "rgba(216,201,163,0.6)" : D.glassBorder}`,
-                    background: on ? "rgba(216,201,163,0.18)" : "transparent",
-                    color: on ? "#EFE6C9" : D.faint, transition: "all .12s" }}>
+                    border: `1px solid ${on ? "rgba(201,167,104,0.55)" : D.glassBorder}`,
+                    background: on ? "rgba(201,167,104,0.16)" : "transparent",
+                    color: on ? "#E4CE9C" : D.faint, transition: "all .12s" }}>
                   {on ? "✓ " : ""}{s.label}
                 </button>
               );
@@ -257,7 +258,7 @@ function HeroResult({ result, onStart }) {
   if (result.type === "none") {
     return (
       <div style={panel}>
-        <div style={{ fontFamily: serif, fontSize: 19, color: "#F5F1E7" }}>
+        <div style={{ fontFamily: serif, fontSize: 19, color: "#EDEFF3" }}>
           No flags for <b>{result.symbol}</b> among the names we track.
         </div>
         <p style={{ fontFamily: sans, fontSize: 13, color: D.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
@@ -272,7 +273,7 @@ function HeroResult({ result, onStart }) {
     if (!result.flags.length) {
       return (
         <div style={panel}>
-          <div style={{ fontFamily: serif, fontSize: 19, color: "#F5F1E7" }}>No flags for <b>{result.symbol}</b> in your selected categories.</div>
+          <div style={{ fontFamily: serif, fontSize: 19, color: "#EDEFF3" }}>No flags for <b>{result.symbol}</b> in your selected categories.</div>
           <p style={{ fontFamily: sans, fontSize: 13, color: D.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
             Turn on more categories above to widen the check.
           </p>
@@ -283,7 +284,7 @@ function HeroResult({ result, onStart }) {
     const flags = result.flags.slice().sort((a, b) => a.label.localeCompare(b.label));
     return (
       <div style={panel}>
-        <div style={{ fontFamily: serif, fontSize: 20, color: "#F5F1E7" }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
+        <div style={{ fontFamily: serif, fontSize: 20, color: "#EDEFF3" }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
         <div style={{ marginTop: 12, display: "grid", gap: 12 }}>
           {flags.map((f) => (
             <div key={f.key} style={{ display: "grid", gap: 6 }}>
@@ -291,7 +292,7 @@ function HeroResult({ result, onStart }) {
                 <FlagChip>{f.label}</FlagChip>
                 <span style={{ fontFamily: sans, fontSize: 13, color: D.ink, lineHeight: 1.45 }}>{f.reason}</span>
               </div>
-              <FlagEvidence quote={f.quote} source={f.source} asOf={f.asOf} muted={D.muted} link="#E4D8B8" />
+              <FlagEvidence quote={f.quote} source={f.source} asOf={f.asOf} muted={D.muted} link="#D9BE84" />
             </div>
           ))}
         </div>
@@ -305,11 +306,11 @@ function HeroResult({ result, onStart }) {
     return (
       <div style={panel}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-          <div style={{ fontFamily: serif, fontSize: 20, color: "#F5F1E7" }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
+          <div style={{ fontFamily: serif, fontSize: 20, color: "#EDEFF3" }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
           <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, color: D.muted, background: "rgba(255,255,255,0.08)", borderRadius: 20, padding: "3px 10px" }}>NOT ANALYZED</span>
         </div>
         <p style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, margin: "8px 0 0", lineHeight: 1.55 }}>
-          {result.notAnalyzedReason} We call that <b style={{ color: "#F5F1E7" }}>not analyzed</b> — never "clean."
+          {result.notAnalyzedReason} We call that <b style={{ color: "#EDEFF3" }}>not analyzed</b> — never "clean."
         </p>
         <HeroCTA onStart={onStart} />
       </div>
@@ -321,8 +322,8 @@ function HeroResult({ result, onStart }) {
     return (
       <div style={panel}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-          <div style={{ fontFamily: serif, fontSize: 20, color: "#F5F1E7" }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
-          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, color: "#0A2A20", background: D.brassSoft, borderRadius: 20, padding: "3px 10px" }}>FUND</span>
+          <div style={{ fontFamily: serif, fontSize: 20, color: "#EDEFF3" }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
+          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, color: "#20283C", background: D.brassSoft, borderRadius: 20, padding: "3px 10px" }}>FUND</span>
         </div>
         <p style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, margin: "8px 0 0", lineHeight: 1.5 }}>
           No holdings in this fund match your selected categories. Turn on more categories above to widen the check.
@@ -335,11 +336,11 @@ function HeroResult({ result, onStart }) {
   return (
     <div style={panel}>
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-        <div style={{ fontFamily: serif, fontSize: 20, color: "#F5F1E7" }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
-        <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, color: "#0A2A20", background: D.brassSoft, borderRadius: 20, padding: "3px 10px" }}>FUND</span>
+        <div style={{ fontFamily: serif, fontSize: 20, color: "#EDEFF3" }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
+        <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, color: "#20283C", background: D.brassSoft, borderRadius: 20, padding: "3px 10px" }}>FUND</span>
       </div>
       <p style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, margin: "6px 0 0", lineHeight: 1.5 }}>
-        Tracks {result.basis} — and holds <b style={{ color: "#F5F1E7" }}>{result.contains.length}</b> companies you may want to avoid:
+        Tracks {result.basis} — and holds <b style={{ color: "#EDEFF3" }}>{result.contains.length}</b> companies you may want to avoid:
       </p>
       <div style={{ marginTop: 12, display: "grid", gap: 9 }}>
         <FundBreakdown groups={groups} theme="dark" />
@@ -371,8 +372,8 @@ function FundBreakdown({ groups, theme }) {
   const dark = theme === "dark";
   const Chip = dark ? FlagChip : LFlagChip;
   const c = dark
-    ? { ink: D.ink, muted: D.muted, faint: D.faint, link: "#E4D8B8", panel: "rgba(255,255,255,0.06)", border: D.glassBorder }
-    : { ink: L.ink, muted: L.faint, faint: L.faint, link: "#2F6B4F", panel: "rgba(0,0,0,0.03)", border: "rgba(0,0,0,0.10)" };
+    ? { ink: D.ink, muted: D.muted, faint: D.faint, link: "#D9BE84", panel: "rgba(255,255,255,0.06)", border: D.glassBorder }
+    : { ink: L.ink, muted: L.faint, faint: L.faint, link: "#2C5C8A", panel: "rgba(0,0,0,0.03)", border: "rgba(0,0,0,0.10)" };
   return (
     <>
       {groups.map((g) => {
@@ -497,15 +498,15 @@ function TickerTape() {
     const color = up ? "#4ADE80" : "#F87171";
     return (
       <span key={q.symbol + keySuffix} style={{ display: "inline-flex", alignItems: "baseline", gap: 8, padding: "0 22px", fontFamily: sans, fontSize: 13, whiteSpace: "nowrap" }}>
-        <span style={{ fontWeight: 700, color: "#EAF3EE", letterSpacing: "0.02em" }}>{q.symbol}</span>
-        <span style={{ color: "#9FB6AB" }}>${q.price.toFixed(2)}</span>
+        <span style={{ fontWeight: 700, color: "#EDEFF3", letterSpacing: "0.02em" }}>{q.symbol}</span>
+        <span style={{ color: "#8D96A8" }}>${q.price.toFixed(2)}</span>
         <span style={{ color, fontWeight: 600 }}>{up ? "▲" : "▼"} {Math.abs(q.changePercent).toFixed(2)}%</span>
       </span>
     );
   };
 
   return (
-    <div style={{ background: "#081812", borderBottom: "1px solid rgba(255,255,255,0.08)", overflow: "hidden", padding: "9px 0" }}>
+    <div style={{ background: "#0C0F16", borderBottom: "1px solid rgba(255,255,255,0.08)", overflow: "hidden", padding: "9px 0" }}>
       <style>{`
         @keyframes ps-ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
         .ps-ticker-track { display: inline-flex; animation: ps-ticker-scroll 45s linear infinite; }
@@ -536,7 +537,7 @@ function HotNews({ wrap }) {
     position: "absolute", top: "50%", [side]: -4, transform: "translateY(-50%)",
     width: 40, height: 40, borderRadius: "50%", border: `1px solid ${L.line}`,
     background: L.card, color: L.pine, fontFamily: sans, fontSize: 18, cursor: "pointer",
-    boxShadow: "0 4px 16px -6px rgba(20,39,31,0.25)", display: "grid", placeItems: "center", zIndex: 2,
+    boxShadow: "0 4px 16px -6px rgba(15,20,30,0.2)", display: "grid", placeItems: "center", zIndex: 2,
   });
 
   if (items && items.length === 0) return null; // nothing tracked is in the news right now
@@ -661,7 +662,7 @@ function Methodology({ onStart }) {
         <header>
           <div style={{ ...wrap, padding: "clamp(48px,7vw,80px) 24px clamp(36px,5vw,56px)" }}>
             <p style={{ fontFamily: sans, fontSize: 13, letterSpacing: "0.18em", textTransform: "uppercase", color: D.brassSoft, margin: "0 0 18px" }}>Methodology</p>
-            <h1 style={{ fontFamily: serif, fontWeight: 800, fontSize: "clamp(30px,5vw,50px)", lineHeight: 1.06, margin: 0, letterSpacing: "-0.035em", color: "#F5F1E7" }}>
+            <h1 style={{ fontFamily: serif, fontWeight: 800, fontSize: "clamp(30px,5vw,50px)", lineHeight: 1.06, margin: 0, letterSpacing: "-0.035em", color: "#EDEFF3" }}>
               How PlainStreet decides what to flag.
             </h1>
             <p style={{ fontFamily: sans, fontSize: "clamp(15px,1.8vw,18px)", lineHeight: 1.65, color: D.muted, margin: "20px 0 0", maxWidth: 640 }}>
@@ -781,7 +782,7 @@ function LandingHome({ onStart }) {
       <TickerTape />
       {/* ── Dark hero with the live analyzer ── */}
       <Canvas>
-        <nav style={{ position: "sticky", top: 0, zIndex: 20, borderBottom: `1px solid ${D.glassBorder}`, background: "rgba(23,46,34,0.55)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
+        <nav style={{ position: "sticky", top: 0, zIndex: 20, borderBottom: `1px solid ${D.glassBorder}`, background: "rgba(18,22,31,0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}>
           {/* Below ~480px, "PlainStreet" + "Methodology" + "Get started" don't fit on one
               line and crowd together with no gap. Methodology is already in the footer,
               so it's the one to drop on narrow screens rather than wrap the sticky nav. */}
@@ -797,11 +798,11 @@ function LandingHome({ onStart }) {
         <header>
           <div style={{ ...wrap, textAlign: "center", padding: "clamp(56px,9vw,96px) 24px clamp(48px,7vw,80px)" }}>
             <p style={{ fontFamily: sans, fontSize: 13, letterSpacing: "0.18em", textTransform: "uppercase", color: D.brassSoft, marginBottom: 22 }}>The ethical portfolio analyzer</p>
-            <h1 style={{ fontFamily: serif, fontWeight: 800, fontSize: "clamp(34px,6vw,62px)", lineHeight: 1.04, margin: 0, letterSpacing: "-0.04em", color: "#F5F1E7" }}>
-              Is your money funding<br /><span style={{ color: D.mint }}>what you fight against?</span>
+            <h1 style={{ fontFamily: serif, fontWeight: 800, fontSize: "clamp(34px,6vw,62px)", lineHeight: 1.04, margin: 0, letterSpacing: "-0.04em", color: "#EDEFF3" }}>
+              Is your money already funding<br /><span style={{ color: D.mint }}>what you fight against?</span>
             </h1>
             <p style={{ fontFamily: sans, fontSize: "clamp(16px,2vw,19px)", lineHeight: 1.6, color: D.muted, margin: "24px auto 0", maxWidth: 560 }}>
-              Even broad market funds hide holdings that might not match your values. Search any stock or ETF ticker to see what’s really inside your portfolio.
+              <span style={{ color: D.brassSoft, fontWeight: 600 }}>Let's find out.</span> Even broad market funds hide holdings that might not match your values. Search any stock or ETF ticker to see what’s really inside your portfolio.
             </p>
             <HeroAnalyzer onStart={onStart} wrap={wrap} />
             <p style={{ fontFamily: sans, fontSize: 12.5, color: D.faint, marginTop: 18 }}>Read-only analysis. We never move your money without your say-so.</p>
@@ -940,7 +941,7 @@ function Dashboard({ user, onSignOut, onGoHome }) {
   return (
     <div style={{ minHeight: "100dvh", background: L.bg, fontFamily: sans, color: L.ink }}>
       {/* light top bar */}
-      <div style={{ position: "sticky", top: 0, zIndex: 20, background: "rgba(241,236,225,0.85)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", borderBottom: `1px solid ${L.line}` }}>
+      <div style={{ position: "sticky", top: 0, zIndex: 20, background: "rgba(247,247,245,0.85)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", borderBottom: `1px solid ${L.line}` }}>
         {/* Logo + "Search a ticker" + email + "Sign out" don't all fit below ~480px — the
             email (unbounded length) was the worst offender, overflowing off-screen. Hide
             it on narrow screens; flexWrap is a safety net if it's still tight. */}
@@ -964,9 +965,9 @@ function Dashboard({ user, onSignOut, onGoHome }) {
                 return (
                   <button key={s.key} onClick={() => toggle(s.key)} style={{
                     textAlign: "left", cursor: "pointer", padding: "14px 15px", borderRadius: 14,
-                    background: on ? "#E7EFE4" : L.card,
+                    background: on ? "#E7EAF2" : L.card,
                     border: `1.5px solid ${on ? L.teal : L.line}`,
-                    boxShadow: on ? "0 6px 18px -10px rgba(14,107,87,0.4)" : "0 1px 2px rgba(20,39,31,0.04)",
+                    boxShadow: on ? "0 6px 18px -10px rgba(44,92,138,0.35)" : "0 1px 2px rgba(20,25,35,0.04)",
                     transition: "all .14s ease",
                   }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
@@ -1023,13 +1024,13 @@ function Results({ analysis }) {
       {/* headline */}
       <div style={{ ...card({ padding: "22px 24px", marginBottom: 16, background: L.pine, border: "none" }) }}>
         {nothing ? (
-          <div style={{ fontFamily: serif, fontSize: 23, letterSpacing: "-0.01em", color: "#F5F1E7" }}>No conflicts among the names we track.</div>
+          <div style={{ fontFamily: serif, fontSize: 23, letterSpacing: "-0.01em", color: "#EDEFF3" }}>No conflicts among the names we track.</div>
         ) : (
           <>
             <div style={{ fontFamily: sans, fontSize: 13, color: D.brassSoft, fontWeight: 600 }}>What clashes with your values</div>
-            <div style={{ fontFamily: serif, fontSize: 34, fontWeight: 700, letterSpacing: "-0.03em", marginTop: 4, color: "#F5F1E7", lineHeight: 1.15 }}>
+            <div style={{ fontFamily: serif, fontSize: 34, fontWeight: 700, letterSpacing: "-0.03em", marginTop: 4, color: "#EDEFF3", lineHeight: 1.15 }}>
               {summary.directConflictValueCents > 0 && <>{money(summary.directConflictValueCents)} held directly</>}
-              {summary.directConflictValueCents > 0 && summary.fundConflictCount > 0 && <span style={{ color: "#8FB0A4" }}>, plus</span>}
+              {summary.directConflictValueCents > 0 && summary.fundConflictCount > 0 && <span style={{ color: "#7B8699" }}>, plus</span>}
               {summary.fundConflictCount > 0 && <> {summary.fundConflictCount} fund{summary.fundConflictCount === 1 ? "" : "s"} holding flagged companies</>}
             </div>
           </>
@@ -1156,18 +1157,18 @@ const DarkErr = ({ children }) => <div style={{ marginTop: 12, fontFamily: sans,
 
 // Buttons — flat, confident, no gloss. Gold is the money action; pine is the light-theme primary.
 const mintBtn = () => ({
-  background: "#D8C9A3", color: "#20402F", border: "1px solid #C8B78A", borderRadius: 9, padding: "12px 20px",
+  background: "#C9A768", color: "#1D2B45", border: "1px solid #B8985C", borderRadius: 9, padding: "12px 20px",
   fontFamily: sans, fontSize: 15, fontWeight: 700, cursor: "pointer", letterSpacing: "-0.005em",
   boxShadow: "0 10px 24px -14px rgba(0,0,0,0.5)",
 });
 const brassBtn = (r = 9, pad = "14px 24px", fs = 15) => ({
-  background: "#D8C9A3", color: "#20402F", border: "1px solid #C8B78A", borderRadius: r, padding: pad,
+  background: "#C9A768", color: "#1D2B45", border: "1px solid #B8985C", borderRadius: r, padding: pad,
   fontFamily: sans, fontSize: fs, fontWeight: 700, cursor: "pointer", letterSpacing: "-0.005em",
 });
 // Solid pine button for the light theme.
 const darkBtn = (r = 9, pad = "14px 24px", fs = 15) => ({
-  background: L.pine, color: "#F0EBE0", border: "none", borderRadius: r, padding: pad,
+  background: L.pine, color: "#EDEFF3", border: "none", borderRadius: r, padding: pad,
   fontFamily: sans, fontSize: fs, fontWeight: 700, cursor: "pointer", letterSpacing: "-0.005em",
-  boxShadow: "0 10px 22px -14px rgba(20,50,36,0.65)",
+  boxShadow: "0 10px 22px -14px rgba(20,30,45,0.5)",
 });
 const linkBtn = (color) => ({ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: sans, fontSize: 13, fontWeight: 600, color });
