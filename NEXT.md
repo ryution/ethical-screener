@@ -5,97 +5,135 @@ Living doc — update as things land. See [`PLAN.md`](PLAN.md) for the why, this
 
 ---
 
+## ⚠ Push status — read this first
+
+Local `main` is **3 commits ahead of `origin/main`** and has been for a while:
+`817067b`, `3067c4b`, `379d232` (nav fix, autocomplete/mobile-nav fix, full redesign).
+
+Push has been failing with `fatal: unable to access '...': Recv failure: Connection reset
+by peer` — GitHub specifically is unreachable from this machine while other sites (Google,
+SEC.gov) load fine. Unclear if it's a local network/firewall/VPN issue or transient on
+GitHub's end. **First thing to try in a new session: `git push origin main` again.**
+
+Separately (already resolved, but worth knowing): an earlier push was rejected because the
+git credential lacks `workflow` scope, which GitHub requires for *any* commit that touches
+`.github/workflows/*`. Worked around by reverting that one file's content to match
+`origin/main` exactly (it still says "Steward" in a comment + a User-Agent string — cosmetic
+only). If a future change legitimately needs to touch that workflow file, it'll need a PAT
+with `workflow` scope.
+
+---
+
 ## What's built and working
 
-The analyzer is live, tested end-to-end, and deployed-ready.
+- **20 ethical screens, 124+ curated companies**, plus ~301 EDGAR-classified and live
+  filing-cited detection on top. Screens span the original set (fossil fuels, weapons,
+  tobacco, gambling, surveillance, private prisons, predatory lending, factory farming,
+  animal testing, cannabis, fur, opioids, coal...) plus four added this session:
+  **Leadership enforcement actions** (current execs w/ real SEC/DOJ fraud actions — Tesla/
+  Musk, Icahn Enterprises/Icahn), **WWII-era forced labor** (historical, always paired with
+  restitution status — VW, Ford, IBM, Bayer, BASF), **Supply-chain forced labor** (US
+  government UFLPA/CBP determinations — Zijin Mining), **Self-reported supply-chain
+  violations** (a company's own audit disclosures — Apple).
+- **Live fund holdings** two ways: this repo's own `holdings.js`/`fetch-holdings.mjs`
+  (issuer daily files, basis-grouped) is what `funds.js` actually reads from; my earlier
+  NPORT-P-based script (`scripts/fetch-fund-holdings.mjs`) was superseded during the merge
+  and removed as dead code.
+- **Read-only brokerage connection** (SnapTrade sandbox-verified), full auth (scrypt,
+  sessions, CSRF, rate limits), **SnapTrade `userSecret` encrypted at rest** (AES-256-GCM,
+  fail-soft without `ENCRYPTION_KEY` — see `server/lib/secretBox.js`).
+- **Broker ticker-format normalization** (`BF-B`/`BFB`/`BF.B` all resolve correctly —
+  `server/lib/symbols.js`), scoped narrowly (only remaps known tickers, never guesses).
+- **Hot news carousel** — BBC + NYT headlines matched to tracked companies, headline/
+  source/link only, never a summary we wrote (`server/lib/news.js`). Deliberately not
+  Google News RSS — its license restricts reuse outside a personal feed reader.
+- **Live ticker-tape marquee** — Yahoo Finance's unofficial chart endpoint, server-cached
+  60s so request volume stays constant regardless of traffic (`server/lib/quotes.js`).
+  Worth knowing: unofficial/undocumented endpoint, could break or get rate-limited without
+  notice; fine for now, a real launch wants a licensed data provider.
+- **Search autocomplete, shareable/bookmarkable ticker links, a quiet "dispute a flag"
+  path**, a full public Methodology page (`#methodology`) documenting every screen.
+- **Full redesign this session**: real serif (Source Serif 4) for headlines paired with
+  Libre Franklin for body/UI — previously both tokens resolved to the *same* font, which
+  was flattening the whole hierarchy. Deep navy/charcoal + muted gold replacing the old
+  forest-green "Mission Green" theme (read more "outdoor brand" than "financial product").
+  Hero copy sharpened to "Is your money **already** funding what you fight against? **Let's
+  find out.**"
+- **Nav fixed**: signed-in users previously had no way back to the public search short of
+  signing out; the dashboard/public nav now round-trip properly. Mobile nav no longer
+  overflows (email/Methodology link hidden below 480px, was crowding/overflowing).
+- **61 passing tests**, 0 lint errors, `npm run lint:data` validates the dataset.
+- **Regulatorily clear** — no advice, no custody, no accounts.
 
-- **Read-only brokerage connection** (SnapTrade) — verified against the live sandbox with
-  real test credentials. Connect → read holdings → never trade, never move money.
-- **Ethical screens** — 12 flags, ~83 hand-curated companies, each with a plain,
-  checkable one-line reason.
-- **Fund look-through** — we look inside known index funds (VOO, SPY, VTI, QQQ, and the
-  common mutual funds) and surface the flagged companies hiding inside, from the issuer's
-  live daily holdings. VOO shows 48; VTI (total market) shows 117.
-- **Live hero widget** — type any ticker, no login, see inside it instantly. Auto-loads
-  VOO so a visitor immediately sees the S&P 500 surprise. Hits the real backend.
-- **EDGAR enrichment layer** — free SEC data maps SIC industry codes to screens, scaling
-  coverage toward the whole market (~10,400 filers) without hand-curation. Curated list
-  stays precise; EDGAR fills breadth; a "last updated" stamp keeps it honest. The full
-  ~10,400-filer run has been executed and shipped.
-- **Live ETF holdings** — fund look-through no longer relies on hand-typed constituent
-  lists. `scripts/fetch-holdings.mjs` pulls each index's holdings from the issuer's
-  daily-published file (State Street SPDR: SPY for the S&P 500, SPTM for the total market),
-  keeps only the names our screens flag, and overlays them via `holdings.js`. Curated
-  lists remain the fallback; the Nasdaq-100 stays curated (no free live source).
-- **Hands-off data freshness** — a monthly GitHub Action (`.github/workflows/refresh-data.yml`)
-  re-runs both enrichment scripts, validates the output (`lint:data` + tests), and commits
-  the regenerated files, which triggers a Vercel redeploy. No servers, no paid APIs.
-- **Auth + security** — scrypt passwords, sessions, CSRF, rate limits, security headers,
-  constant-time login, email verification/reset.
-- **Design** — dark-green liquid-glass hero, light "paper" dashboard (two-tone so it
-  doesn't blend).
-- **49 passing tests**, clean build and lint; `npm run lint:data` validates the dataset.
-- **Docs** — README, PLAN, SECURITY, compliance/REGULATORY all current.
-- **Regulatorily clear** — no advice, no custody, no accounts: not an adviser,
-  broker-dealer, or money transmitter.
+---
+
+## Known issues, not yet fixed
+
+- **Fund breakdown is a wall of text.** Look up a widely-held fund (e.g. VOO) and open a
+  large flag group like "Fossil fuels · 24+" — it's a single comma-separated paragraph with
+  a dotted underline on every company name. Fine for 2-3 names, genuinely hard to scan for
+  20-40. Flagged, not started. Probably wants real chips/a grid instead of a run-on
+  sentence, plus normalizing the casing (raw SEC names are ALL CAPS; curated names are
+  Title Case — they currently sit side-by-side in the same list looking inconsistent).
+- **Nazi-era / leadership-enforcement / forced-labor screens need periodic re-verification.**
+  Unlike SIC-based facts, these can go stale in ways nothing auto-detects (a pardon, a
+  dismissed case, a departed executive, a bankruptcy — this already happened once to a
+  strong candidate, Trevor Milton/Nikola, during research for this feature). No automation
+  for this yet; a human needs to re-check the `screens.js` entries periodically.
 
 ---
 
 ## What's left
 
-### Data depth — raises the product's ceiling
-1. ~~**Run the full EDGAR enrichment**~~ — ✅ done. The full ~10,400-filer run has shipped;
-   the monthly Action re-runs it to catch new filers.
-2. ~~**Live ETF holdings**~~ — ✅ done via issuer-published holdings (`fetch-holdings.mjs`,
-   State Street SPDR daily files). Still worth adding a *second* source for redundancy —
-   if SPDR ever changes its file format or URL, the fetch falls back to curated lists, but
-   a backup source (iShares needs a browser-style fetch; FMP free tier needs a key) would
-   keep it live. Nasdaq-100 has no free live source yet.
-3. **AI enrichment pass** — use an LLM to classify the fuzzy screens SIC can't
-   (surveillance, gambling, private prisons) across the market. The "last updated" stamp is
-   already in place.
-4. **Faith screen data** — gather data first. Exclusion lists for Christian / Jewish /
-   Islamic; real **Sharia** also needs financial-ratio data (debt, interest income) from a
-   fundamentals source (IdealRatings / Musaffa / Zoya are the reference points).
-5. **Symbol normalization** — class shares differ by broker (`BRK.B` vs `BRK-B` vs `BRKB`);
-   normalize before matching so nothing slips through on real brokerage connections.
+### Data depth
+1. **AI enrichment pass** for fuzzy screens (surveillance, gambling, private prisons) SIC
+   can't classify — deliberately not attempted broadly yet; bulk-classifying obscure
+   companies risks the exact "checkable fact, not a vibe" premise this product is built on.
+   A *bounded* pass (e.g. just S&P 500 constituents, clearly labeled "AI-classified,
+   unverified") was proposed but not built.
+2. **Faith screen data** — needs data first. Real Sharia compliance needs financial-ratio
+   data from a paid source (IdealRatings/Musaffa/Zoya); conflicts with the "free data only"
+   rule already locked in. Christian/Jewish/Islamic exclusion lists are more tractable but
+   need editorial care given the sensitivity.
+3. **Second live-holdings source for redundancy** — if the issuer daily-file format/URL
+   `fetch-holdings.mjs` depends on changes, it falls back to curated lists silently. A
+   backup source would keep coverage live either way. Nasdaq-100 still has no free live
+   source at all.
 
-### Product / business
-6. **Paid trading tier** — SnapTrade can execute where the broker allows. Sell it as a paid
-   convenience the user drives: strictly "execute what you chose," **never "sell this."**
-   Needs counsel sign-off on that line before launch (it's the one feature that can pull us
-   toward adviser status).
-7. **Deploy for real** — confirm the Render deployment; paste SnapTrade + Resend keys;
-   verify a sending domain for email links.
-8. **Rotate the SnapTrade test key** — it passed through chat; rotate before production.
+### Product / business (needs accounts/credentials/legal — not code)
+4. **Paid trading tier** — needs counsel sign-off first; the one feature that risks pulling
+   toward adviser status.
+5. **Real deployment** — no live instance exists anywhere yet. Needs: hosting (Render/
+   Vercel), a real Postgres (Supabase), SnapTrade + Resend production keys, a verified
+   sending domain.
+6. **Rotate the SnapTrade test key** — it passed through chat at some point; needs rotating
+   via the SnapTrade dashboard before any real launch.
 
 ### Polish / hardening
-9. **Encrypt the stored SnapTrade `userSecret`** at rest (it reads holdings, can't move
-   money, but still).
-10. **2FA**, durable error monitoring (Sentry/Datadog), Terms of Service + Privacy Policy.
-11. **Mobile-workable UI** — make the whole thing genuinely usable on a phone (result lists
-    reflow, tap targets, filter/selector layout, sticky search). Deferred on purpose: the
-    *web* design isn't dialed in yet, so lock that first, then adapt down to mobile rather
-    than fixing mobile twice.
+7. **2FA**, durable error monitoring (Sentry/Datadog — there's a lightweight in-house
+   fallback ring-buffer in `api.mjs` for now), Terms of Service + Privacy Policy (no draft
+   exists yet).
+8. **Mobile polish beyond the nav fix** — the nav overflow is fixed, but a fuller mobile
+   pass (result-list reflow, tap targets, the "wall of text" fund breakdown especially)
+   hasn't happened.
 
 ### Much later
-11. **Giving rail** (RoundUp.org model — round-ups → monthly Stripe charge → third-party DAF)
-    only once the analyzer has users. See [`compliance/REGULATORY.md`](compliance/REGULATORY.md).
+9. **Giving rail** (RoundUp.org model) — only once the analyzer has real users.
 
 ---
 
-## Highest-leverage next step
-
-**Live ETF holdings + the full EDGAR run.** Together they take the product from "curated
-demo" to "works across the real market" — the biggest jump available for the least risk.
-
 ## Notes / decisions locked in
 
-- **Information only.** We never say "sell this." The output describes what's there and why.
-  Trading, if added, is a paid convenience the user initiates — not a recommendation.
-- **Honesty rules** (see PLAN.md): plain factual flags, funds we don't know are "not
-  analyzed" (never "clean"), we name companies inside funds but never fake per-company
-  dollar amounts, and index membership shifts are disclosed.
-- **Free data sources only** — EDGAR (no key), issuer holdings, FMP free tier.
+- **Information only.** Never "sell this" — output describes what's there and why.
+- **Honesty rules**: plain factual flags, "not analyzed" ≠ "clean," name companies inside
+  funds but never fake per-company dollar amounts, restitution/response status always
+  stated alongside a historical or enforcement-action flag (never one-sided).
+- **Free data sources only**, with one exception under active reconsideration: the
+  ticker-tape's Yahoo Finance endpoint is unofficial (see above) — accepted for now as
+  low-stakes (public price data, not an editorial claim), flagged for a licensed provider
+  before any real commercial launch.
+- **The brand name is "PlainStreet"** (renamed from "Steward" this session, after briefly
+  being "Verity"). If you see "Steward" anywhere outside the one workflow-file exception
+  above, it's a miss — flag it.
 - **The platform needn't be a nonprofit** — RoundUp.org is a for-profit partnered with a
   separate foundation. Entity notes in PLAN.md.
