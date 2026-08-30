@@ -63,12 +63,18 @@ const money = (cents) => "$" + (cents / 100).toLocaleString("en-US", { minimumFr
 export default function Analyzer() {
   const [user, setUser] = useState(undefined);
   const [showAuth, setShowAuth] = useState(false);
+  // A signed-in user can choose to browse the public search page without signing out.
+  const [viewHome, setViewHome] = useState(false);
   useEffect(() => { api("/api/me").then((d) => setUser(d.user)).catch(() => setUser(null)); }, []);
 
   if (user === undefined) return <Splash />;
-  if (user) return <Dashboard user={user} onSignOut={() => { setUser(null); setShowAuth(false); }} />;
-  if (showAuth) return <Auth onAuthed={setUser} onBack={() => setShowAuth(false)} />;
-  return <Landing onStart={() => setShowAuth(true)} />;
+  if (user && !viewHome) {
+    return <Dashboard user={user} onSignOut={() => { setUser(null); setShowAuth(false); }} onGoHome={() => setViewHome(true)} />;
+  }
+  if (!user && showAuth) return <Auth onAuthed={(u) => { setUser(u); setViewHome(false); }} onBack={() => setShowAuth(false)} />;
+  // Already signed in and just browsing home: "Get started" returns to the dashboard
+  // instead of showing the signup form again.
+  return <Landing onStart={() => (user ? setViewHome(false) : setShowAuth(true))} />;
 }
 
 // ── The forest canvas: flat deep green, one soft top-left highlight, no orbs ──
@@ -886,7 +892,7 @@ function Auth({ onAuthed, onBack }) {
 }
 
 // ── Dashboard (light theme) ─────────────────────────────────────────────────
-function Dashboard({ user, onSignOut }) {
+function Dashboard({ user, onSignOut, onGoHome }) {
   const [screens, setScreens] = useState(null);
   const [selected, setSelected] = useState(new Set());
   const [saved, setSaved] = useState(false);
@@ -932,8 +938,9 @@ function Dashboard({ user, onSignOut }) {
       {/* light top bar */}
       <div style={{ position: "sticky", top: 0, zIndex: 20, background: "rgba(241,236,225,0.85)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", borderBottom: `1px solid ${L.line}` }}>
         <div style={{ maxWidth: 800, margin: "0 auto", padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <span style={{ fontFamily: serif, fontSize: 20, fontWeight: 700, color: L.pine, letterSpacing: "-0.02em" }}>PlainStreet</span>
+          <button onClick={onGoHome} style={{ ...linkBtn(L.pine), fontFamily: serif, fontSize: 20, fontWeight: 700, letterSpacing: "-0.02em" }}>PlainStreet</button>
           <span style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <button onClick={onGoHome} style={linkBtn(L.teal)}>Search a ticker</button>
             <span style={{ fontFamily: sans, fontSize: 12.5, color: L.muted }}>{user.email}</span>
             <button onClick={async () => { try { await api("/api/logout", { method: "POST" }); } catch { /* noop */ } onSignOut(); }} style={linkBtn(L.teal)}>Sign out</button>
           </span>
