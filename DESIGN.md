@@ -57,7 +57,7 @@ carry so much weight.
 
 | Role | Token | Value | Use |
 | --- | --- | --- | --- |
-| Primary accent | `A.lav` | `#C4B5FD` | Buttons, links, active/selected, progress fills, chart line. |
+| Primary accent | `A.lav` | `#D3C8F8` | Buttons, links, progress fills, chart line. Selecting a *flag category* is coral, not lavender — see below. |
 | Ink on lavender | `A.lavInk` | `#1B1030` | The only text color allowed on a lavender fill. |
 | Positive accent | `A.lime` / `L.mint` / `L.good` | `#BEF264` | Positive deltas, live/on indicators, accent headline words. |
 | Ink on lime | `A.limeInk` | `#17240A` | The only text color allowed on a lime fill. |
@@ -71,12 +71,17 @@ carry so much weight.
 | Market up | *(hard-coded)* | `#4ADE80` |
 | Market down | *(hard-coded)* | `#F87171` |
 
+Coral covers the **whole flag lifecycle**, not just a flag badge: the category chips you
+switch on to pick your values are coral too, so the category you select and the category
+that comes back flagged are the same red end to end. It is still never decorative — if
+something is coral it is about a flag.
+
 #### The one hard rule
 
 **A pastel used as a fill always carries its own near-black ink — never white.**
 `A.lav` → `A.lavInk`. `A.lime` → `A.limeInk`.
 
-This is the load-bearing rule of the whole system. White on `#C4B5FD` is ≈1.7:1 contrast —
+This is the load-bearing rule of the whole system. White on `#D3C8F8` is ≈1.7:1 contrast —
 unreadable, and the single fastest way to make the design look broken. In the reference,
 every lavender and green surface has near-black text, including the buttons sitting on them.
 
@@ -403,7 +408,7 @@ The token names predate two full redesigns and are now actively misleading:
 | Name | Actually is |
 | --- | --- |
 | `L.pine` | The **brightest** text color, `#F4F4F5` — not a dark green |
-| `L.teal` | Lavender `#C4B5FD` |
+| `L.teal` | Lavender `#D3C8F8` |
 | `L.mint` / `A.lime` | The same lime, duplicated |
 | `D.brass` / `D.brassSoft` | Lavender |
 | `brassBtn` / `mintBtn` / `darkBtn` | All three are lavender pills |
@@ -430,7 +435,7 @@ and you must change both, or you get a mismatched band under short pages. This a
 caused a full-screen cream rectangle during a theme change.
 
 **The focus ring lives in CSS, not JS.** `:focus-visible` in `index.css` uses `!important`
-to beat the inline `outline: none` on inputs. It's lavender `#C4B5FD`. Change the accent,
+to beat the inline `outline: none` on inputs. It's lavender `#D3C8F8`. Change the accent,
 change it too — it sat green through an entire theme cycle before anyone noticed.
 
 **There is no light mode.** Don't add a `prefers-color-scheme` block expecting `L` to be

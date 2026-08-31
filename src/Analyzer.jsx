@@ -233,9 +233,12 @@ function HeroAnalyzer({ onStart }) {
               return (
                 <button key={s.key} onClick={() => toggle(s.key)} title={s.blurb}
                   style={{ fontFamily: sans, fontSize: 12, fontWeight: 600, cursor: "pointer", borderRadius: 999, padding: "4px 12px",
-                    border: `1px solid ${on ? "rgba(211,200,248,0.55)" : D.glassBorder}`,
-                    background: on ? "rgba(211,200,248,0.16)" : "transparent",
-                    color: on ? "#D3C8F8" : D.faint, transition: "all .12s" }}>
+                    // Selected categories use the flag coral, not the lavender accent: this
+                    // is the same red the category wears in the results, so picking a
+                    // category and seeing it come back flagged is one continuous colour.
+                    border: `1px solid ${on ? "rgba(252,165,165,0.5)" : D.glassBorder}`,
+                    background: on ? "rgba(252,165,165,0.16)" : "transparent",
+                    color: on ? L.flag : D.faint, transition: "all .12s" }}>
                   {on ? "✓ " : ""}{s.label}
                 </button>
               );
@@ -1042,14 +1045,14 @@ function Dashboard({ user, onSignOut, onGoHome }) {
                 return (
                   <button key={s.key} onClick={() => toggle(s.key)} style={{
                     textAlign: "left", cursor: "pointer", padding: "14px 15px", borderRadius: 20,
-                    background: on ? "rgba(211,200,248,0.14)" : L.card,
-                    border: `1.5px solid ${on ? L.teal : L.line}`,
-                    boxShadow: on ? "0 6px 20px -10px rgba(211,200,248,0.35)" : "0 1px 2px rgba(0,0,0,0.5)",
+                    background: on ? "rgba(252,165,165,0.13)" : L.card,
+                    border: `1.5px solid ${on ? L.flagBorder : L.line}`,
+                    boxShadow: on ? "0 6px 20px -10px rgba(252,165,165,0.3)" : "0 1px 2px rgba(0,0,0,0.5)",
                     transition: "all .14s ease",
                   }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
                       <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 700, color: L.ink }}>{s.label}</span>
-                      <span style={{ fontFamily: sans, fontSize: 15, color: on ? L.teal : L.faint }}>{on ? "✓" : "+"}</span>
+                      <span style={{ fontFamily: sans, fontSize: 15, color: on ? L.flag : L.faint }}>{on ? "✓" : "+"}</span>
                     </div>
                     <div style={{ fontFamily: sans, fontSize: 12, color: L.muted, marginTop: 4, lineHeight: 1.45 }}>{s.blurb}</div>
                     <div style={{ fontFamily: sans, fontSize: 11, color: L.faint, marginTop: 7 }}>{s.count} companies tracked</div>
