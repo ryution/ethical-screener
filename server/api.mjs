@@ -17,7 +17,7 @@ import { analyze, lookupSymbol, coverageMeta } from "./lib/analyzer.js";
 import { suggest } from "./lib/suggest.js";
 import { screenCatalogue, isScreenKey } from "./lib/screens.js";
 import { hotNews } from "./lib/news.js";
-import { tickerTape } from "./lib/quotes.js";
+import { tickerTape, quoteFor } from "./lib/quotes.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 8787;
@@ -259,6 +259,19 @@ export async function handler(req, res) {
     } catch (e) {
       captureError(e, "ticker-tape");
       return sendJson(res, 502, { error: "Couldn't load prices right now." });
+    }
+  }
+
+  // ---- price + 1-month series for one symbol, for the sparkline (public, cached) ----
+  if (req.method === "GET" && path === "/api/quote") {
+    try {
+      const quote = await quoteFor(url.searchParams.get("symbol") || "");
+      // A missing quote is normal (bad symbol, Yahoo hiccup) — the chart just doesn't
+      // render. Not an error worth a 502.
+      return sendJson(res, 200, { quote });
+    } catch (e) {
+      captureError(e, "quote");
+      return sendJson(res, 200, { quote: null });
     }
   }
 
