@@ -2,7 +2,6 @@
   "version": "0.0.1",
   "configurations": [
     {
-<<<<<<< HEAD
       "name": "plainstreet",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
