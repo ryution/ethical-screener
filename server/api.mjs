@@ -265,7 +265,7 @@ export async function handler(req, res) {
   // ---- price + 1-month series for one symbol, for the sparkline (public, cached) ----
   if (req.method === "GET" && path === "/api/quote") {
     try {
-      const quote = await quoteFor(url.searchParams.get("symbol") || "");
+      const quote = await quoteFor(url.searchParams.get("symbol") || "", url.searchParams.get("range") || "1M");
       // A missing quote is normal (bad symbol, Yahoo hiccup) — the chart just doesn't
       // render. Not an error worth a 502.
       return sendJson(res, 200, { quote });

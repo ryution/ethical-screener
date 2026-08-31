@@ -1268,6 +1268,13 @@ const onAccentBtn = (r = 999, pad = "8px 16px", fs = 13) => ({
 });
 
 // §3.6 — delta badge. Lime when up, coral when down; each carries its own ink.
+// An all-time change can be five figures (AAPL is up ~246,000% since its 1980 IPO).
+// Two decimals on that is noise, and the digits overflow the badge — drop to whole
+// numbers with separators once past 1000%.
+const fmtPct = (pct) => (Math.abs(pct) >= 1000
+  ? Math.round(pct).toLocaleString("en-US") + "%"
+  : pct.toFixed(2) + "%");
+
 function DeltaBadge({ pct }) {
   if (typeof pct !== "number" || !Number.isFinite(pct)) return null;
   const up = pct >= 0;
@@ -1276,14 +1283,14 @@ function DeltaBadge({ pct }) {
       fontFamily: sans, fontSize: 10.5, fontWeight: 700, borderRadius: 999, padding: "2px 8px",
       background: up ? A.lime : L.flagBg, color: up ? A.limeInk : L.flag,
       border: up ? "none" : `1px solid ${L.flagBorder}`, whiteSpace: "nowrap",
-    }}>{up ? "+" : ""}{pct.toFixed(2)}%</span>
+    }}>{up ? "+" : ""}{fmtPct(pct)}</span>
   );
 }
 
 // §3.9 — area chart: line plus gradient fill, no axes, no gridlines, no labels; the figure
 // above it carries the value. Renders nothing without at least two real points — we never
 // draw a shape just to fill the space.
-function Sparkline({ data, height = 130, color = A.lav }) {
+function Sparkline({ data, height = 130, color = A.lav, label = "" }) {
   const gid = useRef(`sp-${Math.random().toString(36).slice(2, 9)}`);
   if (!Array.isArray(data) || data.length < 2) return null;
   const W = 600, H = height;
@@ -1294,7 +1301,7 @@ function Sparkline({ data, height = 130, color = A.lav }) {
   const line = data.map((v, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
   return (
     <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" role="img"
-      aria-label={`Price trend over ${data.length} daily closes`}
+      aria-label={label ? `Price trend, ${label}, ${data.length} points` : `Price trend, ${data.length} points`}
       style={{ width: "100%", height, display: "block", marginTop: 6 }}>
       <defs>
         <linearGradient id={gid.current} x1="0" y1="0" x2="0" y2="1">
@@ -1382,28 +1389,63 @@ function ProgressRow({ icon, title, subtitle, leftValue, rightValue, pct, tone =
   );
 }
 
-// §1.2 + §3.9 — the headline figure with its chart directly beneath. Self-fetching and
-// self-hiding: if there's no quote for this symbol the panel simply doesn't render.
+// The windows the chart offers. Mirrors RANGES in server/lib/quotes.js — the server is
+// the authority on what each one means; this is only the button order and labels.
+const QUOTE_RANGES = [
+  { key: "1D", label: "1D" },
+  { key: "1W", label: "1W" },
+  { key: "1M", label: "1M" },
+  { key: "1Y", label: "1Y" },
+  { key: "ALL", label: "All" },
+];
+
+// §1.2 + §3.9 — the headline figure with its chart directly beneath, and the window it
+// covers stated rather than implied. Self-fetching and self-hiding: if there's no quote
+// for this symbol the panel simply doesn't render.
 function QuotePanel({ symbol }) {
+  const [range, setRange] = useState("1M");
   const [q, setQ] = useState(null);
+  const [busy, setBusy] = useState(false);
   useEffect(() => {
     let alive = true;
-    setQ(null);
-    api(`/api/quote?symbol=${encodeURIComponent(symbol)}`)
-      .then((d) => { if (alive) setQ(d.quote); })
-      .catch(() => { if (alive) setQ(null); });
+    setBusy(true);
+    api(`/api/quote?symbol=${encodeURIComponent(symbol)}&range=${range}`)
+      .then((d) => { if (alive) { setQ(d.quote); setBusy(false); } })
+      .catch(() => { if (alive) { setQ(null); setBusy(false); } });
     return () => { alive = false; };
-  }, [symbol]);
-  if (!q || typeof q.price !== "number") return null;
+  }, [symbol, range]);
+  // Keep the old series on screen while a new window loads — blanking the panel makes the
+  // whole card jump. But never show one symbol's numbers under another's name.
+  if (!q || typeof q.price !== "number" || q.symbol !== String(symbol).toUpperCase()) return null;
   const up = q.changePercent >= 0;
   return (
     <div style={{ marginTop: 16 }}>
-      <div style={{ fontFamily: sans, fontSize: 12.5, color: D.muted }}>Last price · past month</div>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+        <span style={{ fontFamily: sans, fontSize: 12.5, color: D.muted }}>Last price · {q.label}</span>
+        <div role="group" aria-label="Chart range" style={{ marginLeft: "auto", display: "flex", gap: 4, flexWrap: "wrap" }}>
+          {QUOTE_RANGES.map((r) => {
+            const on = r.key === range;
+            return (
+              <button key={r.key} onClick={() => setRange(r.key)} aria-pressed={on}
+                style={{
+                  fontFamily: sans, fontSize: 11.5, fontWeight: 700, cursor: "pointer",
+                  borderRadius: 999, padding: "3px 10px", minWidth: 34,
+                  background: on ? A.lav : "transparent",
+                  color: on ? A.lavInk : D.muted,
+                  border: `1px solid ${on ? A.lav : D.glassBorder}`,
+                  transition: "background .12s, color .12s, border-color .12s",
+                }}>{r.label}</button>
+            );
+          })}
+        </div>
+      </div>
       <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginTop: 3 }}>
         <span style={{ fontFamily: sans, fontSize: 34, fontWeight: 500, letterSpacing: "-0.02em", color: D.ink, lineHeight: 1.1 }}>$ {q.price.toFixed(2)}</span>
         <DeltaBadge pct={q.changePercent} />
       </div>
-      <Sparkline data={q.spark} height={110} color={up ? A.lime : L.flag} />
+      <div style={{ opacity: busy ? 0.45 : 1, transition: "opacity .15s" }}>
+        <Sparkline data={q.spark} height={110} color={up ? A.lime : L.flag} label={q.label} />
+      </div>
     </div>
   );
 }
