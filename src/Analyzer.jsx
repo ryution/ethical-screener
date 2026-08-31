@@ -179,8 +179,10 @@ function HeroAnalyzer({ onStart }) {
 
   const examples = ["VOO", "QQQ", "SCHB", "XLV"];
   return (
-    <div style={{ maxWidth: 560, margin: "30px auto 0", textAlign: "left" }}>
-      <div style={{ display: "flex", gap: 8 }}>
+    // Wide enough for the results to lay out in columns on a desktop; the search row and
+    // its examples stay at a comfortable reading measure inside it.
+    <div style={{ maxWidth: 980, margin: "30px auto 0", textAlign: "left" }}>
+      <div style={{ display: "flex", gap: 8, maxWidth: 560, margin: "0 auto" }}>
         <div style={{ flex: 1, minWidth: 0, position: "relative" }}>
           <input value={q} onChange={onInput} onKeyDown={onKey}
             onFocus={() => { if (sugg.length) setShowSug(true); }}
@@ -210,7 +212,7 @@ function HeroAnalyzer({ onStart }) {
         </div>
         <button onClick={() => { setShowSug(false); run(); }} disabled={busy} style={brassBtn(999, "14px 22px", 15)}>{busy ? "…" : "Check"}</button>
       </div>
-      <div style={{ display: "flex", gap: 7, marginTop: 10, flexWrap: "wrap", alignItems: "center" }}>
+      <div style={{ display: "flex", gap: 7, flexWrap: "wrap", alignItems: "center", maxWidth: 560, margin: "10px auto 0" }}>
         <span style={{ fontFamily: sans, fontSize: 12, color: D.faint }}>Try:</span>
         {examples.map((x) => (
           <button key={x} onClick={() => { setQ(x); run(x); }} style={{ background: "rgba(255,255,255,0.06)", border: `1px solid ${D.glassBorder}`, color: D.muted, borderRadius: 999, padding: "4px 11px", fontFamily: sans, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>{x}</button>
@@ -400,7 +402,10 @@ function FundBreakdown({ groups, theme }) {
     // Collapsed by default: the first thing you see is every category that has a problem
     // and how many companies are in it — the shape of the fund at a glance. Opening one is
     // a deliberate act, so no single category can bury the others.
-    <div style={{ display: "grid", gap: 8 }}>
+    // Responsive columns: one on a phone, two or three on a desktop — 10+ categories in a
+    // single column is a long scroll for no reason. `alignItems: start` keeps an opened
+    // category from stretching its neighbours to match.
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(280px,1fr))", gap: 8, alignItems: "start" }}>
       {groups.map((g) => {
         const isOpen = !!openGroups[g.key];
         const openItem = g.items.find((it) => open === `${g.key}:${it.ticker}`);
