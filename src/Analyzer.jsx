@@ -389,66 +389,73 @@ const groupByFlag = (contains) => {
 
 
 function FundBreakdown({ groups, theme }) {
-  const [open, setOpen] = useState(null);      // "flagKey:TICKER"
-  const [expanded, setExpanded] = useState({}); // flagKey -> show all
+  const [open, setOpen] = useState(null);            // evidence panel: "flagKey:TICKER"
+  const [openGroups, setOpenGroups] = useState({});  // flagKey -> expanded
   const dark = theme === "dark";
   const c = dark
     ? { ink: D.ink, muted: D.muted, faint: D.faint, link: A.lav, panel: "rgba(255,255,255,0.05)", border: D.glassBorder, surface: "rgba(255,255,255,0.035)" }
     : { ink: L.ink, muted: L.muted, faint: L.faint, link: A.lav, panel: "rgba(255,255,255,0.05)", border: L.line, surface: L.card };
-  const PREVIEW = 6; // enough to characterize the group, few enough to stay scannable
+  const toggle = (key) => setOpenGroups((s) => ({ ...s, [key]: !s[key] }));
   return (
-    // One card per category rather than one long wrapping field of chips. A 39-company
-    // group was still a wall — contained and capped, it becomes something you can skim.
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))", gap: 10, alignItems: "start" }}>
+    // Collapsed by default: the first thing you see is every category that has a problem
+    // and how many companies are in it — the shape of the fund at a glance. Opening one is
+    // a deliberate act, so no single category can bury the others.
+    <div style={{ display: "grid", gap: 8 }}>
       {groups.map((g) => {
+        const isOpen = !!openGroups[g.key];
         const openItem = g.items.find((it) => open === `${g.key}:${it.ticker}`);
-        const showAll = !!expanded[g.key];
-        const shown = showAll ? g.items : g.items.slice(0, PREVIEW);
-        const rest = g.items.length - shown.length;
         return (
-          <div key={g.key} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 20, padding: "13px 14px", display: "grid", gap: 10, alignContent: "start" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontFamily: sans, fontSize: 13, fontWeight: 700, color: L.flag, letterSpacing: "-0.01em" }}>{g.label}</span>
-              <span style={{ marginLeft: "auto", fontFamily: sans, fontSize: 13, fontWeight: 500, color: c.muted }}>{g.items.length}</span>
-            </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
-              {shown.map((it, i) => {
-                const isOpen = open === `${g.key}:${it.ticker}`;
-                return (
-                  <button key={it.ticker + i}
-                    onClick={() => setOpen(isOpen ? null : `${g.key}:${it.ticker}`)}
-                    title={it.name}
-                    style={{
-                      fontFamily: sans, fontSize: 11.5, fontWeight: 600, cursor: "pointer",
-                      borderRadius: 999, padding: "3px 10px", textAlign: "left",
-                      background: isOpen ? A.lav : c.panel,
-                      color: isOpen ? A.lavInk : c.ink,
-                      border: `1px solid ${isOpen ? A.lav : c.border}`,
-                      transition: "background .12s, color .12s, border-color .12s",
-                    }}>{displayName(it.name)}</button>
-                );
-              })}
-              {rest > 0 && (
-                <button onClick={() => setExpanded((e) => ({ ...e, [g.key]: true }))}
-                  style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 600, cursor: "pointer", borderRadius: 999, padding: "3px 10px", background: "none", border: `1px dashed ${c.border}`, color: c.muted }}>
-                  +{rest} more
-                </button>
-              )}
-              {showAll && g.items.length > PREVIEW && (
-                <button onClick={() => setExpanded((e) => ({ ...e, [g.key]: false }))}
-                  style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 600, cursor: "pointer", borderRadius: 999, padding: "3px 10px", background: "none", border: `1px dashed ${c.border}`, color: c.muted }}>
-                  Show less
-                </button>
-              )}
-            </div>
-            {openItem && (
-              <div style={{ background: c.panel, border: `1px solid ${c.border}`, borderRadius: 14, padding: "10px 12px", display: "grid", gap: 6 }}>
-                <div style={{ fontFamily: sans, fontSize: 12.5, color: c.ink, lineHeight: 1.5 }}>
-                  <b>{openItem.ticker}</b> · {displayName(openItem.name)}
+          <div key={g.key} style={{ background: c.surface, border: `1px solid ${c.border}`, borderRadius: 16, overflow: "hidden" }}>
+            <button
+              onClick={() => toggle(g.key)}
+              aria-expanded={isOpen}
+              aria-controls={`grp-${g.key}`}
+              style={{
+                width: "100%", display: "flex", alignItems: "center", gap: 10,
+                padding: "12px 14px", background: "none", border: "none", cursor: "pointer",
+                textAlign: "left", fontFamily: sans,
+              }}>
+              <span style={{ fontSize: 13.5, fontWeight: 700, color: L.flag, letterSpacing: "-0.01em" }}>{g.label}</span>
+              <span style={{
+                marginLeft: "auto", fontSize: 11.5, fontWeight: 700, color: c.ink,
+                background: c.panel, border: `1px solid ${c.border}`, borderRadius: 999,
+                padding: "1px 9px", minWidth: 26, textAlign: "center",
+              }}>{g.items.length}</span>
+              <span aria-hidden style={{
+                fontSize: 11, color: c.muted, lineHeight: 1,
+                transform: isOpen ? "rotate(180deg)" : "none", transition: "transform .15s",
+              }}>▼</span>
+            </button>
+            {isOpen && (
+              <div id={`grp-${g.key}`} style={{ padding: "0 14px 13px", display: "grid", gap: 10 }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+                  {g.items.map((it, i) => {
+                    const chipOpen = open === `${g.key}:${it.ticker}`;
+                    return (
+                      <button key={it.ticker + i}
+                        onClick={() => setOpen(chipOpen ? null : `${g.key}:${it.ticker}`)}
+                        title={`${it.ticker} — why this is flagged`}
+                        style={{
+                          fontFamily: sans, fontSize: 11.5, fontWeight: 600, cursor: "pointer",
+                          borderRadius: 999, padding: "3px 10px", textAlign: "left",
+                          background: chipOpen ? A.lav : c.panel,
+                          color: chipOpen ? A.lavInk : c.ink,
+                          border: `1px solid ${chipOpen ? A.lav : c.border}`,
+                          transition: "background .12s, color .12s, border-color .12s",
+                        }}>{displayName(it.name)}</button>
+                    );
+                  })}
                 </div>
-                <div style={{ fontFamily: sans, fontSize: 12.5, color: c.muted, lineHeight: 1.5 }}>{openItem.reason}</div>
-                <FlagEvidence quote={openItem.quote} source={openItem.source} asOf={openItem.asOf} muted={c.muted} link={c.link} />
-                <ReportControl item={openItem} group={g} linkColor={c.link} muted={c.muted} />
+                {openItem && (
+                  <div style={{ background: c.panel, border: `1px solid ${c.border}`, borderRadius: 14, padding: "10px 12px", display: "grid", gap: 6 }}>
+                    <div style={{ fontFamily: sans, fontSize: 12.5, color: c.ink, lineHeight: 1.5 }}>
+                      <b>{openItem.ticker}</b> · {displayName(openItem.name)}
+                    </div>
+                    <div style={{ fontFamily: sans, fontSize: 12.5, color: c.muted, lineHeight: 1.5 }}>{openItem.reason}</div>
+                    <FlagEvidence quote={openItem.quote} source={openItem.source} asOf={openItem.asOf} muted={c.muted} link={c.link} />
+                    <ReportControl item={openItem} group={g} linkColor={c.link} muted={c.muted} />
+                  </div>
+                )}
               </div>
             )}
           </div>
