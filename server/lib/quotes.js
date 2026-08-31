@@ -44,8 +44,17 @@ async function fetchQuote(symbol, key = "1M") {
   if (!meta || typeof meta.regularMarketPrice !== "number") throw new Error("no price");
   const price = meta.regularMarketPrice;
   // Yahoo pads the series with nulls on non-trading periods; drop them rather than letting
-  // a gap render as a spike down to zero.
-  const spark = (result?.indicators?.quote?.[0]?.close || []).filter((n) => typeof n === "number");
+  // a gap render as a spike down to zero. Closes and timestamps must be filtered together
+  // or the two arrays desync and every point reports the wrong date.
+  const closes = result?.indicators?.quote?.[0]?.close || [];
+  const stamps = result?.timestamp || [];
+  const spark = [];
+  const times = [];
+  for (let i = 0; i < closes.length; i++) {
+    if (typeof closes[i] !== "number") continue;
+    spark.push(closes[i]);
+    times.push(typeof stamps[i] === "number" ? stamps[i] : null);
+  }
 
   // Change over the window being shown. `chartPreviousClose` is the close immediately
   // before the range starts, which is the right baseline for every window — yesterday's
@@ -65,7 +74,9 @@ async function fetchQuote(symbol, key = "1M") {
     const prev = Math.abs(last - price) < Math.max(0.005, price * 1e-5) ? spark[spark.length - 2] : last;
     if (prev) dailyChangePercent = ((price - prev) / prev) * 100;
   }
-  return { symbol, price, changePercent, dailyChangePercent, spark, range: key, label: spec.label };
+  // `base` is returned so the client can price any scrubbed point against the same
+  // baseline the headline uses, instead of reverse-engineering it from the percentage.
+  return { symbol, price, changePercent, dailyChangePercent, spark, times, base, range: key, label: spec.label };
 }
 
 const _quoteCache = new Map(); // `${symbol}:${range}` -> { data, fetchedAt }

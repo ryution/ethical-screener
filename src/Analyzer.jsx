@@ -1290,8 +1290,13 @@ function DeltaBadge({ pct }) {
 // §3.9 — area chart: line plus gradient fill, no axes, no gridlines, no labels; the figure
 // above it carries the value. Renders nothing without at least two real points — we never
 // draw a shape just to fill the space.
-function Sparkline({ data, height = 130, color = A.lav, label = "" }) {
+//
+// Scrubbable: pointer (mouse or touch) reports the nearest index to `onScrub`, so the
+// caller can show the exact value at that moment. `touchAction: pan-y` keeps vertical page
+// scrolling working on a phone while horizontal drags scrub.
+function Sparkline({ data, height = 130, color = A.lav, label = "", onScrub, activeIdx = null }) {
   const gid = useRef(`sp-${Math.random().toString(36).slice(2, 9)}`);
+  const boxRef = useRef(null);
   if (!Array.isArray(data) || data.length < 2) return null;
   const W = 600, H = height;
   const min = Math.min(...data), max = Math.max(...data);
@@ -1299,20 +1304,60 @@ function Sparkline({ data, height = 130, color = A.lav, label = "" }) {
   const x = (i) => (i / (data.length - 1)) * W;
   const y = (v) => H - ((v - min) / span) * (H * 0.82) - H * 0.09; // 9% breathing room
   const line = data.map((v, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+
+  const pick = (clientX) => {
+    const el = boxRef.current;
+    if (!el || !onScrub) return;
+    const r = el.getBoundingClientRect();
+    if (!r.width) return;
+    const frac = Math.max(0, Math.min(1, (clientX - r.left) / r.width));
+    onScrub(Math.round(frac * (data.length - 1)));
+  };
+
+  // The SVG is stretched horizontally (preserveAspectRatio="none"), so a <circle> inside it
+  // would render as an ellipse. The marker is positioned HTML instead — the vertical scale
+  // is 1:1 because the viewBox height equals the rendered height, so `y()` is already px.
+  const hasMark = activeIdx !== null && activeIdx >= 0 && activeIdx < data.length;
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" role="img"
-      aria-label={label ? `Price trend, ${label}, ${data.length} points` : `Price trend, ${data.length} points`}
-      style={{ width: "100%", height, display: "block", marginTop: 6 }}>
-      <defs>
-        <linearGradient id={gid.current} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={color} stopOpacity="0.35" />
-          <stop offset="100%" stopColor={color} stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path d={`${line} L${W},${H} L0,${H} Z`} fill={`url(#${gid.current})`} />
-      <path d={line} fill="none" stroke={color} strokeWidth="2" vectorEffect="non-scaling-stroke"
-        strokeLinejoin="round" strokeLinecap="round" />
-    </svg>
+    <div ref={boxRef} style={{ position: "relative", touchAction: "pan-y", cursor: onScrub ? "crosshair" : "default" }}
+      onPointerMove={(e) => pick(e.clientX)}
+      onPointerDown={(e) => pick(e.clientX)}
+      onPointerLeave={() => onScrub && onScrub(null)}
+      // A finger never fires pointerleave — without these the readout would stay frozen
+      // on the last touched point after the drag ends. A mouse keeps hovering, so it is
+      // left alone and cleared by pointerleave instead.
+      onPointerUp={(e) => { if (onScrub && e.pointerType !== "mouse") onScrub(null); }}
+      onPointerCancel={() => onScrub && onScrub(null)}>
+      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" role="img"
+        aria-label={label ? `Price trend, ${label}, ${data.length} points` : `Price trend, ${data.length} points`}
+        style={{ width: "100%", height, display: "block", marginTop: 6 }}>
+        <defs>
+          <linearGradient id={gid.current} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={color} stopOpacity="0.35" />
+            <stop offset="100%" stopColor={color} stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path d={`${line} L${W},${H} L0,${H} Z`} fill={`url(#${gid.current})`} />
+        <path d={line} fill="none" stroke={color} strokeWidth="2" vectorEffect="non-scaling-stroke"
+          strokeLinejoin="round" strokeLinecap="round" />
+      </svg>
+      {hasMark && (
+        <>
+          <div aria-hidden style={{
+            position: "absolute", top: 6, bottom: 0,
+            left: `${(activeIdx / (data.length - 1)) * 100}%`,
+            width: 1, background: "rgba(255,255,255,0.28)", pointerEvents: "none",
+          }} />
+          <div aria-hidden style={{
+            position: "absolute",
+            left: `${(activeIdx / (data.length - 1)) * 100}%`,
+            top: y(data[activeIdx]) + 6, width: 9, height: 9, borderRadius: "50%",
+            background: color, border: "2px solid #0B0B0D",
+            transform: "translate(-50%,-50%)", pointerEvents: "none",
+          }} />
+        </>
+      )}
+    </div>
   );
 }
 
@@ -1389,6 +1434,16 @@ function ProgressRow({ icon, title, subtitle, leftValue, rightValue, pct, tone =
   );
 }
 
+// A scrubbed point needs a "when". Intraday windows want a time of day; longer ones want
+// a date — "Aug 14" is useless on a 1-day chart and "2:35 PM" is useless on a 1-year one.
+const fmtStamp = (unixSec, range) => {
+  const d = new Date(unixSec * 1000);
+  if (range === "1D") return d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+  if (range === "1W") return d.toLocaleString("en-US", { weekday: "short", hour: "numeric", minute: "2-digit" });
+  if (range === "ALL") return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+};
+
 // The windows the chart offers. Mirrors RANGES in server/lib/quotes.js — the server is
 // the authority on what each one means; this is only the button order and labels.
 const QUOTE_RANGES = [
@@ -1406,9 +1461,11 @@ function QuotePanel({ symbol }) {
   const [range, setRange] = useState("1M");
   const [q, setQ] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [scrub, setScrub] = useState(null); // index under the pointer, or null
   useEffect(() => {
     let alive = true;
     setBusy(true);
+    setScrub(null);
     api(`/api/quote?symbol=${encodeURIComponent(symbol)}&range=${range}`)
       .then((d) => { if (alive) { setQ(d.quote); setBusy(false); } })
       .catch(() => { if (alive) { setQ(null); setBusy(false); } });
@@ -1417,11 +1474,20 @@ function QuotePanel({ symbol }) {
   // Keep the old series on screen while a new window loads — blanking the panel makes the
   // whole card jump. But never show one symbol's numbers under another's name.
   if (!q || typeof q.price !== "number" || q.symbol !== String(symbol).toUpperCase()) return null;
+  // While scrubbing, the headline figure and badge report the point under the pointer,
+  // measured against the same baseline the window's own percentage uses. Let go and it
+  // snaps back to the latest price — no separate floating tooltip to clip or mis-place.
+  const scrubbing = scrub !== null && Array.isArray(q.spark) && scrub < q.spark.length;
+  const shownPrice = scrubbing ? q.spark[scrub] : q.price;
+  const shownPct = scrubbing && q.base ? ((shownPrice - q.base) / q.base) * 100 : q.changePercent;
+  const stamp = scrubbing && q.times && q.times[scrub] ? fmtStamp(q.times[scrub], q.range) : null;
   const up = q.changePercent >= 0;
   return (
     <div style={{ marginTop: 16 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-        <span style={{ fontFamily: sans, fontSize: 12.5, color: D.muted }}>Last price · {q.label}</span>
+        <span style={{ fontFamily: sans, fontSize: 12.5, color: D.muted }}>
+          {stamp || `Last price · ${q.label}`}
+        </span>
         <div role="group" aria-label="Chart range" style={{ marginLeft: "auto", display: "flex", gap: 4, flexWrap: "wrap" }}>
           {QUOTE_RANGES.map((r) => {
             const on = r.key === range;
@@ -1440,11 +1506,12 @@ function QuotePanel({ symbol }) {
         </div>
       </div>
       <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginTop: 3 }}>
-        <span style={{ fontFamily: sans, fontSize: 34, fontWeight: 500, letterSpacing: "-0.02em", color: D.ink, lineHeight: 1.1 }}>$ {q.price.toFixed(2)}</span>
-        <DeltaBadge pct={q.changePercent} />
+        <span style={{ fontFamily: sans, fontSize: 34, fontWeight: 500, letterSpacing: "-0.02em", color: D.ink, lineHeight: 1.1 }}>$ {shownPrice.toFixed(2)}</span>
+        <DeltaBadge pct={shownPct} />
       </div>
       <div style={{ opacity: busy ? 0.45 : 1, transition: "opacity .15s" }}>
-        <Sparkline data={q.spark} height={110} color={up ? A.lime : L.flag} label={q.label} />
+        <Sparkline data={q.spark} height={110} color={up ? A.lime : L.flag} label={q.label}
+          onScrub={setScrub} activeIdx={scrub} />
       </div>
     </div>
   );
