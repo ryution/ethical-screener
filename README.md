@@ -12,7 +12,7 @@ Even a plain S&P 500 fund holds oil majors, weapons makers, and tobacco giants.
 ## What it does
 
 1. **Pick your lines** — fossil fuels, weapons, tobacco, gambling, surveillance, and more
-   (12 screens, ~83 companies). We only ever flag what you turn on.
+   (20 screens, ~550 companies). We only ever flag what you turn on.
 2. **Connect your brokerage** — one read-only link via SnapTrade (Robinhood, Schwab,
    Fidelity, E*TRADE, Webull, …). We can see your holdings; we can't touch them.
 3. **See what clashes** — the stocks you hold directly *and* the flagged companies inside
@@ -83,6 +83,9 @@ holdings — no real brokerage needed.
 | `scripts/enrich-edgar.mjs` | pull SEC data → `companies.json` (`npm run enrich`) |
 | `scripts/fetch-holdings.mjs` | pull issuer holdings → `fund-holdings.json` (`npm run enrich:holdings`) |
 | `scripts/lint-data.mjs` | validate the dataset (`npm run lint:data`) |
+| `server/lib/share.js` | server-rendered link-preview page (`/api/share`) for crawlers — see *Link previews* |
+| `scripts/build-og.mjs` | renders `public/og/*.png` preview images (needs Playwright; run after a holdings refresh) |
+| `scripts/build-sitemap.mjs` | writes `public/sitemap.xml` (one URL per fund we can see inside) |
 
 ## The data
 
@@ -103,12 +106,29 @@ filers + holdings, no API key), or validate with `npm run lint:data`. A monthly 
 Action (`.github/workflows/refresh-data.yml`) runs the refresh and commits the result, so
 the deployed data stays fresh without manual steps.
 
+## Link previews and campaign tags
+
+The frontend is a single React bundle, so a crawler fetching `/?symbol=VOO` would see an
+empty page. `vercel.json` rewrites known link-preview bots (Reddit, X, LinkedIn, Slack,
+iMessage, Discord, …) to `/api/share`, which renders real `<title>`/Open Graph tags for that
+symbol — computed from the same lookup the app uses, never hand-typed — and points at a
+per-fund image in `public/og/`. Humans never see that page.
+
+Links can carry `?ref=<tag>` (e.g. `?symbol=VOO&ref=reddit-sideproject`) and `?only=<keys>`
+(e.g. `?only=fossil_fuels,thermal_coal` to open with just those categories on). The `ref`
+tag is kept for the visit and counted with each `landing_view` / `lookup` / `share` /
+`waitlist_join` / `signup` event; `GET /api/funnel` returns the totals per tag. Aggregate
+counters only — no per-visitor rows.
+
 ## API (the routes that matter)
 
 | Route | Auth | Does |
 |---|---|---|
 | `GET /api/lookup?symbol=` | public | analyze one ticker against all screens (powers the hero) |
-| `GET /api/screens` | public | the screen catalogue |
+| `GET /api/screens` | public | the screen catalogue, plus `snaptrade` (is brokerage connect configured) and data freshness |
+| `GET /api/share?symbol=` | public | server-rendered preview page for crawlers (see above) |
+| `POST /api/event` · `GET /api/funnel` | public | campaign-tag counters (see above) |
+| `POST /api/waitlist` | public | email for "tell me when brokerage connect opens" (shown when SnapTrade isn't configured) |
 | `POST /api/signup` · `/api/login` · `/api/logout` | — | accounts |
 | `POST /api/screens/select` | session | save which screens you turned on |
 | `POST /api/brokerage/connect` | session | returns a SnapTrade read-only portal URL |

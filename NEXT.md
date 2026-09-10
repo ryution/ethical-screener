@@ -24,6 +24,48 @@ with `workflow` scope.
 
 ---
 
+## Sept 10 2026 — launch-readiness pass (branch `fixes/launch-readiness`)
+
+Done in this pass, in priority order:
+
+1. **Link previews were blank.** `index.html` now has description/OG/Twitter tags and a
+   `public/og/default.png`; `vercel.json` rewrites link-preview bots on `/` to
+   `/api/share`, which renders per-symbol tags ("VOO holds 92 companies you may want to
+   avoid") from the live lookup. Per-fund images in `public/og/` (categories only, no
+   counts — images get cached for weeks). Rebuild them after a holdings refresh with
+   `node scripts/build-og.mjs`.
+2. **ESG funds came back as "no flags".** EFIV (S&P 500 ESG), SPYX (S&P 500 fossil-fuel-
+   reserves-free), DIA (Dow), SPMD/IJH (mid-cap) and SPSM/IJR (small-cap) are now live
+   baskets from SPDR daily holdings. ESGV / ESGU / SUSA / DSI / VFTAX / VT / ARKK are
+   listed as **not analyzed** with a reason (and a pointer at EFIV) instead of reading as
+   clean. A symbol we don't recognize at all now says so (`known:false`) instead of
+   "no flags".
+3. **Rate limiting was global on Vercel.** The socket address behind Vercel's proxy is
+   shared, so every visitor was in one 60/hour lookup bucket. `X-Forwarded-For` is trusted
+   when `VERCEL` is set; lookup ceiling raised to 240/hour per IP.
+4. **Brokerage connect isn't configured in production** (`/api/screens` reports
+   `snaptrade:false`). The UI no longer sends people into an account and an error: the
+   result CTA and dashboard step 2 show a waitlist email box instead (existing
+   `/api/waitlist`). The moment SnapTrade keys are set, the connect flow comes back.
+5. **Tracking couldn't tell posts apart** (Vercel Hobby has no UTM/custom events).
+   `?ref=` tags are counted per event in-house; `GET /api/funnel` → `byRef`.
+6. **Copy clash**: the honesty paragraph said "we don't peer inside broad index funds"
+   under a VOO result listing 92 holdings. Rewritten. Fund results now say "N of its 504
+   holdings" and "from SPY daily holdings, as of 9-Sep-2026".
+7. **News strip**: capped at two stories per company (Apple's launch week was the whole
+   strip) and each card shows the flag the company carries.
+8. **Password reset link (`/?reset=`) rendered nothing** and there was no "forgot
+   password" — both added. `/?verified=1|0` now shows a banner.
+9. Share button on every result (native share / copy link), category filter kept in the
+   URL (`?only=`), tab title per result, scroll-to-top on Methodology, data-freshness line
+   under the filters, `robots.txt` + `sitemap.xml`, security headers + CSP on the static
+   pages (CSP now allows Google Fonts — `npm start` was silently falling back to the
+   system font), example chips VOO / VTI / EFIV / QQQ.
+
+Still open after this pass: SnapTrade production keys + `DATABASE_URL` / `APP_URL` on
+Vercel; a mail provider so verification/reset actually send; the workflow file still
+says "Steward" (needs a PAT with `workflow` scope).
+
 ## What's built and working
 
 - **20 ethical screens, 124+ curated companies**, plus ~301 EDGAR-classified and live
