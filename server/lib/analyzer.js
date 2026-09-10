@@ -12,6 +12,8 @@ import { knownFund, unanalyzedFund } from "./funds.js";
 import { enrichedFlagsFor, enrichedName, enrichedTickers, dataMeta } from "./enriched.js";
 import { filingFlagsFor, filingName, filingTickers, filingMeta } from "./filings.js";
 import { normalizeTicker } from "./symbols.js";
+import { holdingsMeta } from "./holdings.js";
+import { knownTicker, tickerName } from "./suggest.js";
 
 export { dataMeta };
 
@@ -63,13 +65,26 @@ export function lookupSymbol(symbol) {
       const fl = allFlagsFor(t, SCREEN_KEYS);
       if (fl.length) contains.push({ ticker: t, name: nameFor(t), flags: fl });
     }
-    return { symbol: sym, type: "fund", name: fund.name, basis: fund.basis, contains };
+    // Where the basket came from and how big the whole index is, so the UI can say
+    // "92 of 504 holdings, as of 9-Sep-2026" instead of a bare count.
+    const src = holdingsMeta().sources?.[fund.basisKey];
+    const live = src && !src.curated && !src.error;
+    return {
+      symbol: sym, type: "fund", name: fund.name, basis: fund.basis, contains,
+      totalHoldings: live ? src.totalHoldings : null,
+      asOf: live ? src.asOf : null,
+      holdingsSource: live ? `${src.label} (${src.fund}) daily holdings` : "curated constituent list",
+    };
   }
   const na = unanalyzedFund(sym);
   if (na) return { symbol: sym, type: "fund", name: na.name, analyzable: false, notAnalyzedReason: na.reason, contains: [] };
   const flags = allFlagsFor(sym, SCREEN_KEYS);
   if (flags.length) return { symbol: sym, type: "stock", name: nameFor(sym), flags };
-  return { symbol: sym, type: "none" };
+  // "none" comes in two honest flavours: a US filer we know and found nothing on, or a
+  // symbol we don't recognize at all (a fund we can't see inside, a foreign listing, a
+  // typo). The UI words them differently — the second must never read as "clean".
+  const known = knownTicker(sym);
+  return { symbol: sym, type: "none", known, name: known ? (tickerName(sym) || null) : null };
 }
 
 const distinctLabels = (contains) => {

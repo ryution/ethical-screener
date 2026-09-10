@@ -60,6 +60,12 @@ const card = (o = {}) => ({
   ...o,
 });
 
+// The query string as it was when the page loaded. The hero rewrites the address bar as
+// soon as it runs a lookup (so the URL always matches the view), which means anything
+// read from `location.search` later — a reset token, a category filter, a campaign tag —
+// is already gone. Read it once here, before any of that happens.
+const URL_AT_LOAD = (() => { try { return new URLSearchParams(window.location.search); } catch { return new URLSearchParams(); } })();
+
 // ── Tiny API helper ───────────────────────────────────────────────────────────
 async function api(path, { method = "GET", body } = {}) {
   const res = await fetch(path, {
@@ -73,9 +79,30 @@ async function api(path, { method = "GET", body } = {}) {
 }
 const money = (cents) => "$" + (cents / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+// ── Where did this visitor come from? ─────────────────────────────────────────
+// A post links to "/?symbol=VOO&ref=reddit-sideproject". The tag is kept for the visit
+// (sessionStorage, this tab only) and sent with the few events we count, so the funnel
+// can say which post produced searches — not just visits. Nothing about the visitor
+// is stored; the server keeps aggregate counters per tag.
+const REF_KEY = "ps_ref";
+function captureRef() {
+  try {
+    const ref = URL_AT_LOAD.get("ref");
+    if (ref) sessionStorage.setItem(REF_KEY, ref.slice(0, 40));
+  } catch { /* storage may be unavailable */ }
+}
+function currentRef() { try { return sessionStorage.getItem(REF_KEY) || ""; } catch { return ""; } }
+function ping(name) {
+  try {
+    const body = JSON.stringify({ name, ref: currentRef() });
+    if (navigator.sendBeacon) navigator.sendBeacon("/api/event", new Blob([body], { type: "application/json" }));
+    else fetch("/api/event", { method: "POST", headers: { "Content-Type": "application/json" }, body, keepalive: true }).catch(() => {});
+  } catch { /* never let analytics break the page */ }
+}
+
 export default function Analyzer() {
   const [user, setUser] = useState(undefined);
-  const [showAuth, setShowAuth] = useState(false);
+  const [showAuth, setShowAuth] = useState(() => !!URL_AT_LOAD.get("reset"));
   // A signed-in user can choose to browse the public search page without signing out.
   const [viewHome, setViewHome] = useState(false);
   useEffect(() => { api("/api/me").then((d) => setUser(d.user)).catch(() => setUser(null)); }, []);
@@ -115,10 +142,25 @@ function Splash() {
 // ── The live hero analyzer: type a ticker, see inside it, no login ───────────
 // Initial ticker: from the ?symbol= URL param (shareable/bookmarkable), else VOO.
 const initialSymbol = () => {
-  try { return (new URLSearchParams(window.location.search).get("symbol") || "VOO").toUpperCase(); }
+  try { return (URL_AT_LOAD.get("symbol") || "VOO").toUpperCase(); }
   catch { return "VOO"; }
 };
-function HeroAnalyzer({ onStart }) {
+// "?only=fossil_fuels,coal" narrows the category filter from the URL, so a link shared
+// in a climate forum opens already showing just the climate flags.
+const initialOnly = () => {
+  try { const v = URL_AT_LOAD.get("only"); return v ? v.split(",").filter(Boolean) : null; }
+  catch { return null; }
+};
+// Keep the address bar in sync with what's on screen, so copying it shares this exact view.
+function syncUrl(symbol, selected, screens) {
+  try {
+    let qs = `?symbol=${encodeURIComponent(symbol)}`;
+    // Keys are [a-z_] so the comma can stay readable instead of becoming %2C.
+    if (selected && screens.length && selected.size < screens.length) qs += `&only=${[...selected].join(",")}`;
+    window.history.replaceState(null, "", qs);
+  } catch { /* ignore */ }
+}
+function HeroAnalyzer({ onStart, snaptrade, meta }) {
   const [q, setQ] = useState(initialSymbol);
   const [result, setResult] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -129,7 +171,9 @@ function HeroAnalyzer({ onStart }) {
     api("/api/screens").then((d) => {
       const list = (d.screens || []).slice().sort((a, b) => a.label.localeCompare(b.label));
       setScreens(list);
-      setSelected(new Set(list.map((s) => s.key)));
+      const only = initialOnly();
+      const valid = only && only.filter((k) => list.some((s) => s.key === k));
+      setSelected(new Set(valid && valid.length ? valid : list.map((s) => s.key)));
     }).catch(() => {});
   }, []);
   const toggle = (k) => setSelected((prev) => {
@@ -137,6 +181,8 @@ function HeroAnalyzer({ onStart }) {
   });
   const allOn = selected && screens.length && selected.size === screens.length;
   const setAll = (on) => setSelected(on ? new Set(screens.map((s) => s.key)) : new Set());
+  // Filter changes are reflected in the URL (after the first load has settled).
+  useEffect(() => { if (result && selected) syncUrl(result.symbol, selected, screens); /* eslint-disable-next-line */ }, [selected]);
 
   // ── search autocomplete ──
   const [sugg, setSugg] = useState([]);
@@ -169,15 +215,22 @@ function HeroAnalyzer({ onStart }) {
     if (!sym) return;
     setBusy(true); setErr(""); setResult(null);
     // Reflect the search in the URL so a result is shareable / bookmarkable.
-    try { window.history.replaceState(null, "", `?symbol=${encodeURIComponent(sym)}`); } catch { /* ignore */ }
-    try { setResult(await api(`/api/lookup?symbol=${encodeURIComponent(sym)}`)); }
+    syncUrl(sym, selected, screens);
+    try {
+      const r = await api(`/api/lookup?symbol=${encodeURIComponent(sym)}`);
+      setResult(r);
+      document.title = pageTitle(r);
+      ping("lookup");
+    }
     catch (e) { setErr(e.message); }
     finally { setBusy(false); }
   };
   // Auto-load the initial symbol (from the URL, or VOO) so a visitor sees the surprise immediately.
-  useEffect(() => { run(initialSymbol()); /* eslint-disable-next-line */ }, []);
+  useEffect(() => { captureRef(); ping("landing_view"); run(initialSymbol()); /* eslint-disable-next-line */ }, []);
 
-  const examples = ["VOO", "QQQ", "SCHB", "XLV"];
+  // VOO is the one everybody owns; VTI the whole market; EFIV the ESG fund people assume
+  // is clean; QQQ the contrast (almost nothing flagged).
+  const examples = ["VOO", "VTI", "EFIV", "QQQ"];
   return (
     // Wide enough for the results to lay out in columns on a desktop; the search row and
     // its examples stay at a comfortable reading measure inside it.
@@ -248,8 +301,48 @@ function HeroAnalyzer({ onStart }) {
       )}
 
       {err && <DarkErr>{err}</DarkErr>}
-      {result && <HeroResult result={filterBySelected(result, selected)} onStart={onStart} />}
+      {result && <HeroResult result={filterBySelected(result, selected)} onStart={onStart} snaptrade={snaptrade} />}
+      {meta && meta.count > 0 && (
+        <p style={{ fontFamily: sans, fontSize: 12, color: D.faint, margin: "14px 0 0", textAlign: "center" }}>
+          Tracking {meta.count.toLocaleString("en-US")} U.S.-listed companies across {screens.length || "20"} categories
+          {meta.lastUpdated ? ` · data updated ${new Date(meta.lastUpdated).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}` : ""}
+          {" · "}<a href="#methodology" style={{ color: D.muted }}>how flags are decided</a>
+        </p>
+      )}
     </div>
+  );
+}
+
+// The tab title doubles as the headline when someone bookmarks or shares from the browser.
+function pageTitle(r) {
+  if (!r) return "PlainStreet";
+  if (r.type === "fund" && Array.isArray(r.contains) && r.analyzable !== false) {
+    const n = dedupeByName(r.contains).length;
+    return n ? `${r.symbol} holds ${n} companies you may want to avoid — PlainStreet` : `${r.symbol} · no flagged holdings — PlainStreet`;
+  }
+  if (r.type === "fund") return `${r.symbol} · not analyzed — PlainStreet`;
+  if (r.type === "stock") return `${r.symbol} · ${r.name} — PlainStreet`;
+  return `${r.symbol} · no flags — PlainStreet`;
+}
+
+// Copy this exact view (symbol + category filter) — the share button on every result.
+function ShareButton({ symbol, dark = true }) {
+  const [done, setDone] = useState(false);
+  const share = async () => {
+    const url = window.location.href.split("#")[0];
+    const title = document.title;
+    ping("share");
+    try {
+      if (navigator.share) { await navigator.share({ title, url }); return; }
+      await navigator.clipboard.writeText(url);
+      setDone(true); setTimeout(() => setDone(false), 1800);
+    } catch { /* user cancelled or clipboard blocked — nothing to do */ }
+  };
+  return (
+    <button onClick={share} aria-label={`Share ${symbol}`} style={{
+      fontFamily: sans, fontSize: 12, fontWeight: 700, cursor: "pointer", borderRadius: 999, padding: "5px 12px",
+      background: "transparent", color: dark ? D.muted : L.muted, border: `1px solid ${dark ? D.glassBorder : L.line}`, whiteSpace: "nowrap",
+    }}>{done ? "Link copied ✓" : "Share ↗"}</button>
   );
 }
 
@@ -269,19 +362,39 @@ function filterBySelected(result, selected) {
   return result;
 }
 
-function HeroResult({ result, onStart }) {
+function HeroResult({ result, onStart, snaptrade }) {
   const panel = glass({ marginTop: 14, padding: "18px 20px", background: "rgba(255,255,255,0.07)" });
+  const cta = <HeroCTA onStart={onStart} snaptrade={snaptrade} />;
 
   if (result.type === "none") {
+    // Two different honest answers. A company we know and found nothing on is "no flags";
+    // a symbol we don't recognize at all must not be dressed up as a result — it is most
+    // often a fund we can't see inside, and "no flags" there would read as clean.
+    if (result.known === false) {
+      return (
+        <div style={panel}>
+          <div style={{ fontFamily: serif, fontSize: 19, color: D.ink }}>
+            We don't recognize <b>{result.symbol}</b>.
+          </div>
+          <p style={{ fontFamily: sans, fontSize: 13, color: D.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
+            It isn't a U.S.-listed company in our index, and it isn't a fund we can see inside. If it's a fund, that means <b style={{ color: D.ink }}>not analyzed</b> — never "clean." Check the spelling, or try one of the funds above.
+          </p>
+          {cta}
+        </div>
+      );
+    }
     return (
       <div style={panel}>
-        <div style={{ fontFamily: serif, fontSize: 19, color: D.ink }}>
-          No flags for <b>{result.symbol}</b> among the names we track.
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
+          <div style={{ fontFamily: serif, fontSize: 19, color: D.ink }}>
+            No flags for <b>{result.symbol}</b>{result.name ? <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}> · {displayName(result.name)}</span> : null}
+          </div>
+          <ShareButton symbol={result.symbol} />
         </div>
         <p style={{ fontFamily: sans, fontSize: 13, color: D.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
-          That doesn't mean it's audited clean — only that it isn't a company (or a fund we can see inside) on our lists. We cover U.S.-listed companies that file with the SEC, so foreign-listed names may simply be out of scope. Connect your brokerage to check everything at once.
+          It isn't on any of the lists we track. That doesn't mean it's audited clean — only "none of the names we track." We cover U.S.-listed companies that file with the SEC, so a foreign-listed name may simply be out of scope.
         </p>
-        <HeroCTA onStart={onStart} />
+        {cta}
       </div>
     );
   }
@@ -294,19 +407,22 @@ function HeroResult({ result, onStart }) {
           <p style={{ fontFamily: sans, fontSize: 13, color: D.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
             Turn on more categories above to widen the check.
           </p>
-          <HeroCTA onStart={onStart} />
+          {cta}
         </div>
       );
     }
     const flags = result.flags.slice().sort((a, b) => a.label.localeCompare(b.label));
     return (
       <div style={panel}>
-        <div style={{ fontFamily: serif, fontSize: 20, color: D.ink }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
+          <div style={{ fontFamily: serif, fontSize: 20, color: D.ink }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
+          <ShareButton symbol={result.symbol} />
+        </div>
         <QuotePanel symbol={result.symbol} />
         <div style={{ marginTop: 14, display: "grid", gap: 10 }}>
           {flags.map((f) => <FlagCard key={f.key} flag={f} company={result.name} dark />)}
         </div>
-        <HeroCTA onStart={onStart} />
+        {cta}
       </div>
     );
   }
@@ -322,7 +438,7 @@ function HeroResult({ result, onStart }) {
         <p style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, margin: "8px 0 0", lineHeight: 1.55 }}>
           {result.notAnalyzedReason} We call that <b style={{ color: D.ink }}>not analyzed</b> — never "clean."
         </p>
-        <HeroCTA onStart={onStart} />
+        {cta}
       </div>
     );
   }
@@ -338,7 +454,7 @@ function HeroResult({ result, onStart }) {
         <p style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, margin: "8px 0 0", lineHeight: 1.5 }}>
           No holdings in this fund match your selected categories. Turn on more categories above to widen the check.
         </p>
-        <HeroCTA onStart={onStart} />
+        {cta}
       </div>
     );
   }
@@ -350,16 +466,25 @@ function HeroResult({ result, onStart }) {
     <div style={panel}>
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
         <div style={{ fontFamily: serif, fontSize: 20, color: D.ink }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
-        <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, color: A.lavInk, background: A.lav, borderRadius: 999, padding: "3px 10px" }}>FUND</span>
+        <span style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, color: A.lavInk, background: A.lav, borderRadius: 999, padding: "3px 10px" }}>FUND</span>
+          <ShareButton symbol={result.symbol} />
+        </span>
       </div>
       <p style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, margin: "6px 0 0", lineHeight: 1.5 }}>
-        Tracks {result.basis} — and holds <b style={{ color: D.ink }}>{contains.length}</b> companies you may want to avoid:
+        Tracks {result.basis} — and holds <b style={{ color: D.ink }}>{contains.length}</b>
+        {result.totalHoldings ? <> of its <b style={{ color: D.ink }}>{result.totalHoldings}</b></> : null} companies you may want to avoid:
       </p>
+      {result.asOf && (
+        <p style={{ fontFamily: sans, fontSize: 11.5, color: D.faint, margin: "4px 0 0" }}>
+          Holdings from {result.holdingsSource}, as of {result.asOf}.
+        </p>
+      )}
       <QuotePanel symbol={result.symbol} />
       <div style={{ marginTop: 16, display: "grid", gap: 9 }}>
         <FundBreakdown groups={groups} theme="dark" />
       </div>
-      <HeroCTA onStart={onStart} />
+      {cta}
     </div>
   );
 }
@@ -543,12 +668,50 @@ function ReportControl({ item, group, linkColor, muted }) {
   );
 }
 // §3.5 — the one accent-filled card on a result screen: a prompt with an action.
-const HeroCTA = ({ onStart }) => (
+// When the server has no SnapTrade keys, "Connect brokerage" would lead to an account
+// and then an error. Ask for an email instead and say plainly what it's for.
+const HeroCTA = ({ onStart, snaptrade }) => (
   <div style={{ marginTop: 18 }}>
-    <Callout label="That's one ticker" headline="See your whole portfolio at once."
-      actionLabel="Connect brokerage →" onAction={onStart} />
+    {snaptrade === false
+      ? <WaitlistCallout />
+      : <Callout label="That's one ticker" headline="See your whole portfolio at once."
+          actionLabel="Connect brokerage →" onAction={onStart} />}
   </div>
 );
+
+function WaitlistCallout() {
+  const [email, setEmail] = useState("");
+  const [state, setState] = useState("idle"); // idle | busy | done | error
+  const [msg, setMsg] = useState("");
+  const submit = async () => {
+    setState("busy");
+    try {
+      await api("/api/waitlist", { method: "POST", body: { email } });
+      setState("done"); ping("waitlist_join");
+    } catch (e) { setMsg(e.message); setState("error"); }
+  };
+  const dim = "rgba(27,16,48,0.66)";
+  return (
+    <div style={{ background: A.lav, borderRadius: 20, padding: "15px 16px", display: "grid", gap: 9 }}>
+      <span style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 700, color: dim }}>That's one ticker</span>
+      <div style={{ fontFamily: sans, fontSize: 18, fontWeight: 700, color: A.lavInk, letterSpacing: "-0.01em", lineHeight: 1.3 }}>
+        Checking a whole brokerage account at once is coming.
+      </div>
+      {state === "done" ? (
+        <div style={{ fontFamily: sans, fontSize: 13.5, color: A.lavInk }}>You're on the list. We'll email once, when it opens.</div>
+      ) : (
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <input id="waitlist-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" aria-label="Email for the waitlist"
+            onKeyDown={(e) => e.key === "Enter" && submit()}
+            style={{ flex: "1 1 200px", fontFamily: sans, fontSize: 14, padding: "9px 12px", borderRadius: 999, border: "1px solid rgba(27,16,48,0.25)", background: "rgba(255,255,255,0.7)", color: A.lavInk, outline: "none" }} />
+          <button onClick={submit} disabled={state === "busy"} style={onAccentBtn(999, "9px 16px", 13)}>{state === "busy" ? "…" : "Tell me when"}</button>
+          {state === "error" && <span style={{ fontFamily: sans, fontSize: 12.5, color: A.lavInk, flexBasis: "100%" }}>{msg}</span>}
+        </div>
+      )}
+      <span style={{ fontFamily: sans, fontSize: 11.5, color: dim }}>Read-only, through your broker's own login. We never move money.</span>
+    </div>
+  );
+}
 
 // Relative "N days ago" label, used by HotNews for each headline's timestamp.
 function agoLabel(iso) {
@@ -626,7 +789,7 @@ function HotNews({ wrap }) {
       <div style={{ textAlign: "center", marginBottom: 34 }}>
         <p style={{ fontFamily: sans, fontSize: 12.5, letterSpacing: "0.16em", textTransform: "uppercase", color: L.brass, marginBottom: 10 }}>From BBC &amp; The New York Times</p>
         <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(26px,4vw,38px)", color: L.pine, fontWeight: 700, margin: 0, letterSpacing: "-0.02em" }}>Hot off the wire.</h2>
-        <p style={{ fontFamily: sans, fontSize: 14.5, color: L.muted, margin: "10px 0 0" }}>Recent reporting on companies we track — headline and source, always linking to the original story.</p>
+        <p style={{ fontFamily: sans, fontSize: 14.5, color: L.muted, margin: "10px 0 0" }}>Recent reporting on companies we flag, with the flag they carry — headline and source only, always linking to the original story.</p>
       </div>
       {!items ? (
         <p style={{ textAlign: "center", fontFamily: sans, color: L.faint, fontSize: 14 }}>Loading…</p>
@@ -648,7 +811,9 @@ function HotNews({ wrap }) {
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
                     <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: "0.04em", color: L.teal, background: L.lineSoft, borderRadius: 999, padding: "3px 10px" }}>{it.source}</span>
                     {it.companies.slice(0, 2).map((c) => (
-                      <span key={c.ticker} style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: L.muted }}>{c.name}</span>
+                      <span key={c.ticker} style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: L.muted }}>
+                        {c.name}{c.flags?.length ? <span style={{ color: L.flag, fontWeight: 600 }}> · {c.flags[0]}</span> : null}
+                      </span>
                     ))}
                     {agoLabel(it.publishedAt) && <span style={{ fontFamily: sans, fontSize: 11, color: L.faint, marginLeft: "auto" }}>{agoLabel(it.publishedAt)}</span>}
                   </div>
@@ -841,20 +1006,27 @@ const SectionHead = ({ n, title, sub }) => (
 // ── Landing ─────────────────────────────────────────────────────────────────
 function Landing({ onStart }) {
   const [route, setRoute] = useState(typeof window !== "undefined" ? window.location.hash : "");
+  // Server capabilities + data freshness, fetched once and handed to the hero: whether
+  // brokerage connect is configured (decides which call-to-action to show) and how many
+  // companies the data covers.
+  const [server, setServer] = useState({ snaptrade: null, meta: null });
   useEffect(() => {
-    const h = () => setRoute(window.location.hash);
+    const h = () => { setRoute(window.location.hash); window.scrollTo(0, 0); };
     window.addEventListener("hashchange", h);
+    api("/api/screens").then((d) => setServer({ snaptrade: !!d.snaptrade, meta: d.data || null })).catch(() => {});
     return () => window.removeEventListener("hashchange", h);
   }, []);
   if (route === "#methodology") return <Methodology onStart={onStart} />;
-  return <LandingHome onStart={onStart} />;
+  return <LandingHome onStart={onStart} snaptrade={server.snaptrade} meta={server.meta} />;
 }
 
-function LandingHome({ onStart }) {
+function LandingHome({ onStart, snaptrade, meta }) {
   const wrap = { maxWidth: 1000, margin: "0 auto", padding: "0 24px" };
   const steps = [
     { n: "01", t: "Pick what matters to you", b: "Fossil fuels, weapons, tobacco, gambling, surveillance, and more. Flip on the causes you care about — we only ever check for what you choose." },
-    { n: "02", t: "Connect your brokerage", b: "One secure, read-only link through SnapTrade. Works with Robinhood, Schwab, Fidelity, E*TRADE, Webull, and others. We can see your holdings — never touch them." },
+    { n: "02", t: snaptrade === false ? "Check any fund, right now" : "Connect your brokerage", b: snaptrade === false
+      ? "Type the ticker of a fund you own. We name the flagged companies inside it, with the reason for each. Whole-account checking through a read-only brokerage link is coming — leave an email above to hear when."
+      : "One secure, read-only link through SnapTrade. Works with Robinhood, Schwab, Fidelity, E*TRADE, Webull, and others. We can see your holdings — never touch them." },
     { n: "03", t: "See what clashes", b: "A plain list of what you own that crosses your lines — including the companies hiding inside your index funds, each with a one-sentence reason." },
   ];
   return (
@@ -884,7 +1056,8 @@ function LandingHome({ onStart }) {
             <p style={{ fontFamily: sans, fontSize: "clamp(16px,2vw,19px)", lineHeight: 1.6, color: D.muted, margin: "24px auto 0", maxWidth: 560 }}>
               <span style={{ color: D.brassSoft, fontWeight: 600 }}>Let's find out.</span> Even broad market funds hide holdings that might not match your values. Search any stock or ETF ticker to see what’s really inside your portfolio.
             </p>
-            <HeroAnalyzer onStart={onStart} wrap={wrap} />
+            <VerifiedBanner />
+            <HeroAnalyzer onStart={onStart} wrap={wrap} snaptrade={snaptrade} meta={meta} />
             <p style={{ fontFamily: sans, fontSize: 12.5, color: D.faint, marginTop: 18 }}>Read-only analysis. We never move your money without your say-so.</p>
           </div>
         </header>
@@ -914,7 +1087,7 @@ function LandingHome({ onStart }) {
         <div style={{ ...wrap, maxWidth: 720, textAlign: "center", padding: "clamp(48px,8vw,80px) 24px" }}>
           <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(24px,4vw,32px)", color: L.pine, fontWeight: 700, margin: 0, letterSpacing: "-0.02em" }}>We'd rather under-claim than mislead.</h2>
           <p style={{ fontFamily: sans, fontSize: 16, color: L.muted, lineHeight: 1.7, margin: "16px 0 0" }}>
-            We check individual stocks against a curated list of companies, and give the reason for every flag. Our coverage is U.S.-listed companies that file with the SEC — foreign-listed companies aren't analyzed yet, so an ADR or overseas name may come back empty simply because we haven't reached it. We don't peer inside broad index funds and pretend we can — an unanalyzed fund is labeled as such, not called clean. A clean result means "none of the names we track," never "audited pure." You draw the lines; we show you where your money already sits.
+            Every flag is a checkable fact about what a company does, with the reason and, where it comes from a filing, the company's own words. We look inside a fund only when its issuer publishes the holdings — the big S&P 500, total-market, Dow, mid- and small-cap and ESG index funds — and we say which file the list came from and when. A fund we can't see inside is labeled "not analyzed," never called clean. Our coverage is U.S.-listed companies that file with the SEC, so a foreign-listed name may come back empty simply because we haven't reached it. A clean result means "none of the names we track," never "audited pure." You draw the lines; we show you where your money already sits.
           </p>
         </div>
       </section>
@@ -938,18 +1111,52 @@ function LandingHome({ onStart }) {
 }
 
 // ── Auth (dark glass moment) ────────────────────────────────────────────────
+// The reset email links to "/?reset=<token>". Nothing rendered that route before, so the
+// link led to the normal home page and the token was silently lost.
+const resetTokenFromUrl = () => URL_AT_LOAD.get("reset") || "";
+
+function VerifiedBanner() {
+  const [state] = useState(() => URL_AT_LOAD.get("verified"));
+  if (state !== "1" && state !== "0") return null;
+  const ok = state === "1";
+  return (
+    <div role="status" style={{ display: "inline-block", margin: "0 auto 16px", fontFamily: sans, fontSize: 13, borderRadius: 999, padding: "6px 14px",
+      background: ok ? "rgba(190,242,100,0.14)" : L.flagBg, color: ok ? A.lime : L.flag, border: `1px solid ${ok ? "rgba(190,242,100,0.35)" : L.flagBorder}` }}>
+      {ok ? "Email verified. Sign in to continue." : "That verification link is invalid or expired — sign in and request a new one."}
+    </div>
+  );
+}
+
 function Auth({ onAuthed, onBack }) {
-  const [mode, setMode] = useState("signup");
+  const [mode, setMode] = useState(() => (resetTokenFromUrl() ? "reset" : "signup")); // signup | login | forgot | reset
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
+  const [info, setInfo] = useState("");
   const [busy, setBusy] = useState(false);
   const submit = async () => {
-    setErr(""); setBusy(true);
+    setErr(""); setInfo(""); setBusy(true);
     try {
+      if (mode === "forgot") {
+        const d = await api("/api/reset/request", { method: "POST", body: { email } });
+        setInfo(d.message + (d.devLink ? ` Dev link: ${d.devLink}` : ""));
+        return;
+      }
+      if (mode === "reset") {
+        const d = await api("/api/reset", { method: "POST", body: { token: resetTokenFromUrl(), password } });
+        try { window.history.replaceState(null, "", "/"); } catch { /* ignore */ }
+        setInfo(d.message); setMode("login"); setPassword("");
+        return;
+      }
       const d = await api(mode === "signup" ? "/api/signup" : "/api/login", { method: "POST", body: { email, password } });
+      if (mode === "signup") ping("signup");
       onAuthed(d.user);
     } catch (e) { setErr(e.message); } finally { setBusy(false); }
+  };
+  const titles = { signup: "Create your account", login: "Welcome back", forgot: "Reset your password", reset: "Choose a new password" };
+  const subs = {
+    signup: "See what's really inside your portfolio.", login: "See what's really inside your portfolio.",
+    forgot: "Enter your email and we'll send a reset link.", reset: "At least 10 characters.",
   };
   return (
     <Canvas>
@@ -957,17 +1164,26 @@ function Auth({ onAuthed, onBack }) {
         <div style={glass({ width: "100%", maxWidth: 420, padding: "34px 32px" })}>
           {onBack && <button onClick={onBack} style={{ ...linkBtn(D.mint), marginBottom: 20, color: D.muted }}>← Back</button>}
           <h1 style={{ fontFamily: serifDisplay, fontSize: 30, color: D.ink, margin: "0 0 6px", letterSpacing: "-0.02em" }}>
-            {mode === "signup" ? "Create your account" : "Welcome back"}
+            {titles[mode]}
           </h1>
-          <p style={{ fontFamily: sans, fontSize: 14.5, color: D.muted, margin: "0 0 24px", lineHeight: 1.5 }}>See what's really inside your portfolio.</p>
-          <DarkField label="Email" type="email" value={email} onChange={setEmail} placeholder="you@example.com" />
-          <div style={{ height: 12 }} />
-          <DarkField label="Password" type="password" value={password} onChange={setPassword} placeholder={mode === "signup" ? "At least 10 characters" : "Your password"} onEnter={submit} />
+          <p style={{ fontFamily: sans, fontSize: 14.5, color: D.muted, margin: "0 0 24px", lineHeight: 1.5 }}>{subs[mode]}</p>
+          {mode !== "reset" && <DarkField label="Email" type="email" value={email} onChange={setEmail} placeholder="you@example.com" onEnter={mode === "forgot" ? submit : undefined} />}
+          {mode !== "forgot" && <>
+            {mode !== "reset" && <div style={{ height: 12 }} />}
+            <DarkField label={mode === "reset" ? "New password" : "Password"} type="password" value={password} onChange={setPassword}
+              placeholder={mode === "login" ? "Your password" : "At least 10 characters"} onEnter={submit} />
+          </>}
           {err && <DarkErr>{err}</DarkErr>}
+          {info && <div role="status" style={{ marginTop: 12, fontFamily: sans, fontSize: 13, color: D.ink, background: "rgba(255,255,255,0.06)", border: `1px solid ${D.glassBorder}`, padding: "10px 12px", borderRadius: 14, lineHeight: 1.5, overflowWrap: "anywhere" }}>{info}</div>}
           <button onClick={submit} disabled={busy} style={{ ...mintBtn(), marginTop: 20, width: "100%" }}>
-            {busy ? "…" : mode === "signup" ? "Create account" : "Sign in"}
+            {busy ? "…" : { signup: "Create account", login: "Sign in", forgot: "Send reset link", reset: "Set new password" }[mode]}
           </button>
-          <button onClick={() => { setMode(mode === "signup" ? "login" : "signup"); setErr(""); }} style={{ ...linkBtn(D.mint), marginTop: 16, display: "block", width: "100%", textAlign: "center" }}>
+          {mode === "login" && (
+            <button onClick={() => { setMode("forgot"); setErr(""); setInfo(""); }} style={{ ...linkBtn(D.muted), marginTop: 14, display: "block", width: "100%", textAlign: "center", fontWeight: 500 }}>
+              Forgot your password?
+            </button>
+          )}
+          <button onClick={() => { setMode(mode === "signup" ? "login" : "signup"); setErr(""); setInfo(""); }} style={{ ...linkBtn(D.mint), marginTop: mode === "login" ? 10 : 16, display: "block", width: "100%", textAlign: "center" }}>
             {mode === "signup" ? "Already have an account? Sign in" : "New here? Create an account"}
           </button>
         </div>
@@ -1078,6 +1294,8 @@ function Dashboard({ user, onSignOut, onGoHome }) {
             </div>
           ) : loading ? (
             <div style={card({ padding: "15px 18px" })}><Muted>Reading your holdings… this can take a few seconds.</Muted></div>
+          ) : user.snaptradeEnabled === false ? (
+            <WaitlistCallout />
           ) : (
             <>
               <button onClick={connect} style={darkBtn(999, "14px 24px", 15)}>Connect brokerage →</button>

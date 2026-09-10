@@ -68,7 +68,10 @@ const HEALTHCARE = ["JNJ", "MCK", "CAH", "COR"];
 // authoritative live source refreshes every fund that tracks it (SPY→S&P 500, SPTM→total,
 // SPYG→growth, SPYV→value). The Nasdaq-100 has no free live source, so it stays curated.
 const FALLBACK = { sp500: SP500, total: TOTAL, nasdaq100: NASDAQ100, large_growth: GROWTH, large_value: VALUE, healthcare: HEALTHCARE };
-const holdsFor = (basisKey) => basketFor(basisKey) || FALLBACK[basisKey];
+// Bases with no curated fallback (ESG / fossil-free / Dow / mid / small) exist only while
+// the live basket is present; without it the fund is simply not in the catalogue, which
+// the UI reports as "not analyzed" — never as an empty (i.e. clean-looking) fund.
+const holdsFor = (basisKey) => basketFor(basisKey) || FALLBACK[basisKey] || null;
 
 const CATALOGUE = {
   VOO:   { name: "Vanguard S&P 500 ETF",                    basis: "the S&P 500",             basisKey: "sp500" },
@@ -90,11 +93,22 @@ const CATALOGUE = {
   VTV:   { name: "Vanguard Value ETF",                      basis: "large-cap US value",      basisKey: "large_value" },
   IWD:   { name: "iShares Russell 1000 Value ETF",          basis: "large-cap US value",      basisKey: "large_value" },
   SCHV:  { name: "Schwab U.S. Large-Cap Value ETF",         basis: "large-cap US value",      basisKey: "large_value" },
+  // "Responsible" cuts of the S&P 500 — the question people actually ask is whether the
+  // ESG version of their fund is clean. Live holdings only (see holdsFor).
+  EFIV:  { name: "SPDR S&P 500 ESG ETF",                    basis: "the S&P 500 ESG index",   basisKey: "sp500_esg" },
+  SPYX:  { name: "SPDR S&P 500 Fossil Fuel Reserves Free ETF", basis: "the S&P 500 ex-fossil-fuel-reserves index", basisKey: "sp500_ffree" },
+  DIA:   { name: "SPDR Dow Jones Industrial Average ETF",   basis: "the Dow Jones Industrial Average", basisKey: "dow30" },
+  SPMD:  { name: "SPDR Portfolio S&P 400 Mid Cap ETF",      basis: "the S&P MidCap 400",      basisKey: "midcap" },
+  IJH:   { name: "iShares Core S&P Mid-Cap ETF",            basis: "the S&P MidCap 400",      basisKey: "midcap" },
+  SPSM:  { name: "SPDR Portfolio S&P 600 Small Cap ETF",    basis: "the S&P SmallCap 600",    basisKey: "smallcap" },
+  IJR:   { name: "iShares Core S&P Small-Cap ETF",          basis: "the S&P SmallCap 600",    basisKey: "smallcap" },
 };
 
 /** ticker -> { name, basis (plain-English index), holds (screened constituents) }. */
 export const FUNDS = Object.fromEntries(
-  Object.entries(CATALOGUE).map(([t, f]) => [t, { name: f.name, basis: f.basis, holds: holdsFor(f.basisKey) }]),
+  Object.entries(CATALOGUE)
+    .map(([t, f]) => [t, { name: f.name, basis: f.basis, basisKey: f.basisKey, holds: holdsFor(f.basisKey) }])
+    .filter(([, f]) => Array.isArray(f.holds)),
 );
 
 /** The fund record for a ticker we can see inside, or null. */
@@ -115,11 +129,24 @@ const NOT_ANALYZED = {
   AGG:  { name: "iShares Core U.S. Aggregate Bond ETF",       kind: "bond" },
   BNDX: { name: "Vanguard Total International Bond ETF",       kind: "bond" },
   GLD:  { name: "SPDR Gold Shares",                           kind: "commodity" },
+  VT:   { name: "Vanguard Total World Stock ETF",             kind: "international" },
+  // Popular ESG / "socially responsible" funds whose issuers don't publish holdings in a
+  // form we can fetch for free. Listing them keeps a search from reading as "clean" —
+  // and points the visitor at the one ESG index fund we CAN see inside.
+  ESGV: { name: "Vanguard ESG U.S. Stock ETF",                kind: "esg" },
+  ESGU: { name: "iShares ESG Aware MSCI USA ETF",             kind: "esg" },
+  SUSA: { name: "iShares MSCI USA ESG Select ETF",            kind: "esg" },
+  DSI:  { name: "iShares MSCI KLD 400 Social ETF",            kind: "esg" },
+  VFTAX:{ name: "Vanguard FTSE Social Index Fund",            kind: "esg" },
+  ESGD: { name: "iShares ESG Aware MSCI EAFE ETF",            kind: "international" },
+  ARKK: { name: "ARK Innovation ETF",                         kind: "active" },
 };
 const NOT_ANALYZED_REASON = {
   international: "An international fund — our screens cover US-listed companies, so we don't look inside this one yet.",
   bond: "A bond fund — our screens flag companies by their line of business, which doesn't apply to bond holdings.",
   commodity: "A commodity fund — it holds an asset (not companies), so there's nothing to screen.",
+  esg: "An ESG-labeled fund — its issuer doesn't publish holdings in a form we can read yet, so we can't check whether the label holds up. Try EFIV, the S&P 500 ESG ETF, to see what an ESG index fund still holds.",
+  active: "An actively managed fund — we only look inside index funds whose issuer publishes daily holdings, so this one isn't analyzed yet.",
 };
 
 /** A widely-held fund we recognize but don't analyze, or null. */

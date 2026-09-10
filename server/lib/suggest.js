@@ -13,6 +13,14 @@ const FILE = join(dirname(fileURLToPath(import.meta.url)), "..", "generated", "t
 let _rows = [];
 try { if (existsSync(FILE)) _rows = JSON.parse(readFileSync(FILE, "utf8")).tickers || []; } catch { /* no index */ }
 const _funds = fundNames();
+const _known = new Set(_rows.map(([t]) => String(t).toUpperCase()));
+const _names = new Map(_rows.map(([t, n]) => [String(t).toUpperCase(), n]));
+
+/** True if the symbol is a US SEC filer in our ticker index — i.e. a company we could
+ *  have screened. Lets the UI tell "no flags for a company we know" apart from "we
+ *  don't recognize this symbol at all" (a fund, a foreign listing, a typo). */
+export const knownTicker = (t) => _known.has(String(t || "").toUpperCase());
+export const tickerName = (t) => _names.get(String(t || "").toUpperCase()) || null;
 
 /** Ranked suggestions for a query. Exact ticker → ticker prefix → name match; funds first. */
 export function suggest(q, limit = 8) {

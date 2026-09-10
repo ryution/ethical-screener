@@ -18,6 +18,7 @@ import { suggest } from "./lib/suggest.js";
 import { screenCatalogue, isScreenKey } from "./lib/screens.js";
 import { hotNews } from "./lib/news.js";
 import { tickerTape, quoteFor } from "./lib/quotes.js";
+import { sharePage } from "./lib/share.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 8787;
@@ -42,7 +43,11 @@ async function readBody(req) {
 // The client's IP, used for rate-limiting. TRUST_PROXY must be set explicitly:
 // blindly believing X-Forwarded-For lets any caller forge their apparent IP. On
 // Render the platform sets the header and terminates TLS, so it's trustworthy there.
-const TRUST_PROXY = process.env.TRUST_PROXY === "1";
+// On Vercel every request reaches the function through the platform's proxy, so the
+// socket address is a shared internal one — without trusting the forwarded header, all
+// visitors land in ONE rate-limit bucket and a busy hour 429s everybody. Vercel sets
+// X-Forwarded-For itself and strips any client-supplied value, so it is safe to trust there.
+const TRUST_PROXY = process.env.TRUST_PROXY === "1" || !!process.env.VERCEL;
 function clientIp(req) {
   if (TRUST_PROXY) {
     const fwd = req.headers["x-forwarded-for"];
@@ -139,8 +144,11 @@ const IS_PROD = !!process.env.DATABASE_URL;
 const CSP = [
   "default-src 'self'",
   "script-src 'self'",
-  "style-src 'self' 'unsafe-inline'",
-  "font-src 'self' data:",
+  // The UI face (Plus Jakarta Sans) is served by Google Fonts — the stylesheet from
+  // fonts.googleapis.com, the files from fonts.gstatic.com. Without both allowances the
+  // self-hosted server (`npm start`) silently fell back to the system font.
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' data: https://fonts.gstatic.com",
   // News thumbnails come straight from the publisher (BBC, NYT) — no proxying, so their
   // image hosts need an explicit CSP allowance.
   "img-src 'self' data: https://ichef.bbci.co.uk https://static01.nyt.com https://static.nytimes.com",
@@ -232,11 +240,25 @@ export async function handler(req, res) {
 
   // ---- public single-ticker lookup (the no-login hero widget) ----
   if (req.method === "GET" && path === "/api/lookup") {
-    const rl = rateLimit("lookup", ip, 60, 60 * 60 * 1000);
+    const rl = rateLimit("lookup", ip, 240, 60 * 60 * 1000);
     if (rl.limited) return sendJson(res, 429, { error: "Too many lookups. Try again shortly." }, { "Retry-After": String(rl.retryAfter) });
     const result = lookupSymbol(url.searchParams.get("symbol"));
     if (!result) return sendJson(res, 400, { error: "Enter a ticker symbol." });
     return sendJson(res, 200, result);
+  }
+
+  // ---- link-preview / crawler page: server-rendered HTML for one symbol ----
+  // The app is a single-page React bundle, so a crawler fetching "/?symbol=VOO" sees an
+  // empty <div id="root"> and no title, description, or image — shared links render as a
+  // bare URL. vercel.json rewrites known link-preview bots here; humans never see it.
+  if (req.method === "GET" && path === "/api/share") {
+    // Absolute URLs in the tags must point at the domain the crawler fetched, not at
+    // the Vercel deployment alias — the proxy tells us which one that was.
+    const host = String(req.headers["x-forwarded-host"] || req.headers.host || "").split(",")[0].trim();
+    const base = host && !/^localhost|^127\./.test(host) ? `https://${host}` : siteUrl();
+    const html = sharePage({ symbol: url.searchParams.get("symbol"), siteUrl: base });
+    res.writeHead(200, { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=900, s-maxage=3600", ...securityHeaders() });
+    return res.end(html);
   }
 
   // ---- recent headlines mentioning a tracked company (BBC + NYT, headline+link only) ----
@@ -304,9 +326,11 @@ export async function handler(req, res) {
 
   // ---- funnel event (lightweight, name-only) ----
   if (req.method === "POST" && path === "/api/event") {
+    const rl = rateLimit("event", ip, 300, 60 * 60 * 1000);
+    if (rl.limited) return sendJson(res, 200, { ok: true });
     const body = await readBody(req);
-    const allowed = ["landing_view", "cta_click", "signup", "onboarding_done", "first_purchase", "bank_linked", "waitlist_join", "share_open"];
-    if (body?.name && allowed.includes(body.name)) db.logEvent(body.name);
+    const allowed = ["landing_view", "lookup", "cta_click", "signup", "waitlist_join", "share"];
+    if (body?.name && allowed.includes(body.name)) db.logEvent(body.name, body.ref);
     return sendJson(res, 200, { ok: true });
   }
 
