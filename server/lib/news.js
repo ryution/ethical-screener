@@ -12,8 +12,9 @@
 // against the same curated + EDGAR-enriched universe the rest of the app uses — so
 // "hot news" only ever surfaces for a company we already have something to say about.
 
-import { SCREENS } from "./screens.js";
-import { enrichedTickers, enrichedName } from "./enriched.js";
+import { SCREENS, flagsFor, SCREEN_KEYS } from "./screens.js";
+import { enrichedTickers, enrichedName, enrichedFlagsFor } from "./enriched.js";
+import { filingFlagsFor } from "./filings.js";
 
 const FEEDS = [
   { source: "BBC", url: "https://feeds.bbci.co.uk/news/business/rss.xml" },
@@ -84,9 +85,16 @@ function companyIndex() {
   return _index;
 }
 
+// The flag labels a company carries — shown on the card so the reader can see WHY a
+// story about Apple belongs in a feed about ethical screens.
+function flagLabels(ticker) {
+  const seen = new Set();
+  for (const f of [...filingFlagsFor(ticker, SCREEN_KEYS), ...flagsFor(ticker, SCREEN_KEYS), ...enrichedFlagsFor(ticker, SCREEN_KEYS)]) seen.add(f.label);
+  return [...seen];
+}
 function matchCompanies(text) {
   const out = [];
-  for (const c of companyIndex()) if (c.re.test(text)) out.push({ ticker: c.ticker, name: c.name });
+  for (const c of companyIndex()) if (c.re.test(text)) out.push({ ticker: c.ticker, name: c.name, flags: flagLabels(c.ticker) });
   return out;
 }
 
@@ -111,5 +119,17 @@ export async function hotNews({ symbol, limit = 30 } = {}) {
     }
   }
   items.sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0));
-  return items.slice(0, limit);
+  // One company on a launch week (five Apple stories in a row) shouldn't be the whole
+  // strip. At most two per lead company unless the caller asked for that company.
+  if (wantTicker) return items.slice(0, limit);
+  const perCompany = new Map();
+  const spread = [];
+  for (const it of items) {
+    const lead = it.companies[0]?.ticker;
+    const n = perCompany.get(lead) || 0;
+    if (n >= 2) continue;
+    perCompany.set(lead, n + 1);
+    spread.push(it);
+  }
+  return spread.slice(0, limit);
 }

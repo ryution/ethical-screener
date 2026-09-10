@@ -330,9 +330,21 @@ export function addWaitlist(email) {
   if (!already) { db.waitlist.push({ email: e, at: Date.now() }); save(); }
   return { added: !already, total: db.waitlist.length };
 }
-export function logEvent(name) {
+// `ref` is the campaign tag a visitor arrived with (?ref=reddit-sideproject). Counting
+// events per ref is how we learn which post actually sent people who searched — the
+// free Vercel analytics tier can't split by UTM, so this does it in-house. Aggregate
+// counters only: no IPs, no emails, no per-visitor rows.
+export function logEvent(name, ref) {
   db.events = db.events || {};
   db.events[name] = (db.events[name] || 0) + 1;
+  const r = String(ref || "").toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 40);
+  if (r) {
+    db.refs = db.refs || {};
+    db.refs[r] = db.refs[r] || {};
+    db.refs[r][name] = (db.refs[r][name] || 0) + 1;
+    // Bound it — a bot spraying random tags must not grow the state blob forever.
+    if (Object.keys(db.refs).length > 200) delete db.refs[Object.keys(db.refs)[0]];
+  }
   save();
 }
 // A user-submitted "this flag looks wrong" report. Stored for human review — we never
@@ -351,7 +363,7 @@ export function addReport({ ticker, flag, label, reason, note }) {
   return { total: db.reports.length };
 }
 export const reports = () => [...(db.reports || [])];
-export const funnel = () => ({ ...(db.events || {}), waitlist: (db.waitlist || []).length });
+export const funnel = () => ({ ...(db.events || {}), waitlist: (db.waitlist || []).length, byRef: db.refs || {} });
 
 export const stats = () => ({
   users: Object.keys(db.users).length,
