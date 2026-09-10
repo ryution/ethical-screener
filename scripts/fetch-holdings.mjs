@@ -41,6 +41,14 @@ const SOURCES = {
   large_growth: { fund: "SPYG", label: "SPDR Portfolio S&P 500 Growth ETF",                  url: ssga("spyg") },
   large_value:  { fund: "SPYV", label: "SPDR Portfolio S&P 500 Value ETF",                   url: ssga("spyv") },
   healthcare:   { fund: "XLV",  label: "Health Care Select Sector SPDR",                     url: ssga("xlv") },
+  // The two "responsible" cuts of the S&P 500 — the most-asked question is whether an
+  // ESG fund is actually clean, and these let the product answer it from the issuer's
+  // own holdings rather than guess.
+  sp500_esg:    { fund: "EFIV", label: "SPDR S&P 500 ESG ETF",                               url: ssga("efiv") },
+  sp500_ffree:  { fund: "SPYX", label: "SPDR S&P 500 Fossil Fuel Reserves Free ETF",         url: ssga("spyx") },
+  dow30:        { fund: "DIA",  label: "SPDR Dow Jones Industrial Average ETF",              url: ssga("dia") },
+  midcap:       { fund: "SPMD", label: "SPDR Portfolio S&P 400 Mid Cap ETF",                 url: ssga("spmd") },
+  smallcap:     { fund: "SPSM", label: "SPDR Portfolio S&P 600 Small Cap ETF",               url: ssga("spsm") },
 };
 
 // A holding counts as screened if EITHER layer flags it. Class shares differ by dot vs

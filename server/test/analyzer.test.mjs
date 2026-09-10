@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { analyze } from "../lib/analyzer.js";
+import { analyze, lookupSymbol } from "../lib/analyzer.js";
+import { shareMeta } from "../lib/share.js";
 import { flagsFor, isScreenKey, screenCatalogue, companyName } from "../lib/screens.js";
 import { knownFund } from "../lib/funds.js";
 import { screensForSic } from "../lib/sic.js";
@@ -178,5 +179,31 @@ test("'tes' surfaces Tesla, not mid-word noise like AMERICAN STATES WATER", () =
 });
 test("exact ticker match ranks first", () => assert.equal(suggest("VOO")[0]?.symbol, "VOO"));
 test("a query with no matches returns empty, not an error", () => assert.deepEqual(suggest("zzzzzzznotarealquery"), []));
+
+console.log("public lookup:");
+test("an unrecognized symbol is 'none' with known:false — never dressed up as a clean result", () => {
+  const r = lookupSymbol("ZZZZQ");
+  assert.equal(r.type, "none"); assert.equal(r.known, false);
+});
+test("a known filer with no flags is 'none' with known:true and a name", () => {
+  const r = lookupSymbol("MSFT");
+  assert.equal(r.type, "none"); assert.equal(r.known, true); assert.ok(r.name);
+});
+test("an ESG fund we can't see inside is 'not analyzed', not empty", () => {
+  const r = lookupSymbol("ESGV");
+  assert.equal(r.type, "fund"); assert.equal(r.analyzable, false); assert.ok(/not|doesn't publish/i.test(r.notAnalyzedReason));
+});
+test("a live-basket fund reports its index size and as-of date", () => {
+  const r = lookupSymbol("VOO");
+  assert.equal(r.type, "fund"); assert.ok(r.contains.length > 50); assert.ok(r.totalHoldings > 400); assert.ok(r.asOf);
+});
+test("EFIV (S&P 500 ESG) is analyzable from the issuer's live holdings", () => {
+  const r = lookupSymbol("EFIV");
+  assert.equal(r.type, "fund"); assert.ok(r.contains.length > 10);
+});
+test("share meta for a fund carries the deduped count and no HTML", () => {
+  const m = shareMeta("VOO");
+  assert.match(m.title, /^VOO holds \d+ companies/); assert.ok(!/</.test(m.description));
+});
 
 console.log(`\n${passed} analyzer tests passed ✓`);
