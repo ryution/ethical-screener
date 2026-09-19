@@ -1014,6 +1014,40 @@ function Landing({ onStart }) {
   return <LandingHome onStart={onStart} snaptrade={server.snaptrade} meta={server.meta} />;
 }
 
+// The steps read as a list of headlines; the body for one appears when the pointer or
+// keyboard focus lands on it. Hover alone would strand touch and keyboard users, so each
+// row is a real button: focus opens it, and a tap toggles it.
+function StepList({ steps }) {
+  const [open, setOpen] = useState(0);
+  return (
+    <div style={{ borderTop: `1px solid ${L.line}` }}>
+      {steps.map((s, i) => {
+        const on = open === i;
+        return (
+          <button key={s.n} type="button" aria-expanded={on}
+            onMouseEnter={() => setOpen(i)}
+            onFocus={() => setOpen(i)}
+            onClick={() => setOpen(on ? -1 : i)}
+            style={{
+              display: "block", width: "100%", textAlign: "left", cursor: "pointer",
+              background: "none", border: "none", borderBottom: `1px solid ${L.line}`,
+              padding: "24px 0", color: "inherit", font: "inherit",
+            }}>
+            <div style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: on ? L.brass : L.faint, transition: "color .2s" }}>Step {s.n}</div>
+            <div style={{ fontFamily: serifDisplay, fontSize: "clamp(25px,4.2vw,40px)", fontWeight: 700, letterSpacing: "-0.028em", lineHeight: 1.08, marginTop: 8, color: on ? L.pine : L.muted, transition: "color .2s" }}>{s.t}</div>
+            {/* 0fr -> 1fr animates to the body's natural height without measuring it. */}
+            <div style={{ display: "grid", gridTemplateRows: on ? "1fr" : "0fr", transition: "grid-template-rows .3s ease" }}>
+              <div style={{ overflow: "hidden" }}>
+                <p style={{ margin: 0, paddingTop: 14, fontFamily: sans, fontSize: 15.5, lineHeight: 1.6, color: L.muted, maxWidth: 640, opacity: on ? 1 : 0, transition: "opacity .25s ease" }}>{s.b}</p>
+              </div>
+            </div>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 function LandingHome({ onStart, snaptrade, meta }) {
   const wrap = { maxWidth: 1000, margin: "0 auto", padding: "0 24px" };
   const steps = [
@@ -1043,12 +1077,14 @@ function LandingHome({ onStart, snaptrade, meta }) {
         </nav>
         <header>
           <div style={{ ...wrap, textAlign: "center", padding: "clamp(56px,9vw,96px) 24px clamp(48px,7vw,80px)" }}>
-            <p style={{ fontFamily: sans, fontSize: 13, letterSpacing: "0.18em", textTransform: "uppercase", color: D.brassSoft, marginBottom: 22 }}>The ethical portfolio analyzer</p>
-            <h1 style={{ fontFamily: serifDisplay, fontWeight: 700, fontSize: "clamp(34px,6vw,62px)", lineHeight: 1.04, margin: 0, letterSpacing: "-0.04em", color: D.ink }}>
-              Is your money already funding<br />what you fight against?
+            <h1 style={{ fontFamily: serifDisplay, fontWeight: 700, fontSize: "clamp(38px,7vw,72px)", lineHeight: 1.02, margin: 0, letterSpacing: "-0.04em", color: D.ink }}>
+              The ethical portfolio analyzer
             </h1>
-            <p style={{ fontFamily: sans, fontSize: "clamp(16px,2vw,19px)", lineHeight: 1.6, color: D.muted, margin: "24px auto 0", maxWidth: 560 }}>
-              <span style={{ color: D.brassSoft, fontWeight: 600 }}>Let's find out.</span> Even broad market funds hide holdings that might not match your values. Search any stock or ETF ticker to see what’s really inside your portfolio.
+            <p style={{ fontFamily: sans, fontWeight: 600, fontSize: "clamp(20px,3vw,32px)", lineHeight: 1.18, letterSpacing: "-0.025em", color: D.ink, margin: "18px auto 0", maxWidth: 680 }}>
+              Is your money already funding what you fight against?
+            </p>
+            <p style={{ fontFamily: sans, fontSize: "clamp(16px,2vw,19px)", lineHeight: 1.6, color: D.ink, margin: "24px auto 0", maxWidth: 560 }}>
+              Let's find out. Even broad market funds hide holdings that might not match your values. Search any stock or ETF ticker to see what’s really inside your portfolio.
             </p>
             <VerifiedBanner />
             <HeroAnalyzer onStart={onStart} wrap={wrap} snaptrade={snaptrade} meta={meta} />
@@ -1065,15 +1101,7 @@ function LandingHome({ onStart, snaptrade, meta }) {
       <section style={{ background: L.card }}>
         <div style={{ ...wrap, padding: "clamp(56px,9vw,96px) 24px" }}>
           <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(26px,4vw,38px)", color: L.pine, fontWeight: 700, margin: "0 0 34px", letterSpacing: "-0.02em" }}>How to get started</h2>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(258px,1fr))", gap: 28 }}>
-            {steps.map((s) => (
-              <div key={s.n} style={{ borderTop: `2px solid ${L.brass}`, paddingTop: 16 }}>
-                <div style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: L.brass }}>Step {s.n}</div>
-                <div style={{ fontFamily: serif, fontSize: 20, color: L.pine, fontWeight: 700, letterSpacing: "-0.01em", marginTop: 10 }}>{s.t}</div>
-                <p style={{ fontFamily: sans, fontSize: 14, color: L.muted, lineHeight: 1.6, margin: "9px 0 0" }}>{s.b}</p>
-              </div>
-            ))}
-          </div>
+          <StepList steps={steps} />
         </div>
       </section>
 
