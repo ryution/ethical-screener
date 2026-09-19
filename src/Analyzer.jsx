@@ -897,7 +897,7 @@ function Methodology({ onStart }) {
       <Canvas>
         <nav style={{ borderBottom: `1px solid ${D.glassBorder}` }}>
           <div style={{ ...wrap, maxWidth: 1000, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 24px" }}>
-            <a href="#" style={{ fontFamily: serifDisplay, fontSize: 21, fontWeight: 700, color: D.ink, letterSpacing: "-0.02em", textDecoration: "none" }}>PlainStreet</a>
+            <a href="#" style={{ fontFamily: serifDisplay, fontSize: 25, fontWeight: 700, color: D.ink, letterSpacing: "-0.02em", textDecoration: "none" }}>PlainStreet</a>
             <button onClick={onStart} style={brassBtn(999, "9px 18px", 14)}>Get started</button>
           </div>
         </nav>
@@ -1034,7 +1034,7 @@ function LandingHome({ onStart, snaptrade, meta }) {
               so it's the one to drop on narrow screens rather than wrap the sticky nav. */}
           <style>{`@media (max-width: 480px) { .ps-nav-methodology { display: none; } }`}</style>
           <div style={{ ...wrap, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 24px" }}>
-            <span style={{ fontFamily: serifDisplay, fontSize: 21, fontWeight: 700, color: D.ink, letterSpacing: "-0.02em" }}>PlainStreet</span>
+            <span style={{ fontFamily: serifDisplay, fontSize: 25, fontWeight: 700, color: D.ink, letterSpacing: "-0.02em" }}>PlainStreet</span>
             <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
               <a href="#methodology" className="ps-nav-methodology" style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, textDecoration: "none" }}>Methodology</a>
               <button onClick={onStart} style={brassBtn(999, "9px 18px", 14)}>Get started</button>
