@@ -70,7 +70,7 @@ function layout({ heading, lead, buttonLabel, url, footer }) {
         <p style="font-size:11.5px;line-height:1.5;color:${MUTED};margin:14px 0 0;word-break:break-all">Or paste this link into your browser:<br><a href="${url}" style="color:${BRASS}">${url}</a></p>
       </td></tr>
       <tr><td style="padding:22px 34px 30px">
-        <div style="border-top:1px solid #E4DDCB;padding-top:16px;font-size:11px;color:${MUTED}">PlainStreet — read-only clarity for your money.</div>
+        <div style="border-top:1px solid #E4DDCB;padding-top:16px;font-size:11px;color:${MUTED}">PlainStreet: read-only clarity for your money.</div>
       </td></tr>
     </table>
   </td></tr></table>
@@ -85,7 +85,7 @@ export function resetEmail(url) {
       lead: "We got a request to reset the password on your PlainStreet account. Click below to choose a new one.",
       buttonLabel: "Choose a new password",
       url,
-      footer: "This link expires in 30 minutes and can be used once. If you didn't ask for this, you can safely ignore this email — your password won't change.",
+      footer: "This link expires in 30 minutes and can be used once. If you didn't ask for this, you can safely ignore this email and your password won't change.",
     }),
     text: `Reset your PlainStreet password.\n\nOpen this link to choose a new password (expires in 30 minutes, single use):\n${url}\n\nIf you didn't request this, ignore this email.`,
   };

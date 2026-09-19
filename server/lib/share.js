@@ -10,7 +10,7 @@
 // time — never a hand-typed figure that goes stale.
 
 import { lookupSymbol } from "./analyzer.js";
-import { displayName } from "../../src/format.js";
+import { displayName, reasonParts } from "../../src/format.js";
 
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
@@ -31,13 +31,13 @@ export function shareMeta(symbol) {
   const r = lookupSymbol(symbol);
   const sym = r?.symbol || String(symbol || "").toUpperCase();
   const fallback = {
-    title: "PlainStreet — see what's really inside your index fund",
+    title: "PlainStreet: see what's really inside your index fund",
     description: "Search any stock or ETF ticker. We name the fossil fuel, weapons, tobacco, opioid and surveillance companies inside it, each with a one-sentence reason and a source.",
     ogImage: "/og/default.png", groups: [], r,
   };
   if (!r) return fallback;
   if (r.type === "fund" && r.analyzable === false) {
-    return { ...fallback, title: `${sym} · not analyzed — PlainStreet`, description: `${r.name}: ${r.notAnalyzedReason}`, r };
+    return { ...fallback, title: `${sym} · not analyzed · PlainStreet`, description: `${r.name}: ${r.notAnalyzedReason}`, r };
   }
   if (r.type === "fund") {
     const contains = dedupe(r.contains);
@@ -47,20 +47,24 @@ export function shareMeta(symbol) {
     const top = groups.slice(0, 4).map(([l, n]) => `${n} ${l}`).join(", ");
     const of = r.totalHoldings ? ` of ${r.totalHoldings}` : "";
     const title = contains.length
-      ? `${sym} holds ${contains.length} companies you may want to avoid — PlainStreet`
-      : `${sym}: no flagged holdings among the names we track — PlainStreet`;
+      ? `${sym} holds ${contains.length} companies you may want to avoid · PlainStreet`
+      : `${sym}: no flagged holdings among the names we track · PlainStreet`;
     const description = contains.length
       ? `${r.name} tracks ${r.basis}. ${contains.length}${of} holdings are flagged: ${top}. Every flag has a one-sentence reason and a source.${r.asOf ? ` Holdings as of ${r.asOf}.` : ""}`
-      : `${r.name} tracks ${r.basis}. None of its holdings are on the lists we track — which means "not one of the names we track," never "audited clean."`;
+      : `${r.name} tracks ${r.basis}. None of its holdings are on the lists we track, which means "not one of the names we track," never "audited clean."`;
     return { title, description, ogImage: `/og/${sym}.png`, groups, contains, r };
   }
   if (r.type === "stock") {
     const labels = r.flags.map((f) => f.label).join(", ");
-    return { ...fallback, title: `${sym} · ${r.name} — flagged for ${labels} — PlainStreet`, description: r.flags[0]?.reason || fallback.description, r };
+    // The raw reason carries a "Company — " prefix that the app strips before display;
+    // strip it here too so a shared card never shows the authoring delimiter.
+    const top = r.flags[0]?.reason ? reasonParts(r.flags[0].reason, displayName(r.name)) : null;
+    const description = top ? [top.lead, top.rest].filter(Boolean).join(" ") : fallback.description;
+    return { ...fallback, title: `${sym} · ${r.name} · flagged for ${labels} · PlainStreet`, description, r };
   }
-  return { ...fallback, title: `${sym} · no flags among the names we track — PlainStreet`, description: r.known
+  return { ...fallback, title: `${sym} · no flags among the names we track · PlainStreet`, description: r.known
     ? `${sym} isn't on any of the lists we track. That means "none of the names we track," never "audited clean."`
-    : `We don't recognize ${sym}. If it's a fund, we can't see inside it yet — so it's "not analyzed," never "clean."`, r };
+    : `We don't recognize ${sym}. If it's a fund, we can't see inside it yet, so it's "not analyzed," never "clean."`, r };
 }
 
 export function sharePage({ symbol, siteUrl }) {
@@ -93,7 +97,7 @@ export function sharePage({ symbol, siteUrl }) {
 <meta name="twitter:description" content="${esc(m.description)}">
 <meta name="twitter:image" content="${esc(img)}">
 <meta name="robots" content="noindex">
-<style>body{font-family:system-ui,sans-serif;background:#0B0B0D;color:#F4F4F5;max-width:640px;margin:40px auto;padding:0 20px;line-height:1.5}a{color:#D3C8F8}</style>
+<style>body{font-family:system-ui,sans-serif;background:#0B0B0D;color:#F4F4F5;max-width:640px;margin:40px auto;padding:0 20px;line-height:1.5}a{color:#A9C5F0}</style>
 </head><body>
 <h1>${esc(m.title)}</h1>
 <p>${esc(m.description)}</p>

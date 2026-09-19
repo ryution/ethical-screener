@@ -142,11 +142,11 @@ const NOT_ANALYZED = {
   ARKK: { name: "ARK Innovation ETF",                         kind: "active" },
 };
 const NOT_ANALYZED_REASON = {
-  international: "An international fund — our screens cover US-listed companies, so we don't look inside this one yet.",
-  bond: "A bond fund — our screens flag companies by their line of business, which doesn't apply to bond holdings.",
-  commodity: "A commodity fund — it holds an asset (not companies), so there's nothing to screen.",
-  esg: "An ESG-labeled fund — its issuer doesn't publish holdings in a form we can read yet, so we can't check whether the label holds up. Try EFIV, the S&P 500 ESG ETF, to see what an ESG index fund still holds.",
-  active: "An actively managed fund — we only look inside index funds whose issuer publishes daily holdings, so this one isn't analyzed yet.",
+  international: "An international fund. Our screens cover US-listed companies, so we don't look inside this one yet.",
+  bond: "A bond fund. Our screens flag companies by their line of business, which doesn't apply to bond holdings.",
+  commodity: "A commodity fund. It holds an asset rather than companies, so there's nothing to screen.",
+  esg: "An ESG-labeled fund. Its issuer doesn't publish holdings in a form we can read yet, so we can't check whether the label holds up. Try EFIV, the S&P 500 ESG ETF, to see what an ESG index fund still holds.",
+  active: "An actively managed fund. We only look inside index funds whose issuer publishes daily holdings, so this one isn't analyzed yet.",
 };
 
 /** A widely-held fund we recognize but don't analyze, or null. */

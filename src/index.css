@@ -7,9 +7,9 @@ body { background: #0B0B0D; }
    inline `outline:none` on inputs. Mouse clicks don't trigger :focus-visible, so it
    only shows during keyboard navigation. */
 :focus-visible {
-  outline: 2px solid #D3C8F8 !important;
+  outline: 2px solid #A9C5F0 !important;
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: 0;
 }
 
 /* Respect users who ask for less motion — the round-up/flow animations become instant. */

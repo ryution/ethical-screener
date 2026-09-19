@@ -209,7 +209,7 @@ export const SCREENS = [
   {
     key: "opioids",
     label: "Opioid crisis",
-    blurb: "Culpability in the opioid epidemic — settlements, litigation, or enforcement (not legitimate pain medicine).",
+    blurb: "Culpability in the opioid epidemic: settlements, litigation, or enforcement. Not legitimate pain medicine.",
     tickers: {
       TEVA: "Teva Pharmaceutical — opioid manufacturer; national opioid settlement.",
       MNK: "Mallinckrodt — opioid manufacturer; opioid-driven bankruptcy settlements.",
@@ -303,7 +303,7 @@ export const SCREENS = [
     //      would NOT meet for most companies, which is why this list stays this short.
     key: "historical_forced_labor",
     label: "WWII-era forced labor",
-    blurb: "Documented use of forced or slave labor during the Nazi era, by the company or a direct predecessor — shown alongside what restitution was made, if any.",
+    blurb: "Documented use of forced or slave labor during the Nazi era, by the company or a direct predecessor. Shown alongside what restitution was made, if any.",
     tickers: {
       VWAGY: "Volkswagen — used an estimated 20,000 forced laborers, including concentration-camp prisoners, at its Wolfsburg plant during WWII. Became the first German company to fund restitution (1991), later folded into Germany's national forced-labor compensation program.",
       F: "Ford — its German subsidiary, Ford-Werke, used over 2,000 forced and slave laborers during WWII. A 2001 independent historian-led study (commissioned and funded by Ford) found the company did not profit from this labor; Ford called its use 'wrong and cannot be justified' and contributed $13M to Germany's restitution fund plus $4M to related human-rights research.",
@@ -324,7 +324,7 @@ export const SCREENS = [
     // not because forced-labor findings are rare.
     key: "forced_labor_supply_chain",
     label: "Supply-chain forced labor",
-    blurb: "A subsidiary is named on a current US government forced-labor determination (UFLPA Entity List or CBP Withhold Release Order) — not the parent's own direct conduct, but real, active US enforcement against a company it controls.",
+    blurb: "A subsidiary is named on a current US government forced-labor determination (UFLPA Entity List or CBP Withhold Release Order). This is not the parent's own direct conduct, but real, active US enforcement against a company it controls.",
     tickers: {
       ZIJMY: "Zijin Mining Group — two Xinjiang subsidiaries (Xinjiang Zijin Nonferrous Metals; Xinjiang Zijin Zinc Industry) are on the US DHS's UFLPA Entity List for presumed Uyghur forced labor; a separate, 63%-owned Serbian subsidiary (Serbia Zijin Copper) is under an active US CBP Withhold Release Order (issued June 2026) for forced labor in copper production.",
       ZIJMF: "Zijin Mining Group — two Xinjiang subsidiaries (Xinjiang Zijin Nonferrous Metals; Xinjiang Zijin Zinc Industry) are on the US DHS's UFLPA Entity List for presumed Uyghur forced labor; a separate, 63%-owned Serbian subsidiary (Serbia Zijin Copper) is under an active US CBP Withhold Release Order (issued June 2026) for forced labor in copper production.",
@@ -341,7 +341,7 @@ export const SCREENS = [
     // what the company says it did about it — never just the violation count in isolation.
     key: "supplier_audit_violations",
     label: "Self-reported supply-chain violations",
-    blurb: "Labor violations the company's own supplier audits found and disclosed in its own published report — a lower bar than a government finding, but the company's own admission, remediation included.",
+    blurb: "Labor violations the company's own supplier audits found and disclosed in its own published report. This is a lower bar than a government finding, but it is the company's own admission, remediation included.",
     tickers: {
       AAPL: "Apple — its own 2025 supply-chain report disclosed 10 'Core Violations' (its most serious category) in 2024: nine from suppliers falsifying working-hours records, one a health-and-safety violation. Since 2008, Apple has had suppliers repay $34.5M in recruitment fees to over 37,700 workers under its zero-fees policy (recruitment fees are a recognized forced-labor risk indicator). Apple states it found no instances of forced labor in 2024 and no cases of underage labor in over five years.",
     },
