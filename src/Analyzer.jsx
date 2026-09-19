@@ -37,12 +37,14 @@ const L = {
 // Accent fills. When lavender or lime is used as a background it always carries its
 // matching near-black ink on top — never white, which is what makes pastel-on-dark work.
 const A = { lav: "#A9C5F0", lavInk: "#0A1A33", lime: "#BEF264", limeInk: "#17240A", raised: "#202027" };
-const sans = "'Familjen Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-// One family does everything now — headlines included. `serif`/`serifDisplay` are legacy
-// aliases kept so the ~30 headline call sites don't all need editing; hierarchy comes from
-// weight and size, not from a second typeface.
-const serif = sans;
-const serifDisplay = sans;
+// Two families, split by job. Familjen Grotesk is tight and characterful, which carries a
+// headline but turns dense and shouty at label size; Hanken Grotesk is open and humanist,
+// which is what body copy and UI chrome need. `serif`/`serifDisplay` are legacy aliases
+// for the display face — the names are wrong, there is no serif on the site.
+const sans = "'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+const display = "'Familjen Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+const serif = display;
+const serifDisplay = display;
 
 // A flat panel over the canvas: solid fill, hairline rule, square corners, no blur.
 const glass = (o = {}) => ({
@@ -248,9 +250,9 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
                   onMouseEnter={() => setActiveIdx(i)}
                   style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 11px", borderRadius: 10, cursor: "pointer",
                     background: i === activeIdx ? "rgba(169,197,240,0.16)" : "transparent" }}>
-                  <span style={{ fontFamily: sans, fontWeight: 700, fontSize: 13, color: D.ink, minWidth: 52 }}>{s.symbol}</span>
+                  <span style={{ fontFamily: sans, fontWeight: 600, fontSize: 13, color: D.ink, minWidth: 52 }}>{s.symbol}</span>
                   <span style={{ fontFamily: sans, fontSize: 12.5, color: D.muted, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", flex: 1 }}>{s.name}</span>
-                  {s.kind === "fund" && <span style={{ fontFamily: sans, fontSize: 10, fontWeight: 700, letterSpacing: "0.04em", color: A.lavInk, background: A.lav, borderRadius: 999, padding: "1px 6px" }}>FUND</span>}
+                  {s.kind === "fund" && <span style={{ fontFamily: sans, fontSize: 10, fontWeight: 600, letterSpacing: "0.04em", color: A.lavInk, background: A.lav, borderRadius: 999, padding: "1px 6px" }}>FUND</span>}
                 </li>
               ))}
             </ul>
@@ -333,7 +335,7 @@ function ShareButton({ symbol, dark = true }) {
   };
   return (
     <button onClick={share} aria-label={`Share ${symbol}`} style={{
-      fontFamily: sans, fontSize: 12, fontWeight: 700, cursor: "pointer", borderRadius: 999, padding: "5px 12px",
+      fontFamily: sans, fontSize: 12, fontWeight: 600, cursor: "pointer", borderRadius: 999, padding: "5px 12px",
       background: "transparent", color: dark ? D.muted : L.muted, border: `1px solid ${dark ? D.glassBorder : L.line}`, whiteSpace: "nowrap",
     }}>{done ? "Link copied ✓" : "Share ↗"}</button>
   );
@@ -426,7 +428,7 @@ function HeroResult({ result, onStart, snaptrade }) {
       <div style={panel}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
           <div style={{ fontFamily: serif, fontSize: 20, color: D.ink }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
-          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, color: D.muted, background: "rgba(255,255,255,0.08)", borderRadius: 999, padding: "3px 10px" }}>NOT ANALYZED</span>
+          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: D.muted, background: "rgba(255,255,255,0.08)", borderRadius: 999, padding: "3px 10px" }}>NOT ANALYZED</span>
         </div>
         <p style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, margin: "8px 0 0", lineHeight: 1.55 }}>
           {result.notAnalyzedReason} We call that <b style={{ color: D.ink }}>not analyzed</b>, never "clean."
@@ -442,7 +444,7 @@ function HeroResult({ result, onStart, snaptrade }) {
       <div style={panel}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
           <div style={{ fontFamily: serif, fontSize: 20, color: D.ink }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
-          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, color: A.lavInk, background: A.lav, borderRadius: 999, padding: "3px 10px" }}>FUND</span>
+          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: A.lavInk, background: A.lav, borderRadius: 999, padding: "3px 10px" }}>FUND</span>
         </div>
         <p style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, margin: "8px 0 0", lineHeight: 1.5 }}>
           No holdings in this fund match your selected categories. Turn on more categories above to widen the check.
@@ -460,7 +462,7 @@ function HeroResult({ result, onStart, snaptrade }) {
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
         <div style={{ fontFamily: serif, fontSize: 20, color: D.ink }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
         <span style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, color: A.lavInk, background: A.lav, borderRadius: 999, padding: "3px 10px" }}>FUND</span>
+          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: A.lavInk, background: A.lav, borderRadius: 999, padding: "3px 10px" }}>FUND</span>
           <ShareButton symbol={result.symbol} />
         </span>
       </div>
@@ -546,9 +548,9 @@ function FundBreakdown({ groups, theme }) {
                 padding: "12px 14px", background: "none", border: "none", cursor: "pointer",
                 textAlign: "left", fontFamily: sans,
               }}>
-              <span style={{ fontSize: 13.5, fontWeight: 700, color: L.flag, letterSpacing: "-0.01em" }}>{g.label}</span>
+              <span style={{ fontSize: 13.5, fontWeight: 600, color: L.flag, letterSpacing: "-0.01em" }}>{g.label}</span>
               <span style={{
-                marginLeft: "auto", fontSize: 11.5, fontWeight: 700, color: c.ink,
+                marginLeft: "auto", fontSize: 11.5, fontWeight: 600, color: c.ink,
                 background: c.panel, border: `1px solid ${c.border}`, borderRadius: 999,
                 padding: "1px 9px", minWidth: 26, textAlign: "center",
               }}>{g.items.length}</span>
@@ -607,7 +609,7 @@ function FlagCard({ flag, company, dark = false }) {
   const { lead, rest } = reasonParts(flag.reason, company);
   return (
     <div style={{ background: surface, border: `1px solid ${border}`, borderRadius: 14, padding: "14px 16px", display: "grid", gap: 9 }}>
-      <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, color: L.flag, background: L.flagBg, border: `1px solid ${L.flagBorder}`, borderRadius: 999, padding: "3px 10px", justifySelf: "start" }}>{flag.label}</span>
+      <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: L.flag, background: L.flagBg, border: `1px solid ${L.flagBorder}`, borderRadius: 999, padding: "3px 10px", justifySelf: "start" }}>{flag.label}</span>
       <div style={{ fontFamily: sans, fontSize: 14.5, lineHeight: 1.6, color: ink, maxWidth: "68ch", letterSpacing: "-0.005em" }}>{lead}</div>
       {rest && <div style={{ fontFamily: sans, fontSize: 13.5, lineHeight: 1.62, color: muted, maxWidth: "68ch" }}>{rest}</div>}
       <FlagEvidence quote={flag.quote} source={flag.source} asOf={flag.asOf} muted={muted} link={A.lav} />
@@ -659,7 +661,7 @@ function ReportControl({ item, group, linkColor, muted }) {
       <textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="What's off about this flag? (optional)" rows={2}
         style={{ fontFamily: sans, fontSize: 12.5, padding: "6px 8px", borderRadius: 10, border: `1px solid ${muted}`, background: "transparent", color: "inherit", resize: "vertical" }} />
       <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-        <button onClick={submit} disabled={busy} style={{ fontFamily: sans, fontSize: 12, fontWeight: 700, color: linkColor, background: "none", border: `1px solid ${linkColor}`, borderRadius: 999, padding: "4px 10px", cursor: "pointer" }}>Send report</button>
+        <button onClick={submit} disabled={busy} style={{ fontFamily: sans, fontSize: 12, fontWeight: 600, color: linkColor, background: "none", border: `1px solid ${linkColor}`, borderRadius: 999, padding: "4px 10px", cursor: "pointer" }}>Send report</button>
         <button onClick={() => setStage("idle")} style={{ fontFamily: sans, fontSize: 12, color: muted, background: "none", border: "none", cursor: "pointer" }}>Cancel</button>
       </div>
     </div>
@@ -691,8 +693,8 @@ function WaitlistCallout() {
   const dim = "rgba(10,26,51,0.66)";
   return (
     <div style={{ background: A.lav, borderRadius: 14, padding: "15px 16px", display: "grid", gap: 9 }}>
-      <span style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 700, color: dim }}>That's one ticker</span>
-      <div style={{ fontFamily: sans, fontSize: 18, fontWeight: 700, color: A.lavInk, letterSpacing: "-0.01em", lineHeight: 1.3 }}>
+      <span style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: dim }}>That's one ticker</span>
+      <div style={{ fontFamily: sans, fontSize: 18, fontWeight: 600, color: A.lavInk, letterSpacing: "-0.01em", lineHeight: 1.3 }}>
         Checking a whole brokerage account at once is coming.
       </div>
       {state === "done" ? (
@@ -739,7 +741,7 @@ function TickerTape() {
     const color = up ? "#4ADE80" : "#F87171";
     return (
       <span key={q.symbol + keySuffix} style={{ display: "inline-flex", alignItems: "baseline", gap: 8, padding: "0 22px", fontFamily: sans, fontSize: 13, whiteSpace: "nowrap" }}>
-        <span style={{ fontWeight: 700, color: D.ink, letterSpacing: "0.02em" }}>{q.symbol}</span>
+        <span style={{ fontWeight: 600, color: D.ink, letterSpacing: "0.02em" }}>{q.symbol}</span>
         <span style={{ color: D.muted }}>${q.price.toFixed(2)}</span>
         <span style={{ color, fontWeight: 600 }}>{up ? "▲" : "▼"} {Math.abs(q.changePercent).toFixed(2)}%</span>
       </span>
@@ -785,7 +787,7 @@ function HotNews({ wrap }) {
     <section style={{ ...wrap, padding: "clamp(56px,9vw,96px) 24px 0" }}>
       <div style={{ textAlign: "center", marginBottom: 34 }}>
         <p style={{ fontFamily: sans, fontSize: 12.5, letterSpacing: "0.16em", textTransform: "uppercase", color: L.brass, marginBottom: 10 }}>From BBC &amp; The New York Times</p>
-        <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(26px,4vw,38px)", color: L.pine, fontWeight: 700, margin: 0, letterSpacing: "-0.02em" }}>Hot off the wire.</h2>
+        <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(26px,4vw,38px)", color: L.pine, fontWeight: 600, margin: 0, letterSpacing: "-0.02em" }}>Hot off the wire.</h2>
         <p style={{ fontFamily: sans, fontSize: 14.5, color: L.muted, margin: "10px 0 0" }}>Recent reporting on companies we flag, with the flag they carry. Headline and source only.</p>
       </div>
       {!items ? (
@@ -806,7 +808,7 @@ function HotNews({ wrap }) {
                  }}>
                 <div style={{ padding: "16px 18px 14px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
-                    <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: "0.04em", color: L.teal, background: L.lineSoft, borderRadius: 999, padding: "3px 10px" }}>{it.source}</span>
+                    <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", color: L.teal, background: L.lineSoft, borderRadius: 999, padding: "3px 10px" }}>{it.source}</span>
                     {it.companies.slice(0, 2).map((c) => (
                       <span key={c.ticker} style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: L.muted }}>
                         {c.name}{c.flags?.length ? <span style={{ color: L.flag, fontWeight: 600 }}> · {c.flags[0]}</span> : null}
@@ -882,13 +884,13 @@ const METHOD_CATALOGUE = [
 function Methodology({ onStart }) {
   const wrap = { maxWidth: 900, margin: "0 auto", padding: "0 24px" };
   const StatusBadge = ({ s }) => (
-    <span style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase",
+    <span style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase",
       color: s === "Live" ? L.good : L.brass, background: s === "Live" ? "rgba(30,125,87,0.12)" : "rgba(169,128,63,0.12)",
       border: `1px solid ${s === "Live" ? "rgba(190,242,100,0.35)" : "rgba(255,255,255,0.16)"}`, borderRadius: 0, padding: "2px 7px", whiteSpace: "nowrap" }}>{s}</span>
   );
   const Field = ({ label, children, color }) => (
     <div style={{ display: "grid", gridTemplateColumns: "112px 1fr", gap: 12, alignItems: "baseline" }}>
-      <span style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.03em", textTransform: "uppercase", color: color || L.faint }}>{label}</span>
+      <span style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 600, letterSpacing: "0.03em", textTransform: "uppercase", color: color || L.faint }}>{label}</span>
       <span style={{ fontFamily: sans, fontSize: 14.5, color: L.ink, lineHeight: 1.55 }}>{children}</span>
     </div>
   );
@@ -897,14 +899,14 @@ function Methodology({ onStart }) {
       <Canvas>
         <nav style={{ borderBottom: `1px solid ${D.glassBorder}` }}>
           <div style={{ ...wrap, maxWidth: 1000, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 24px" }}>
-            <a href="#" style={{ fontFamily: serifDisplay, fontSize: 25, fontWeight: 700, color: D.ink, letterSpacing: "-0.02em", textDecoration: "none" }}>PlainStreet</a>
+            <a href="#" style={{ fontFamily: serifDisplay, fontSize: 25, fontWeight: 600, color: D.ink, letterSpacing: "-0.02em", textDecoration: "none" }}>PlainStreet</a>
             <button onClick={onStart} style={brassBtn(999, "9px 18px", 14)}>Get started</button>
           </div>
         </nav>
         <header>
           <div style={{ ...wrap, padding: "clamp(48px,7vw,80px) 24px clamp(36px,5vw,56px)" }}>
             <p style={{ fontFamily: sans, fontSize: 13, letterSpacing: "0.18em", textTransform: "uppercase", color: D.brassSoft, margin: "0 0 18px" }}>Methodology</p>
-            <h1 style={{ fontFamily: serifDisplay, fontWeight: 700, fontSize: "clamp(30px,5vw,50px)", lineHeight: 1.06, margin: 0, letterSpacing: "-0.035em", color: D.ink }}>
+            <h1 style={{ fontFamily: serifDisplay, fontWeight: 600, fontSize: "clamp(30px,5vw,50px)", lineHeight: 1.06, margin: 0, letterSpacing: "-0.035em", color: D.ink }}>
               How PlainStreet decides what to flag
             </h1>
           </div>
@@ -918,7 +920,7 @@ function Methodology({ onStart }) {
             <li key={i} style={{ display: "grid", gridTemplateColumns: "9px 1fr", gap: 16 }}>
               <span aria-hidden style={{ width: 9, height: 9, background: L.brass, marginTop: 7 }} />
               <div>
-                <h3 style={{ margin: 0, fontFamily: serif, fontSize: 17.5, fontWeight: 700, color: L.pine, letterSpacing: "-0.012em" }}>{t}</h3>
+                <h3 style={{ margin: 0, fontFamily: serif, fontSize: 17.5, fontWeight: 600, color: L.pine, letterSpacing: "-0.012em" }}>{t}</h3>
                 <p style={{ margin: "7px 0 0", fontFamily: sans, fontSize: 15.5, lineHeight: 1.6, color: L.muted }}>{d}</p>
               </div>
             </li>
@@ -932,8 +934,8 @@ function Methodology({ onStart }) {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(230px,1fr))", gap: 16 }}>
             {METHOD_LAYERS.map(([name, what, strength], i) => (
               <div key={i} style={card({ padding: "22px 20px", background: L.bg })}>
-                <div style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: L.brass }}>Layer {i + 1}</div>
-                <div style={{ fontFamily: serif, fontSize: 19, fontWeight: 700, color: L.pine, letterSpacing: "-0.01em", margin: "6px 0 8px" }}>{name}</div>
+                <div style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: L.brass }}>Layer {i + 1}</div>
+                <div style={{ fontFamily: serif, fontSize: 19, fontWeight: 600, color: L.pine, letterSpacing: "-0.01em", margin: "6px 0 8px" }}>{name}</div>
                 <p style={{ margin: 0, fontFamily: sans, fontSize: 14, color: L.muted, lineHeight: 1.55 }}>{what}</p>
                 <p style={{ margin: "8px 0 0", fontFamily: sans, fontSize: 13, color: L.faint, lineHeight: 1.5, fontStyle: "italic" }}>{strength}</p>
               </div>
@@ -947,14 +949,14 @@ function Methodology({ onStart }) {
         <div style={{ display: "grid", gap: 40 }}>
           {METHOD_CATALOGUE.map(([group, flags]) => (
             <div key={group}>
-              <h3 style={{ fontFamily: serif, fontSize: 22, fontWeight: 700, color: L.pine, letterSpacing: "-0.015em", margin: "0 0 16px", paddingBottom: 10, borderBottom: `2px solid ${L.line}` }}>{group}</h3>
+              <h3 style={{ fontFamily: serif, fontSize: 22, fontWeight: 600, color: L.pine, letterSpacing: "-0.015em", margin: "0 0 16px", paddingBottom: 10, borderBottom: `2px solid ${L.line}` }}>{group}</h3>
               <div style={{ display: "grid", gap: 16 }}>
                 {flags.map((f) => (
                   <div key={f.name} style={card({ padding: "20px 22px" })}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
-                      <span style={{ fontFamily: serif, fontSize: 19, fontWeight: 700, color: L.ink, letterSpacing: "-0.01em" }}>{f.name}</span>
+                      <span style={{ fontFamily: serif, fontSize: 19, fontWeight: 600, color: L.ink, letterSpacing: "-0.01em" }}>{f.name}</span>
                       <StatusBadge s={f.status} />
-                      {f.contested && <span style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase", color: L.muted, background: "rgba(255,255,255,0.06)", border: `1px solid ${L.line}`, borderRadius: 0, padding: "2px 7px" }}>Contested</span>}
+                      {f.contested && <span style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: L.muted, background: "rgba(255,255,255,0.06)", border: `1px solid ${L.line}`, borderRadius: 0, padding: "2px 7px" }}>Contested</span>}
                     </div>
                     <div style={{ display: "grid", gap: 8 }}>
                       <Field label="Definition">{f.def}</Field>
@@ -972,19 +974,19 @@ function Methodology({ onStart }) {
 
       <section style={{ background: L.card, borderTop: `1px solid ${L.line}` }}>
         <div style={{ ...wrap, padding: "clamp(48px,7vw,72px) 24px", textAlign: "center" }}>
-          <p style={{ fontFamily: sans, fontWeight: 500, fontSize: "clamp(19px,2.5vw,25px)", color: L.pine, lineHeight: 1.45, letterSpacing: "-0.02em", margin: 0, maxWidth: 680, marginLeft: "auto", marginRight: "auto" }}>
+          <p style={{ fontFamily: sans, fontWeight: 400, fontSize: "clamp(19px,2.5vw,25px)", color: L.pine, lineHeight: 1.5, letterSpacing: "-0.01em", margin: 0, maxWidth: 680, marginLeft: "auto", marginRight: "auto" }}>
             Every flag is a checkable fact with a citation. If we cannot meet that standard, we do not flag the company. No flag means the company is not one of the names we track. It does not mean the company has been audited and found clean.
           </p>
         </div>
       </section>
 
       <section style={{ ...wrap, textAlign: "center", padding: "clamp(48px,8vw,90px) 24px" }}>
-        <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(24px,4vw,36px)", color: L.pine, fontWeight: 700, margin: "0 0 20px", letterSpacing: "-0.02em" }}>See what you own.</h2>
+        <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(24px,4vw,36px)", color: L.pine, fontWeight: 600, margin: "0 0 20px", letterSpacing: "-0.02em" }}>See what you own.</h2>
         <button onClick={onStart} style={darkBtn(999, "16px 32px", 16)}>Get started</button>
       </section>
 
       <footer style={{ ...wrap, maxWidth: 1000, borderTop: `1px solid ${L.line}`, padding: "22px 24px", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
-        <a href="#" style={{ fontFamily: serif, fontSize: 15, fontWeight: 700, color: L.muted, textDecoration: "none" }}>PlainStreet</a>
+        <a href="#" style={{ fontFamily: serif, fontSize: 15, fontWeight: 600, color: L.muted, textDecoration: "none" }}>PlainStreet</a>
         <span style={{ fontFamily: sans, fontSize: 12.5, color: L.faint }}>Read-only portfolio analysis. Not investment advice.</span>
       </footer>
     </div>
@@ -992,7 +994,7 @@ function Methodology({ onStart }) {
 }
 const SectionHead = ({ title, sub }) => (
   <div style={{ marginBottom: 28 }}>
-    <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(24px,3.6vw,34px)", color: L.pine, fontWeight: 700, margin: 0, letterSpacing: "-0.02em" }}>{title}</h2>
+    <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(24px,3.6vw,34px)", color: L.pine, fontWeight: 600, margin: 0, letterSpacing: "-0.02em" }}>{title}</h2>
     {sub && <p style={{ fontFamily: sans, fontSize: 15.5, color: L.muted, lineHeight: 1.6, margin: "10px 0 0", maxWidth: 620 }}>{sub}</p>}
   </div>
 );
@@ -1033,8 +1035,8 @@ function StepList({ steps }) {
               background: "none", border: "none", borderBottom: `1px solid ${L.line}`,
               padding: "24px 0", color: "inherit", font: "inherit",
             }}>
-            <div style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: on ? L.brass : L.faint, transition: "color .2s" }}>Step {s.n}</div>
-            <div style={{ fontFamily: serifDisplay, fontSize: "clamp(25px,4.2vw,40px)", fontWeight: 700, letterSpacing: "-0.028em", lineHeight: 1.08, marginTop: 8, color: on ? L.pine : L.muted, transition: "color .2s" }}>{s.t}</div>
+            <div style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: on ? L.brass : L.faint, transition: "color .2s" }}>Step {s.n}</div>
+            <div style={{ fontFamily: serifDisplay, fontSize: "clamp(25px,4.2vw,40px)", fontWeight: 600, letterSpacing: "-0.028em", lineHeight: 1.08, marginTop: 8, color: on ? L.pine : L.muted, transition: "color .2s" }}>{s.t}</div>
             {/* 0fr -> 1fr animates to the body's natural height without measuring it. */}
             <div style={{ display: "grid", gridTemplateRows: on ? "1fr" : "0fr", transition: "grid-template-rows .3s ease" }}>
               <div style={{ overflow: "hidden" }}>
@@ -1068,7 +1070,7 @@ function LandingHome({ onStart, snaptrade, meta }) {
               so it's the one to drop on narrow screens rather than wrap the sticky nav. */}
           <style>{`@media (max-width: 480px) { .ps-nav-methodology { display: none; } }`}</style>
           <div style={{ ...wrap, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 24px" }}>
-            <span style={{ fontFamily: serifDisplay, fontSize: 25, fontWeight: 700, color: D.ink, letterSpacing: "-0.02em" }}>PlainStreet</span>
+            <span style={{ fontFamily: serifDisplay, fontSize: 25, fontWeight: 600, color: D.ink, letterSpacing: "-0.02em" }}>PlainStreet</span>
             <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
               <a href="#methodology" className="ps-nav-methodology" style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, textDecoration: "none" }}>Methodology</a>
               <button onClick={onStart} style={brassBtn(999, "9px 18px", 14)}>Get started</button>
@@ -1077,14 +1079,14 @@ function LandingHome({ onStart, snaptrade, meta }) {
         </nav>
         <header>
           <div style={{ ...wrap, textAlign: "center", padding: "clamp(56px,9vw,96px) 24px clamp(48px,7vw,80px)" }}>
-            <h1 style={{ fontFamily: serifDisplay, fontWeight: 700, fontSize: "clamp(38px,7vw,72px)", lineHeight: 1.02, margin: 0, letterSpacing: "-0.04em", color: D.ink }}>
+            <h1 style={{ fontFamily: serifDisplay, fontWeight: 600, fontSize: "clamp(38px,7vw,72px)", lineHeight: 1.02, margin: 0, letterSpacing: "-0.04em", color: D.ink }}>
               The ethical portfolio analyzer
             </h1>
-            <p style={{ fontFamily: sans, fontWeight: 600, fontSize: "clamp(20px,3vw,32px)", lineHeight: 1.18, letterSpacing: "-0.025em", color: D.ink, margin: "18px auto 0", maxWidth: 680 }}>
+            <p style={{ fontFamily: sans, fontWeight: 400, fontSize: "clamp(19px,2.8vw,30px)", lineHeight: 1.22, letterSpacing: "-0.015em", color: D.ink, margin: "18px auto 0", maxWidth: 680 }}>
               Is your money already funding what you fight against?
             </p>
             <p style={{ fontFamily: sans, fontSize: "clamp(16px,2vw,19px)", lineHeight: 1.6, color: D.ink, margin: "24px auto 0", maxWidth: 560 }}>
-              Let's find out. Even broad market funds hide holdings that might not match your values. Search any stock or ETF ticker to see what’s really inside your portfolio.
+              Even broad market funds hide holdings that might not match your values. Search any stock or ETF ticker to see what’s really inside your portfolio.
             </p>
             <VerifiedBanner />
             <HeroAnalyzer onStart={onStart} wrap={wrap} snaptrade={snaptrade} meta={meta} />
@@ -1100,7 +1102,7 @@ function LandingHome({ onStart, snaptrade, meta }) {
              one, not by a card, so the band reads as one solid field. ── */}
       <section style={{ background: L.card }}>
         <div style={{ ...wrap, padding: "clamp(56px,9vw,96px) 24px" }}>
-          <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(26px,4vw,38px)", color: L.pine, fontWeight: 700, margin: "0 0 34px", letterSpacing: "-0.02em" }}>How to get started</h2>
+          <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(26px,4vw,38px)", color: L.pine, fontWeight: 600, margin: "0 0 34px", letterSpacing: "-0.02em" }}>How to get started</h2>
           <StepList steps={steps} />
         </div>
       </section>
@@ -1109,7 +1111,7 @@ function LandingHome({ onStart, snaptrade, meta }) {
              between the two is a hard colour change rather than a rule. ── */}
       <section style={{ background: D.block }}>
         <div style={{ ...wrap, maxWidth: 720, textAlign: "center", padding: "clamp(48px,8vw,80px) 24px" }}>
-          <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(24px,4vw,32px)", color: L.pine, fontWeight: 700, margin: 0, letterSpacing: "-0.02em" }}>We'd rather under-claim than mislead</h2>
+          <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(24px,4vw,32px)", color: L.pine, fontWeight: 600, margin: 0, letterSpacing: "-0.02em" }}>We'd rather under-claim than mislead</h2>
           <p style={{ fontFamily: sans, fontSize: 16, color: L.muted, lineHeight: 1.7, margin: "16px 0 0" }}>
             Every flag is a checkable fact about what a company does, with the reason and, where it comes from a filing, the company's own words. We look inside a fund only when its issuer publishes the holdings: the big S&P 500, total-market, Dow, mid- and small-cap and ESG index funds. We say which file the list came from and when. A fund we can't see inside is labeled "not analyzed," never called clean. Our coverage is U.S.-listed companies that file with the SEC, so a foreign-listed name may come back empty simply because we haven't reached it. A clean result means "none of the names we track," never "audited pure." You draw the lines; we show you where your money already sits.
           </p>
@@ -1118,13 +1120,13 @@ function LandingHome({ onStart, snaptrade, meta }) {
 
       {/* ── CTA ── */}
       <section style={{ ...wrap, textAlign: "center", padding: "clamp(60px,10vw,110px) 24px" }}>
-        <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(28px,4.5vw,42px)", color: L.pine, fontWeight: 700, margin: "0 0 10px", letterSpacing: "-0.02em" }}>See what you own.</h2>
+        <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(28px,4.5vw,42px)", color: L.pine, fontWeight: 600, margin: "0 0 10px", letterSpacing: "-0.02em" }}>See what you own.</h2>
         <p style={{ fontFamily: sans, fontSize: 16, color: L.muted, margin: "0 0 26px" }}>Free, read-only, about two minutes.</p>
         <button onClick={onStart} style={darkBtn(999, "16px 32px", 16)}>Get started</button>
       </section>
 
       <footer style={{ ...wrap, borderTop: `1px solid ${L.line}`, padding: "22px 24px", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
-        <span style={{ fontFamily: serif, fontSize: 15, fontWeight: 700, color: L.muted }}>PlainStreet</span>
+        <span style={{ fontFamily: serif, fontSize: 15, fontWeight: 600, color: L.muted }}>PlainStreet</span>
         <div style={{ display: "flex", gap: 18, alignItems: "center" }}>
           <a href="#methodology" style={{ fontFamily: sans, fontSize: 12.5, color: L.muted, textDecoration: "none" }}>Methodology</a>
           <span style={{ fontFamily: sans, fontSize: 12.5, color: L.faint }}>Read-only portfolio analysis. Not investment advice.</span>
@@ -1267,7 +1269,7 @@ function Dashboard({ user, onSignOut, onGoHome }) {
             it on narrow screens; flexWrap is a safety net if it's still tight. */}
         <style>{`@media (max-width: 480px) { .ps-dash-email { display: none; } }`}</style>
         <div style={{ maxWidth: 800, margin: "0 auto", padding: "14px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
-          <button onClick={onGoHome} style={{ ...linkBtn(L.pine), fontFamily: serifDisplay, fontSize: 20, fontWeight: 700, letterSpacing: "-0.02em" }}>PlainStreet</button>
+          <button onClick={onGoHome} style={{ ...linkBtn(L.pine), fontFamily: serifDisplay, fontSize: 20, fontWeight: 600, letterSpacing: "-0.02em" }}>PlainStreet</button>
           <span style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
             <button onClick={onGoHome} style={linkBtn(L.teal)}>Search a ticker</button>
             <span className="ps-dash-email" style={{ fontFamily: sans, fontSize: 12.5, color: L.muted }}>{user.email}</span>
@@ -1290,7 +1292,7 @@ function Dashboard({ user, onSignOut, onGoHome }) {
                     transition: "all .14s ease",
                   }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                      <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 700, color: L.ink }}>{s.label}</span>
+                      <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: L.ink }}>{s.label}</span>
                       <span style={{ fontFamily: sans, fontSize: 15, color: on ? L.flag : L.faint }}>{on ? "✓" : "+"}</span>
                     </div>
                     <div style={{ fontFamily: sans, fontSize: 12, color: L.muted, marginTop: 4, lineHeight: 1.45 }}>{s.blurb}</div>
@@ -1311,7 +1313,7 @@ function Dashboard({ user, onSignOut, onGoHome }) {
         <LSection n="2" title="Connect your brokerage" sub="Read-only, through SnapTrade. We can see your holdings, but we only read them, and never move money without your say-so.">
           {analysis ? (
             <div style={card({ padding: "15px 18px", display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" })}>
-              <span style={{ color: L.good, fontWeight: 700, fontFamily: sans, fontSize: 14 }}>✓ Connected</span>
+              <span style={{ color: L.good, fontWeight: 600, fontFamily: sans, fontSize: 14 }}>✓ Connected</span>
               <span style={{ color: L.muted, fontFamily: sans, fontSize: 14 }}>· {analysis.accounts.map((a) => a.name).join(", ")}</span>
               <button onClick={connect} style={{ ...linkBtn(L.teal), marginLeft: "auto" }}>Reconnect</button>
             </div>
@@ -1384,8 +1386,8 @@ function Results({ analysis }) {
           {conflictedStocks.map((h) => (
             <div key={h.account + h.symbol} style={card({ padding: "15px 17px", marginBottom: 10, borderLeft: `3px solid ${L.flag}` })}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10 }}>
-                <div><span style={{ fontFamily: sans, fontSize: 15, fontWeight: 700, color: L.ink }}>{h.symbol}</span><span style={{ fontFamily: sans, fontSize: 13, color: L.muted }}> · {h.description}</span></div>
-                <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 700, color: L.ink }}>{money(h.valueCents)}</span>
+                <div><span style={{ fontFamily: sans, fontSize: 15, fontWeight: 600, color: L.ink }}>{h.symbol}</span><span style={{ fontFamily: sans, fontSize: 13, color: L.muted }}> · {h.description}</span></div>
+                <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: L.ink }}>{money(h.valueCents)}</span>
               </div>
               <div style={{ fontFamily: sans, fontSize: 11.5, color: L.faint, marginTop: 2 }}>{h.account} · {h.units} shares</div>
               <div style={{ marginTop: 12, display: "grid", gap: 10 }}>
@@ -1406,8 +1408,8 @@ function Results({ analysis }) {
             return (
               <div key={h.account + h.symbol} style={card({ padding: "15px 17px", marginBottom: 10, borderLeft: `3px solid ${L.brass}` })}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10 }}>
-                  <div><span style={{ fontFamily: sans, fontSize: 15, fontWeight: 700, color: L.ink }}>{h.symbol}</span><span style={{ fontFamily: sans, fontSize: 13, color: L.muted }}> · {h.description}</span></div>
-                  <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 700, color: L.ink }}>{money(h.valueCents)}</span>
+                  <div><span style={{ fontFamily: sans, fontSize: 15, fontWeight: 600, color: L.ink }}>{h.symbol}</span><span style={{ fontFamily: sans, fontSize: 13, color: L.muted }}> · {h.description}</span></div>
+                  <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: L.ink }}>{money(h.valueCents)}</span>
                 </div>
                 <div style={{ fontFamily: sans, fontSize: 12, color: L.faint, marginTop: 2 }}>Tracks {h.fundBasis}, holds {fundContains.length} flagged companies</div>
                 <div style={{ marginTop: 10, display: "grid", gap: 8 }}>
@@ -1436,7 +1438,7 @@ function Results({ analysis }) {
             <div key={h.account + h.symbol} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: sans, fontSize: 13, padding: "9px 2px", borderBottom: i < holdings.length - 1 ? `1px solid ${L.lineSoft}` : "none" }}>
               <span style={{ color: L.ink }}><b>{h.symbol}</b> <span style={{ color: L.muted }}>{h.description}</span></span>
               <span style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                {h.conflicted ? <span style={{ color: L.flag, fontSize: 11, fontWeight: 700 }}>● flagged</span>
+                {h.conflicted ? <span style={{ color: L.flag, fontSize: 11, fontWeight: 600 }}>● flagged</span>
                   : h.analyzable ? <span style={{ color: L.good, fontSize: 11 }}>clear</span>
                   : <span style={{ color: L.faint, fontSize: 11 }}>not analyzed</span>}
                 <span style={{ color: L.muted, minWidth: 78, textAlign: "right" }}>{money(h.valueCents)}</span>
@@ -1448,14 +1450,14 @@ function Results({ analysis }) {
     </LSection>
   );
 }
-const SubHead = ({ children }) => <div style={{ fontFamily: sans, fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase", color: L.brass, fontWeight: 700, margin: "6px 0 10px" }}>{children}</div>;
+const SubHead = ({ children }) => <div style={{ fontFamily: sans, fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase", color: L.brass, fontWeight: 600, margin: "6px 0 10px" }}>{children}</div>;
 
 // ── Shared ────────────────────────────────────────────────────────────────────
 function LSection({ n, title, sub, children }) {
   return (
     <section style={{ marginTop: 28 }}>
       <div style={{ display: "flex", alignItems: "baseline", gap: 11 }}>
-        <span style={{ fontFamily: serif, fontSize: 15, color: L.brass, fontWeight: 700 }}>{n}</span>
+        <span style={{ fontFamily: serif, fontSize: 15, color: L.brass, fontWeight: 600 }}>{n}</span>
         <h2 style={{ fontFamily: serif, fontSize: 22, color: L.pine, margin: 0, letterSpacing: "-0.02em" }}>{title}</h2>
       </div>
       {sub && <p style={{ fontFamily: sans, fontSize: 13.5, color: L.muted, margin: "6px 0 15px", lineHeight: 1.5 }}>{sub}</p>}
@@ -1483,16 +1485,16 @@ const DarkErr = ({ children }) => <div style={{ marginTop: 12, fontFamily: sans,
 // differ only in border/shadow; they're near-duplicates now and could collapse into one.
 const mintBtn = () => ({
   background: A.lav, color: A.lavInk, border: `1px solid ${A.lav}`, borderRadius: 0, padding: "12px 20px",
-  fontFamily: sans, fontSize: 15, fontWeight: 700, cursor: "pointer", letterSpacing: "-0.005em",
+  fontFamily: sans, fontSize: 15, fontWeight: 600, cursor: "pointer", letterSpacing: "-0.005em",
 });
 const brassBtn = (r = 0, pad = "14px 24px", fs = 15) => ({
   background: A.lav, color: A.lavInk, border: `1px solid ${A.lav}`, borderRadius: r, padding: pad,
-  fontFamily: sans, fontSize: fs, fontWeight: 700, cursor: "pointer", letterSpacing: "-0.005em",
+  fontFamily: sans, fontSize: fs, fontWeight: 600, cursor: "pointer", letterSpacing: "-0.005em",
 });
 // Borderless variant with a lift — used for the big page-level CTAs.
 const darkBtn = (r = 0, pad = "14px 24px", fs = 15) => ({
   background: A.lav, color: A.lavInk, border: "none", borderRadius: r, padding: pad,
-  fontFamily: sans, fontSize: fs, fontWeight: 700, cursor: "pointer", letterSpacing: "-0.005em",
+  fontFamily: sans, fontSize: fs, fontWeight: 600, cursor: "pointer", letterSpacing: "-0.005em",
 });
 const linkBtn = (color) => ({ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: sans, fontSize: 13, fontWeight: 600, color });
 
@@ -1502,7 +1504,7 @@ const linkBtn = (color) => ({ background: "none", border: "none", padding: 0, cu
 // dissolves into its own card.
 const onAccentBtn = (r = 0, pad = "8px 16px", fs = 13) => ({
   background: "#FFFFFF", color: A.lavInk, border: "none", borderRadius: r, padding: pad,
-  fontFamily: sans, fontSize: fs, fontWeight: 700, cursor: "pointer", letterSpacing: "-0.005em",
+  fontFamily: sans, fontSize: fs, fontWeight: 600, cursor: "pointer", letterSpacing: "-0.005em",
 });
 
 // §3.6 — delta badge. Lime when up, coral when down; each carries its own ink.
@@ -1518,7 +1520,7 @@ function DeltaBadge({ pct }) {
   const up = pct >= 0;
   return (
     <span style={{
-      fontFamily: sans, fontSize: 10.5, fontWeight: 700, borderRadius: 999, padding: "2px 8px",
+      fontFamily: sans, fontSize: 10.5, fontWeight: 600, borderRadius: 999, padding: "2px 8px",
       background: up ? A.lime : L.flagBg, color: up ? A.limeInk : L.flag,
       border: up ? "none" : `1px solid ${L.flagBorder}`, whiteSpace: "nowrap",
     }}>{up ? "+" : ""}{fmtPct(pct)}</span>
@@ -1625,12 +1627,12 @@ function Callout({ tone = "lav", label, headline, actionLabel, onAction }) {
   return (
     <div style={{ background: fill, borderRadius: 0, padding: "15px 16px", display: "grid", gap: 9, marginBottom: 16 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        {label && <span style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 700, color: dim }}>{label}</span>}
+        {label && <span style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: dim }}>{label}</span>}
         <button onClick={() => setGone(true)} aria-label="Dismiss"
           style={{ marginLeft: "auto", background: "none", border: "none", cursor: "pointer", color: dim, fontFamily: sans, fontSize: 17, lineHeight: 1, padding: 2 }}>×</button>
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-        <div style={{ fontFamily: sans, fontSize: 18, fontWeight: 700, color: ink, letterSpacing: "-0.01em", lineHeight: 1.3, flex: "1 1 240px" }}>{headline}</div>
+        <div style={{ fontFamily: sans, fontSize: 18, fontWeight: 600, color: ink, letterSpacing: "-0.01em", lineHeight: 1.3, flex: "1 1 240px" }}>{headline}</div>
         {actionLabel && <button onClick={onAction} style={onAccentBtn()}>{actionLabel}</button>}
       </div>
     </div>
@@ -1647,7 +1649,7 @@ function ProgressRow({ icon, title, subtitle, leftValue, rightValue, pct, tone =
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
         {icon && <div style={{ width: 40, height: 40, borderRadius: 0, background: L.lineSoft, display: "grid", placeItems: "center", fontSize: 17, flexShrink: 0 }}>{icon}</div>}
         <div style={{ minWidth: 0, flex: 1 }}>
-          <div style={{ fontFamily: sans, fontSize: 16, fontWeight: 700, color: L.ink, letterSpacing: "-0.01em" }}>{title}</div>
+          <div style={{ fontFamily: sans, fontSize: 16, fontWeight: 600, color: L.ink, letterSpacing: "-0.01em" }}>{title}</div>
           {subtitle && <div style={{ fontFamily: sans, fontSize: 12.5, color: L.muted, marginTop: 2 }}>{subtitle}</div>}
         </div>
       </div>
@@ -1725,7 +1727,7 @@ function QuotePanel({ symbol }) {
             return (
               <button key={r.key} onClick={() => setRange(r.key)} aria-pressed={on}
                 style={{
-                  fontFamily: sans, fontSize: 11.5, fontWeight: 700, cursor: "pointer",
+                  fontFamily: sans, fontSize: 11.5, fontWeight: 600, cursor: "pointer",
                   borderRadius: 999, padding: "3px 10px", minWidth: 34,
                   background: on ? A.lav : "transparent",
                   color: on ? A.lavInk : D.muted,

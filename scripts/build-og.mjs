@@ -21,9 +21,9 @@ const html = ({ eyebrow, title, sub, chips }) => `<!doctype html><html><head><me
   body{margin:0;width:1200px;height:630px;background:#0B0B0D;font-family:"Familjen Grotesk",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#F4F4F5;position:relative;overflow:hidden}
   .glow{position:absolute;inset:0;background:radial-gradient(900px 520px at 12% -10%,#141E33 0%,transparent 62%)}
   .wrap{position:absolute;inset:0;padding:64px 72px;display:flex;flex-direction:column;justify-content:space-between}
-  .brand{font-size:30px;font-weight:700;letter-spacing:-.02em}
+  .brand{font-size:30px;font-weight:600;letter-spacing:-.02em}
   .eyebrow{font-size:20px;letter-spacing:.18em;text-transform:uppercase;color:#A9C5F0;margin-bottom:18px}
-  h1{font-size:74px;line-height:1.04;letter-spacing:-.035em;margin:0;font-weight:700;max-width:1000px}
+  h1{font-size:74px;line-height:1.04;letter-spacing:-.035em;margin:0;font-weight:600;max-width:1000px}
   h1 em{font-style:normal;color:#A9C5F0}
   .sub{font-size:28px;color:#A1A1AA;margin-top:22px}
   .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
