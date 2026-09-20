@@ -1,7 +1,7 @@
 * { box-sizing: border-box; }
 html, body, #root { margin: 0; padding: 0; }
 html, body { height: 100%; }
-body { background: #FCEBD0; }
+body { background: #F3F2EE; }
 
 /* Accessibility: a visible focus ring for keyboard users. !important so it beats the
    inline `outline:none` on inputs. Mouse clicks don't trigger :focus-visible, so it

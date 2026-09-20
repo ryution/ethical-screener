@@ -17,39 +17,41 @@ import { useEffect, useRef, useState } from "react";
 import { displayName, reasonParts } from "./format.js";
 
 // ── Palette ──────────────────────────────────────────────────────────────────
-// Five fixed tones, plus one terracotta: the source palette has no red, and a flag
-// is the product's main signal, so it needs a warning colour that belongs here.
+// The ground is neutral: a light bone page, a charcoal block, and greys between.
+// Colour is accent only — chartreuse to act on, sky to start, terracotta to warn,
+// emerald to confirm — so the page itself never reads as tinted.
 const P = {
-  butter: "#FCEBD0", pale: "#E1CC96", sky: "#B1BACA",
-  chart: "#BA9F38", emerald: "#1D3B28", terra: "#A8452F",
+  bone: "#F3F2EE", raise: "#EAE8E2", card: "#FBFAF7",
+  charcoal: "#232420", ink: "#1F211E",
+  chart: "#BA9F38", olive: "#6B5D1F", emerald: "#1D3B28",
+  terra: "#A8452F", sky: "#B1BACA", pale: "#E1CC96",
 };
 
-// ── Tokens for the emerald bands: light type on dark ground. ink/muted/faint is
-// just the palette's own brightness ramp (butter > pale lime > sky blue). ───────
+// ── Tokens for the charcoal bands: light type on dark ground. ────────────────
 const D = {
-  ink: P.butter, muted: P.pale, faint: P.sky,
+  ink: P.bone, muted: "#B4B2AA", faint: "#8C8A83",
   mint: P.chart, brass: P.chart, brassSoft: P.chart,
-  glassBorder: "rgba(252,235,208,0.18)",
-  lift: "#24482F", // emerald raised one step, for panels sitting on the band
-  block: P.emerald,
-  // Terracotta at full strength is only 2.1:1 on emerald, so the bands get a lifted
-  // tint of it. Same hue, same meaning, readable on the dark ground.
+  glassBorder: "rgba(243,242,238,0.16)",
+  lift: "#2E302A", // charcoal raised one step, for panels sitting on the band
+  block: P.charcoal,
+  // Terracotta at full strength is only 2.7:1 on charcoal, so the dark bands get a
+  // lifted tint of it. Same hue, same meaning, readable on the dark ground.
   flag: "#E08A72", flagBg: "rgba(224,138,114,0.16)", flagBorder: "rgba(224,138,114,0.38)",
 };
-// ── Tokens for the butter page: dark type on light ground. Chartreuse is too pale
-// to be read as text on butter (2.2:1), so accent TEXT uses a deep olive shade of
-// it and chartreuse itself is kept for fills, which carry emerald ink. `pine` and
-// `teal` are legacy names from the old theme; the values are the source of truth.
+// ── Tokens for the bone page: dark type on light ground. Chartreuse is only 2.2:1
+// on bone, so accent TEXT uses a deep olive shade of it and chartreuse itself is
+// kept for fills, which carry charcoal ink. `pine` and `teal` are legacy names
+// from the old dark theme; the values are what matter.
 const L = {
-  bg: P.butter, card: "#FFF8EC", line: "#E6D5B6", lineSoft: "#F4E6CC",
-  ink: P.emerald, muted: "#3F5246", faint: "#5A6A5F",
-  pine: P.emerald, teal: "#5F5219", mint: P.emerald, brass: "#5F5219",
-  flag: P.terra, flagBg: "rgba(168,69,47,0.10)", flagBorder: "rgba(168,69,47,0.30)",
+  bg: P.bone, card: P.card, line: "#DFDDD5", lineSoft: "#EDEBE5",
+  ink: P.ink, muted: "#4F5249", faint: "#61645C",
+  pine: P.ink, teal: P.olive, mint: P.emerald, brass: P.olive,
+  flag: P.terra, flagBg: "rgba(168,69,47,0.09)", flagBorder: "rgba(168,69,47,0.28)",
   good: P.emerald,
 };
-// Accent fills. A chartreuse or pale-lime fill always carries emerald ink on top —
-// never butter, which is what keeps these legible.
-const A = { lav: P.chart, lavInk: P.emerald, lime: P.pale, limeInk: P.emerald, raised: "#F5E6C8" };
+// Accent fills. A chartreuse, sky or sand fill always carries charcoal ink on top —
+// never bone, which is what keeps these legible.
+const A = { lav: P.chart, lavInk: P.charcoal, lime: P.pale, limeInk: P.charcoal, raised: P.raise };
 // Two families, split by job. Familjen Grotesk is tight and characterful, which carries a
 // headline but turns dense and shouty at label size; Hanken Grotesk is open and humanist,
 // which is what body copy and UI chrome need. `serif`/`serifDisplay` are legacy aliases
@@ -257,7 +259,7 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
             onBlur={() => setTimeout(() => setShowSug(false), 140)}
             placeholder="Search a stock or ETF: try “Apple”, VOO, XLV…" aria-label="Search a stock or ETF"
             autoComplete="off" role="combobox" aria-expanded={showSug} aria-autocomplete="list"
-            style={{ width: "100%", boxSizing: "border-box", fontFamily: sans, fontSize: 15, color: D.ink, background: "rgba(252,235,208,0.10)",
+            style={{ width: "100%", boxSizing: "border-box", fontFamily: sans, fontSize: 15, color: D.ink, background: "rgba(243,242,238,0.10)",
               border: `1px solid ${D.glassBorder}`, borderRadius: 14, padding: "14px 15px", outline: "none", }} />
           {showSug && sugg.length > 0 && (
             <ul role="listbox" style={{ position: "absolute", zIndex: 30, top: "calc(100% + 6px)", left: 0, right: 0, margin: 0, padding: 4, listStyle: "none",
@@ -282,7 +284,7 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
       <div style={{ display: "flex", gap: 7, flexWrap: "wrap", alignItems: "center", maxWidth: 560, margin: "10px auto 0" }}>
         <span style={{ fontFamily: sans, fontSize: 12, color: D.faint }}>Try:</span>
         {examples.map((x) => (
-          <button key={x} onClick={() => { setQ(x); run(x); }} style={{ background: "rgba(252,235,208,0.08)", border: `1px solid ${D.glassBorder}`, color: D.muted, borderRadius: 999, padding: "4px 11px", fontFamily: sans, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>{x}</button>
+          <button key={x} onClick={() => { setQ(x); run(x); }} style={{ background: "rgba(243,242,238,0.08)", border: `1px solid ${D.glassBorder}`, color: D.muted, borderRadius: 999, padding: "4px 11px", fontFamily: sans, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>{x}</button>
         ))}
       </div>
 
@@ -377,7 +379,7 @@ function filterBySelected(result, selected) {
 }
 
 function HeroResult({ result, onStart, snaptrade }) {
-  const panel = glass({ marginTop: 14, padding: "18px 20px", background: "rgba(252,235,208,0.09)", borderRadius: 14 });
+  const panel = glass({ marginTop: 14, padding: "18px 20px", background: "rgba(243,242,238,0.09)", borderRadius: 14 });
   const cta = <HeroCTA onStart={onStart} snaptrade={snaptrade} />;
 
   if (result.type === "none") {
@@ -447,7 +449,7 @@ function HeroResult({ result, onStart, snaptrade }) {
       <div style={panel}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
           <div style={{ fontFamily: serif, fontSize: 20, color: D.ink }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
-          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: D.muted, background: "rgba(252,235,208,0.10)", borderRadius: 999, padding: "3px 10px" }}>NOT ANALYZED</span>
+          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: D.muted, background: "rgba(243,242,238,0.10)", borderRadius: 999, padding: "3px 10px" }}>NOT ANALYZED</span>
         </div>
         <p style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, margin: "8px 0 0", lineHeight: 1.55 }}>
           {result.notAnalyzedReason} We call that <b style={{ color: D.ink }}>not analyzed</b>, never "clean."
@@ -537,7 +539,7 @@ function FundBreakdown({ groups, theme }) {
   const [openGroups, setOpenGroups] = useState({});  // flagKey -> expanded
   const dark = theme === "dark";
   const c = dark
-    ? { ink: D.ink, muted: D.muted, faint: D.faint, link: A.lav, panel: "rgba(252,235,208,0.07)", border: D.glassBorder, surface: "rgba(252,235,208,0.05)", flag: D.flag }
+    ? { ink: D.ink, muted: D.muted, faint: D.faint, link: A.lav, panel: "rgba(243,242,238,0.07)", border: D.glassBorder, surface: "rgba(243,242,238,0.05)", flag: D.flag }
     : { ink: L.ink, muted: L.muted, faint: L.faint, link: A.lav, panel: L.lineSoft, border: L.line, surface: L.card, flag: L.flag };
   const toggle = (key) => setOpenGroups((s) => ({ ...s, [key]: !s[key] }));
   return (
@@ -621,7 +623,7 @@ function FundBreakdown({ groups, theme }) {
 // §3.3 — one card per flag. The label used to sit in a narrow left column with the whole
 // finding crammed beside it, which turned three sentences into a thin wall of text.
 function FlagCard({ flag, company, dark = false }) {
-  const surface = dark ? "rgba(252,235,208,0.05)" : L.card;
+  const surface = dark ? "rgba(243,242,238,0.05)" : L.card;
   const border = dark ? D.glassBorder : L.line;
   const ink = dark ? D.ink : L.ink;
   const muted = dark ? D.muted : L.muted;
@@ -709,7 +711,7 @@ function WaitlistCallout() {
       setState("done"); ping("waitlist_join");
     } catch (e) { setMsg(e.message); setState("error"); }
   };
-  const dim = "rgba(29,59,40,0.66)";
+  const dim = "rgba(35,36,32,0.66)";
   return (
     <div style={{ background: A.lav, borderRadius: 14, padding: "15px 16px", display: "grid", gap: 9 }}>
       <span style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: dim }}>That's one ticker</span>
@@ -722,7 +724,7 @@ function WaitlistCallout() {
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <input id="waitlist-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" aria-label="Email for the waitlist"
             onKeyDown={(e) => e.key === "Enter" && submit()}
-            style={{ flex: "1 1 200px", fontFamily: sans, fontSize: 14, padding: "9px 12px", borderRadius: 999, border: "1px solid rgba(29,59,40,0.25)", background: "rgba(252,235,208,0.85)", color: A.lavInk, outline: "none" }} />
+            style={{ flex: "1 1 200px", fontFamily: sans, fontSize: 14, padding: "9px 12px", borderRadius: 999, border: "1px solid rgba(35,36,32,0.25)", background: "rgba(243,242,238,0.90)", color: A.lavInk, outline: "none" }} />
           <button onClick={submit} disabled={state === "busy"} style={onAccentBtn(999, "9px 16px", 13)}>{state === "busy" ? "…" : "Tell me when"}</button>
           {state === "error" && <span style={{ fontFamily: sans, fontSize: 12.5, color: A.lavInk, flexBasis: "100%" }}>{msg}</span>}
         </div>
@@ -757,7 +759,7 @@ function TickerTape() {
 
   const Item = ({ q, keySuffix }) => {
     const up = q.changePercent >= 0;
-    const color = up ? "#8FBF6A" : "#E08A72";
+    const color = up ? "#4ADE80" : "#F87171";
     return (
       <span key={q.symbol + keySuffix} style={{ display: "inline-flex", alignItems: "baseline", gap: 8, padding: "0 22px", fontFamily: sans, fontSize: 13, whiteSpace: "nowrap" }}>
         <span style={{ fontWeight: 600, color: D.ink, letterSpacing: "0.02em" }}>{q.symbol}</span>
@@ -768,7 +770,7 @@ function TickerTape() {
   };
 
   return (
-    <div style={{ background: "#14301F", borderBottom: `1px solid ${D.glassBorder}`, overflow: "hidden", padding: "9px 0" }}>
+    <div style={{ background: "#0D0D11", borderBottom: "1px solid rgba(255,255,255,0.08)", overflow: "hidden", padding: "9px 0" }}>
       <style>{`
         @keyframes ps-ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
         .ps-ticker-track { display: inline-flex; animation: ps-ticker-scroll 45s linear infinite; }
@@ -905,7 +907,7 @@ function Methodology({ onStart }) {
   const StatusBadge = ({ s }) => (
     <span style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase",
       color: s === "Live" ? L.good : L.brass, background: s === "Live" ? "rgba(29,59,40,0.12)" : "rgba(186,159,56,0.16)",
-      border: `1px solid ${s === "Live" ? "rgba(29,59,40,0.40)" : "rgba(252,235,208,0.20)"}`, borderRadius: 0, padding: "2px 7px", whiteSpace: "nowrap" }}>{s}</span>
+      border: `1px solid ${s === "Live" ? "rgba(29,59,40,0.40)" : "rgba(243,242,238,0.20)"}`, borderRadius: 0, padding: "2px 7px", whiteSpace: "nowrap" }}>{s}</span>
   );
   const Field = ({ label, children, color }) => (
     <div style={{ display: "grid", gridTemplateColumns: "112px 1fr", gap: 12, alignItems: "baseline" }}>
@@ -919,7 +921,7 @@ function Methodology({ onStart }) {
         <nav style={{ borderBottom: `1px solid ${D.glassBorder}` }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 28px" }}>
             <a href="#" style={{ fontFamily: wordmark, fontSize: 25, fontWeight: 600, color: D.ink, letterSpacing: "-0.02em", textDecoration: "none" }}>PlainStreet</a>
-            <button onClick={onStart} style={brassBtn(999, "9px 18px", 14)}>Get started</button>
+            <button onClick={onStart} style={startBtn(999, "9px 18px", 14)}>Get started</button>
           </div>
         </nav>
         <header>
@@ -975,7 +977,7 @@ function Methodology({ onStart }) {
                     <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
                       <span style={{ fontFamily: serif, fontSize: 19, fontWeight: 600, color: L.ink, letterSpacing: "-0.01em" }}>{f.name}</span>
                       <StatusBadge s={f.status} />
-                      {f.contested && <span style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: L.muted, background: "rgba(252,235,208,0.08)", border: `1px solid ${L.line}`, borderRadius: 0, padding: "2px 7px" }}>Contested</span>}
+                      {f.contested && <span style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: L.muted, background: "rgba(243,242,238,0.08)", border: `1px solid ${L.line}`, borderRadius: 0, padding: "2px 7px" }}>Contested</span>}
                     </div>
                     <div style={{ display: "grid", gap: 8 }}>
                       <Field label="Definition">{f.def}</Field>
@@ -1001,7 +1003,7 @@ function Methodology({ onStart }) {
 
       <section style={{ ...wrap, textAlign: "center", padding: "clamp(48px,8vw,90px) 24px" }}>
         <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(24px,4vw,36px)", color: L.pine, fontWeight: 600, margin: "0 0 20px", letterSpacing: "-0.02em" }}>See what you own.</h2>
-        <button onClick={onStart} style={darkBtn(999, "16px 32px", 16)}>Get started</button>
+        <button onClick={onStart} style={startBtn(999, "16px 32px", 16)}>Get started</button>
       </section>
 
       <footer style={{ ...wrap, maxWidth: 1000, borderTop: `1px solid ${L.line}`, padding: "22px 24px", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
@@ -1094,7 +1096,7 @@ function LandingHome({ onStart, snaptrade, meta }) {
             <span style={{ fontFamily: wordmark, fontSize: 25, fontWeight: 600, color: D.ink, letterSpacing: "-0.02em" }}>PlainStreet</span>
             <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
               <a href="#methodology" className="ps-nav-methodology" style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, textDecoration: "none" }}>Methodology</a>
-              <button onClick={onStart} style={brassBtn(999, "9px 18px", 14)}>Get started</button>
+              <button onClick={onStart} style={startBtn(999, "9px 18px", 14)}>Get started</button>
             </div>
           </div>
         </nav>
@@ -1121,7 +1123,7 @@ function LandingHome({ onStart, snaptrade, meta }) {
 
       {/* ── Charcoal block: how it works. Columns are separated by a rule above each
              one, not by a card, so the band reads as one solid field. ── */}
-      <section style={{ background: P.pale }}>
+      <section style={{ background: P.raise }}>
         <div style={{ ...wrap, padding: "clamp(56px,9vw,96px) 24px" }}>
           <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(26px,4vw,38px)", color: L.pine, fontWeight: 600, margin: "0 0 34px", letterSpacing: "-0.02em" }}>How to get started</h2>
           <StepList steps={steps} />
@@ -1130,12 +1132,10 @@ function LandingHome({ onStart, snaptrade, meta }) {
 
       {/* ── Navy block: honesty. A different solid from the band above it, so the seam
              between the two is a hard colour change rather than a rule. ── */}
-      <section style={{ background: P.sky }}>
+      <section style={{ background: D.block }}>
         <div style={{ ...wrap, maxWidth: 720, textAlign: "center", padding: "clamp(48px,8vw,80px) 24px" }}>
-          <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(24px,4vw,32px)", color: L.pine, fontWeight: 600, margin: 0, letterSpacing: "-0.02em" }}>We'd rather under-claim than mislead</h2>
-          {/* Sky blue is the darkest of the light bands, so the standard muted tone only
-              reaches 3.4:1 on it. This one is dropped a step to clear 4.5:1. */}
-          <p style={{ fontFamily: sans, fontSize: 16, color: "#33493B", lineHeight: 1.7, margin: "16px 0 0" }}>
+          <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(24px,4vw,32px)", color: D.ink, fontWeight: 600, margin: 0, letterSpacing: "-0.02em" }}>We'd rather under-claim than mislead</h2>
+          <p style={{ fontFamily: sans, fontSize: 16, color: D.muted, lineHeight: 1.7, margin: "16px 0 0" }}>
             Every flag is a checkable fact about what a company does, with the reason and, where it comes from a filing, the company's own words. We look inside a fund only when its issuer publishes the holdings: the big S&P 500, total-market, Dow, mid- and small-cap and ESG index funds. We say which file the list came from and when. A fund we can't see inside is labeled "not analyzed," never called clean. Our coverage is U.S.-listed companies that file with the SEC, so a foreign-listed name may come back empty simply because we haven't reached it. A clean result means "none of the names we track," never "audited pure." You draw the lines; we show you where your money already sits.
           </p>
         </div>
@@ -1145,7 +1145,7 @@ function LandingHome({ onStart, snaptrade, meta }) {
       <section style={{ ...wrap, textAlign: "center", padding: "clamp(60px,10vw,110px) 24px" }}>
         <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(28px,4.5vw,42px)", color: L.pine, fontWeight: 600, margin: "0 0 10px", letterSpacing: "-0.02em" }}>See what you own.</h2>
         <p style={{ fontFamily: sans, fontSize: 16, color: L.muted, margin: "0 0 26px" }}>Free, read-only, about two minutes.</p>
-        <button onClick={onStart} style={darkBtn(999, "16px 32px", 16)}>Get started</button>
+        <button onClick={onStart} style={startBtn(999, "16px 32px", 16)}>Get started</button>
       </section>
 
       <footer style={{ ...wrap, borderTop: `1px solid ${L.line}`, padding: "22px 24px", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
@@ -1170,7 +1170,7 @@ function VerifiedBanner() {
   const ok = state === "1";
   return (
     <div role="status" style={{ display: "inline-block", margin: "0 auto 16px", fontFamily: sans, fontSize: 13, borderRadius: 0, padding: "6px 14px",
-      background: ok ? "rgba(225,204,150,0.16)" : D.flagBg, color: ok ? A.lime : D.flag, border: `1px solid ${ok ? "rgba(225,204,150,0.38)" : D.flagBorder}` }}>
+      background: ok ? "rgba(186,159,56,0.18)" : D.flagBg, color: ok ? A.lime : D.flag, border: `1px solid ${ok ? "rgba(186,159,56,0.40)" : D.flagBorder}` }}>
       {ok ? "Email verified. Sign in to continue." : "That verification link is invalid or expired. Sign in and request a new one."}
     </div>
   );
@@ -1223,7 +1223,7 @@ function Auth({ onAuthed, onBack }) {
               placeholder={mode === "login" ? "Your password" : "At least 10 characters"} onEnter={submit} />
           </>}
           {err && <DarkErr>{err}</DarkErr>}
-          {info && <div role="status" style={{ marginTop: 12, fontFamily: sans, fontSize: 13, color: D.ink, background: "rgba(252,235,208,0.08)", border: `1px solid ${D.glassBorder}`, padding: "10px 12px", borderRadius: 0, lineHeight: 1.5, overflowWrap: "anywhere" }}>{info}</div>}
+          {info && <div role="status" style={{ marginTop: 12, fontFamily: sans, fontSize: 13, color: D.ink, background: "rgba(243,242,238,0.08)", border: `1px solid ${D.glassBorder}`, padding: "10px 12px", borderRadius: 0, lineHeight: 1.5, overflowWrap: "anywhere" }}>{info}</div>}
           <button onClick={submit} disabled={busy} style={{ ...mintBtn(), marginTop: 20, width: "100%" }}>
             {busy ? "…" : { signup: "Create account", login: "Sign in", forgot: "Send reset link", reset: "Set new password" }[mode]}
           </button>
@@ -1495,7 +1495,7 @@ function DarkField({ label, type = "text", value, onChange, placeholder, onEnter
       <div style={{ fontFamily: sans, fontSize: 11.5, color: D.muted, marginBottom: 5 }}>{label}</div>
       <input type={type} value={value} placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)} onKeyDown={(e) => e.key === "Enter" && onEnter && onEnter()}
-        style={{ width: "100%", fontFamily: sans, fontSize: 14, color: D.ink, background: "rgba(252,235,208,0.08)",
+        style={{ width: "100%", fontFamily: sans, fontSize: 14, color: D.ink, background: "rgba(243,242,238,0.08)",
           border: `1px solid ${D.glassBorder}`, borderRadius: 0, padding: "12px 13px", outline: "none", }} />
     </label>
   );
@@ -1517,6 +1517,12 @@ const brassBtn = (r = 0, pad = "14px 24px", fs = 15) => ({
 // Borderless variant with a lift — used for the big page-level CTAs.
 const darkBtn = (r = 0, pad = "14px 24px", fs = 15) => ({
   background: A.lav, color: A.lavInk, border: "none", borderRadius: r, padding: pad,
+  fontFamily: sans, fontSize: fs, fontWeight: 600, cursor: "pointer", letterSpacing: "-0.005em",
+});
+// "Get started" is the one thing on the page we want people to press, so it gets
+// the sky accent to itself — every other filled button is chartreuse.
+const startBtn = (r = 999, pad = "14px 24px", fs = 15) => ({
+  background: P.sky, color: P.charcoal, border: `1px solid ${P.sky}`, borderRadius: r, padding: pad,
   fontFamily: sans, fontSize: fs, fontWeight: 600, cursor: "pointer", letterSpacing: "-0.005em",
 });
 const linkBtn = (color) => ({ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: sans, fontSize: 13, fontWeight: 600, color });
@@ -1602,7 +1608,7 @@ function Sparkline({ data, height = 130, color = A.lav, label = "", onScrub, act
           <div aria-hidden style={{
             position: "absolute", top: 6, bottom: 0,
             left: `${(activeIdx / (data.length - 1)) * 100}%`,
-            width: 1, background: "rgba(252,235,208,0.34)", pointerEvents: "none",
+            width: 1, background: "rgba(243,242,238,0.34)", pointerEvents: "none",
           }} />
           <div aria-hidden style={{
             position: "absolute",
@@ -1646,7 +1652,7 @@ function Callout({ tone = "lav", label, headline, actionLabel, onAction }) {
   const lime = tone === "lime";
   const fill = lime ? A.lime : A.lav;
   const ink = lime ? A.limeInk : A.lavInk;
-  const dim = lime ? "rgba(29,59,40,0.66)" : "rgba(29,59,40,0.66)";
+  const dim = lime ? "rgba(35,36,32,0.66)" : "rgba(35,36,32,0.66)";
   return (
     <div style={{ background: fill, borderRadius: 0, padding: "15px 16px", display: "grid", gap: 9, marginBottom: 16 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
