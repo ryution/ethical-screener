@@ -45,6 +45,13 @@ const sans = "'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', R
 const display = "'Familjen Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
 const serif = display;
 const serifDisplay = display;
+// The wordmark gets its own face so the brand isn't just the heading font at a larger
+// size. Gabarito stands in for Okine, which Google Fonts doesn't carry.
+const wordmark = "'Gabarito', 'Familjen Grotesk', -apple-system, sans-serif";
+// Two single-weight faces (400 only, no bold, no italic), so they are used only on
+// running text that never needs emphasis — asking for bold would synthesize a fake one.
+const quote = "'Ramaraja', Georgia, serif";
+const lede = "'Varela', 'Hanken Grotesk', -apple-system, sans-serif";
 
 // A flat panel over the canvas: solid fill, hairline rule, square corners, no blur.
 const glass = (o = {}) => ({
@@ -129,7 +136,7 @@ function Splash() {
   return (
     <Canvas>
       <div style={{ minHeight: "100dvh", display: "grid", placeItems: "center" }}>
-        <span style={{ fontFamily: serifDisplay, fontSize: 28, color: D.brassSoft, letterSpacing: "-0.02em" }}>PlainStreet</span>
+        <span style={{ fontFamily: wordmark, fontSize: 28, color: D.brassSoft, letterSpacing: "-0.02em" }}>PlainStreet</span>
       </div>
     </Canvas>
   );
@@ -898,8 +905,8 @@ function Methodology({ onStart }) {
     <div style={{ fontFamily: sans, background: L.bg, minHeight: "100dvh" }}>
       <Canvas>
         <nav style={{ borderBottom: `1px solid ${D.glassBorder}` }}>
-          <div style={{ ...wrap, maxWidth: 1000, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 24px" }}>
-            <a href="#" style={{ fontFamily: serifDisplay, fontSize: 25, fontWeight: 600, color: D.ink, letterSpacing: "-0.02em", textDecoration: "none" }}>PlainStreet</a>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 28px" }}>
+            <a href="#" style={{ fontFamily: wordmark, fontSize: 25, fontWeight: 600, color: D.ink, letterSpacing: "-0.02em", textDecoration: "none" }}>PlainStreet</a>
             <button onClick={onStart} style={brassBtn(999, "9px 18px", 14)}>Get started</button>
           </div>
         </nav>
@@ -945,7 +952,7 @@ function Methodology({ onStart }) {
       </section>
 
       <section style={{ ...wrap, padding: "clamp(48px,7vw,72px) 24px" }}>
-        <SectionHead title="The flag catalogue" sub="Every screen we can apply, grouped by theme. “Planned” flags are agreed for a coming build." />
+        <SectionHead title="The flag catalogue" subFont={lede} sub="Every screen we can apply, grouped by theme. “Planned” flags are agreed for a coming build." />
         <div style={{ display: "grid", gap: 40 }}>
           {METHOD_CATALOGUE.map(([group, flags]) => (
             <div key={group}>
@@ -974,7 +981,7 @@ function Methodology({ onStart }) {
 
       <section style={{ background: L.card, borderTop: `1px solid ${L.line}` }}>
         <div style={{ ...wrap, padding: "clamp(48px,7vw,72px) 24px", textAlign: "center" }}>
-          <p style={{ fontFamily: sans, fontWeight: 400, fontSize: "clamp(19px,2.5vw,25px)", color: L.pine, lineHeight: 1.5, letterSpacing: "-0.01em", margin: 0, maxWidth: 680, marginLeft: "auto", marginRight: "auto" }}>
+          <p style={{ fontFamily: quote, fontWeight: 400, fontSize: "clamp(22px,3vw,30px)", color: L.pine, lineHeight: 1.45, margin: 0, maxWidth: 700, marginLeft: "auto", marginRight: "auto" }}>
             Every flag is a checkable fact with a citation. If we cannot meet that standard, we do not flag the company. No flag means the company is not one of the names we track. It does not mean the company has been audited and found clean.
           </p>
         </div>
@@ -992,10 +999,10 @@ function Methodology({ onStart }) {
     </div>
   );
 }
-const SectionHead = ({ title, sub }) => (
+const SectionHead = ({ title, sub, subFont = sans }) => (
   <div style={{ marginBottom: 28 }}>
     <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(24px,3.6vw,34px)", color: L.pine, fontWeight: 600, margin: 0, letterSpacing: "-0.02em" }}>{title}</h2>
-    {sub && <p style={{ fontFamily: sans, fontSize: 15.5, color: L.muted, lineHeight: 1.6, margin: "10px 0 0", maxWidth: 620 }}>{sub}</p>}
+    {sub && <p style={{ fontFamily: subFont, fontSize: 16, color: L.muted, lineHeight: 1.6, margin: "10px 0 0", maxWidth: 620 }}>{sub}</p>}
   </div>
 );
 
@@ -1069,8 +1076,10 @@ function LandingHome({ onStart, snaptrade, meta }) {
               line and crowd together with no gap. Methodology is already in the footer,
               so it's the one to drop on narrow screens rather than wrap the sticky nav. */}
           <style>{`@media (max-width: 480px) { .ps-nav-methodology { display: none; } }`}</style>
-          <div style={{ ...wrap, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 24px" }}>
-            <span style={{ fontFamily: serifDisplay, fontSize: 25, fontWeight: 600, color: D.ink, letterSpacing: "-0.02em" }}>PlainStreet</span>
+          {/* Full-bleed on purpose: the nav is chrome, so the wordmark sits against the
+              page gutter instead of being pulled inward by the 1000px content column. */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 28px" }}>
+            <span style={{ fontFamily: wordmark, fontSize: 25, fontWeight: 600, color: D.ink, letterSpacing: "-0.02em" }}>PlainStreet</span>
             <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
               <a href="#methodology" className="ps-nav-methodology" style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, textDecoration: "none" }}>Methodology</a>
               <button onClick={onStart} style={brassBtn(999, "9px 18px", 14)}>Get started</button>
@@ -1085,7 +1094,7 @@ function LandingHome({ onStart, snaptrade, meta }) {
             <p style={{ fontFamily: sans, fontWeight: 400, fontSize: "clamp(19px,2.8vw,30px)", lineHeight: 1.22, letterSpacing: "-0.015em", color: D.ink, margin: "18px auto 0", maxWidth: 680 }}>
               Is your money already funding what you fight against?
             </p>
-            <p style={{ fontFamily: sans, fontSize: "clamp(16px,2vw,19px)", lineHeight: 1.6, color: D.ink, margin: "24px auto 0", maxWidth: 560 }}>
+            <p style={{ fontFamily: lede, fontSize: "clamp(16.5px,2vw,19.5px)", lineHeight: 1.65, color: D.ink, margin: "24px auto 0", maxWidth: 560 }}>
               Even broad market funds hide holdings that might not match your values. Search any stock or ETF ticker to see what’s really inside your portfolio.
             </p>
             <VerifiedBanner />
