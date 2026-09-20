@@ -97,7 +97,7 @@ export function sharePage({ symbol, siteUrl }) {
 <meta name="twitter:description" content="${esc(m.description)}">
 <meta name="twitter:image" content="${esc(img)}">
 <meta name="robots" content="noindex">
-<style>body{font-family:system-ui,sans-serif;background:#0B0B0D;color:#F4F4F5;max-width:640px;margin:40px auto;padding:0 20px;line-height:1.5}a{color:#A9C5F0}</style>
+<style>body{font-family:system-ui,sans-serif;background:#FCEBD0;color:#1D3B28;max-width:640px;margin:40px auto;padding:0 20px;line-height:1.5}a{color:#5F5219}</style>
 </head><body>
 <h1>${esc(m.title)}</h1>
 <p>${esc(m.description)}</p>

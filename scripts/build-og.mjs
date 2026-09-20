@@ -18,17 +18,17 @@ mkdirSync(OUT, { recursive: true });
 const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 const html = ({ eyebrow, title, sub, chips }) => `<!doctype html><html><head><meta charset="utf-8">
 <style>
-  body{margin:0;width:1200px;height:630px;background:#0B0B0D;font-family:"Familjen Grotesk",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#F4F4F5;position:relative;overflow:hidden}
-  .glow{position:absolute;inset:0;background:radial-gradient(900px 520px at 12% -10%,#141E33 0%,transparent 62%)}
+  body{margin:0;width:1200px;height:630px;background:#1D3B28;font-family:"Familjen Grotesk",-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#FCEBD0;position:relative;overflow:hidden}
+  .glow{position:absolute;inset:0;background:radial-gradient(900px 520px at 12% -10%,#24482F 0%,transparent 62%)}
   .wrap{position:absolute;inset:0;padding:64px 72px;display:flex;flex-direction:column;justify-content:space-between}
   .brand{font-size:30px;font-weight:600;letter-spacing:-.02em}
-  .eyebrow{font-size:20px;letter-spacing:.18em;text-transform:uppercase;color:#A9C5F0;margin-bottom:18px}
+  .eyebrow{font-size:20px;letter-spacing:.18em;text-transform:uppercase;color:#BA9F38;margin-bottom:18px}
   h1{font-size:74px;line-height:1.04;letter-spacing:-.035em;margin:0;font-weight:600;max-width:1000px}
-  h1 em{font-style:normal;color:#A9C5F0}
-  .sub{font-size:28px;color:#A1A1AA;margin-top:22px}
+  h1 em{font-style:normal;color:#BA9F38}
+  .sub{font-size:28px;color:#E1CC96;margin-top:22px}
   .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
-  .chip{font-size:22px;font-weight:600;color:#FCA5A5;background:rgba(252,165,165,.14);border:1.5px solid rgba(252,165,165,.45);border-radius:999px;padding:8px 18px}
-  .foot{display:flex;justify-content:space-between;align-items:center;color:#71717A;font-size:22px}
+  .chip{font-size:22px;font-weight:600;color:#E08A72;background:rgba(224,138,114,.14);border:1.5px solid rgba(224,138,114,.45);border-radius:999px;padding:8px 18px}
+  .foot{display:flex;justify-content:space-between;align-items:center;color:#B1BACA;font-size:22px}
 </style></head><body><div class="glow"></div><div class="wrap">
   <div><div class="eyebrow">${esc(eyebrow)}</div><h1>${title}</h1>${sub ? `<div class="sub">${esc(sub)}</div>` : ""}</div>
   <div>${chips.length ? `<div class="chips">${chips.map((c) => `<span class="chip">${esc(c)}</span>`).join("")}</div>` : ""}</div>
