@@ -1102,7 +1102,17 @@ function LandingHome({ onStart, snaptrade, meta }) {
         </nav>
         <header>
           <div style={{ ...wrap, textAlign: "center", padding: "clamp(56px,9vw,96px) 24px clamp(48px,7vw,80px)" }}>
-            <h1 style={{ fontFamily: serifDisplay, fontWeight: 600, fontSize: "clamp(32px,6vw,62px)", lineHeight: 1.06, margin: 0, letterSpacing: "0.015em", textTransform: "uppercase", color: D.ink }}>
+            {/* Set in caps the title measures 16.06em, so holding it on one line means
+                size is a function of viewport width. Above 620px that formula still
+                leaves it the largest thing on screen; below it, one line would compute
+                to ~20px — smaller than the sub-line under it — so it wraps instead. */}
+            <style>{`
+              .ps-hero-title { font-size: clamp(30px, 8vw, 44px); }
+              @media (min-width: 620px) {
+                .ps-hero-title { white-space: nowrap; font-size: min(calc(6vw - 3px), 57px); }
+              }
+            `}</style>
+            <h1 className="ps-hero-title" style={{ fontFamily: serifDisplay, fontWeight: 600, lineHeight: 1.06, margin: 0, letterSpacing: "0.015em", textTransform: "uppercase", color: D.ink }}>
               The ethical portfolio analyzer
             </h1>
             {/* Display face here, Varela on the lede below: the two lines sat in near
