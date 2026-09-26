@@ -28,3 +28,6 @@ dist-ssr
 server/.env
 *.local
 server/data/
+
+# cached regulator bulk downloads (large, re-fetchable)
+.cache/
