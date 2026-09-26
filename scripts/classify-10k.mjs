@@ -3,7 +3,7 @@
 // Given a ticker, find its latest 10-K on EDGAR, strip it to text, and extract the
 // passages around any flag-defining phrase. These candidate passages are what a cheap
 // model reads in Stage 2 (it never sees the whole filing). Output → a JSON the classifier
-// consumes. See METHODOLOGY.md §6.
+// consumes. See METHODOLOGY.md §7.
 //
 // Usage: node scripts/classify-10k.mjs BRK.B [TICKER2 ...]  > candidates.json
 

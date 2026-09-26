@@ -1,7 +1,7 @@
 // Filing-cited flags — the richest layer: flags found by reading companies' actual 10-K
 // filings, each carrying a plain-English summary of what happened, a VERBATIM quote from
 // the filing, and a link to the source. Built by the classification pipeline (see
-// scripts/classify-10k.mjs and METHODOLOGY.md §2/§6), human-reviewed before shipping.
+// scripts/classify-10k.mjs and METHODOLOGY.md §2/§7), human-reviewed before shipping.
 //
 // This is what lets the app say WHY a company is flagged as a story with a receipt —
 // "Walmart paid a $3.3B opioid-dispensing settlement," with the sentence from the 10-K —

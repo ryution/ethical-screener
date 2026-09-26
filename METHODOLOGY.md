@@ -5,8 +5,8 @@ what counts as a violation (and what deliberately does **not**), how we detect i
 example companies. It is the source of truth for the classification engine and the basis
 for the public **Methodology** page.
 
-> **Two audiences.** Sections 1–4 are written to be shown publicly, close to as-is — they
-> explain our reasoning and honesty rules. Section 6 (*Implementation*) is internal build
+> **Two audiences.** Sections 1–5 are written to be shown publicly, close to as-is — they
+> explain our reasoning and honesty rules. Section 7 (*Implementation*) is internal build
 > detail (data pipeline, models) and would be trimmed or summarized for the public page.
 
 Status legend for each flag: **Live** = shipping today (curated and/or SIC). **Proposed**
@@ -18,9 +18,12 @@ Status legend for each flag: **Live** = shipping today (curated and/or SIC). **P
 
 These are non-negotiable — they are the product's whole premise.
 
-1. **Plain, checkable facts — never scores.** Every flag is a factual claim about what a
-   company does, with a one-sentence reason a person can verify. No opaque "ESG score,"
-   no vibes. If we can't say why in one sentence, it isn't a flag.
+1. **Plain, checkable facts — and a grade you can recompute.** Every flag is a factual
+   claim about what a company does, with a one-sentence reason a person can verify. No
+   opaque "ESG score," no vibes. If we can't say why in one sentence, it isn't a flag.
+   The letter grade is not a secret score: it is a one-line rule applied to the flags we
+   already show you, it describes the *kind* of fact on record rather than how bad it is,
+   and it changes with the categories you pick. The ladder is published below.
 2. **Harm and culpability, not the product category.** We flag documented harm or
    conduct, not the mere existence of a product. A company supplying hospital morphine is
    not "opioids"; a company with opioid-marketing litigation and DEA settlements is. A
@@ -203,7 +206,51 @@ Each flag: **key** (stable id) · **definition** · **counts as a violation** ·
 
 ---
 
-## 4. Contested-direction flags
+## 4. The letter grade
+
+Each company carries a letter, computed **against the categories you turned on**. It is
+not a severity score: ranking "is gambling worse than alcohol?" is exactly the judgement
+this product hands back to you. What the letter describes is the **kind of fact on
+record**, which is not an opinion:
+
+> Selling a legal product is not the same as disclosing your own violation, and neither is
+> the same as a government finding against you.
+
+| Grade | What it means |
+| --- | --- |
+| **A** | We recognise the company and it has **no flag** in your categories |
+| **B** | **One** flagged line of business — something it legally sells |
+| **C** | **Two or more** flagged lines of business |
+| **D** | Its **own disclosure**, or documented **historical** record |
+| **F** | A **government action, court case or settlement** |
+| **Not rated** | We can't see the company at all |
+
+The rule, in order: no flags → A. Any flag from a court, regulator or government list
+(`opioids`, `executive_enforcement`, `forced_labor_supply_chain`) → F. Otherwise any
+self-disclosed or historical flag (`supplier_audit_violations`, `historical_forced_labor`)
+→ D. Otherwise count the flagged lines of business: two or more → C, exactly one → B.
+The worst applicable rung wins. There are no weights and no arithmetic — you can
+recompute the letter by eye from the flags on the page.
+
+**Three things we hold ourselves to:**
+
+- **Not rated is never an A.** No data is not a clean bill of health, and neither is an
+  empty filter: pick no categories and you get no grade, not an A.
+- **B is the default, and we say so.** Around 90% of flagged companies are a B, so the
+  letter alone won't separate a major oil company from a tiny driller — they are doing the
+  same *kind* of thing. The receipt underneath does that work, not the letter.
+- **The letter never travels alone**, and never next to buy/sell language. It is always
+  shown with the flag and source that produced it. It is a description, not a
+  recommendation.
+
+Because the grade follows *your* categories, the same company grades differently for
+different people — Walmart is an F to someone screening opioids and an A to someone
+screening only weapons. Both are true statements about that reader's lines, which is the
+honest answer to the question every rating agency dodges: *who decided this?* You did.
+
+---
+
+## 5. Contested-direction flags
 
 Some flags are screened in **opposite directions** by different users. Our model —
 "you draw the lines" — handles this: we describe the activity neutrally and let the user
@@ -215,7 +262,7 @@ decide. These include:
 
 ---
 
-## 5. What we deliberately excluded (and why)
+## 6. What we deliberately excluded (and why)
 
 - **Nuclear power** — contested (many consider it climate-positive); low screening demand.
 - **For-profit education** — niche demand; keyword signal ("Title IV") is too noisy to be honest.
@@ -233,7 +280,7 @@ decide. These include:
 
 ---
 
-## 6. Implementation (internal — trim for public page)
+## 7. Implementation (internal — trim for public page)
 
 **Layered engine.** `server/lib/screens.js` (curated) and `server/lib/sic.js`
 (SIC → flag) ship today; `server/lib/enriched.js` loads the SIC output. The filing-cited

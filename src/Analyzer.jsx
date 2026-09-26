@@ -15,6 +15,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { displayName, reasonParts } from "./format.js";
+import { gradeFor } from "./grade.js";
 
 // ── Palette ──────────────────────────────────────────────────────────────────
 // Warm light ground with one dark band. The body of the page is butter and sand
@@ -29,7 +30,9 @@ const P = {
 
 // ── Tokens for the charcoal bands: light type on dark ground. ────────────────
 const D = {
-  ink: P.butter, muted: "#BDB6A6", faint: "#948D80",
+  // faint was #948D80, which measures 3.69:1 on the charcoal band — under AA for the
+  // 12px tertiary lines it is used on. Lifted to keep the same tier and hue at 5.0:1.
+  ink: P.butter, muted: "#BDB6A6", faint: "#ADA695",
   mint: P.chart, brass: P.chart, brassSoft: P.chart,
   glassBorder: "rgba(252,235,208,0.16)",
   lift: "#2E2B25", // charcoal raised one step, for panels sitting on the band
@@ -317,7 +320,7 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
       )}
 
       {err && <DarkErr>{err}</DarkErr>}
-      {result && <HeroResult result={filterBySelected(result, selected)} onStart={onStart} snaptrade={snaptrade} />}
+      {result && <HeroResult result={filterBySelected(result, selected)} onStart={onStart} snaptrade={snaptrade} selectedCount={selected ? selected.size : 0} />}
       {meta && meta.count > 0 && (
         <p style={{ fontFamily: sans, fontSize: 12, color: D.faint, margin: "14px 0 0", textAlign: "center" }}>
           Tracking {meta.count.toLocaleString("en-US")} U.S.-listed companies across {screens.length || "20"} categories
@@ -378,7 +381,35 @@ function filterBySelected(result, selected) {
   return result;
 }
 
-function HeroResult({ result, onStart, snaptrade }) {
+// §3.6 — the grade for one company, against the categories the reader turned on. The
+// letter describes the KIND of fact on record (see src/grade.js), never how bad it is,
+// so it always travels with the flag underneath it rather than standing alone.
+function GradeBadge({ flags, selectedCount, known = true, dark = true }) {
+  const g = gradeFor(flags || [], selectedCount, known);
+  if (!g.letter) return null;
+  const tone = g.letter === "A" ? { bg: A.lime, ink: A.limeInk }
+    : g.letter === "F" ? { bg: L.flag, ink: "#FFF1EC" }
+    : g.letter === "D" ? { bg: A.lav, ink: A.lavInk }
+    : { bg: "rgba(252,235,208,0.12)", ink: dark ? D.ink : L.ink };
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      <div aria-hidden style={{ width: 52, height: 52, borderRadius: 14, background: tone.bg, color: tone.ink,
+        display: "grid", placeItems: "center", fontFamily: display, fontSize: 30, fontWeight: 600, flexShrink: 0 }}>{g.letter}</div>
+      <div style={{ minWidth: 0 }}>
+        <div style={{ fontFamily: sans, fontSize: 13.5, fontWeight: 600, color: dark ? D.ink : L.ink, lineHeight: 1.3 }}>
+          Grade {g.letter} <span style={{ fontWeight: 400, color: dark ? D.muted : L.muted }}>&middot; {g.meaning}</span>
+        </div>
+        <div style={{ fontFamily: sans, fontSize: 12, color: dark ? D.faint : L.faint, marginTop: 2 }}>
+          {g.tripped === 0
+            ? `Clean on ${g.of === 1 ? "the 1 category" : `all ${g.of} categories`} you picked`
+            : `Trips ${g.tripped} of the ${g.of === 1 ? "1 category" : `${g.of} categories`} you picked`}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
   const panel = glass({ marginTop: 14, padding: "18px 20px", background: "rgba(252,235,208,0.09)", borderRadius: 14 });
   const cta = <HeroCTA onStart={onStart} snaptrade={snaptrade} />;
 
@@ -407,6 +438,9 @@ function HeroResult({ result, onStart, snaptrade }) {
           </div>
           <ShareButton symbol={result.symbol} />
         </div>
+        {/* A recognised filer with nothing flagged is the A case. The unknown-symbol branch
+            above deliberately gets no grade at all — absence of data is not an A. */}
+        <div style={{ marginTop: 14 }}><GradeBadge flags={[]} selectedCount={selectedCount} /></div>
         <p style={{ fontFamily: sans, fontSize: 13, color: D.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
           It isn't on any of the lists we track. That doesn't mean it's audited clean. It only means "none of the names we track." We cover U.S.-listed companies that file with the SEC, so a foreign-listed name may simply be out of scope.
         </p>
@@ -420,6 +454,7 @@ function HeroResult({ result, onStart, snaptrade }) {
       return (
         <div style={panel}>
           <div style={{ fontFamily: serif, fontSize: 19, color: D.ink }}>No flags for <b>{result.symbol}</b> in your selected categories.</div>
+          <div style={{ marginTop: 14 }}><GradeBadge flags={[]} selectedCount={selectedCount} /></div>
           <p style={{ fontFamily: sans, fontSize: 13, color: D.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
             Turn on more categories above to widen the check.
           </p>
@@ -435,6 +470,7 @@ function HeroResult({ result, onStart, snaptrade }) {
           <ShareButton symbol={result.symbol} />
         </div>
         <QuotePanel symbol={result.symbol} />
+        <div style={{ marginTop: 16 }}><GradeBadge flags={flags} selectedCount={selectedCount} /></div>
         <div style={{ marginTop: 14, display: "grid", gap: 10 }}>
           {flags.map((f) => <FlagCard key={f.key} flag={f} company={result.name} dark />)}
         </div>
@@ -854,7 +890,7 @@ function HotNews({ wrap }) {
 
 // ── Methodology (public page, mirrors METHODOLOGY.md §1–5) ───────────────────
 const METHOD_PRINCIPLES = [
-  ["Every flag is a verifiable fact", "Every flag is a factual claim about what a company does, with a one-sentence reason you can verify. No opaque “ESG score” and no subjective rating. If we can’t say why in one sentence, it isn’t a flag."],
+  ["Every flag is a verifiable fact", "Every flag is a factual claim about what a company does, with a one-sentence reason you can verify. No opaque “ESG score.” The letter grade isn’t a score either — it’s a one-line rule applied to the flags we show you, describing the kind of fact on record rather than how bad it is, and it moves with the categories you pick. If we can’t say why in one sentence, it isn’t a flag."],
   ["We flag documented conduct", "A company supplying hospital morphine is not “opioids.” A company with opioid-marketing litigation and settlements is. What the company did is what counts, not what industry it sits in."],
   ["Every flag cites a source", "A flag from a company’s filing carries a verbatim quote from that filing and a link to it. No supporting quote means no flag. You read the company’s own words, not our paraphrase."],
   ["We flag a reported line of business", "A flag has to be a reported segment or principal activity. “Sells cigarettes at the register” does not qualify, and neither does a passing mention in a risk-factor section."],

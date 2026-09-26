@@ -8,14 +8,16 @@
 //
 // Run: node scripts/audit-display.mjs
 
-import { screenCatalogue, flagsFor, companyName } from "../server/lib/screens.js";
+import { flagsFor, companyName, SCREEN_KEYS, SCREEN_TICKERS } from "../server/lib/screens.js";
 import { enrichedTickers, enrichedFlagsFor, enrichedName } from "../server/lib/enriched.js";
 import { displayName, reasonParts, CANONICAL } from "../src/format.js";
 
 const issues = { blankLead: [], lowercaseLead: [], prefixLeft: [], nameChanged: [], nameSuspect: [], longChip: [], runOn: [] };
 const seenTicker = new Set();
 
+let reasonsChecked = 0;
 function checkReason(ticker, label, reason, company) {
+  reasonsChecked++;
   const { lead, rest } = reasonParts(reason, company || "");
   const where = `${ticker} · ${label}`;
   if (!lead.trim()) { issues.blankLead.push({ where, reason }); return; }
@@ -45,21 +47,22 @@ function checkName(raw) {
 }
 
 // ---- curated screens ----
-for (const s of screenCatalogue) {
-  for (const t of s.tickers || []) {
-    if (seenTicker.has(t)) continue;
-    const name = companyName(t);
-    for (const f of flagsFor(t) || []) checkReason(t, f.label, f.reason, name);
-    if (name) checkName(name);
-    seenTicker.add(t);
-  }
+// The catalogue exposes counts, not ticker lists, so walk the index of curated tickers.
+let curatedCount = 0;
+for (const t of SCREEN_TICKERS) {
+  if (seenTicker.has(t)) continue;
+  const name = companyName(t);
+  for (const f of flagsFor(t, SCREEN_KEYS) || []) checkReason(t, f.label, f.reason, name);
+  if (name) checkName(name);
+  seenTicker.add(t);
+  curatedCount++;
 }
 
 // ---- EDGAR-enriched layer ----
 let enrichedCount = 0;
 for (const t of enrichedTickers()) {
   const name = enrichedName(t) || t;
-  for (const f of enrichedFlagsFor(t) || []) checkReason(t, f.label, f.reason, name);
+  for (const f of enrichedFlagsFor(t, SCREEN_KEYS) || []) checkReason(t, f.label, f.reason, name);
   checkName(name);
   enrichedCount++;
   seenTicker.add(t);
@@ -67,7 +70,9 @@ for (const t of enrichedTickers()) {
 
 // ---- report ----
 const pad = (n) => String(n).padStart(5);
-console.log(`\nAudited ${seenTicker.size} tickers (${enrichedCount} from the enriched layer)\n`);
+console.log(`\nAudited ${seenTicker.size} tickers (${curatedCount} curated, ${enrichedCount} enriched), ${reasonsChecked} flag reasons\n`);
+// Guard against the failure this script once had: checking zero reasons and calling it a pass.
+if (reasonsChecked === 0) { console.log("FAIL — checked 0 flag reasons; the data didn't load"); process.exit(1); }
 
 const report = (key, title, fmt, { sample = 8, fatal = false } = {}) => {
   const list = issues[key];
