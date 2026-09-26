@@ -8,7 +8,8 @@
 // Pure function of (positions, activeScreenKeys). No network, no state.
 
 import { flagsFor, companyName, SCREEN_KEYS, SCREEN_TICKERS } from "./screens.js";
-import { knownFund, unanalyzedFund } from "./funds.js";
+import { knownFund, unanalyzedFund, FUNDS } from "./funds.js";
+import { fundGradeFor } from "../../src/fundGrade.js";
 import { enrichedFlagsFor, enrichedName, enrichedTickers, dataMeta } from "./enriched.js";
 import { filingFlagsFor, filingName, filingTickers, filingMeta } from "./filings.js";
 import { normalizeTicker } from "./symbols.js";
@@ -47,6 +48,24 @@ function allFlagsFor(ticker, activeKeys) {
   for (const f of enrichedFlagsFor(ticker, activeKeys)) { if (!seen.has(f.key)) { seen.add(f.key); out.push(f); } }
   return out;
 }
+// The whole market's share of holdings graded on a finding or disclosure. It is the
+// anchor for the fund ladder: the thresholds are a judgement, so the letter always
+// travels with "how far from simply owning everything is this?". Computed once from the
+// total-market basket, against every category — a per-reader baseline would move the
+// comparison as well as the number, which defeats the point of a baseline.
+let _marketShare = null;
+export function marketConductShare() {
+  if (_marketShare !== null) return _marketShare;
+  const total = Object.values(FUNDS).find((f) => f.basisKey === "total");
+  const src = holdingsMeta().sources?.total;
+  if (!total || !src?.totalHoldings) return (_marketShare = 0);
+  const contains = total.holds
+    .map((t) => ({ ticker: t, flags: allFlagsFor(t, SCREEN_KEYS) }))
+    .filter((c) => c.flags.length);
+  const g = fundGradeFor(contains, src.totalHoldings, SCREEN_KEYS.length);
+  return (_marketShare = g.share ?? 0);
+}
+
 const nameFor = (ticker, fallback) =>
   (companyName(ticker) !== ticker ? companyName(ticker) : (filingName(ticker) || enrichedName(ticker) || fallback || ticker));
 
@@ -74,6 +93,7 @@ export function lookupSymbol(symbol) {
       totalHoldings: live ? src.totalHoldings : null,
       asOf: live ? src.asOf : null,
       holdingsSource: live ? `${src.label} (${src.fund}) daily holdings` : "curated constituent list",
+      marketConductShare: live ? marketConductShare() : null,
     };
   }
   const na = unanalyzedFund(sym);
