@@ -17,53 +17,48 @@ import { useEffect, useRef, useState } from "react";
 import { displayName, reasonParts } from "./format.js";
 import { gradeFor } from "./grade.js";
 
-// ── Palette ────────────────────────────────────────────────
-// Deep navy throughout, no light mode. The page is the darkest ground; sections are
-// separated by stepping the navy rather than by rules, and panels lift off it by being
-// a step lighter. One accent does the work: a light blue for anything actionable or
-// live, always carrying near-black navy ink when used as a fill. Coral is reserved
-// strictly for flags, mint strictly for positive.
+// ── Palette ──────────────────────────────────────────────────────────────────
+// Warm light ground with two dark bands. The page is butter with emerald type; the
+// analyzer band and the honesty band are dark, because a dense table of flags reads
+// better on dark. One accent family, green: sage where it sits on dark, forest where
+// it is type on light. Terracotta is reserved strictly for flags.
 const P = {
-  page: "#0D1119",     // the page itself, the deepest ground
-  block: "#121926",    // the analyzer band, where dense flag tables live
-  band: "#151D2C",     // full-width sections and the nav
-  bandDeep: "#101725", // a harder step down, so a seam reads as a colour change
-  card: "#1A2333",     // panels lifted off the page
-  deep: "#0A0E16",     // the ticker strip, darker than the page
-  sky: "#9CCBF5",      // the accent: buttons, links, active states
-  skyDeep: "#BFE0FB",  // the accent lifted, for small text that must clear AA
-  navy: "#0E2338",     // ink on a sky fill
-  ink: "#EDEFF3",
-  mint: "#5FCF92", coral: "#EE7856",
+  butter: "#FCEBD0",   // the page
+  card: "#FFF8EC",     // panels lifted off it
+  beige: "#F7EAD3",    // the nav strip
+  sand: "#EADDC2",     // a band that steps down from the page
+  charcoal: "#232420", // the analyzer band
+  emerald: "#1D3B28",  // type, dark fills, and the honesty band
+  sage: "#A7C4A0",     // the accent on dark ground, and fills that carry emerald ink
+  forest: "#2F6B44",   // the accent as type on light ground
+  terra: "#A8452F",    // flags
 };
 
-// ── Tokens for the darker bands: light type on deep navy. ───────────────────
-// muted/faint are sized against the LIGHTEST ground they ever land on (the lifted panel,
-// rgb(47,53,65)); at #8D96A8/#7C89A0 the 11-12px tertiary lines measured 3.95-4.46:1,
-// just under AA. These clear 5.6:1 and 4.8:1 there and more everywhere else.
+// ── Tokens for the dark bands: light type on charcoal or emerald. ────────────
 const D = {
-  ink: P.ink, muted: "#A5B0C5", faint: "#93A2BD",
-  mint: P.sky, brass: P.sky, brassSoft: P.skyDeep,
-  glassBorder: "rgba(237,239,243,0.14)",
-  lift: "#1E2739", // navy raised one step, for panels sitting on the band
-  block: P.block,
-  // Coral at full strength is bright enough on navy; the bands take it as-is, softened
-  // only where it is a fill rather than type.
-  flag: "#F2A98F", flagBg: "rgba(238,120,86,0.15)", flagBorder: "rgba(238,120,86,0.34)",
+  ink: P.butter, muted: "#BDB6A6", faint: "#948D80",
+  mint: P.sage, brass: P.sage, brassSoft: P.sage,
+  glassBorder: "rgba(252,235,208,0.16)",
+  lift: "#2E2B25", // charcoal raised one step, for panels sitting on the band
+  block: P.charcoal,
+  // Terracotta at full strength is only 2.7:1 on charcoal, so the dark bands take a
+  // lifted tint of it. Same hue, same meaning, readable on the dark ground.
+  flag: "#E08A72", flagBg: "rgba(224,138,114,0.16)", flagBorder: "rgba(224,138,114,0.38)",
 };
-// ── Tokens for the page. `pine` and `teal` are legacy names from an older theme;
-// the values are what matter. The whole product is dark, so these are light-on-dark
-// too — the split from D is about which ground the element sits on, not light vs dark.
+// ── Tokens for the butter page: dark type on light ground. Sage is far too light to
+// be read as type on butter, so accent TEXT uses forest and sage is kept for fills on
+// dark. `pine` and `teal` are legacy names from an older theme; the values are what
+// matter.
 const L = {
-  bg: P.page, card: P.card, line: "#2A3550", lineSoft: "#202B42",
-  ink: P.ink, muted: "#A5B0C5", faint: "#93A2BD",
-  pine: P.ink, teal: P.sky, mint: P.mint, brass: P.skyDeep,
-  flag: P.coral, flagBg: "rgba(238,120,86,0.14)", flagBorder: "rgba(238,120,86,0.32)",
-  good: P.mint,
+  bg: P.butter, card: P.card, line: "#E6D5B6", lineSoft: "#F4E6CC",
+  ink: P.emerald, muted: "#3F5246", faint: "#5A6A5F",
+  pine: P.emerald, teal: P.forest, mint: P.emerald, brass: P.forest,
+  flag: P.terra, flagBg: "rgba(168,69,47,0.10)", flagBorder: "rgba(168,69,47,0.30)",
+  good: P.emerald,
 };
-// Accent fills. A sky or mint fill always carries near-black ink on top — never the
-// page ink, which is what keeps these legible.
-const A = { lav: P.sky, lavInk: P.navy, lime: P.mint, limeInk: "#10281B", raised: "#24304A" };
+// Accent fills. A sage fill always carries emerald ink; a fill on the light page is
+// emerald carrying butter ink. No single mid-tone can do both and still clear AA.
+const A = { lav: P.sage, lavInk: P.emerald, lime: P.sage, limeInk: P.emerald, raised: "#F5E6C8" };
 const sans = "'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
 const display = "'Familjen Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
 const serif = display;
@@ -862,7 +857,7 @@ function TickerTape() {
 
   const Item = ({ q, keySuffix }) => {
     const up = q.changePercent >= 0;
-    const color = up ? L.good : L.flag;
+    const color = up ? "#4ADE80" : "#F87171";
     return (
       <span key={q.symbol + keySuffix} style={{ display: "inline-flex", alignItems: "baseline", gap: 8, padding: "0 22px", fontFamily: sans, fontSize: 13, whiteSpace: "nowrap" }}>
         <span style={{ fontWeight: 600, color: D.ink, letterSpacing: "0.02em" }}>{q.symbol}</span>
@@ -873,7 +868,7 @@ function TickerTape() {
   };
 
   return (
-    <div style={{ background: P.deep, borderBottom: `1px solid ${L.lineSoft}`, overflow: "hidden", padding: "9px 0" }}>
+    <div style={{ background: "#0D0D11", borderBottom: "1px solid rgba(255,255,255,0.08)", overflow: "hidden", padding: "9px 0" }}>
       <style>{`
         @keyframes ps-ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
         .ps-ticker-track { display: inline-flex; animation: ps-ticker-scroll 45s linear infinite; }
@@ -1025,7 +1020,7 @@ function Methodology({ onStart }) {
   return (
     <div style={{ fontFamily: sans, background: L.bg, minHeight: "100dvh" }}>
       <Canvas>
-        <nav style={{ borderBottom: `1px solid ${L.line}`, background: P.band }}>
+        <nav style={{ borderBottom: `1px solid ${L.line}`, background: P.beige }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 28px" }}>
             <a href="#" style={{ fontFamily: wordmark, fontSize: 25, fontWeight: 600, color: L.ink, letterSpacing: "-0.02em", textDecoration: "none" }}>PlainStreet</a>
             <button onClick={onStart} style={startBtn(999, "9px 18px", 14)}>Get started</button>
@@ -1192,7 +1187,7 @@ function LandingHome({ onStart, snaptrade, meta }) {
       <TickerTape />
       {/* ── Dark hero with the live analyzer ── */}
       <Canvas>
-        <nav style={{ position: "sticky", top: 0, zIndex: 20, borderBottom: `1px solid ${L.line}`, background: P.band }}>
+        <nav style={{ position: "sticky", top: 0, zIndex: 20, borderBottom: `1px solid ${L.line}`, background: P.beige }}>
           {/* Below ~480px, "PlainStreet" + "Methodology" + "Get started" don't fit on one
               line and crowd together with no gap. Methodology is already in the footer,
               so it's the one to drop on narrow screens rather than wrap the sticky nav. */}
@@ -1209,25 +1204,25 @@ function LandingHome({ onStart, snaptrade, meta }) {
         </nav>
         <header>
           <div style={{ ...wrap, textAlign: "center", padding: "clamp(56px,9vw,96px) 24px clamp(48px,7vw,80px)" }}>
-            {/* Set in caps the title measures 16.06em, so holding it on one line means
+            {/* Set in caps and tracked out the title measures 16.76em, so holding it on one line means
                 size is a function of viewport width. Above 620px that formula still
                 leaves it the largest thing on screen; below it, one line would compute
                 to ~20px — smaller than the sub-line under it — so it wraps instead. */}
             <style>{`
               .ps-hero-title { font-size: clamp(30px, 8vw, 44px); }
               @media (min-width: 620px) {
-                .ps-hero-title { white-space: nowrap; font-size: min(calc(6vw - 3px), 57px); }
+                .ps-hero-title { white-space: nowrap; font-size: min(calc(5.4vw - 3px), 50px); }
               }
             `}</style>
-            <h1 className="ps-hero-title" style={{ fontFamily: serifDisplay, fontWeight: 600, lineHeight: 1.06, margin: 0, letterSpacing: "0.015em", textTransform: "uppercase", color: D.ink }}>
+            <h1 className="ps-hero-title" style={{ fontFamily: serifDisplay, fontWeight: 500, lineHeight: 1.12, margin: 0, letterSpacing: "0.075em", textTransform: "uppercase", color: D.ink }}>
               The ethical portfolio analyzer
             </h1>
             {/* Display face here, Varela on the lede below: the two lines sat in near
                 identical humanist sans and blurred into one block. */}
-            <p style={{ fontFamily: serifDisplay, fontWeight: 500, fontSize: "clamp(19px,2.8vw,29px)", lineHeight: 1.24, letterSpacing: "-0.02em", color: D.ink, margin: "16px auto 0", maxWidth: 680 }}>
+            <p style={{ fontFamily: serifDisplay, fontWeight: 400, fontSize: "clamp(18px,2.6vw,27px)", lineHeight: 1.3, letterSpacing: "-0.015em", color: D.ink, margin: "20px auto 0", maxWidth: 660 }}>
               Is your money already funding what you fight against?
             </p>
-            <p style={{ fontFamily: lede, fontSize: "clamp(16.5px,2vw,19.5px)", lineHeight: 1.65, color: D.ink, margin: "24px auto 0", maxWidth: 560 }}>
+            <p style={{ fontFamily: lede, fontSize: "clamp(14.5px,1.55vw,16.5px)", lineHeight: 1.7, color: D.muted, margin: "20px auto 0", maxWidth: 470 }}>
               Even broad market funds hide holdings that might not match your values. Search any stock or ETF ticker to see what’s really inside your portfolio.
             </p>
             <VerifiedBanner />
@@ -1242,7 +1237,7 @@ function LandingHome({ onStart, snaptrade, meta }) {
 
       {/* ── Charcoal block: how it works. Columns are separated by a rule above each
              one, not by a card, so the band reads as one solid field. ── */}
-      <section style={{ background: P.band }}>
+      <section style={{ background: P.sand }}>
         <div style={{ ...wrap, padding: "clamp(56px,9vw,96px) 24px" }}>
           <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(26px,4vw,38px)", color: L.pine, fontWeight: 600, margin: "0 0 34px", letterSpacing: "-0.02em" }}>How to get started</h2>
           <StepList steps={steps} />
@@ -1251,9 +1246,9 @@ function LandingHome({ onStart, snaptrade, meta }) {
 
       {/* ── Navy block: honesty. A different solid from the band above it, so the seam
              between the two is a hard colour change rather than a rule. ── */}
-      <section style={{ background: P.bandDeep }}>
+      <section style={{ background: P.emerald }}>
         <div style={{ ...wrap, maxWidth: 720, textAlign: "center", padding: "clamp(48px,8vw,80px) 24px" }}>
-          <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(24px,4vw,32px)", color: L.pine, fontWeight: 600, margin: 0, letterSpacing: "-0.02em" }}>We'd rather under-claim than mislead</h2>
+          <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(24px,4vw,32px)", color: D.ink, fontWeight: 600, margin: 0, letterSpacing: "-0.02em" }}>We'd rather under-claim than mislead</h2>
           <p style={{ fontFamily: sans, fontSize: 16, color: D.muted, lineHeight: 1.7, margin: "16px 0 0" }}>
             Every flag is a checkable fact about what a company does, with the reason and, where it comes from a filing, the company's own words. We look inside a fund only when its issuer publishes the holdings: the big S&P 500, total-market, Dow, mid- and small-cap and ESG index funds. We say which file the list came from and when. A fund we can't see inside is labeled "not analyzed," never called clean. Our coverage is U.S.-listed companies that file with the SEC, so a foreign-listed name may come back empty simply because we haven't reached it. A clean result means "none of the names we track," never "audited pure." You draw the lines; we show you where your money already sits.
           </p>
@@ -1626,7 +1621,7 @@ const DarkErr = ({ children }) => <div style={{ marginTop: 12, fontFamily: sans,
 // Buttons — flat, no gloss, full pills. All three primaries are lavender-on-near-black and
 // differ only in border/shadow; they're near-duplicates now and could collapse into one.
 const mintBtn = () => ({
-  background: A.lav, color: A.lavInk, border: `1px solid ${A.lav}`, borderRadius: 0, padding: "12px 20px",
+  background: P.emerald, color: P.butter, border: `1px solid ${A.lav}`, borderRadius: 0, padding: "12px 20px",
   fontFamily: sans, fontSize: 15, fontWeight: 600, cursor: "pointer", letterSpacing: "-0.005em",
 });
 const brassBtn = (r = 0, pad = "14px 24px", fs = 15) => ({
@@ -1635,13 +1630,13 @@ const brassBtn = (r = 0, pad = "14px 24px", fs = 15) => ({
 });
 // Borderless variant with a lift — used for the big page-level CTAs.
 const darkBtn = (r = 0, pad = "14px 24px", fs = 15) => ({
-  background: A.lav, color: A.lavInk, border: "none", borderRadius: r, padding: pad,
+  background: P.emerald, color: P.butter, border: "none", borderRadius: r, padding: pad,
   fontFamily: sans, fontSize: fs, fontWeight: 600, cursor: "pointer", letterSpacing: "-0.005em",
 });
 // "Get started" is the one thing on the page we want people to press, so it gets
 // the sky accent to itself — every other filled button is chartreuse.
 const startBtn = (r = 999, pad = "14px 24px", fs = 15) => ({
-  background: P.sky, color: P.navy, border: `1px solid ${P.sky}`, borderRadius: r, padding: pad,
+  background: P.emerald, color: P.butter, border: `1px solid ${P.emerald}`, borderRadius: r, padding: pad,
   fontFamily: sans, fontSize: fs, fontWeight: 600, cursor: "pointer", letterSpacing: "-0.005em",
 });
 const linkBtn = (color) => ({ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: sans, fontSize: 13, fontWeight: 600, color });
