@@ -1232,10 +1232,10 @@ function LandingHome({ onStart, snaptrade, meta }) {
             </h1>
             {/* Display face here, Varela on the lede below: the two lines sat in near
                 identical humanist sans and blurred into one block. */}
-            <p style={{ fontFamily: serifDisplay, fontWeight: 400, fontSize: "clamp(18px,2.6vw,27px)", lineHeight: 1.3, letterSpacing: "-0.015em", color: D.ink, margin: "20px auto 0", maxWidth: 660 }}>
+            <p style={{ fontFamily: serifDisplay, fontWeight: 400, fontSize: "clamp(18px,2.6vw,27px)", lineHeight: 1.3, letterSpacing: "-0.015em", color: D.ink, margin: "12px auto 0", maxWidth: 660 }}>
               Is your money already funding what you fight against?
             </p>
-            <p style={{ fontFamily: lede, fontSize: "clamp(14.5px,1.55vw,16.5px)", lineHeight: 1.7, color: D.muted, margin: "20px auto 0", maxWidth: 470 }}>
+            <p style={{ fontFamily: lede, fontSize: "clamp(13px,1.3vw,14.5px)", lineHeight: 1.75, color: D.muted, margin: "46px auto 0", maxWidth: 430 }}>
               Even broad market funds hide holdings that might not match your values. Search any stock or ETF ticker to see what’s really inside your portfolio.
             </p>
             <VerifiedBanner />
