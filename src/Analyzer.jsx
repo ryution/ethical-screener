@@ -1110,7 +1110,7 @@ function Methodology({ onStart }) {
 
       <section style={{ background: L.card, borderTop: `1px solid ${L.line}` }}>
         <div style={{ ...wrap, padding: "clamp(48px,7vw,72px) 24px", textAlign: "center" }}>
-          <p style={{ fontFamily: lede, fontWeight: 400, fontSize: "clamp(22px,3vw,30px)", color: L.pine, lineHeight: 1.45, margin: 0, maxWidth: 700, marginLeft: "auto", marginRight: "auto" }}>
+          <p style={{ fontFamily: sans, fontWeight: 400, fontSize: "clamp(15.5px,1.7vw,18px)", color: L.pine, lineHeight: 1.7, margin: 0, maxWidth: 600, marginLeft: "auto", marginRight: "auto" }}>
             Every flag is a checkable fact with a citation. If we cannot meet that standard, we do not flag the company. No flag means the company is not one of the names we track. It does not mean the company has been audited and found clean.
           </p>
         </div>
