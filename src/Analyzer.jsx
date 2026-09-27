@@ -185,6 +185,64 @@ function syncUrl(symbol, selected, screens) {
     window.history.replaceState(null, "", qs);
   } catch { /* ignore */ }
 }
+// Faith-based starting sets. A preset only selects screens that already exist, so it
+// asserts nothing new about any company; the info panel says in plain words what each
+// one covers and where it stops, because these traditions are not uniform and a preset
+// that implied completeness would overstate.
+function PresetRow({ presets, screens, selected, onApply }) {
+  const [open, setOpen] = useState(false);
+  if (!presets.length) return null;
+  const have = new Set(screens.map((s) => s.key));
+  // A preset can name a screen this deployment doesn't carry; drop those rather than
+  // selecting keys that would silently match nothing.
+  const usable = presets
+    .map((p) => ({ ...p, screens: p.screens.filter((k) => have.has(k)) }))
+    .filter((p) => p.screens.length);
+  if (!usable.length) return null;
+  const isActive = (p) => selected && selected.size === p.screens.length && p.screens.every((k) => selected.has(k));
+  return (
+    <div style={{ marginBottom: 10 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 7 }}>
+        <span style={{ fontFamily: sans, fontSize: 11.5, color: D.faint }}>Faith-based sets:</span>
+        {usable.map((p) => {
+          const on = isActive(p);
+          return (
+            <button key={p.key} onClick={() => onApply(p.screens)} title={p.note}
+              style={{ fontFamily: sans, fontSize: 12, fontWeight: 600, cursor: "pointer", borderRadius: 999, padding: "4px 12px",
+                border: `1px solid ${on ? A.lav : D.glassBorder}`,
+                background: on ? A.lav : "transparent",
+                color: on ? A.lavInk : D.muted, transition: "all .12s" }}>
+              {p.label}
+            </button>
+          );
+        })}
+        <button onClick={() => setOpen((v) => !v)} aria-expanded={open}
+          style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 600, cursor: "pointer", borderRadius: 999,
+            width: 21, height: 21, lineHeight: 1, padding: 0, border: `1px solid ${D.glassBorder}`,
+            background: "transparent", color: D.muted }}
+          title="What do these cover?">i</button>
+      </div>
+      {open && (
+        <div style={{ marginTop: 9, padding: "12px 14px", background: "rgba(252,235,208,0.07)", border: `1px solid ${D.glassBorder}`, borderRadius: 12, display: "grid", gap: 11 }}>
+          <p style={{ margin: 0, fontFamily: sans, fontSize: 12.5, color: D.muted, lineHeight: 1.55 }}>
+            Each set turns on screens that already exist here. It adds no new judgment about any company, and none of
+            these traditions is uniform, so treat them as a starting point you can edit.
+          </p>
+          {usable.map((p) => (
+            <div key={p.key}>
+              <div style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: D.ink }}>{p.label}</div>
+              <div style={{ fontFamily: sans, fontSize: 12, color: D.brassSoft, margin: "2px 0 3px" }}>
+                {p.screens.map((k) => screens.find((s) => s.key === k)?.label).filter(Boolean).join(" · ")}
+              </div>
+              <p style={{ margin: 0, fontFamily: sans, fontSize: 12, color: D.muted, lineHeight: 1.5 }}>{p.note}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function HeroAnalyzer({ onStart, snaptrade, meta }) {
   const [q, setQ] = useState(initialSymbol);
   const [result, setResult] = useState(null);
@@ -192,10 +250,12 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
   const [err, setErr] = useState("");
   const [screens, setScreens] = useState([]);
   const [selected, setSelected] = useState(null); // Set of screen keys; null until loaded
+  const [presets, setPresets] = useState([]);
   useEffect(() => {
     api("/api/screens").then((d) => {
       const list = (d.screens || []).slice().sort((a, b) => a.label.localeCompare(b.label));
       setScreens(list);
+      setPresets(d.presets || []);
       const only = initialOnly();
       const valid = only && only.filter((k) => list.some((s) => s.key === k));
       setSelected(new Set(valid && valid.length ? valid : list.map((s) => s.key)));
@@ -304,6 +364,7 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
               {allOn ? "Clear all" : "Select all"}
             </button>
           </div>
+          <PresetRow presets={presets} screens={screens} selected={selected} onApply={(keys) => setSelected(new Set(keys))} />
           <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
             {screens.map((s) => {
               const on = selected.has(s.key);
@@ -941,6 +1002,10 @@ const METHOD_CATALOGUE = [
     { name: "Factory farming", status: "Live", def: "Industrial animal agriculture and meat/poultry processing.", counts: "Large-scale meat/poultry slaughter and packing, industrial feedlots.", not: "Plant-based food; small/pasture operations; prepared-food brands that buy meat to make jerky or deli meals (the slaughter is upstream).", ex: "Tyson Foods, Hormel, Smithfield, Pilgrim’s Pride." },
     { name: "Animal testing", status: "Live", def: "Contract research and cosmetics whose core business involves animal testing.", counts: "Contract research orgs with animal-study operations; cosmetics tied to animal testing.", not: "Medical research where no animal testing is disclosed.", ex: "Charles River Labs, LabCorp." },
     { name: "Fur & exotic leather", status: "Live", def: "Production or primary retail of animal fur and exotic-animal leather.", counts: "Fur farming/processing; brands whose principal line is fur/exotic skins.", not: "General apparel with incidental leather.", ex: "A deliberately narrow, curated set. Few US-listed pure-plays exist." },
+  ]],
+  ["Faith-based", [
+    { name: "Pork production", status: "Live", def: "Hog production and pork processing as a reported segment or principal line of business.", counts: "Companies whose own segment reporting names pork, or that state pork as a principal raw material.", not: "Grocers and restaurants that sell pork among many goods; prepared-food brands that buy pork downstream.", ex: "Smithfield Foods, Tyson Foods, Hormel Foods, Seaboard." },
+    { name: "Interest-based finance", status: "Live", def: "Banks and consumer lenders whose principal business is lending at interest, excluded under sharia screening as riba.", counts: "Commercial banks, savings institutions, and card issuers whose filings report net interest income as a primary revenue line.", not: "Conventional insurers, which sharia screens exclude on a separate ground we do not yet cover; payment processors that take fees rather than interest.", ex: "JPMorgan Chase, Bank of America, Capital One, Synchrony Financial." },
   ]],
 ];
 function Methodology({ onStart }) {

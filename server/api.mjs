@@ -15,7 +15,7 @@ import { mailerEnabled, siteUrl, sendMail, resetEmail, verifyEmail } from "./lib
 import { snaptradeEnabled, registerUser as stRegister, connectionPortalUrl, allPositions } from "./lib/snaptrade.js";
 import { analyze, lookupSymbol, coverageMeta } from "./lib/analyzer.js";
 import { suggest } from "./lib/suggest.js";
-import { screenCatalogue, isScreenKey } from "./lib/screens.js";
+import { screenCatalogue, isScreenKey, VALUE_PRESETS } from "./lib/screens.js";
 import { hotNews } from "./lib/news.js";
 import { tickerTape, quoteFor } from "./lib/quotes.js";
 import { sharePage } from "./lib/share.js";
@@ -228,7 +228,7 @@ export async function handler(req, res) {
 
   // ---- the ethical screens catalogue (public reference data) ----
   if (req.method === "GET" && path === "/api/screens") {
-    return sendJson(res, 200, { screens: screenCatalogue, snaptrade: snaptradeEnabled(), data: coverageMeta() });
+    return sendJson(res, 200, { screens: screenCatalogue, presets: VALUE_PRESETS, snaptrade: snaptradeEnabled(), data: coverageMeta() });
   }
 
   // ---- search autocomplete (ticker / company-name suggestions) ----

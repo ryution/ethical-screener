@@ -346,6 +346,96 @@ export const SCREENS = [
       AAPL: "Apple — its own 2025 supply-chain report disclosed 10 'Core Violations' (its most serious category) in 2024: nine from suppliers falsifying working-hours records, one a health-and-safety violation. Since 2008, Apple has had suppliers repay $34.5M in recruitment fees to over 37,700 workers under its zero-fees policy (recruitment fees are a recognized forced-labor risk indicator). Apple states it found no instances of forced labor in 2024 and no cases of underage labor in over five years.",
     },
   },
+  {
+    // Dietary screen, kept to the least arguable basis available: pork as a REPORTED
+    // segment or a stated principal raw material, taken from the company's own segment
+    // reporting. SIC cannot do this one — 2011 "meat packing" does not distinguish
+    // species — so it stays curated and deliberately short rather than guessed at.
+    key: "pork",
+    label: "Pork production",
+    blurb: "Hog production and pork processing as a reported segment or principal line of business.",
+    tickers: {
+      SFD: "Smithfield Foods — the largest pork processor in the United States; hog production and packaged pork are its core business.",
+      TSN: "Tyson Foods — pork is one of its reported operating segments, covering hog processing and fresh and prepared pork products.",
+      HRL: "Hormel Foods — pork is its principal raw material and the base of its largest brands, including Spam and Black Label bacon.",
+      SEB: "Seaboard — its Pork segment runs hog production and pork processing, one of the company's reported business lines.",
+    },
+  },
+  {
+    // Riba screen. A commercial bank's own filings state that net interest income is its
+    // primary revenue line, which makes membership a plain fact rather than a judgment —
+    // the same bar the SIC layer uses. sic.js maps the banking codes too, so breadth
+    // arrives on the next EDGAR enrichment run; these are the anchors until then.
+    //
+    // Deliberately NOT insurance: sharia screens exclude conventional insurers on a
+    // different ground (gharar, not riba), and folding them in here would blur what the
+    // flag actually asserts. Stated as a gap in the Islamic preset note instead.
+    key: "interest_finance",
+    label: "Interest-based finance",
+    blurb: "Banks and consumer lenders whose principal business is lending at interest. Excluded under sharia screening as riba.",
+    tickers: {
+      JPM: "JPMorgan Chase — a commercial bank; net interest income is its single largest revenue line.",
+      BAC: "Bank of America — a commercial bank built on interest-bearing deposits and lending.",
+      WFC: "Wells Fargo — a commercial bank; consumer and commercial lending at interest is its core business.",
+      C: "Citigroup — a commercial bank with global consumer and institutional lending at interest.",
+      USB: "U.S. Bancorp — a commercial bank; interest-bearing loans are its principal business.",
+      PNC: "PNC Financial Services — a commercial bank whose primary revenue is net interest income.",
+      TFC: "Truist Financial — a commercial bank formed from BB&T and SunTrust, lending at interest.",
+      COF: "Capital One — a consumer lender; credit-card interest is its largest revenue source.",
+      AXP: "American Express — card issuer and lender earning interest on revolving balances.",
+      DFS: "Discover Financial Services — a credit-card issuer and consumer lender earning interest on balances.",
+      SYF: "Synchrony Financial — a consumer-credit bank; interest on store and card balances is its core revenue.",
+      ALLY: "Ally Financial — a bank whose principal business is interest-bearing auto and consumer lending.",
+      BK: "BNY Mellon — a bank earning net interest income alongside custody and asset-servicing fees.",
+      SCHW: "Charles Schwab — a broker and bank; net interest revenue on client cash is its largest revenue line.",
+    },
+  },
+];
+
+/**
+ * Faith-based starting sets. A preset selects screens that already exist — it never
+ * introduces a claim of its own, so nothing here can be wrong about a company. Each
+ * carries a `note` stating plainly what it covers AND what it leaves out, because
+ * these traditions are not uniform and a preset that implies completeness would be
+ * exactly the kind of overstatement the rest of this file refuses to make.
+ *
+ * @typedef {Object} Preset
+ * @property {string} key
+ * @property {string} label
+ * @property {string} note     what it covers, and where it falls short
+ * @property {string[]} screens
+ */
+export const VALUE_PRESETS = [
+  {
+    key: "islamic",
+    label: "Islamic (halal)",
+    note: "The categories most sharia screens exclude: intoxicants, gambling, pork, adult content, and lending at interest (riba). Conventional insurance is commonly excluded too, on a separate ground, and we do not screen it yet. Financial-ratio tests (debt and interest income as a share of assets) are part of formal sharia screening and are not applied here.",
+    screens: ["alcohol", "gambling", "tobacco", "adult", "pork", "interest_finance"],
+  },
+  {
+    key: "catholic",
+    label: "Catholic (USCCB)",
+    note: "Follows the themes of the USCCB's socially responsible investment guidelines that we can state as checkable facts: arms, adult content, predatory lending, and forced labour. Their guidelines also address reproductive-health categories, which we do not screen.",
+    screens: ["weapons", "firearms", "adult", "payday_lending", "forced_labor_supply_chain", "supplier_audit_violations"],
+  },
+  {
+    key: "evangelical",
+    label: "Evangelical",
+    note: "The vice categories screened by funds in this tradition, such as Timothy Plan and Inspire: alcohol, gambling, tobacco, adult content, and cannabis. Those funds also apply screens we deliberately do not build, including ones based on a company's treatment of its LGBTQ employees.",
+    screens: ["alcohol", "gambling", "tobacco", "adult", "cannabis"],
+  },
+  {
+    key: "jewish",
+    label: "Jewish",
+    note: "Jewish investment screening is far less codified than sharia screening, so treat this as a starting point rather than a standard: pork, lending at predatory interest, and documented forced labour under the obligation owed to workers.",
+    screens: ["pork", "payday_lending", "forced_labor_supply_chain", "supplier_audit_violations"],
+  },
+  {
+    key: "dharmic",
+    label: "Dharmic (ahimsa)",
+    note: "Non-harm screens relevant to Hindu, Buddhist and Jain investors: industrial animal agriculture, animal testing, fur, and weapons. Vegetarian observance varies widely, so this covers harm to animals rather than every dietary rule.",
+    screens: ["factory_farming", "animal_testing", "fur", "weapons", "firearms"],
+  },
 ];
 
 // Fast lookup: TICKER -> [{ key, label, reason }] across every screen, so matching a

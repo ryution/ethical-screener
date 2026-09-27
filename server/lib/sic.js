@@ -64,7 +64,24 @@ export function screensForSic(sicRaw, ticker) {
     keys.add("factory_farming");
   }
 
+  // Interest-based finance — depository banks and credit-card issuers. A bank's own
+  // filings state that net interest income is its primary revenue line, so membership
+  // here is a plain fact about the registered line of business, the same bar the rest
+  // of this map uses.
+  // NOTE: 6141 ("personal credit") is deliberately EXCLUDED for the same reason it is
+  // excluded from payday_lending below — it lumps student lenders and BNPL in with card
+  // banks, and this screen is about lending at interest as the principal business, not
+  // about consumer credit generally. Named card issuers come from the curated list.
+  // NOTE: insurance carriers (63xx) are NOT here. Sharia screens exclude conventional
+  // insurers on a different ground (gharar), and this flag would then assert something
+  // its own label does not say.
+  if (inRange(sic, 6020, 6022) || inRange(sic, 6035, 6036) || sic === 6199 || sic === 6111) {
+    keys.add("interest_finance");
+  }
+
   // DELIBERATELY NOT SIC-CLASSIFIED (codes too coarse to be a plain factual claim):
+  //  • pork — 2011 "meat packing" does not distinguish species, so it cannot tell a pork
+  //    processor from a beef one. Curated only.
   //  • weapons — 3480-3489 / 3760-3769 / 3795 / 3812 mix real defense primes with consumer
   //    GPS (Garmin), space launch (Rocket Lab), Tasers (Axon), and medical/nav instruments.
   //    Real weapons makers come from the curated list + filing-cited 10-K reading instead.
@@ -96,6 +113,10 @@ export function reasonForSic(sicRaw) {
   if (sic === 3482 || sic === 3484) return "Manufactures small arms or ammunition.";
   if (sic === 2011) return "Industrial meat packing and processing.";
   if (sic === 2015) return "Poultry slaughtering and processing.";
+  if (inRange(sic, 6020, 6022)) return "A commercial bank; lending at interest is its principal business.";
+  if (inRange(sic, 6035, 6036)) return "A savings institution; lending at interest is its principal business.";
+  if (sic === 6111) return "A federal credit agency making and guaranteeing loans at interest.";
+  if (sic === 6199) return "A finance company whose business is lending at interest.";
   if (sic === 211 || sic === 213) return "Industrial livestock and feedlot operations.";
   return null;
 }
