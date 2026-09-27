@@ -420,7 +420,7 @@ function pageTitle(r) {
 }
 
 // Copy this exact view (symbol + category filter) — the share button on every result.
-function ShareButton({ symbol, dark = true }) {
+function ShareButton({ symbol, dark = false }) {
   const [done, setDone] = useState(false);
   const share = async () => {
     const url = window.location.href.split("#")[0];
@@ -459,16 +459,19 @@ function filterBySelected(result, selected) {
 // §3.6 — the grade for one company, against the categories the reader turned on. The
 // letter describes the KIND of fact on record (see src/grade.js), never how bad it is,
 // so it always travels with the flag underneath it rather than standing alone.
-function GradeBadge({ flags, selectedCount, known = true, dark = true }) {
+function GradeBadge({ flags, selectedCount, known = true, dark = false }) {
   const g = gradeFor(flags || [], selectedCount, known);
   if (!g.letter) return null;
+  // B and C have no colour of their own, so on the light panel they need a rule to read
+  // as a badge at all — the neutral fill is a shade off the panel it sits on.
   const tone = g.letter === "A" ? { bg: A.lime, ink: A.limeInk }
     : g.letter === "F" ? { bg: L.flag, ink: "#3A140C" }
     : g.letter === "D" ? { bg: A.lav, ink: A.lavInk }
-    : { bg: "rgba(237,239,243,0.10)", ink: dark ? D.ink : L.ink };
+    : { bg: dark ? "rgba(237,239,243,0.10)" : P.sand, ink: dark ? D.ink : L.ink, border: dark ? D.glassBorder : L.line };
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
       <div aria-hidden style={{ width: 52, height: 52, borderRadius: 14, background: tone.bg, color: tone.ink,
+        border: tone.border ? `1px solid ${tone.border}` : "none",
         display: "grid", placeItems: "center", fontFamily: display, fontSize: 30, fontWeight: 600, flexShrink: 0 }}>{g.letter}</div>
       <div style={{ minWidth: 0 }}>
         <div style={{ fontFamily: sans, fontSize: 13.5, fontWeight: 600, color: dark ? D.ink : L.ink, lineHeight: 1.3 }}>
@@ -485,7 +488,9 @@ function GradeBadge({ flags, selectedCount, known = true, dark = true }) {
 }
 
 function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
-  const panel = glass({ marginTop: 14, padding: "18px 20px", background: "rgba(237,239,243,0.09)", borderRadius: 14 });
+  // The result panel is a light card sitting on the dark band, so everything inside it
+  // uses the light ramp rather than the band's.
+  const panel = { marginTop: 14, padding: "18px 20px", background: P.butter, border: `1px solid ${L.line}`, borderRadius: 14 };
   const cta = <HeroCTA onStart={onStart} snaptrade={snaptrade} />;
 
   if (result.type === "none") {
@@ -495,11 +500,11 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
     if (result.known === false) {
       return (
         <div style={panel}>
-          <div style={{ fontFamily: serif, fontSize: 19, color: D.ink }}>
+          <div style={{ fontFamily: serif, fontSize: 19, color: L.ink }}>
             We don't recognize <b>{result.symbol}</b>.
           </div>
-          <p style={{ fontFamily: sans, fontSize: 13, color: D.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
-            It isn't a U.S.-listed company in our index, and it isn't a fund we can see inside. If it's a fund, that means <b style={{ color: D.ink }}>not analyzed</b>, never "clean." Check the spelling, or try one of the funds above.
+          <p style={{ fontFamily: sans, fontSize: 13, color: L.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
+            It isn't a U.S.-listed company in our index, and it isn't a fund we can see inside. If it's a fund, that means <b style={{ color: L.ink }}>not analyzed</b>, never "clean." Check the spelling, or try one of the funds above.
           </p>
           {cta}
         </div>
@@ -508,15 +513,15 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
     return (
       <div style={panel}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-          <div style={{ fontFamily: serif, fontSize: 19, color: D.ink }}>
-            No flags for <b>{result.symbol}</b>{result.name ? <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}> · {displayName(result.name)}</span> : null}
+          <div style={{ fontFamily: serif, fontSize: 19, color: L.ink }}>
+            No flags for <b>{result.symbol}</b>{result.name ? <span style={{ color: L.muted, fontFamily: sans, fontSize: 15 }}> · {displayName(result.name)}</span> : null}
           </div>
           <ShareButton symbol={result.symbol} />
         </div>
         {/* A recognised filer with nothing flagged is the A case. The unknown-symbol branch
             above deliberately gets no grade at all — absence of data is not an A. */}
         <div style={{ marginTop: 14 }}><GradeBadge flags={[]} selectedCount={selectedCount} /></div>
-        <p style={{ fontFamily: sans, fontSize: 13, color: D.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
+        <p style={{ fontFamily: sans, fontSize: 13, color: L.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
           It isn't on any of the lists we track. That doesn't mean it's audited clean. It only means "none of the names we track." We cover U.S.-listed companies that file with the SEC, so a foreign-listed name may simply be out of scope.
         </p>
         {cta}
@@ -528,9 +533,9 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
     if (!result.flags.length) {
       return (
         <div style={panel}>
-          <div style={{ fontFamily: serif, fontSize: 19, color: D.ink }}>No flags for <b>{result.symbol}</b> in your selected categories.</div>
+          <div style={{ fontFamily: serif, fontSize: 19, color: L.ink }}>No flags for <b>{result.symbol}</b> in your selected categories.</div>
           <div style={{ marginTop: 14 }}><GradeBadge flags={[]} selectedCount={selectedCount} /></div>
-          <p style={{ fontFamily: sans, fontSize: 13, color: D.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
+          <p style={{ fontFamily: sans, fontSize: 13, color: L.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
             Turn on more categories above to widen the check.
           </p>
           {cta}
@@ -541,13 +546,13 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
     return (
       <div style={panel}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-          <div style={{ fontFamily: serif, fontSize: 20, color: D.ink }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
+          <div style={{ fontFamily: serif, fontSize: 20, color: L.ink }}>{result.symbol} · <span style={{ color: L.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
           <ShareButton symbol={result.symbol} />
         </div>
         <QuotePanel symbol={result.symbol} />
         <div style={{ marginTop: 16 }}><GradeBadge flags={flags} selectedCount={selectedCount} /></div>
         <div style={{ marginTop: 14, display: "grid", gap: 10 }}>
-          {flags.map((f) => <FlagCard key={f.key} flag={f} company={result.name} dark />)}
+          {flags.map((f) => <FlagCard key={f.key} flag={f} company={result.name} />)}
         </div>
         {cta}
       </div>
@@ -559,11 +564,11 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
     return (
       <div style={panel}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-          <div style={{ fontFamily: serif, fontSize: 20, color: D.ink }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
-          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: D.muted, background: "rgba(237,239,243,0.10)", borderRadius: 999, padding: "3px 10px" }}>NOT ANALYZED</span>
+          <div style={{ fontFamily: serif, fontSize: 20, color: L.ink }}>{result.symbol} · <span style={{ color: L.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
+          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: L.muted, background: L.lineSoft, borderRadius: 999, padding: "3px 10px" }}>NOT ANALYZED</span>
         </div>
-        <p style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, margin: "8px 0 0", lineHeight: 1.55 }}>
-          {result.notAnalyzedReason} We call that <b style={{ color: D.ink }}>not analyzed</b>, never "clean."
+        <p style={{ fontFamily: sans, fontSize: 13.5, color: L.muted, margin: "8px 0 0", lineHeight: 1.55 }}>
+          {result.notAnalyzedReason} We call that <b style={{ color: L.ink }}>not analyzed</b>, never "clean."
         </p>
         {cta}
       </div>
@@ -575,10 +580,10 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
     return (
       <div style={panel}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-          <div style={{ fontFamily: serif, fontSize: 20, color: D.ink }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
+          <div style={{ fontFamily: serif, fontSize: 20, color: L.ink }}>{result.symbol} · <span style={{ color: L.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
           <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: A.lavInk, background: A.lav, borderRadius: 999, padding: "3px 10px" }}>FUND</span>
         </div>
-        <p style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, margin: "8px 0 0", lineHeight: 1.5 }}>
+        <p style={{ fontFamily: sans, fontSize: 13.5, color: L.muted, margin: "8px 0 0", lineHeight: 1.5 }}>
           No holdings in this fund match your selected categories. Turn on more categories above to widen the check.
         </p>
         {cta}
@@ -592,24 +597,24 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
   return (
     <div style={panel}>
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-        <div style={{ fontFamily: serif, fontSize: 20, color: D.ink }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
+        <div style={{ fontFamily: serif, fontSize: 20, color: L.ink }}>{result.symbol} · <span style={{ color: L.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
         <span style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: A.lavInk, background: A.lav, borderRadius: 999, padding: "3px 10px" }}>FUND</span>
           <ShareButton symbol={result.symbol} />
         </span>
       </div>
-      <p style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, margin: "6px 0 0", lineHeight: 1.5 }}>
-        Tracks {result.basis} and holds <b style={{ color: D.ink }}>{contains.length}</b>
-        {result.totalHoldings ? <> of its <b style={{ color: D.ink }}>{result.totalHoldings}</b></> : null} companies you may want to avoid:
+      <p style={{ fontFamily: sans, fontSize: 13.5, color: L.muted, margin: "6px 0 0", lineHeight: 1.5 }}>
+        Tracks {result.basis} and holds <b style={{ color: L.ink }}>{contains.length}</b>
+        {result.totalHoldings ? <> of its <b style={{ color: L.ink }}>{result.totalHoldings}</b></> : null} companies you may want to avoid:
       </p>
       {result.asOf && (
-        <p style={{ fontFamily: sans, fontSize: 11.5, color: D.faint, margin: "4px 0 0" }}>
+        <p style={{ fontFamily: sans, fontSize: 11.5, color: L.faint, margin: "4px 0 0" }}>
           Holdings from {result.holdingsSource}, as of {result.asOf}.
         </p>
       )}
       <QuotePanel symbol={result.symbol} />
       <div style={{ marginTop: 16, display: "grid", gap: 9 }}>
-        <FundBreakdown groups={groups} theme="dark" />
+        <FundBreakdown groups={groups} theme="light" />
       </div>
       {cta}
     </div>
@@ -1677,8 +1682,10 @@ function DeltaBadge({ pct }) {
   return (
     <span style={{
       fontFamily: sans, fontSize: 10.5, fontWeight: 600, borderRadius: 999, padding: "2px 8px",
-      background: up ? A.lime : D.flagBg, color: up ? A.limeInk : D.flag,
-      border: up ? "none" : `1px solid ${D.flagBorder}`, whiteSpace: "nowrap",
+      // The delta sits inside the result panel, which is a light card, so it takes the
+      // page's terracotta rather than the lifted tint the dark bands use.
+      background: up ? A.lime : L.flagBg, color: up ? A.limeInk : L.flag,
+      border: up ? "none" : `1px solid ${L.flagBorder}`, whiteSpace: "nowrap",
     }}>{up ? "+" : ""}{fmtPct(pct)}</span>
   );
 }
@@ -1741,7 +1748,7 @@ function Sparkline({ data, height = 130, color = A.lav, label = "", onScrub, act
             position: "absolute",
             left: `${(activeIdx / (data.length - 1)) * 100}%`,
             top: y(data[activeIdx]) + 6, width: 9, height: 9, borderRadius: "50%",
-            background: color, border: `2px solid ${D.lift}`,
+            background: color, border: `2px solid ${P.butter}`,
             transform: "translate(-50%,-50%)", pointerEvents: "none",
           }} />
         </>
@@ -1874,7 +1881,7 @@ function QuotePanel({ symbol }) {
   return (
     <div style={{ marginTop: 16 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-        <span style={{ fontFamily: sans, fontSize: 12.5, color: D.muted }}>
+        <span style={{ fontFamily: sans, fontSize: 12.5, color: L.muted }}>
           {stamp || `Last price · ${q.label}`}
         </span>
         <div role="group" aria-label="Chart range" style={{ marginLeft: "auto", display: "flex", gap: 4, flexWrap: "wrap" }}>
@@ -1886,8 +1893,8 @@ function QuotePanel({ symbol }) {
                   fontFamily: sans, fontSize: 11.5, fontWeight: 600, cursor: "pointer",
                   borderRadius: 999, padding: "3px 10px", minWidth: 34,
                   background: on ? A.lav : "transparent",
-                  color: on ? A.lavInk : D.muted,
-                  border: `1px solid ${on ? A.lav : D.glassBorder}`,
+                  color: on ? A.lavInk : L.muted,
+                  border: `1px solid ${on ? A.lav : L.line}`,
                   transition: "background .12s, color .12s, border-color .12s",
                 }}>{r.label}</button>
             );
@@ -1895,11 +1902,11 @@ function QuotePanel({ symbol }) {
         </div>
       </div>
       <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginTop: 3 }}>
-        <span style={{ fontFamily: sans, fontSize: 34, fontWeight: 500, letterSpacing: "-0.02em", color: D.ink, lineHeight: 1.1 }}>$ {shownPrice.toFixed(2)}</span>
+        <span style={{ fontFamily: sans, fontSize: 34, fontWeight: 500, letterSpacing: "-0.02em", color: L.ink, lineHeight: 1.1 }}>$ {shownPrice.toFixed(2)}</span>
         <DeltaBadge pct={shownPct} />
       </div>
       <div style={{ opacity: busy ? 0.45 : 1, transition: "opacity .15s" }}>
-        <Sparkline data={q.spark} height={110} color={up ? A.lime : D.flag} label={q.label}
+        <Sparkline data={q.spark} height={110} color={up ? A.lime : L.flag} label={q.label}
           onScrub={setScrub} activeIdx={scrub} />
       </div>
     </div>
