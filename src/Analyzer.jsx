@@ -145,7 +145,7 @@ export default function Analyzer() {
 // repo. It tiles at 140px; `stitchTiles` is what keeps the seams invisible where it
 // repeats. CSP already allows `data:` under img-src, which is what a CSS background URL
 // is checked against.
-const GRAIN = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E";
+const GRAIN = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E";
 
 function Canvas({ children }) {
   return (
@@ -155,7 +155,7 @@ function Canvas({ children }) {
           replaces. Low opacity so it reads as paper texture, not as visible noise. */}
       <div aria-hidden style={{
         position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none",
-        backgroundImage: `url("${GRAIN}")`, backgroundRepeat: "repeat", opacity: 0.055,
+        backgroundImage: `url("${GRAIN}")`, backgroundRepeat: "repeat", opacity: 0.2,
       }} />
       <div style={{ position: "relative", zIndex: 1 }}>{children}</div>
     </div>
@@ -965,14 +965,14 @@ function HotNews({ wrap }) {
 
 // ── Methodology (public page, mirrors METHODOLOGY.md §1–5) ───────────────────
 const METHOD_PRINCIPLES = [
-  ["Every flag is a verifiable fact", "Every flag is a factual claim about what a company does, with a one-sentence reason you can verify. No opaque “ESG score.” The letter grade isn’t a score either — it’s a one-line rule applied to the flags we show you, describing the kind of fact on record rather than how bad it is, and it moves with the categories you pick. If we can’t say why in one sentence, it isn’t a flag."],
-  ["We flag documented conduct", "A company supplying hospital morphine is not “opioids.” A company with opioid-marketing litigation and settlements is. What the company did is what counts, not what industry it sits in."],
-  ["Every flag cites a source", "A flag from a company’s filing carries a verbatim quote from that filing and a link to it. No supporting quote means no flag. You read the company’s own words, not our paraphrase."],
-  ["We flag a reported line of business", "A flag has to be a reported segment or principal activity. “Sells cigarettes at the register” does not qualify, and neither does a passing mention in a risk-factor section."],
-  ["You choose which flags apply", "We never decide what is unethical for you. You pick the flags; we only explain what’s there. Some flags are screened in opposite directions by different people, so we present those neutrally."],
-  ["A clean result is never a guarantee", "A clean result means “none of the names we track,” never “audited pure.” A fund we can’t see inside is “not analyzed,” never “clean.”"],
-  ["Every dataset shows when it was updated", "Every dataset carries a “last updated” date, so you can see how current the answer is."],
-  ["We cover U.S.-listed companies only", "Our universe is companies that file with the SEC. Foreign-listed companies (20-F filers, most ADRs) are not analyzed. An empty result there means out of scope, never clean."],
+  ["Every flag is a verifiable fact", "Each flag states something a company does, with a one-sentence reason you can check for yourself. Nothing here is an ESG score. The letter grade is not a score either. It applies one plain rule to the flags you are currently looking at, so it tells you what kind of fact is on record rather than how bad we think it is, and it shifts as you change the categories. Where we cannot give a reason in a sentence, there is no flag."],
+  ["We flag documented conduct", "A company that supplies hospital morphine does not carry the opioid flag. A company that has faced opioid-marketing litigation and paid settlements does. We go by what a company has been documented doing. Belonging to an industry is not by itself a finding."],
+  ["Every flag cites a source", "When a flag comes from a company\u2019s filing, it carries a quote from that filing and a link to the document. We drop any flag we cannot support with a quote. What you read is the company describing itself, in its own words."],
+  ["We flag a reported line of business", "A flag has to rest on a reported segment or a principal activity. Selling cigarettes at the register does not qualify, and a passing mention in a risk-factor section does not either."],
+  ["You choose which flags apply", "We do not decide what counts as unethical for you. You pick the flags and we explain what turns up. People screen a few of these in opposite directions, so for those we describe what is there without taking a side."],
+  ["A clean result is never a guarantee", "A clean result tells you that none of the names we track came up. It does not tell you a company has been audited and found sound. Where we cannot see inside a fund, we label it not analyzed and leave it there."],
+  ["Every dataset shows when it was updated", "Every dataset carries the date it was last refreshed, so you can judge how current an answer is."],
+  ["We cover U.S.-listed companies only", "We cover companies that file with the SEC. Foreign-listed companies, including 20-F filers and most ADRs, sit outside that. An empty result for one of those means we did not look, rather than that we looked and found nothing."],
 ];
 const METHOD_LAYERS = [
   ["Curated", "A hand-maintained list of companies, researched from each one’s primary business.", "Precise and defensible for well-known names."],
@@ -1050,7 +1050,7 @@ function Methodology({ onStart }) {
       </Canvas>
 
       <section style={{ ...wrap, padding: "clamp(48px,7vw,72px) 24px" }}>
-        <SectionHead title="The principles behind every flag" sub="These are non-negotiable. They are the product’s whole premise." />
+        <SectionHead title="The principles behind every flag" sub="The whole product rests on these." />
         <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 26 }}>
           {METHOD_PRINCIPLES.map(([t, d], i) => (
             <li key={i} style={{ display: "grid", gridTemplateColumns: "9px 1fr", gap: 16 }}>
