@@ -355,7 +355,8 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
             </button>
           </div>
           <PresetRow presets={presets} screens={screens} selected={selected} onApply={(keys) => setSelected(new Set(keys))} />
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 7 }}>
+            <span style={{ fontFamily: sans, fontSize: 11.5, color: D.faint }}>Individual categories:</span>
             {screens.map((s) => {
               const on = selected.has(s.key);
               return (
