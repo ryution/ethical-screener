@@ -141,9 +141,22 @@ export default function Analyzer() {
 
 // ── The navy canvas: one flat block of deep navy, no gradient and no glow. The page is
 // built from solid blocks butted against each other; every seam is a hard edge. ──
+// Fractal noise as an inline SVG, so the grain costs no image request and no asset in the
+// repo. It tiles at 140px; `stitchTiles` is what keeps the seams invisible where it
+// repeats. CSP already allows `data:` under img-src, which is what a CSS background URL
+// is checked against.
+const GRAIN = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E";
+
 function Canvas({ children }) {
   return (
     <div style={{ position: "relative", fontFamily: sans, color: D.ink, overflow: "hidden", background: D.block }}>
+      {/* Grain sits over the whole band rather than behind the text alone: a patch would
+          draw a rectangle edge around the copy, which is worse than the flat fill it
+          replaces. Low opacity so it reads as paper texture, not as visible noise. */}
+      <div aria-hidden style={{
+        position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none",
+        backgroundImage: `url("${GRAIN}")`, backgroundRepeat: "repeat", opacity: 0.055,
+      }} />
       <div style={{ position: "relative", zIndex: 1 }}>{children}</div>
     </div>
   );
