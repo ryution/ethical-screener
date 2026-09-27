@@ -186,11 +186,10 @@ function syncUrl(symbol, selected, screens) {
   } catch { /* ignore */ }
 }
 // Faith-based starting sets. A preset only selects screens that already exist, so it
-// asserts nothing new about any company; the info panel says in plain words what each
-// one covers and where it stops, because these traditions are not uniform and a preset
-// that implied completeness would overstate.
+// asserts nothing new about any company. The note for a set is shown only while that set
+// is the current selection: these traditions are not uniform, so the caveat belongs with
+// the choice someone actually made rather than stacked up for all five at once.
 function PresetRow({ presets, screens, selected, onApply }) {
-  const [open, setOpen] = useState(false);
   if (!presets.length) return null;
   const have = new Set(screens.map((s) => s.key));
   // A preset can name a screen this deployment doesn't carry; drop those rather than
@@ -200,6 +199,9 @@ function PresetRow({ presets, screens, selected, onApply }) {
     .filter((p) => p.screens.length);
   if (!usable.length) return null;
   const isActive = (p) => selected && selected.size === p.screens.length && p.screens.every((k) => selected.has(k));
+  // Editing the chips by hand drops the exact match, and the note goes with it — it would
+  // be describing a set that is no longer what is selected.
+  const active = usable.find(isActive);
   return (
     <div style={{ marginBottom: 10 }}>
       <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 7 }}>
@@ -207,7 +209,7 @@ function PresetRow({ presets, screens, selected, onApply }) {
         {usable.map((p) => {
           const on = isActive(p);
           return (
-            <button key={p.key} onClick={() => onApply(p.screens)} title={p.note}
+            <button key={p.key} onClick={() => onApply(p.screens)} aria-pressed={on}
               style={{ fontFamily: sans, fontSize: 12, fontWeight: 600, cursor: "pointer", borderRadius: 999, padding: "4px 12px",
                 border: `1px solid ${on ? A.lav : D.glassBorder}`,
                 background: on ? A.lav : "transparent",
@@ -216,27 +218,15 @@ function PresetRow({ presets, screens, selected, onApply }) {
             </button>
           );
         })}
-        <button onClick={() => setOpen((v) => !v)} aria-expanded={open}
-          style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 600, cursor: "pointer", borderRadius: 999,
-            width: 21, height: 21, lineHeight: 1, padding: 0, border: `1px solid ${D.glassBorder}`,
-            background: "transparent", color: D.muted }}
-          title="What do these cover?">i</button>
       </div>
-      {open && (
-        <div style={{ marginTop: 9, padding: "12px 14px", background: "rgba(252,235,208,0.07)", border: `1px solid ${D.glassBorder}`, borderRadius: 12, display: "grid", gap: 11 }}>
-          <p style={{ margin: 0, fontFamily: sans, fontSize: 12.5, color: D.muted, lineHeight: 1.55 }}>
-            Each set turns on screens that already exist here. It adds no new judgment about any company, and none of
-            these traditions is uniform, so treat them as a starting point you can edit.
+      {active && (
+        <div style={{ marginTop: 9, padding: "11px 13px", background: "rgba(156,203,245,0.08)", border: `1px solid ${D.glassBorder}`, borderRadius: 12 }}>
+          <div style={{ fontFamily: sans, fontSize: 12, color: D.brassSoft, marginBottom: 4 }}>
+            {active.screens.map((k) => screens.find((s) => s.key === k)?.label).filter(Boolean).join(" · ")}
+          </div>
+          <p style={{ margin: 0, fontFamily: sans, fontSize: 12, color: D.muted, lineHeight: 1.55 }}>
+            {active.note} Edit the categories below to make it yours.
           </p>
-          {usable.map((p) => (
-            <div key={p.key}>
-              <div style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: D.ink }}>{p.label}</div>
-              <div style={{ fontFamily: sans, fontSize: 12, color: D.brassSoft, margin: "2px 0 3px" }}>
-                {p.screens.map((k) => screens.find((s) => s.key === k)?.label).filter(Boolean).join(" · ")}
-              </div>
-              <p style={{ margin: 0, fontFamily: sans, fontSize: 12, color: D.muted, lineHeight: 1.5 }}>{p.note}</p>
-            </div>
-          ))}
         </div>
       )}
     </div>
