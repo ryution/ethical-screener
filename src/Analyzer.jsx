@@ -189,6 +189,8 @@ function syncUrl(symbol, selected, screens) {
 // asserts nothing new about any company. The note for a set is shown only while that set
 // is the current selection: these traditions are not uniform, so the caveat belongs with
 // the choice someone actually made rather than stacked up for all five at once.
+const filterLink = { background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: sans, fontSize: 11.5, color: D.mint };
+
 function PresetRow({ presets, screens, selected, onApply }) {
   if (!presets.length) return null;
   const have = new Set(screens.map((s) => s.key));
@@ -350,9 +352,17 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
         <div style={{ marginTop: 14, borderTop: `1px solid ${D.glassBorder}`, paddingTop: 12 }}>
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, marginBottom: 9 }}>
             <span style={{ fontFamily: sans, fontSize: 11.5, letterSpacing: "0.08em", textTransform: "uppercase", color: D.faint }}>Filter to what you care about</span>
-            <button onClick={() => setAll(!allOn)} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: sans, fontSize: 11.5, color: D.mint }}>
-              {allOn ? "Clear all" : "Select all"}
-            </button>
+            {/* Two buttons, not one toggle. A single toggle only offered "Clear all" once
+                everything was on, so clearing a faith set or a hand-picked few meant
+                selecting all of them first. Each is shown only when it would do something. */}
+            <div style={{ display: "flex", alignItems: "baseline", gap: 12, flexShrink: 0 }}>
+              {!allOn && (
+                <button onClick={() => setAll(true)} style={filterLink}>Select all</button>
+              )}
+              {selected.size > 0 && (
+                <button onClick={() => setAll(false)} style={filterLink}>Clear all</button>
+              )}
+            </div>
           </div>
           <PresetRow presets={presets} screens={screens} selected={selected} onApply={(keys) => setSelected(new Set(keys))} />
           <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 7 }}>
