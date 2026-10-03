@@ -14,6 +14,7 @@
 
 import { assessInjury, injuryMeta } from "./injury.js";
 import { assessRecalls, recallMeta } from "./recalls.js";
+import { assessEnvironment, environmentMeta } from "./environment.js";
 
 export const CONDUCT_SCREENS = [
   {
@@ -25,6 +26,11 @@ export const CONDUCT_SCREENS = [
     key: "product_safety",
     label: "Product safety",
     blurb: "Share of a company's FDA recalls that FDA itself classed as life-threatening, against the share for firms in the same field.",
+  },
+  {
+    key: "environmental_compliance",
+    label: "Environmental compliance",
+    blurb: "Share of a company's regulated facilities that EPA classes as being in significant non-compliance, against the share across its industry.",
   },
 ];
 
@@ -77,10 +83,25 @@ export function conductSignalsFor(ticker, activeKeys = CONDUCT_KEYS) {
     }
   }
 
+  if (active.has("environmental_compliance")) {
+    const a = assessEnvironment(ticker);
+    if (a.profile) {
+      out.push({
+        key: "environmental_compliance",
+        label: conductLabel("environmental_compliance"),
+        rung: a.rung,
+        headline: a.headline,
+        detail: a.detail,
+        measured: null,
+        source: "US EPA, Enforcement and Compliance History Online",
+      });
+    }
+  }
+
   return out;
 }
 
 /** Freshness for the UI, per conduct category. */
 export function conductMeta() {
-  return { worker_injuries: injuryMeta(), product_safety: recallMeta() };
+  return { worker_injuries: injuryMeta(), product_safety: recallMeta(), environmental_compliance: environmentMeta() };
 }

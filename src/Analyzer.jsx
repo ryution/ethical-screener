@@ -522,7 +522,12 @@ function ConductBadge({ conduct, selectedCount, dark = false }) {
   const tone = g.letter === "F" ? { bg: L.flag, ink: "#3A140C" }
     : g.letter === "D" ? { bg: A.lav, ink: A.lavInk }
     : neutralTone(dark);
-  const sub = g.worst?.headline || (g.measured ? "We looked and found nothing on file. Employers report these figures themselves." : null);
+  // The letter is the worst rung, but a company can trip more than one measure and the
+  // reader should see that rather than only the loudest. FedEx is above its industry on
+  // both worker injuries and environmental compliance; showing one would hide the other.
+  const sub = g.worst
+    ? (g.tripped > 1 ? `${g.worst.headline}, and ${g.tripped - 1} other measure${g.tripped > 2 ? "s" : ""}` : g.worst.headline)
+    : (g.measured ? `We looked across ${g.measured === 1 ? "1 measure" : `${g.measured} measures`} and found nothing on file. Companies report many of these figures themselves.` : null);
   return <Badge title="How it behaves" letter={g.letter} meaning={g.meaning} sub={sub} tone={tone} dark={dark} />;
 }
 

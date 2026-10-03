@@ -55,8 +55,12 @@ test("a sustained above-industry injury rate grades D", () => {
   }
 });
 
-test("a single adverse year grades C", () => {
-  assert.equal(conductGradeFor(conductSignalsFor("COST"), N).letter, "C");
+test("a single adverse year grades C on that measure", () => {
+  // Checked on the injury signal itself: Costco also carries an environmental D now, and
+  // the combined letter correctly takes the worst rung across every category.
+  const injury = conductSignalsFor("COST", ["worker_injuries"]);
+  assert.equal(conductGradeFor(injury, 1).letter, "C");
+  assert.equal(conductGradeFor(conductSignalsFor("COST"), N).letter, "D", "worst rung wins overall");
 });
 
 test("it is independent of what the company sells", () => {

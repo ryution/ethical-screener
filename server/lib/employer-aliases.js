@@ -30,3 +30,32 @@ export const EMPLOYER_ALIASES = {
 /** Flat [name, ticker] pairs, for building a lookup. */
 export const aliasPairs = () =>
   Object.entries(EMPLOYER_ALIASES).flatMap(([ticker, names]) => names.map((n) => [n, ticker]));
+
+// ── Facility-name aliases, for regulators that name SITES rather than employers ──
+//
+// EPA's ECHO names the building: "WALMART SUPERCENTER 1234", "COSTCO GASOLINE", "TARGET
+// STORE T-0456". None of those starts with a name the company filed with the SEC, so
+// Walmart matched 3 of its 4,902 facilities until this existed.
+//
+// These are matched as an ANCHORED PREFIX, not an exact key — a facility counts when its
+// name begins with one of these on a word boundary. That is what keeps "ON TARGET" and
+// "PRIMO KROGER" (a water-vending firm operating inside Kroger stores) out, while keeping
+// "KROGER FUEL" and "COSTCO LOGISTICS" in.
+//
+// Each entry was read off the actual ECHO facility list, not guessed. Where a bare brand
+// name could belong to a different public company it is deliberately NOT used: "Target"
+// alone would reach Target Hospitality Corp, so Target is matched on its site prefixes.
+export const FACILITY_ALIASES = {
+  WMT:  ["Walmart", "Wal-Mart", "Wal Mart"],          // SUPERCENTER, NEIGHBORHOOD MARKET, DISTRIBUTION, FUEL
+  COST: ["Costco"],                                    // WHOLESALE, LOGISTICS, GASOLINE, DEPOT, BUSINESS
+  KR:   ["Kroger", "The Kroger"],                      // CO, STORE, FUEL, numbered sites
+  TGT:  ["Target Store", "Target Corporation", "Target Distribution", "Target T"],
+  AMZN: ["Amazon"],
+  UPS:  ["UPS", "United Parcel"],
+  FDX:  ["FedEx", "Federal Express"],
+  HD:   ["Home Depot", "The Home Depot"],
+};
+
+/** Flat [prefix, ticker] pairs for building a facility-name lookup. */
+export const facilityPairs = () =>
+  Object.entries(FACILITY_ALIASES).flatMap(([ticker, names]) => names.map((n) => [n, ticker]));

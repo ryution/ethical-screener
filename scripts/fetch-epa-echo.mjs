@@ -133,7 +133,7 @@ async function main() {
     process.exit(1);
   }
   const subs = JSON.parse(readFileSync(subsFile, "utf8")).companies || {};
-  const { EMPLOYER_ALIASES } = await import("../server/lib/employer-aliases.js");
+  const { EMPLOYER_ALIASES, FACILITY_ALIASES } = await import("../server/lib/employer-aliases.js");
 
   // The NAICS a company actually operates under, borrowed from the OSHA dataset, which
   // derives it from where the company's hours are worked rather than from its HQ filing.
@@ -152,13 +152,14 @@ async function main() {
 
   // ECHO matches on facility name, which is the operating brand far more often than the
   // legal entity — the same thing the OSHA import found. Use the curated alias first.
-  const queryName = (t) => (EMPLOYER_ALIASES[t]?.[0]) || subs[t]?.name || t;
+  const queryName = (t) => (FACILITY_ALIASES[t]?.[0]) || (EMPLOYER_ALIASES[t]?.[0]) || subs[t]?.name || t;
 
   console.log(`Querying ECHO for ${tickers.length} companies (${GAP / 1000}s apart for the rate limit)…\n`);
   const companies = {};
   for (const t of tickers) {
     const name = queryName(t);
-    const names = [...new Set([...(EMPLOYER_ALIASES[t] || []), subs[t]?.name, ...(subs[t]?.subsidiaries || [])].filter(Boolean))];
+    // Facility prefixes first — EPA names buildings, not legal entities.
+    const names = [...new Set([...(FACILITY_ALIASES[t] || []), ...(EMPLOYER_ALIASES[t] || []), subs[t]?.name, ...(subs[t]?.subsidiaries || [])].filter(Boolean))];
     try {
       const d = await withRetry(() => profile(names, { p_fn: name }), t);
       if (!d) { console.log(`  ${t.padEnd(6)} no facilities`); await sleep(GAP); continue; }
