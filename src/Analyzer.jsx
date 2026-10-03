@@ -526,12 +526,43 @@ function ConductBadge({ conduct, selectedCount, dark = false }) {
   return <Badge title="How it behaves" letter={g.letter} meaning={g.meaning} sub={sub} tone={tone} dark={dark} />;
 }
 
-// The two letters as a pair. They answer different questions and are never averaged.
-function Grades({ flags, conduct, selectedCount, known = true, dark = false }) {
+// A verified fact in the company's favour. Credits sit BESIDE the letters and are never
+// an input to them: a credit can lift a company out of "no grade", and can never lower an
+// F. Letting a certification net against a settlement is the greenwashing this product
+// exists to replace, so the separation is structural rather than a rule to remember.
+function Credit({ credit, dark }) {
   return (
-    <div style={{ display: "grid", gap: 14, gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", alignItems: "start" }}>
-      <GradeBadge flags={flags} selectedCount={selectedCount} known={known} dark={dark} />
-      <ConductBadge conduct={conduct} selectedCount={CONDUCT_CATEGORIES.length} dark={dark} />
+    <div style={{ display: "flex", gap: 10, alignItems: "flex-start",
+      border: `1px solid ${dark ? D.glassBorder : L.line}`, borderRadius: 12, padding: "10px 12px",
+      background: dark ? "rgba(95,207,146,0.08)" : "rgba(95,207,146,0.10)" }}>
+      <div aria-hidden style={{ width: 22, height: 22, borderRadius: 999, flexShrink: 0, marginTop: 1,
+        background: A.lime, color: A.limeInk, display: "grid", placeItems: "center",
+        fontFamily: sans, fontSize: 13, fontWeight: 700 }}>+</div>
+      <div style={{ minWidth: 0 }}>
+        <div style={{ fontFamily: sans, fontSize: 13, fontWeight: 600, color: dark ? D.ink : L.ink, lineHeight: 1.35 }}>
+          {credit.label} <span style={{ fontWeight: 400, color: dark ? D.muted : L.muted }}>&middot; {credit.headline}</span>
+        </div>
+        <div style={{ fontFamily: sans, fontSize: 12, color: dark ? D.faint : L.faint, marginTop: 3, lineHeight: 1.5 }}>{credit.detail}</div>
+      </div>
+    </div>
+  );
+}
+
+// The two letters as a pair, with any credits underneath. They answer different questions
+// and are never averaged into each other.
+function Grades({ flags, conduct, credits, selectedCount, known = true, dark = false }) {
+  const list = credits || [];
+  return (
+    <div style={{ display: "grid", gap: 14 }}>
+      <div style={{ display: "grid", gap: 14, gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", alignItems: "start" }}>
+        <GradeBadge flags={flags} selectedCount={selectedCount} known={known} dark={dark} />
+        <ConductBadge conduct={conduct} selectedCount={CONDUCT_CATEGORIES.length} dark={dark} />
+      </div>
+      {list.length ? (
+        <div style={{ display: "grid", gap: 8 }}>
+          {list.map((c) => <Credit key={c.key} credit={c} dark={dark} />)}
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -570,7 +601,7 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
         {/* Nothing on our lists, which is not a pass — so the sell-side letter is absent
             and says so. The conduct letter beside it is the one that can still speak here,
             and for Amazon or FedEx it does. The unknown-symbol branch above gets neither. */}
-        <div style={{ marginTop: 14 }}><Grades flags={[]} conduct={result.conduct} selectedCount={selectedCount} /></div>
+        <div style={{ marginTop: 14 }}><Grades flags={[]} conduct={result.conduct} credits={result.credits} selectedCount={selectedCount} /></div>
         <p style={{ fontFamily: sans, fontSize: 13, color: L.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
           It isn't on any of the lists we track. That doesn't mean it's audited clean. It only means "none of the names we track." We cover U.S.-listed companies that file with the SEC, so a foreign-listed name may simply be out of scope.
         </p>
@@ -584,7 +615,7 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
       return (
         <div style={panel}>
           <div style={{ fontFamily: serif, fontSize: 19, color: L.ink }}>No flags for <b>{result.symbol}</b> in your selected categories.</div>
-          <div style={{ marginTop: 14 }}><Grades flags={[]} conduct={result.conduct} selectedCount={selectedCount} /></div>
+          <div style={{ marginTop: 14 }}><Grades flags={[]} conduct={result.conduct} credits={result.credits} selectedCount={selectedCount} /></div>
           <p style={{ fontFamily: sans, fontSize: 13, color: L.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
             Turn on more categories above to widen the check.
           </p>
@@ -600,7 +631,7 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
           <ShareButton symbol={result.symbol} />
         </div>
         <QuotePanel symbol={result.symbol} />
-        <div style={{ marginTop: 16 }}><Grades flags={flags} conduct={result.conduct} selectedCount={selectedCount} /></div>
+        <div style={{ marginTop: 16 }}><Grades flags={flags} conduct={result.conduct} credits={result.credits} selectedCount={selectedCount} /></div>
         <div style={{ marginTop: 14, display: "grid", gap: 10 }}>
           {flags.map((f) => <FlagCard key={f.key} flag={f} company={result.name} />)}
         </div>

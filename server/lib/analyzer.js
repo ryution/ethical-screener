@@ -11,6 +11,7 @@ import { flagsFor, companyName, SCREEN_KEYS, SCREEN_TICKERS } from "./screens.js
 import { knownFund, unanalyzedFund, FUNDS } from "./funds.js";
 import { fundGradeFor } from "../../src/fundGrade.js";
 import { conductSignalsFor, CONDUCT_KEYS } from "./conduct.js";
+import { creditsFor } from "./credits.js";
 import { enrichedFlagsFor, enrichedName, enrichedTickers, dataMeta } from "./enriched.js";
 import { filingFlagsFor, filingName, filingTickers, filingMeta } from "./filings.js";
 import { normalizeTicker } from "./symbols.js";
@@ -101,12 +102,13 @@ export function lookupSymbol(symbol) {
   if (na) return { symbol: sym, type: "fund", name: na.name, analyzable: false, notAnalyzedReason: na.reason, contains: [] };
   const flags = allFlagsFor(sym, SCREEN_KEYS);
   const conduct = conductSignalsFor(sym, CONDUCT_KEYS);
-  if (flags.length) return { symbol: sym, type: "stock", name: nameFor(sym), flags, conduct };
+  const credits = creditsFor(sym);
+  if (flags.length) return { symbol: sym, type: "stock", name: nameFor(sym), flags, conduct, credits };
   // "none" comes in two honest flavours: a US filer we know and found nothing on, or a
   // symbol we don't recognize at all (a fund we can't see inside, a foreign listing, a
   // typo). The UI words them differently — the second must never read as "clean".
   const known = knownTicker(sym);
-  return { symbol: sym, type: "none", known, name: known ? (tickerName(sym) || null) : null, conduct };
+  return { symbol: sym, type: "none", known, name: known ? (tickerName(sym) || null) : null, conduct, credits };
 }
 
 const distinctLabels = (contains) => {
