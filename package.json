@@ -8,7 +8,7 @@
     "build": "vite build",
     "start": "node --env-file-if-exists=server/.env server/api.mjs",
     "serve": "npm run build && npm start",
-    "test": "node server/test/analyzer.test.mjs && node server/test/secretBox.test.mjs && node server/test/format.test.mjs && node server/test/grade.test.mjs && node server/test/injury.test.mjs && node server/test/fundGrade.test.mjs && node server/test/conductGrade.test.mjs && node server/test/credits.test.mjs",
+    "test": "node server/test/analyzer.test.mjs && node server/test/secretBox.test.mjs && node server/test/format.test.mjs && node server/test/grade.test.mjs && node server/test/injury.test.mjs && node server/test/fundGrade.test.mjs && node server/test/conductGrade.test.mjs && node server/test/credits.test.mjs && node server/test/recalls.test.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
     "lint:data": "node scripts/lint-data.mjs",

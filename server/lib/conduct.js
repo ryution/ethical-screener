@@ -13,12 +13,18 @@
 // they cannot be kept honest automatically.
 
 import { assessInjury, injuryMeta } from "./injury.js";
+import { assessRecalls, recallMeta } from "./recalls.js";
 
 export const CONDUCT_SCREENS = [
   {
     key: "worker_injuries",
     label: "Worker injuries",
     blurb: "Workplace injury rate against the company's own industry, from the injury figures it files with OSHA each year.",
+  },
+  {
+    key: "product_safety",
+    label: "Product safety",
+    blurb: "Share of a company's FDA recalls that FDA itself classed as life-threatening, against the share for firms in the same field.",
   },
 ];
 
@@ -56,10 +62,25 @@ export function conductSignalsFor(ticker, activeKeys = CONDUCT_KEYS) {
     }
   }
 
+  if (active.has("product_safety")) {
+    const a = assessRecalls(ticker);
+    if (a.profile.length) {
+      out.push({
+        key: "product_safety",
+        label: conductLabel("product_safety"),
+        rung: a.rung,
+        headline: a.headline,
+        detail: a.detail,
+        measured: null,
+        source: "openFDA — FDA drug, device and food enforcement reports",
+      });
+    }
+  }
+
   return out;
 }
 
 /** Freshness for the UI, per conduct category. */
 export function conductMeta() {
-  return { worker_injuries: injuryMeta() };
+  return { worker_injuries: injuryMeta(), product_safety: recallMeta() };
 }

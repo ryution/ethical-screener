@@ -18,7 +18,7 @@
 // The conduct categories a reader can switch on. server/lib/conduct.js is the source of
 // truth; this list exists because the client renders the toggles, and a test pins the two
 // together so they cannot drift apart silently.
-export const CONDUCT_CATEGORIES = ["worker_injuries"];
+export const CONDUCT_CATEGORIES = ["worker_injuries", "product_safety"];
 
 const LETTERS = {
   B: "Historical matters only",
