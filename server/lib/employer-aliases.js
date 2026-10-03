@@ -59,3 +59,24 @@ export const FACILITY_ALIASES = {
 /** Flat [prefix, ticker] pairs for building a facility-name lookup. */
 export const facilityPairs = () =>
   Object.entries(FACILITY_ALIASES).flatMap(([ticker, names]) => names.map((n) => [n, ticker]));
+
+// ── Registry names, for lobbying and campaign-finance filings ────────────────
+//
+// These registries name the company itself, so neither the OSHA employer names nor the
+// EPA facility prefixes fit. Most companies are handled by stripping the legal form off
+// their SEC name ("TARGET CORP" -> "Target Corporation"); these are the ones where that
+// derivation produces the wrong string.
+//
+// Amazon is the clear case: its SEC name is "AMAZON COM INC", which derives to "AMAZON
+// COM" and matches 6 lobbying filings. It files as "AMAZON.COM SERVICES LLC" and plain
+// "AMAZON", and the correct query returns 104.
+export const REGISTRY_ALIASES = {
+  AMZN: ["Amazon.com", "Amazon"],
+  // "Target" is a common word, and stripping the legal form off "TARGET CORP" produces
+  // exactly that — which accepts TARGET HOSPITALITY CORP (a different listed company),
+  // MARATHON TARGETS, BULLSEYE TARGET SYSTEMS and PIXELS ON TARGET. Name it in full.
+  TGT:  ["Target Corporation"],
+  COST: ["Costco Wholesale", "Costco"],
+  UPS:  ["United Parcel Service"],
+  FDX:  ["FedEx", "Federal Express"],
+};

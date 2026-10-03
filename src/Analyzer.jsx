@@ -553,10 +553,29 @@ function Credit({ credit, dark }) {
   );
 }
 
+// A filed figure the reader judges for themselves. Political spending is lawful and every
+// large company does it, so there is no letter here and no rung — only the number, who
+// filed it, and the reader's own line. Deliberately styled unlike the grades and the
+// credits so it never reads as a verdict.
+function Disclosure({ item, dark }) {
+  return (
+    <div style={{ display: "flex", gap: 10, alignItems: "baseline", flexWrap: "wrap",
+      borderTop: `1px solid ${dark ? D.glassBorder : L.line}`, paddingTop: 10 }}>
+      <div style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, letterSpacing: "0.06em",
+        textTransform: "uppercase", color: dark ? D.faint : L.faint, flexShrink: 0 }}>{item.label}</div>
+      <div style={{ fontFamily: display, fontSize: 17, fontWeight: 600, color: dark ? D.ink : L.ink }}>{item.value}</div>
+      <div style={{ fontFamily: sans, fontSize: 12, color: dark ? D.muted : L.muted, lineHeight: 1.5, flex: "1 1 240px", minWidth: 0 }}>
+        {item.detail} <span style={{ color: dark ? D.faint : L.faint }}>&mdash; {item.source}</span>
+      </div>
+    </div>
+  );
+}
+
 // The two letters as a pair, with any credits underneath. They answer different questions
 // and are never averaged into each other.
-function Grades({ flags, conduct, credits, selectedCount, known = true, dark = false }) {
+function Grades({ flags, conduct, credits, political, selectedCount, known = true, dark = false }) {
   const list = credits || [];
+  const disclosures = political?.lines || [];
   return (
     <div style={{ display: "grid", gap: 14 }}>
       <div style={{ display: "grid", gap: 14, gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", alignItems: "start" }}>
@@ -566,6 +585,11 @@ function Grades({ flags, conduct, credits, selectedCount, known = true, dark = f
       {list.length ? (
         <div style={{ display: "grid", gap: 8 }}>
           {list.map((c) => <Credit key={c.key} credit={c} dark={dark} />)}
+        </div>
+      ) : null}
+      {disclosures.length ? (
+        <div style={{ display: "grid", gap: 10 }}>
+          {disclosures.map((d) => <Disclosure key={d.key} item={d} dark={dark} />)}
         </div>
       ) : null}
     </div>
@@ -606,7 +630,7 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
         {/* Nothing on our lists, which is not a pass — so the sell-side letter is absent
             and says so. The conduct letter beside it is the one that can still speak here,
             and for Amazon or FedEx it does. The unknown-symbol branch above gets neither. */}
-        <div style={{ marginTop: 14 }}><Grades flags={[]} conduct={result.conduct} credits={result.credits} selectedCount={selectedCount} /></div>
+        <div style={{ marginTop: 14 }}><Grades flags={[]} conduct={result.conduct} credits={result.credits} political={result.political} selectedCount={selectedCount} /></div>
         <p style={{ fontFamily: sans, fontSize: 13, color: L.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
           It isn't on any of the lists we track. That doesn't mean it's audited clean. It only means "none of the names we track." We cover U.S.-listed companies that file with the SEC, so a foreign-listed name may simply be out of scope.
         </p>
@@ -620,7 +644,7 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
       return (
         <div style={panel}>
           <div style={{ fontFamily: serif, fontSize: 19, color: L.ink }}>No flags for <b>{result.symbol}</b> in your selected categories.</div>
-          <div style={{ marginTop: 14 }}><Grades flags={[]} conduct={result.conduct} credits={result.credits} selectedCount={selectedCount} /></div>
+          <div style={{ marginTop: 14 }}><Grades flags={[]} conduct={result.conduct} credits={result.credits} political={result.political} selectedCount={selectedCount} /></div>
           <p style={{ fontFamily: sans, fontSize: 13, color: L.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
             Turn on more categories above to widen the check.
           </p>
@@ -636,7 +660,7 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
           <ShareButton symbol={result.symbol} />
         </div>
         <QuotePanel symbol={result.symbol} />
-        <div style={{ marginTop: 16 }}><Grades flags={flags} conduct={result.conduct} credits={result.credits} selectedCount={selectedCount} /></div>
+        <div style={{ marginTop: 16 }}><Grades flags={flags} conduct={result.conduct} credits={result.credits} political={result.political} selectedCount={selectedCount} /></div>
         <div style={{ marginTop: 14, display: "grid", gap: 10 }}>
           {flags.map((f) => <FlagCard key={f.key} flag={f} company={result.name} />)}
         </div>

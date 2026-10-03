@@ -1,0 +1,258 @@
+{
+  "lastUpdated": "2026-10-03T18:07:47.502Z",
+  "source": "US Senate Lobbying Disclosure Act database, and the Federal Election Commission",
+  "method": "Federal lobbying reported for the company by year, and disbursements by its connected PAC per election cycle. Both are figures the company or its agents filed.",
+  "stance": "Shown, never graded. Lobbying and PAC giving are lawful and every large company does both; whether an amount is objectionable is the reader's judgement, not ours.",
+  "caveat": "Lobbying totals walk every page of a year of filings, and `complete` records whether we saw all of them. No party split: FEC returns recipient names without a party field, and a half-accurate breakdown is the most charged number this site could print.",
+  "count": 8,
+  "companies": {
+    "WMT": {
+      "queriedAs": "Walmart",
+      "lobbying": [
+        {
+          "year": 2025,
+          "total": 10733000,
+          "filings": 53,
+          "scanned": 53,
+          "ofFilings": 53,
+          "complete": true
+        },
+        {
+          "year": 2024,
+          "total": 9887000,
+          "filings": 53,
+          "scanned": 53,
+          "ofFilings": 53,
+          "complete": true
+        },
+        {
+          "year": 2023,
+          "total": 9840000,
+          "filings": 49,
+          "scanned": 49,
+          "ofFilings": 49,
+          "complete": true
+        }
+      ],
+      "pac": null,
+      "pacError": "skipped: set FEC_API_KEY (free from api.data.gov) to collect PAC data"
+    },
+    "COST": {
+      "queriedAs": "Costco Wholesale",
+      "lobbying": [
+        {
+          "year": 2025,
+          "total": 0,
+          "filings": 0,
+          "scanned": 0,
+          "ofFilings": 0,
+          "complete": true
+        },
+        {
+          "year": 2024,
+          "total": 0,
+          "filings": 0,
+          "scanned": 0,
+          "ofFilings": 0,
+          "complete": true
+        },
+        {
+          "year": 2023,
+          "total": 0,
+          "filings": 0,
+          "scanned": 0,
+          "ofFilings": 0,
+          "complete": true
+        }
+      ],
+      "pac": null,
+      "pacError": "skipped: set FEC_API_KEY (free from api.data.gov) to collect PAC data"
+    },
+    "TGT": {
+      "queriedAs": "Target Corporation",
+      "lobbying": [
+        {
+          "year": 2025,
+          "total": 2880000,
+          "filings": 22,
+          "scanned": 22,
+          "ofFilings": 22,
+          "complete": true
+        },
+        {
+          "year": 2024,
+          "total": 3130000,
+          "filings": 20,
+          "scanned": 20,
+          "ofFilings": 20,
+          "complete": true
+        },
+        {
+          "year": 2023,
+          "total": 1690000,
+          "filings": 13,
+          "scanned": 13,
+          "ofFilings": 13,
+          "complete": true
+        }
+      ],
+      "pac": null,
+      "pacError": "skipped: set FEC_API_KEY (free from api.data.gov) to collect PAC data"
+    },
+    "AMZN": {
+      "queriedAs": "Amazon.com",
+      "lobbying": [
+        {
+          "year": 2025,
+          "total": 24985000,
+          "filings": 56,
+          "scanned": 56,
+          "ofFilings": 56,
+          "complete": true
+        },
+        {
+          "year": 2024,
+          "total": 21130000,
+          "filings": 62,
+          "scanned": 62,
+          "ofFilings": 62,
+          "complete": true
+        },
+        {
+          "year": 2023,
+          "total": 20550000,
+          "filings": 54,
+          "scanned": 54,
+          "ofFilings": 54,
+          "complete": true
+        }
+      ],
+      "pac": null,
+      "pacError": "skipped: set FEC_API_KEY (free from api.data.gov) to collect PAC data"
+    },
+    "UPS": {
+      "queriedAs": "United Parcel Service",
+      "lobbying": [
+        {
+          "year": 2025,
+          "total": 7340000,
+          "filings": 32,
+          "scanned": 32,
+          "ofFilings": 32,
+          "complete": true
+        },
+        {
+          "year": 2024,
+          "total": 6750000,
+          "filings": 26,
+          "scanned": 26,
+          "ofFilings": 26,
+          "complete": true
+        },
+        {
+          "year": 2023,
+          "total": 9730000,
+          "filings": 33,
+          "scanned": 33,
+          "ofFilings": 33,
+          "complete": true
+        }
+      ],
+      "pac": null,
+      "pacError": "skipped: set FEC_API_KEY (free from api.data.gov) to collect PAC data"
+    },
+    "FDX": {
+      "queriedAs": "FedEx",
+      "lobbying": [
+        {
+          "year": 2025,
+          "total": 21641000,
+          "filings": 56,
+          "scanned": 61,
+          "ofFilings": 61,
+          "complete": true
+        },
+        {
+          "year": 2024,
+          "total": 13470000,
+          "filings": 53,
+          "scanned": 57,
+          "ofFilings": 57,
+          "complete": true
+        },
+        {
+          "year": 2023,
+          "total": 13760000,
+          "filings": 54,
+          "scanned": 58,
+          "ofFilings": 58,
+          "complete": true
+        }
+      ],
+      "pac": null,
+      "pacError": "skipped: set FEC_API_KEY (free from api.data.gov) to collect PAC data"
+    },
+    "KR": {
+      "queriedAs": "KROGER",
+      "lobbying": [
+        {
+          "year": 2025,
+          "total": 1510000,
+          "filings": 4,
+          "scanned": 14,
+          "ofFilings": 14,
+          "complete": true
+        },
+        {
+          "year": 2024,
+          "total": 1600000,
+          "filings": 4,
+          "scanned": 15,
+          "ofFilings": 15,
+          "complete": true
+        },
+        {
+          "year": 2023,
+          "total": 1530000,
+          "filings": 4,
+          "scanned": 13,
+          "ofFilings": 13,
+          "complete": true
+        }
+      ],
+      "pac": null,
+      "pacError": "skipped: set FEC_API_KEY (free from api.data.gov) to collect PAC data"
+    },
+    "HD": {
+      "queriedAs": "HOME DEPOT",
+      "lobbying": [
+        {
+          "year": 2025,
+          "total": 3690000,
+          "filings": 5,
+          "scanned": 20,
+          "ofFilings": 20,
+          "complete": true
+        },
+        {
+          "year": 2024,
+          "total": 3400000,
+          "filings": 4,
+          "scanned": 16,
+          "ofFilings": 16,
+          "complete": true
+        },
+        {
+          "year": 2023,
+          "total": 4130000,
+          "filings": 4,
+          "scanned": 17,
+          "ofFilings": 17,
+          "complete": true
+        }
+      ],
+      "pac": null,
+      "pacError": "skipped: set FEC_API_KEY (free from api.data.gov) to collect PAC data"
+    }
+  }
+}
