@@ -22,7 +22,6 @@ const FINDING = new Set(["opioids", "executive_enforcement", "forced_labor_suppl
 const DISCLOSED = new Set(["supplier_audit_violations", "historical_forced_labor"]);
 
 const LETTERS = {
-  A: "No flag in the categories you picked",
   B: "One flagged line of business",
   C: "Several flagged lines of business",
   D: "Its own disclosure, or documented history",
@@ -36,21 +35,25 @@ const LETTERS = {
  * @param selected how many categories the visitor turned on (for "trips 2 of your 6")
  * @param known    false when we don't recognise the company at all
  *
- * Returns { letter, meaning, tripped, of }. `letter` is null when the company is
- * unknown — absence of data is never an A, which is the same line the rest of the site
- * draws between "no flags" and "not analyzed".
+ * Returns { letter, meaning, tripped, of }. `letter` is null whenever we cannot honestly
+ * award one — and there is no top grade at all. A company we found nothing on is not a
+ * good company; it is a company that is not on a list we keep. We have never recorded an
+ * EXAMINATION, only findings, so an A would have been handed to 9,332 companies nobody
+ * ever looked at. "No grade" is the honest version of that sentence, and it is the same
+ * line the rest of the site draws between "no flags" and "not analyzed".
  */
 export function gradeFor(flags = [], selected = 0, known = true) {
   const tripped = new Set(flags.map((f) => f.key)).size;
   if (!known) return { letter: null, meaning: "We can't see this company", tripped: 0, of: selected };
-  // Grading against nothing would hand out an A for checking nothing — the same mistake
-  // as calling an unscreened company clean.
+  // Grading against nothing would be grading for checking nothing.
   if (!selected) return { letter: null, meaning: "Pick some categories to grade against", tripped: 0, of: 0 };
-  let letter = "A";
+  if (!tripped) {
+    return { letter: null, meaning: "Nothing on the lists we keep — we haven't examined this company", tripped: 0, of: selected };
+  }
+  let letter;
   if (flags.some((f) => FINDING.has(f.key))) letter = "F";
   else if (flags.some((f) => DISCLOSED.has(f.key))) letter = "D";
-  else if (tripped >= 2) letter = "C";
-  else if (tripped === 1) letter = "B";
+  else letter = tripped >= 2 ? "C" : "B";
   return { letter, meaning: LETTERS[letter], tripped, of: selected };
 }
 

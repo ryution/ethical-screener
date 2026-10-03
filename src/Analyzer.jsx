@@ -16,6 +16,7 @@
 import { useEffect, useRef, useState } from "react";
 import { displayName, reasonParts } from "./format.js";
 import { gradeFor } from "./grade.js";
+import { conductGradeFor, CONDUCT_CATEGORIES } from "./conductGrade.js";
 
 // ── Palette ────────────────────────────────────────────────
 // Deep navy throughout, no light mode. The page is the darkest ground; sections separate
@@ -458,33 +459,79 @@ function filterBySelected(result, selected) {
   return result;
 }
 
-// §3.6 — the grade for one company, against the categories the reader turned on. The
-// letter describes the KIND of fact on record (see src/grade.js), never how bad it is,
-// so it always travels with the flag underneath it rather than standing alone.
+// §3.6 — a letter and what it rests on. Shared by both grades so they read as a pair.
+function Letter({ letter, tone }) {
+  return (
+    <div aria-hidden style={{ width: 52, height: 52, borderRadius: 14, flexShrink: 0,
+      background: tone.bg, color: tone.ink, border: tone.border ? `1px solid ${tone.border}` : "none",
+      display: "grid", placeItems: "center", fontFamily: display,
+      fontSize: letter ? 30 : 11, fontWeight: 600, lineHeight: 1.1, textAlign: "center",
+      letterSpacing: letter ? 0 : "0.04em" }}>
+      {letter || <span style={{ opacity: 0.82 }}>NO<br />GRADE</span>}
+    </div>
+  );
+}
+
+const neutralTone = (dark) => ({
+  bg: dark ? "rgba(237,239,243,0.10)" : A.raised,
+  ink: dark ? D.ink : L.ink,
+  border: dark ? D.glassBorder : L.line,
+});
+
+function Badge({ title, letter, meaning, sub, tone, dark }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
+      <Letter letter={letter} tone={tone} />
+      <div style={{ minWidth: 0 }}>
+        <div style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, letterSpacing: "0.06em",
+          textTransform: "uppercase", color: dark ? D.faint : L.faint, marginBottom: 2 }}>{title}</div>
+        <div style={{ fontFamily: sans, fontSize: 13.5, fontWeight: 600, color: dark ? D.ink : L.ink, lineHeight: 1.3 }}>
+          {letter ? <>Grade {letter} <span style={{ fontWeight: 400, color: dark ? D.muted : L.muted }}>&middot; {meaning}</span></>
+                  : <span style={{ fontWeight: 400, color: dark ? D.muted : L.muted }}>{meaning}</span>}
+        </div>
+        {sub ? <div style={{ fontFamily: sans, fontSize: 12, color: dark ? D.faint : L.faint, marginTop: 2 }}>{sub}</div> : null}
+      </div>
+    </div>
+  );
+}
+
+// What a company SELLS. The letter describes the KIND of fact on record, never how bad it
+// is, so it always travels with the flag underneath it rather than standing alone. There
+// is no A: finding nothing is an absent result, not a good one.
 function GradeBadge({ flags, selectedCount, known = true, dark = false }) {
   const g = gradeFor(flags || [], selectedCount, known);
-  if (!g.letter) return null;
-  // B and C have no colour of their own, so on the light panel they need a rule to read
-  // as a badge at all — the neutral fill is a shade off the panel it sits on.
-  const tone = g.letter === "A" ? { bg: A.lime, ink: A.limeInk }
-    : g.letter === "F" ? { bg: L.flag, ink: "#3A140C" }
+  if (!selectedCount) return null;
+  const tone = g.letter === "F" ? { bg: L.flag, ink: "#3A140C" }
     : g.letter === "D" ? { bg: A.lav, ink: A.lavInk }
-    : { bg: dark ? "rgba(237,239,243,0.10)" : A.raised, ink: dark ? D.ink : L.ink, border: dark ? D.glassBorder : L.line };
+    : neutralTone(dark);
+  const sub = g.tripped
+    ? `Trips ${g.tripped} of the ${g.of === 1 ? "1 category" : `${g.of} categories`} you picked`
+    : known ? `Not on any of the ${g.of === 1 ? "1 list" : `${g.of} lists`} you picked — which is not the same as checked and clear`
+            : null;
+  return <Badge title="What it sells" letter={g.letter} meaning={g.meaning} sub={sub} tone={tone} dark={dark} />;
+}
+
+// How a company BEHAVES. Separate letter and separate toggles, because almost every
+// conduct record is a government finding and folding it into the sell-side ladder would
+// make every large company an F.
+function ConductBadge({ conduct, selectedCount, dark = false }) {
+  const g = conductGradeFor(conduct || [], selectedCount);
+  if (!selectedCount) return null;
+  // Nothing measured at all is a different statement from measured-and-nothing-found,
+  // and the difference is the point — so the empty case still renders.
+  const tone = g.letter === "F" ? { bg: L.flag, ink: "#3A140C" }
+    : g.letter === "D" ? { bg: A.lav, ink: A.lavInk }
+    : neutralTone(dark);
+  const sub = g.worst?.headline || (g.measured ? "We looked and found nothing on file. Employers report these figures themselves." : null);
+  return <Badge title="How it behaves" letter={g.letter} meaning={g.meaning} sub={sub} tone={tone} dark={dark} />;
+}
+
+// The two letters as a pair. They answer different questions and are never averaged.
+function Grades({ flags, conduct, selectedCount, known = true, dark = false }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-      <div aria-hidden style={{ width: 52, height: 52, borderRadius: 14, background: tone.bg, color: tone.ink,
-        border: tone.border ? `1px solid ${tone.border}` : "none",
-        display: "grid", placeItems: "center", fontFamily: display, fontSize: 30, fontWeight: 600, flexShrink: 0 }}>{g.letter}</div>
-      <div style={{ minWidth: 0 }}>
-        <div style={{ fontFamily: sans, fontSize: 13.5, fontWeight: 600, color: dark ? D.ink : L.ink, lineHeight: 1.3 }}>
-          Grade {g.letter} <span style={{ fontWeight: 400, color: dark ? D.muted : L.muted }}>&middot; {g.meaning}</span>
-        </div>
-        <div style={{ fontFamily: sans, fontSize: 12, color: dark ? D.faint : L.faint, marginTop: 2 }}>
-          {g.tripped === 0
-            ? `Clean on ${g.of === 1 ? "the 1 category" : `all ${g.of} categories`} you picked`
-            : `Trips ${g.tripped} of the ${g.of === 1 ? "1 category" : `${g.of} categories`} you picked`}
-        </div>
-      </div>
+    <div style={{ display: "grid", gap: 14, gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", alignItems: "start" }}>
+      <GradeBadge flags={flags} selectedCount={selectedCount} known={known} dark={dark} />
+      <ConductBadge conduct={conduct} selectedCount={CONDUCT_CATEGORIES.length} dark={dark} />
     </div>
   );
 }
@@ -520,9 +567,10 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
           </div>
           <ShareButton symbol={result.symbol} />
         </div>
-        {/* A recognised filer with nothing flagged is the A case. The unknown-symbol branch
-            above deliberately gets no grade at all — absence of data is not an A. */}
-        <div style={{ marginTop: 14 }}><GradeBadge flags={[]} selectedCount={selectedCount} /></div>
+        {/* Nothing on our lists, which is not a pass — so the sell-side letter is absent
+            and says so. The conduct letter beside it is the one that can still speak here,
+            and for Amazon or FedEx it does. The unknown-symbol branch above gets neither. */}
+        <div style={{ marginTop: 14 }}><Grades flags={[]} conduct={result.conduct} selectedCount={selectedCount} /></div>
         <p style={{ fontFamily: sans, fontSize: 13, color: L.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
           It isn't on any of the lists we track. That doesn't mean it's audited clean. It only means "none of the names we track." We cover U.S.-listed companies that file with the SEC, so a foreign-listed name may simply be out of scope.
         </p>
@@ -536,7 +584,7 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
       return (
         <div style={panel}>
           <div style={{ fontFamily: serif, fontSize: 19, color: L.ink }}>No flags for <b>{result.symbol}</b> in your selected categories.</div>
-          <div style={{ marginTop: 14 }}><GradeBadge flags={[]} selectedCount={selectedCount} /></div>
+          <div style={{ marginTop: 14 }}><Grades flags={[]} conduct={result.conduct} selectedCount={selectedCount} /></div>
           <p style={{ fontFamily: sans, fontSize: 13, color: L.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
             Turn on more categories above to widen the check.
           </p>
@@ -552,7 +600,7 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
           <ShareButton symbol={result.symbol} />
         </div>
         <QuotePanel symbol={result.symbol} />
-        <div style={{ marginTop: 16 }}><GradeBadge flags={flags} selectedCount={selectedCount} /></div>
+        <div style={{ marginTop: 16 }}><Grades flags={flags} conduct={result.conduct} selectedCount={selectedCount} /></div>
         <div style={{ marginTop: 14, display: "grid", gap: 10 }}>
           {flags.map((f) => <FlagCard key={f.key} flag={f} company={result.name} />)}
         </div>

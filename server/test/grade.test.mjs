@@ -18,9 +18,13 @@ const flagsOf = (t, keys) => {
 const grade = (t, keys = SCREEN_KEYS) => gradeFor(flagsOf(t, keys), keys.length).letter;
 
 console.log("stock grade — the ladder:");
-test("A when nothing is flagged in the chosen categories", () => {
-  assert.equal(grade("MSFT"), "A");
-  assert.equal(grade("NVDA"), "A");
+test("no grade at all when nothing is flagged — there is no top letter", () => {
+  // Finding nothing is not a good result, it is an absent one. We record findings and
+  // have never recorded an examination, so an A here would be awarded to 9,332 companies
+  // nobody has looked at.
+  assert.equal(grade("MSFT"), null);
+  assert.equal(grade("NVDA"), null);
+  assert.match(gradeFor([], SCREEN_KEYS.length).meaning, /haven't examined/);
 });
 test("B for one flagged line of business", () => {
   for (const t of ["CVX", "XOM", "LMT", "MO"]) assert.equal(grade(t), "B", t);
@@ -41,13 +45,13 @@ test("the worst applicable rung wins", () => {
 });
 
 console.log("stock grade — it follows the reader's filters:");
-test("Walmart is an F on opioids and an A on weapons", () => {
+test("Walmart is an F on opioids and ungraded on weapons", () => {
   assert.equal(grade("WMT", ["opioids"]), "F");
-  assert.equal(grade("WMT", ["weapons"]), "A");
+  assert.equal(grade("WMT", ["weapons"]), null);
 });
 test("Lockheed is the mirror image", () => {
   assert.equal(grade("LMT", ["weapons"]), "B");
-  assert.equal(grade("LMT", ["opioids"]), "A");
+  assert.equal(grade("LMT", ["opioids"]), null);
 });
 test("no categories selected yields no grade at all, not an A", () => {
   assert.equal(grade("WMT", []), null);
@@ -83,7 +87,7 @@ console.log(`\n${passed} grade tests passed ✓`);
   });
   t2("one selected category still grades normally", () => {
     assert.equal(gradeFor([{ key: "opioids" }], 1).letter, "F");
-    assert.equal(gradeFor([], 1).letter, "A");
+    assert.equal(gradeFor([], 1).letter, null);
   });
   console.log(`${extra} regression tests passed ✓`);
 }
