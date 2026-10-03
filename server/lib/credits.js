@@ -26,7 +26,7 @@
 // industry earns a "measured" credit and not a "verified" one. A verified credit needs a
 // third party who inspected the company and put their name to it.
 
-import { injuryYears } from "./injury.js";
+import { injuryYears, tooThinToRate } from "./injury.js";
 
 export const CREDIT_SCREENS = [
   {
@@ -59,7 +59,10 @@ export function creditsFor(ticker, activeKeys = CREDIT_KEYS) {
   const out = [];
 
   if (active.has("safer_than_industry")) {
-    const ys = injuryYears(ticker).filter((y) => y.vsIndustry != null);
+    // The same base-size guard the adverse side uses. A credit computed off a handful of
+    // cases would be the identical bug pointed the other way — and the flattering
+    // direction is the one that deserves the firmer hand.
+    const ys = injuryYears(ticker).filter((y) => y.vsIndustry != null && !tooThinToRate(y));
     // A coverage shift means consecutive years describe different sets of establishments,
     // so a run across one is not a record we can stand behind — exactly as it cannot
     // extend an adverse streak.

@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-09-26T21:04:53.804Z",
+  "lastUpdated": "2026-10-03T16:35:56.592Z",
   "source": "OSHA Injury Tracking Application, Form 300A summary data (employer-filed)",
   "method": "DART = (days-away + job-transfer/restriction cases) × 200000 / hours worked. Industry benchmark is the median-equivalent rate across all ITA filers in the same 4-digit NAICS and year, so the comparison population and reporting rules are identical.",
   "caveat": "Under-reporting is documented and never symmetric: a high rate is hard to fake, a low one is not. A rate at or below benchmark means 'no adverse measure on file', never a clean workplace.",
@@ -8,7 +8,7 @@
     "2024",
     "2025"
   ],
-  "count": 7,
+  "count": 11,
   "companies": {
     "FDX": {
       "2023": {
@@ -18,6 +18,7 @@
         "hoursPerEmployee": 1285,
         "dart": 11.81,
         "trir": 13.92,
+        "cases": 22781,
         "deaths": 2,
         "naics": "4921",
         "industryDart": 8.44,
@@ -35,6 +36,7 @@
         "hoursPerEmployee": 1059,
         "dart": 10.09,
         "trir": 11.85,
+        "cases": 15790,
         "deaths": 4,
         "naics": "4921",
         "industryDart": 7.6,
@@ -52,6 +54,7 @@
         "hoursPerEmployee": 1349,
         "dart": 11.07,
         "trir": 12.81,
+        "cases": 24038,
         "deaths": 1,
         "naics": "4921",
         "industryDart": 7.93,
@@ -71,6 +74,7 @@
         "hoursPerEmployee": 1591,
         "dart": 6.11,
         "trir": 6.48,
+        "cases": 36306,
         "deaths": 2,
         "naics": "4931",
         "industryDart": 3.97,
@@ -88,6 +92,7 @@
         "hoursPerEmployee": 1586,
         "dart": 5.63,
         "trir": 5.99,
+        "cases": 36817,
         "deaths": 1,
         "naics": "4931",
         "industryDart": 3.95,
@@ -105,6 +110,7 @@
         "hoursPerEmployee": 1616,
         "dart": 4.61,
         "trir": 4.99,
+        "cases": 32014,
         "deaths": 0,
         "naics": "4931",
         "industryDart": 3.67,
@@ -124,6 +130,7 @@
         "hoursPerEmployee": 1370,
         "dart": 6.54,
         "trir": 7.96,
+        "cases": 20051,
         "deaths": 8,
         "naics": "4921",
         "industryDart": 8.44,
@@ -141,6 +148,7 @@
         "hoursPerEmployee": 1369,
         "dart": 6.51,
         "trir": 7.81,
+        "cases": 19235,
         "deaths": 10,
         "naics": "4921",
         "industryDart": 7.6,
@@ -158,6 +166,7 @@
         "hoursPerEmployee": 1414,
         "dart": 6.69,
         "trir": 7.88,
+        "cases": 19136,
         "deaths": 9,
         "naics": "4921",
         "industryDart": 7.93,
@@ -169,6 +178,62 @@
         }
       }
     },
+    "RIVN": {
+      "2023": {
+        "sites": 5,
+        "employees": 8880,
+        "hours": 17386107,
+        "hoursPerEmployee": 1958,
+        "dart": 7.32,
+        "trir": 10.69,
+        "cases": 636,
+        "deaths": 0,
+        "naics": "3361",
+        "industryDart": 4.16,
+        "vsIndustry": 1.76,
+        "siteSpread": {
+          "p10": 0,
+          "p50": 3.39,
+          "p90": 7.47
+        }
+      },
+      "2024": {
+        "sites": 5,
+        "employees": 7728,
+        "hours": 15184512,
+        "hoursPerEmployee": 1965,
+        "dart": 4.27,
+        "trir": 5.98,
+        "cases": 324,
+        "deaths": 0,
+        "naics": "3361",
+        "industryDart": 3.74,
+        "vsIndustry": 1.14,
+        "siteSpread": {
+          "p10": 0,
+          "p50": 3.13,
+          "p90": 4.34
+        }
+      },
+      "2025": {
+        "sites": 5,
+        "employees": 5794,
+        "hours": 11564396,
+        "hoursPerEmployee": 1996,
+        "dart": 2.47,
+        "trir": 3.25,
+        "cases": 143,
+        "deaths": 0,
+        "naics": "3361",
+        "industryDart": 3.64,
+        "vsIndustry": 0.68,
+        "siteSpread": {
+          "p10": 0,
+          "p50": 2.1,
+          "p90": 2.69
+        }
+      }
+    },
     "KR": {
       "2023": {
         "sites": 582,
@@ -177,6 +242,7 @@
         "hoursPerEmployee": 1352,
         "dart": 4.62,
         "trir": 5.24,
+        "cases": 2773,
         "deaths": 1,
         "naics": "4451",
         "industryDart": 3.24,
@@ -194,6 +260,7 @@
         "hoursPerEmployee": 1478,
         "dart": 3.13,
         "trir": 3.58,
+        "cases": 2030,
         "deaths": 0,
         "naics": "4451",
         "industryDart": 3.06,
@@ -211,6 +278,7 @@
         "hoursPerEmployee": 1532,
         "dart": 2.91,
         "trir": 3.39,
+        "cases": 1826,
         "deaths": 0,
         "naics": "4451",
         "industryDart": 2.77,
@@ -222,6 +290,62 @@
         }
       }
     },
+    "ADM": {
+      "2023": {
+        "sites": 146,
+        "employees": 14073,
+        "hours": 29199839,
+        "hoursPerEmployee": 2075,
+        "dart": 0.62,
+        "trir": 1.1,
+        "cases": 90,
+        "deaths": 1,
+        "naics": "3112",
+        "industryDart": 1.85,
+        "vsIndustry": 0.33,
+        "siteSpread": {
+          "p10": 0,
+          "p50": 0,
+          "p90": 2.39
+        }
+      },
+      "2024": {
+        "sites": 148,
+        "employees": 14850,
+        "hours": 32350564,
+        "hoursPerEmployee": 2178,
+        "dart": 0.54,
+        "trir": 1.11,
+        "cases": 88,
+        "deaths": 0,
+        "naics": "3112",
+        "industryDart": 1.98,
+        "vsIndustry": 0.27,
+        "siteSpread": {
+          "p10": 0,
+          "p50": 0,
+          "p90": 2
+        }
+      },
+      "2025": {
+        "sites": 171,
+        "employees": 16179,
+        "hours": 34817995,
+        "hoursPerEmployee": 2152,
+        "dart": 0.47,
+        "trir": 0.99,
+        "cases": 81,
+        "deaths": 0,
+        "naics": "3112",
+        "industryDart": 1.85,
+        "vsIndustry": 0.25,
+        "siteSpread": {
+          "p10": 0,
+          "p50": 0,
+          "p90": 1.86
+        }
+      }
+    },
     "TGT": {
       "2023": {
         "sites": 2278,
@@ -230,6 +354,7 @@
         "hoursPerEmployee": 1177,
         "dart": 3.04,
         "trir": 3.76,
+        "cases": 8177,
         "deaths": 0,
         "naics": "4521",
         "industryDart": 2.66,
@@ -247,6 +372,7 @@
         "hoursPerEmployee": 1176,
         "dart": 3.31,
         "trir": 3.93,
+        "cases": 8960,
         "deaths": 2,
         "naics": "4521",
         "industryDart": 2.56,
@@ -264,6 +390,7 @@
         "hoursPerEmployee": 1178,
         "dart": 2.87,
         "trir": 3.45,
+        "cases": 7719,
         "deaths": 3,
         "naics": "4521",
         "industryDart": 2.71,
@@ -275,6 +402,62 @@
         }
       }
     },
+    "NEE": {
+      "2023": {
+        "sites": 116,
+        "employees": 8501,
+        "hours": 17000427,
+        "hoursPerEmployee": 2000,
+        "dart": 0.16,
+        "trir": 0.32,
+        "cases": 14,
+        "deaths": 0,
+        "naics": "2211",
+        "industryDart": 1.03,
+        "vsIndustry": 0.16,
+        "siteSpread": {
+          "p10": 0,
+          "p50": 0,
+          "p90": 0
+        }
+      },
+      "2024": {
+        "sites": 111,
+        "employees": 7856,
+        "hours": 16360786,
+        "hoursPerEmployee": 2083,
+        "dart": 0.37,
+        "trir": 0.5,
+        "cases": 30,
+        "deaths": 0,
+        "naics": "2211",
+        "industryDart": 1,
+        "vsIndustry": 0.37,
+        "siteSpread": {
+          "p10": 0,
+          "p50": 0,
+          "p90": 1.77
+        }
+      },
+      "2025": {
+        "sites": 118,
+        "employees": 14666,
+        "hours": 28262922,
+        "hoursPerEmployee": 1927,
+        "dart": 0.11,
+        "trir": 0.19,
+        "cases": 15,
+        "deaths": 0,
+        "naics": "2211",
+        "industryDart": 0.95,
+        "vsIndustry": 0.11,
+        "siteSpread": {
+          "p10": 0,
+          "p50": 0,
+          "p90": 0.95
+        }
+      }
+    },
     "COST": {
       "2023": {
         "sites": 693,
@@ -283,6 +466,7 @@
         "hoursPerEmployee": 1507,
         "dart": 5.4,
         "trir": 6.25,
+        "cases": 8031,
         "deaths": 0,
         "naics": "4552",
         "industryDart": 4.15,
@@ -300,6 +484,7 @@
         "hoursPerEmployee": 1520,
         "dart": 5.62,
         "trir": 6.43,
+        "cases": 8811,
         "deaths": 0,
         "naics": "4552",
         "industryDart": 3.8,
@@ -317,6 +502,7 @@
         "hoursPerEmployee": 1520,
         "dart": 5.19,
         "trir": 6.28,
+        "cases": 17098,
         "deaths": 0,
         "naics": "4552",
         "industryDart": 3.1,
@@ -337,6 +523,7 @@
         "hoursPerEmployee": 1660,
         "dart": 2.52,
         "trir": 5.19,
+        "cases": 32814,
         "deaths": 2,
         "naics": "4529",
         "industryDart": 2.62,
@@ -354,6 +541,7 @@
         "hoursPerEmployee": 1618,
         "dart": 2.67,
         "trir": 5.37,
+        "cases": 33769,
         "deaths": 8,
         "naics": "4529",
         "industryDart": 2.76,
@@ -371,6 +559,7 @@
         "hoursPerEmployee": 1618,
         "dart": 2.53,
         "trir": 5.1,
+        "cases": 32799,
         "deaths": 13,
         "naics": "4552",
         "industryDart": 3.1,
@@ -380,6 +569,36 @@
           "p50": 2.08,
           "p90": 4.94
         }
+      }
+    },
+    "DVA": {
+      "2024": {
+        "sites": 4,
+        "employees": 88,
+        "hours": 150524,
+        "hoursPerEmployee": 1711,
+        "dart": 0,
+        "trir": 0,
+        "cases": 0,
+        "deaths": 0,
+        "naics": "6214",
+        "industryDart": 1.36,
+        "vsIndustry": 0,
+        "siteSpread": null
+      },
+      "2025": {
+        "sites": 3,
+        "employees": 66,
+        "hours": 96672,
+        "hoursPerEmployee": 1465,
+        "dart": 2.07,
+        "trir": 6.21,
+        "cases": 1,
+        "deaths": 0,
+        "naics": "6214",
+        "industryDart": 0.92,
+        "vsIndustry": 2.25,
+        "siteSpread": null
       }
     }
   },

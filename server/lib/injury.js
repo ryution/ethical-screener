@@ -52,6 +52,17 @@ export function latestInjury(ticker) {
 // 1.15 is the point where "above average" stops being an artefact of rounding.
 const ABOVE = 1.15;
 
+// A rate computed off a handful of cases is noise, and noise must never become a letter.
+// DaVita files three establishments covering 66 people — most dialysis clinics sit under
+// the reporting threshold — and that fragment came out at 2.25x its industry, which says
+// nothing about DaVita and everything about dividing by a small number. Case counts are
+// roughly Poisson, so the relative error is about 1/sqrt(cases): below ~8 cases a single
+// injury moves the rate by a third or more.
+const MIN_HOURS = 1_000_000;   // about 500 full-time workers
+const MIN_CASES = 8;
+export const tooThinToRate = (y) => (y.hours || 0) < MIN_HOURS || (y.cases ?? 0) < MIN_CASES;
+const thin = tooThinToRate;
+
 /**
  * Where this company's injury record sits on the conduct ladder, on this measure alone.
  *
@@ -67,7 +78,16 @@ export function assessInjury(ticker) {
   if (!years.length) return { rung: null, headline: null, detail: null, years: [], latest: null };
 
   const latest = years[years.length - 1];
-  const rated = years.filter((y) => y.vsIndustry != null);
+  const rated = years.filter((y) => y.vsIndustry != null && !thin(y));
+
+  if (!rated.length && years.some((y) => thin(y))) {
+    return {
+      rung: null,
+      headline: "Too little filed to rate",
+      detail: `We matched ${latest.sites.toLocaleString()} establishment${latest.sites === 1 ? "" : "s"} covering about ${latest.employees.toLocaleString()} people in ${latest.year}. That is too small a base to compute a rate anyone should rely on, so we don't.`,
+      years, latest, thin: true,
+    };
+  }
   const above = rated.filter((y) => y.vsIndustry >= ABOVE);
 
   if (!rated.length) {

@@ -259,6 +259,9 @@ async function main() {
         hours: Math.round(b.hours),
         hoursPerEmployee: b.emp > 0 ? Math.round(b.hours / b.emp) : null,
         dart: round(d), trir: round(trir(b)),
+        // The raw case count is what says whether the rate means anything: these are
+        // roughly Poisson, so the relative error is about 1/sqrt(cases).
+        cases: Math.round(b.dafw + b.djtr),
         deaths: b.deaths,
         naics,
         industryDart: bench ?? null,

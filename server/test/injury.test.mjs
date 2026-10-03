@@ -93,6 +93,26 @@ test("an unknown company gets nothing rather than a pass", () => {
   assert.deepEqual(a.years, []);
 });
 
+test("a rate off too few cases is never turned into a letter", () => {
+  // DaVita files three establishments covering 66 people — most dialysis clinics sit
+  // under the reporting threshold — and that fragment computes to 2.25x its industry.
+  // That number says nothing about DaVita and everything about dividing by a small base.
+  const a = assessInjury("DVA");
+  assert.equal(a.rung, null);
+  assert.equal(a.thin, true);
+  assert.match(a.headline, /Too little filed/);
+  assert.match(a.detail, /too small a base/i);
+});
+
+test("every rated company clears the base-size floor", () => {
+  for (const t of injuryTickers()) {
+    const a = assessInjury(t);
+    if (!a.rung) continue;
+    assert.ok(a.latest.hours >= 1_000_000, `${t} hours`);
+    assert.ok(a.latest.cases >= 8, `${t} cases`);
+  }
+});
+
 test("F is never awarded from rate data alone", () => {
   // An F needs a regulator's own severity finding — willful, repeat, failure-to-abate or
   // General Duty — which lives in OSHA's enforcement data, not the 300A summaries.

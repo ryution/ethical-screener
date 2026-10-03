@@ -45,6 +45,19 @@ test("a switched-off category awards nothing", () => {
   assert.deepEqual(creditsFor("UPS", []), []);
 });
 
+test("a credit is never awarded off too few cases either", () => {
+  // The mirror of the adverse-side guard. DaVita's fragment happens to point the wrong
+  // way, but a flattering number off one case would be the same bug — and the flattering
+  // direction is the one that deserves the firmer hand.
+  assert.deepEqual(creditsFor("DVA"), []);
+  for (const t of ["UPS"]) {
+    for (const c of creditsFor(t)) {
+      const ys = injuryYears(t);
+      assert.ok(ys[ys.length - 1].cases >= 8, `${t} ${c.key}`);
+    }
+  }
+});
+
 console.log("credits — the anti-greenwashing rule:");
 
 test("neither grading module can even see credits", () => {
