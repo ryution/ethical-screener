@@ -17,53 +17,48 @@ import { useEffect, useRef, useState } from "react";
 import { displayName, reasonParts } from "./format.js";
 import { gradeFor } from "./grade.js";
 
-// ── Palette ────────────────────────────────────────────────
-// Deep navy throughout, no light mode. The page is the darkest ground; sections are
-// separated by stepping the navy rather than by rules, and panels lift off it by being
-// a step lighter. One accent does the work: a light blue for anything actionable or
-// live, always carrying near-black navy ink when used as a fill. Coral is reserved
-// strictly for flags, mint strictly for positive.
+// ── Palette ──────────────────────────────────────────────────────────────────
+// Warm light ground with two dark bands. The page is butter with emerald type; the
+// analyzer band and the honesty band are dark, because a dense table of flags reads
+// better on dark. One accent family, green: sage where it sits on dark, forest where
+// it is type on light. Terracotta is reserved strictly for flags.
 const P = {
-  page: "#0D1119",     // the page itself, the deepest ground
-  block: "#121926",    // the analyzer band, where dense flag tables live
-  band: "#151D2C",     // full-width sections and the nav
-  bandDeep: "#101725", // a harder step down, so a seam reads as a colour change
-  card: "#1A2333",     // panels lifted off the page
-  deep: "#0A0E16",     // the ticker strip, darker than the page
-  sky: "#9CCBF5",      // the accent: buttons, links, active states
-  skyDeep: "#BFE0FB",  // the accent lifted, for small text that must clear AA
-  navy: "#0E2338",     // ink on a sky fill
-  ink: "#EDEFF3",
-  mint: "#5FCF92", coral: "#EE7856",
+  butter: "#FCEBD0",   // the page
+  card: "#FFF8EC",     // panels lifted off it
+  beige: "#F7EAD3",    // the nav strip
+  sand: "#EADDC2",     // a band that steps down from the page
+  charcoal: "#232420", // the analyzer band
+  emerald: "#1D3B28",  // type, dark fills, and the honesty band
+  sage: "#A7C4A0",     // the accent on dark ground, and fills that carry emerald ink
+  forest: "#2F6B44",   // the accent as type on light ground
+  terra: "#A8452F",    // flags
 };
 
-// ── Tokens for the darker bands: light type on deep navy. ───────────────────
-// muted/faint are sized against the LIGHTEST ground they ever land on (the lifted panel,
-// rgb(47,53,65)); at #8D96A8/#7C89A0 the 11-12px tertiary lines measured 3.95-4.46:1,
-// just under AA. These clear 5.6:1 and 4.8:1 there and more everywhere else.
+// ── Tokens for the dark bands: light type on charcoal or emerald. ────────────
 const D = {
-  ink: P.ink, muted: "#A5B0C5", faint: "#93A2BD",
-  mint: P.sky, brass: P.sky, brassSoft: P.skyDeep,
-  glassBorder: "rgba(237,239,243,0.14)",
-  lift: "#1E2739", // navy raised one step, for panels sitting on the band
-  block: P.block,
-  // Coral at full strength is bright enough on navy; the bands take it as-is, softened
-  // only where it is a fill rather than type.
-  flag: "#F2A98F", flagBg: "rgba(238,120,86,0.15)", flagBorder: "rgba(238,120,86,0.34)",
+  ink: P.butter, muted: "#BDB6A6", faint: "#948D80",
+  mint: P.sage, brass: P.sage, brassSoft: P.sage,
+  glassBorder: "rgba(252,235,208,0.16)",
+  lift: "#2E2B25", // charcoal raised one step, for panels sitting on the band
+  block: P.charcoal,
+  // Terracotta at full strength is only 2.7:1 on charcoal, so the dark bands take a
+  // lifted tint of it. Same hue, same meaning, readable on the dark ground.
+  flag: "#E08A72", flagBg: "rgba(224,138,114,0.16)", flagBorder: "rgba(224,138,114,0.38)",
 };
-// ── Tokens for the page. `pine` and `teal` are legacy names from an older theme;
-// the values are what matter. The whole product is dark, so these are light-on-dark
-// too — the split from D is about which ground the element sits on, not light vs dark.
+// ── Tokens for the butter page: dark type on light ground. Sage is far too light to
+// be read as type on butter, so accent TEXT uses forest and sage is kept for fills on
+// dark. `pine` and `teal` are legacy names from an older theme; the values are what
+// matter.
 const L = {
-  bg: P.page, card: P.card, line: "#2A3550", lineSoft: "#202B42",
-  ink: P.ink, muted: "#A5B0C5", faint: "#93A2BD",
-  pine: P.ink, teal: P.sky, mint: P.mint, brass: P.skyDeep,
-  flag: P.coral, flagBg: "rgba(238,120,86,0.14)", flagBorder: "rgba(238,120,86,0.32)",
-  good: P.mint,
+  bg: P.butter, card: P.card, line: "#E6D5B6", lineSoft: "#F4E6CC",
+  ink: P.emerald, muted: "#3F5246", faint: "#5A6A5F",
+  pine: P.emerald, teal: P.forest, mint: P.emerald, brass: P.forest,
+  flag: P.terra, flagBg: "rgba(168,69,47,0.10)", flagBorder: "rgba(168,69,47,0.30)",
+  good: P.emerald,
 };
-// Accent fills. A sky or mint fill always carries near-black ink on top — never the
-// page ink, which is what keeps these legible.
-const A = { lav: P.sky, lavInk: P.navy, lime: P.mint, limeInk: "#10281B", raised: "#24304A" };
+// Accent fills. A sage fill always carries emerald ink; a fill on the light page is
+// emerald carrying butter ink. No single mid-tone can do both and still clear AA.
+const A = { lav: P.sage, lavInk: P.emerald, lime: P.sage, limeInk: P.emerald, raised: "#F5E6C8" };
 const sans = "'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
 const display = "'Familjen Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
 const serif = display;
@@ -146,9 +141,22 @@ export default function Analyzer() {
 
 // ── The navy canvas: one flat block of deep navy, no gradient and no glow. The page is
 // built from solid blocks butted against each other; every seam is a hard edge. ──
+// Fractal noise as an inline SVG, so the grain costs no image request and no asset in the
+// repo. It tiles at 140px; `stitchTiles` is what keeps the seams invisible where it
+// repeats. CSP already allows `data:` under img-src, which is what a CSS background URL
+// is checked against.
+const GRAIN = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E";
+
 function Canvas({ children }) {
   return (
     <div style={{ position: "relative", fontFamily: sans, color: D.ink, overflow: "hidden", background: D.block }}>
+      {/* Grain sits over the whole band rather than behind the text alone: a patch would
+          draw a rectangle edge around the copy, which is worse than the flat fill it
+          replaces. Low opacity so it reads as paper texture, not as visible noise. */}
+      <div aria-hidden style={{
+        position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none",
+        backgroundImage: `url("${GRAIN}")`, backgroundRepeat: "repeat", opacity: 0.2,
+      }} />
       <div style={{ position: "relative", zIndex: 1 }}>{children}</div>
     </div>
   );
@@ -185,6 +193,56 @@ function syncUrl(symbol, selected, screens) {
     window.history.replaceState(null, "", qs);
   } catch { /* ignore */ }
 }
+// Faith-based starting sets. A preset only selects screens that already exist, so it
+// asserts nothing new about any company. The note for a set is shown only while that set
+// is the current selection: these traditions are not uniform, so the caveat belongs with
+// the choice someone actually made rather than stacked up for all five at once.
+const filterLink = { background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: sans, fontSize: 11.5, color: D.mint };
+
+function PresetRow({ presets, screens, selected, onApply }) {
+  if (!presets.length) return null;
+  const have = new Set(screens.map((s) => s.key));
+  // A preset can name a screen this deployment doesn't carry; drop those rather than
+  // selecting keys that would silently match nothing.
+  const usable = presets
+    .map((p) => ({ ...p, screens: p.screens.filter((k) => have.has(k)) }))
+    .filter((p) => p.screens.length);
+  if (!usable.length) return null;
+  const isActive = (p) => selected && selected.size === p.screens.length && p.screens.every((k) => selected.has(k));
+  // Editing the chips by hand drops the exact match, and the note goes with it — it would
+  // be describing a set that is no longer what is selected.
+  const active = usable.find(isActive);
+  return (
+    <div style={{ marginBottom: 10 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 7 }}>
+        <span style={{ fontFamily: sans, fontSize: 11.5, color: D.faint }}>Faith-based sets:</span>
+        {usable.map((p) => {
+          const on = isActive(p);
+          return (
+            <button key={p.key} onClick={() => onApply(p.screens)} aria-pressed={on}
+              style={{ fontFamily: sans, fontSize: 12, fontWeight: 600, cursor: "pointer", borderRadius: 999, padding: "4px 12px",
+                border: `1px solid ${on ? A.lav : D.glassBorder}`,
+                background: on ? A.lav : "transparent",
+                color: on ? A.lavInk : D.muted, transition: "all .12s" }}>
+              {p.label}
+            </button>
+          );
+        })}
+      </div>
+      {active && (
+        <div style={{ marginTop: 9, padding: "11px 13px", background: "rgba(156,203,245,0.08)", border: `1px solid ${D.glassBorder}`, borderRadius: 12 }}>
+          <div style={{ fontFamily: sans, fontSize: 12, color: D.brassSoft, marginBottom: 4 }}>
+            {active.screens.map((k) => screens.find((s) => s.key === k)?.label).filter(Boolean).join(" · ")}
+          </div>
+          <p style={{ margin: 0, fontFamily: sans, fontSize: 12, color: D.muted, lineHeight: 1.55 }}>
+            {active.note} Edit the categories below to make it yours.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function HeroAnalyzer({ onStart, snaptrade, meta }) {
   const [q, setQ] = useState(initialSymbol);
   const [result, setResult] = useState(null);
@@ -192,10 +250,12 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
   const [err, setErr] = useState("");
   const [screens, setScreens] = useState([]);
   const [selected, setSelected] = useState(null); // Set of screen keys; null until loaded
+  const [presets, setPresets] = useState([]);
   useEffect(() => {
     api("/api/screens").then((d) => {
       const list = (d.screens || []).slice().sort((a, b) => a.label.localeCompare(b.label));
       setScreens(list);
+      setPresets(d.presets || []);
       const only = initialOnly();
       const valid = only && only.filter((k) => list.some((s) => s.key === k));
       setSelected(new Set(valid && valid.length ? valid : list.map((s) => s.key)));
@@ -300,11 +360,21 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
         <div style={{ marginTop: 14, borderTop: `1px solid ${D.glassBorder}`, paddingTop: 12 }}>
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, marginBottom: 9 }}>
             <span style={{ fontFamily: sans, fontSize: 11.5, letterSpacing: "0.08em", textTransform: "uppercase", color: D.faint }}>Filter to what you care about</span>
-            <button onClick={() => setAll(!allOn)} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: sans, fontSize: 11.5, color: D.mint }}>
-              {allOn ? "Clear all" : "Select all"}
-            </button>
+            {/* Two buttons, not one toggle. A single toggle only offered "Clear all" once
+                everything was on, so clearing a faith set or a hand-picked few meant
+                selecting all of them first. Each is shown only when it would do something. */}
+            <div style={{ display: "flex", alignItems: "baseline", gap: 12, flexShrink: 0 }}>
+              {!allOn && (
+                <button onClick={() => setAll(true)} style={filterLink}>Select all</button>
+              )}
+              {selected.size > 0 && (
+                <button onClick={() => setAll(false)} style={filterLink}>Clear all</button>
+              )}
+            </div>
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+          <PresetRow presets={presets} screens={screens} selected={selected} onApply={(keys) => setSelected(new Set(keys))} />
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 7 }}>
+            <span style={{ fontFamily: sans, fontSize: 11.5, color: D.faint }}>Individual categories:</span>
             {screens.map((s) => {
               const on = selected.has(s.key);
               return (
@@ -350,7 +420,7 @@ function pageTitle(r) {
 }
 
 // Copy this exact view (symbol + category filter) — the share button on every result.
-function ShareButton({ symbol, dark = true }) {
+function ShareButton({ symbol, dark = false }) {
   const [done, setDone] = useState(false);
   const share = async () => {
     const url = window.location.href.split("#")[0];
@@ -389,16 +459,19 @@ function filterBySelected(result, selected) {
 // §3.6 — the grade for one company, against the categories the reader turned on. The
 // letter describes the KIND of fact on record (see src/grade.js), never how bad it is,
 // so it always travels with the flag underneath it rather than standing alone.
-function GradeBadge({ flags, selectedCount, known = true, dark = true }) {
+function GradeBadge({ flags, selectedCount, known = true, dark = false }) {
   const g = gradeFor(flags || [], selectedCount, known);
   if (!g.letter) return null;
+  // B and C have no colour of their own, so on the light panel they need a rule to read
+  // as a badge at all — the neutral fill is a shade off the panel it sits on.
   const tone = g.letter === "A" ? { bg: A.lime, ink: A.limeInk }
     : g.letter === "F" ? { bg: L.flag, ink: "#3A140C" }
     : g.letter === "D" ? { bg: A.lav, ink: A.lavInk }
-    : { bg: "rgba(237,239,243,0.10)", ink: dark ? D.ink : L.ink };
+    : { bg: dark ? "rgba(237,239,243,0.10)" : P.sand, ink: dark ? D.ink : L.ink, border: dark ? D.glassBorder : L.line };
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
       <div aria-hidden style={{ width: 52, height: 52, borderRadius: 14, background: tone.bg, color: tone.ink,
+        border: tone.border ? `1px solid ${tone.border}` : "none",
         display: "grid", placeItems: "center", fontFamily: display, fontSize: 30, fontWeight: 600, flexShrink: 0 }}>{g.letter}</div>
       <div style={{ minWidth: 0 }}>
         <div style={{ fontFamily: sans, fontSize: 13.5, fontWeight: 600, color: dark ? D.ink : L.ink, lineHeight: 1.3 }}>
@@ -415,7 +488,9 @@ function GradeBadge({ flags, selectedCount, known = true, dark = true }) {
 }
 
 function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
-  const panel = glass({ marginTop: 14, padding: "18px 20px", background: "rgba(237,239,243,0.09)", borderRadius: 14 });
+  // The result panel is a light card sitting on the dark band, so everything inside it
+  // uses the light ramp rather than the band's.
+  const panel = { marginTop: 14, padding: "18px 20px", background: P.butter, border: `1px solid ${L.line}`, borderRadius: 14 };
   const cta = <HeroCTA onStart={onStart} snaptrade={snaptrade} />;
 
   if (result.type === "none") {
@@ -425,11 +500,11 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
     if (result.known === false) {
       return (
         <div style={panel}>
-          <div style={{ fontFamily: serif, fontSize: 19, color: D.ink }}>
+          <div style={{ fontFamily: serif, fontSize: 19, color: L.ink }}>
             We don't recognize <b>{result.symbol}</b>.
           </div>
-          <p style={{ fontFamily: sans, fontSize: 13, color: D.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
-            It isn't a U.S.-listed company in our index, and it isn't a fund we can see inside. If it's a fund, that means <b style={{ color: D.ink }}>not analyzed</b>, never "clean." Check the spelling, or try one of the funds above.
+          <p style={{ fontFamily: sans, fontSize: 13, color: L.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
+            It isn't a U.S.-listed company in our index, and it isn't a fund we can see inside. If it's a fund, that means <b style={{ color: L.ink }}>not analyzed</b>, never "clean." Check the spelling, or try one of the funds above.
           </p>
           {cta}
         </div>
@@ -438,15 +513,15 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
     return (
       <div style={panel}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-          <div style={{ fontFamily: serif, fontSize: 19, color: D.ink }}>
-            No flags for <b>{result.symbol}</b>{result.name ? <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}> · {displayName(result.name)}</span> : null}
+          <div style={{ fontFamily: serif, fontSize: 19, color: L.ink }}>
+            No flags for <b>{result.symbol}</b>{result.name ? <span style={{ color: L.muted, fontFamily: sans, fontSize: 15 }}> · {displayName(result.name)}</span> : null}
           </div>
           <ShareButton symbol={result.symbol} />
         </div>
         {/* A recognised filer with nothing flagged is the A case. The unknown-symbol branch
             above deliberately gets no grade at all — absence of data is not an A. */}
         <div style={{ marginTop: 14 }}><GradeBadge flags={[]} selectedCount={selectedCount} /></div>
-        <p style={{ fontFamily: sans, fontSize: 13, color: D.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
+        <p style={{ fontFamily: sans, fontSize: 13, color: L.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
           It isn't on any of the lists we track. That doesn't mean it's audited clean. It only means "none of the names we track." We cover U.S.-listed companies that file with the SEC, so a foreign-listed name may simply be out of scope.
         </p>
         {cta}
@@ -458,9 +533,9 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
     if (!result.flags.length) {
       return (
         <div style={panel}>
-          <div style={{ fontFamily: serif, fontSize: 19, color: D.ink }}>No flags for <b>{result.symbol}</b> in your selected categories.</div>
+          <div style={{ fontFamily: serif, fontSize: 19, color: L.ink }}>No flags for <b>{result.symbol}</b> in your selected categories.</div>
           <div style={{ marginTop: 14 }}><GradeBadge flags={[]} selectedCount={selectedCount} /></div>
-          <p style={{ fontFamily: sans, fontSize: 13, color: D.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
+          <p style={{ fontFamily: sans, fontSize: 13, color: L.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
             Turn on more categories above to widen the check.
           </p>
           {cta}
@@ -471,13 +546,13 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
     return (
       <div style={panel}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-          <div style={{ fontFamily: serif, fontSize: 20, color: D.ink }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
+          <div style={{ fontFamily: serif, fontSize: 20, color: L.ink }}>{result.symbol} · <span style={{ color: L.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
           <ShareButton symbol={result.symbol} />
         </div>
         <QuotePanel symbol={result.symbol} />
         <div style={{ marginTop: 16 }}><GradeBadge flags={flags} selectedCount={selectedCount} /></div>
         <div style={{ marginTop: 14, display: "grid", gap: 10 }}>
-          {flags.map((f) => <FlagCard key={f.key} flag={f} company={result.name} dark />)}
+          {flags.map((f) => <FlagCard key={f.key} flag={f} company={result.name} />)}
         </div>
         {cta}
       </div>
@@ -489,11 +564,11 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
     return (
       <div style={panel}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-          <div style={{ fontFamily: serif, fontSize: 20, color: D.ink }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
-          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: D.muted, background: "rgba(237,239,243,0.10)", borderRadius: 999, padding: "3px 10px" }}>NOT ANALYZED</span>
+          <div style={{ fontFamily: serif, fontSize: 20, color: L.ink }}>{result.symbol} · <span style={{ color: L.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
+          <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: L.muted, background: L.lineSoft, borderRadius: 999, padding: "3px 10px" }}>NOT ANALYZED</span>
         </div>
-        <p style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, margin: "8px 0 0", lineHeight: 1.55 }}>
-          {result.notAnalyzedReason} We call that <b style={{ color: D.ink }}>not analyzed</b>, never "clean."
+        <p style={{ fontFamily: sans, fontSize: 13.5, color: L.muted, margin: "8px 0 0", lineHeight: 1.55 }}>
+          {result.notAnalyzedReason} We call that <b style={{ color: L.ink }}>not analyzed</b>, never "clean."
         </p>
         {cta}
       </div>
@@ -505,10 +580,10 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
     return (
       <div style={panel}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-          <div style={{ fontFamily: serif, fontSize: 20, color: D.ink }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
+          <div style={{ fontFamily: serif, fontSize: 20, color: L.ink }}>{result.symbol} · <span style={{ color: L.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
           <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: A.lavInk, background: A.lav, borderRadius: 999, padding: "3px 10px" }}>FUND</span>
         </div>
-        <p style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, margin: "8px 0 0", lineHeight: 1.5 }}>
+        <p style={{ fontFamily: sans, fontSize: 13.5, color: L.muted, margin: "8px 0 0", lineHeight: 1.5 }}>
           No holdings in this fund match your selected categories. Turn on more categories above to widen the check.
         </p>
         {cta}
@@ -522,24 +597,24 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
   return (
     <div style={panel}>
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-        <div style={{ fontFamily: serif, fontSize: 20, color: D.ink }}>{result.symbol} · <span style={{ color: D.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
+        <div style={{ fontFamily: serif, fontSize: 20, color: L.ink }}>{result.symbol} · <span style={{ color: L.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
         <span style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: A.lavInk, background: A.lav, borderRadius: 999, padding: "3px 10px" }}>FUND</span>
           <ShareButton symbol={result.symbol} />
         </span>
       </div>
-      <p style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, margin: "6px 0 0", lineHeight: 1.5 }}>
-        Tracks {result.basis} and holds <b style={{ color: D.ink }}>{contains.length}</b>
-        {result.totalHoldings ? <> of its <b style={{ color: D.ink }}>{result.totalHoldings}</b></> : null} companies you may want to avoid:
+      <p style={{ fontFamily: sans, fontSize: 13.5, color: L.muted, margin: "6px 0 0", lineHeight: 1.5 }}>
+        Tracks {result.basis} and holds <b style={{ color: L.ink }}>{contains.length}</b>
+        {result.totalHoldings ? <> of its <b style={{ color: L.ink }}>{result.totalHoldings}</b></> : null} companies you may want to avoid:
       </p>
       {result.asOf && (
-        <p style={{ fontFamily: sans, fontSize: 11.5, color: D.faint, margin: "4px 0 0" }}>
+        <p style={{ fontFamily: sans, fontSize: 11.5, color: L.faint, margin: "4px 0 0" }}>
           Holdings from {result.holdingsSource}, as of {result.asOf}.
         </p>
       )}
       <QuotePanel symbol={result.symbol} />
       <div style={{ marginTop: 16, display: "grid", gap: 9 }}>
-        <FundBreakdown groups={groups} theme="dark" />
+        <FundBreakdown groups={groups} theme="light" />
       </div>
       {cta}
     </div>
@@ -800,7 +875,7 @@ function TickerTape() {
 
   const Item = ({ q, keySuffix }) => {
     const up = q.changePercent >= 0;
-    const color = up ? L.good : L.flag;
+    const color = up ? "#4ADE80" : "#F87171";
     return (
       <span key={q.symbol + keySuffix} style={{ display: "inline-flex", alignItems: "baseline", gap: 8, padding: "0 22px", fontFamily: sans, fontSize: 13, whiteSpace: "nowrap" }}>
         <span style={{ fontWeight: 600, color: D.ink, letterSpacing: "0.02em" }}>{q.symbol}</span>
@@ -811,7 +886,7 @@ function TickerTape() {
   };
 
   return (
-    <div style={{ background: P.deep, borderBottom: `1px solid ${L.lineSoft}`, overflow: "hidden", padding: "9px 0" }}>
+    <div style={{ background: "#0D0D11", borderBottom: "1px solid rgba(255,255,255,0.08)", overflow: "hidden", padding: "9px 0" }}>
       <style>{`
         @keyframes ps-ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
         .ps-ticker-track { display: inline-flex; animation: ps-ticker-scroll 45s linear infinite; }
@@ -895,14 +970,14 @@ function HotNews({ wrap }) {
 
 // ── Methodology (public page, mirrors METHODOLOGY.md §1–5) ───────────────────
 const METHOD_PRINCIPLES = [
-  ["Every flag is a verifiable fact", "Every flag is a factual claim about what a company does, with a one-sentence reason you can verify. No opaque “ESG score.” The letter grade isn’t a score either — it’s a one-line rule applied to the flags we show you, describing the kind of fact on record rather than how bad it is, and it moves with the categories you pick. If we can’t say why in one sentence, it isn’t a flag."],
-  ["We flag documented conduct", "A company supplying hospital morphine is not “opioids.” A company with opioid-marketing litigation and settlements is. What the company did is what counts, not what industry it sits in."],
-  ["Every flag cites a source", "A flag from a company’s filing carries a verbatim quote from that filing and a link to it. No supporting quote means no flag. You read the company’s own words, not our paraphrase."],
-  ["We flag a reported line of business", "A flag has to be a reported segment or principal activity. “Sells cigarettes at the register” does not qualify, and neither does a passing mention in a risk-factor section."],
-  ["You choose which flags apply", "We never decide what is unethical for you. You pick the flags; we only explain what’s there. Some flags are screened in opposite directions by different people, so we present those neutrally."],
-  ["A clean result is never a guarantee", "A clean result means “none of the names we track,” never “audited pure.” A fund we can’t see inside is “not analyzed,” never “clean.”"],
-  ["Every dataset shows when it was updated", "Every dataset carries a “last updated” date, so you can see how current the answer is."],
-  ["We cover U.S.-listed companies only", "Our universe is companies that file with the SEC. Foreign-listed companies (20-F filers, most ADRs) are not analyzed. An empty result there means out of scope, never clean."],
+  ["Every flag is a verifiable fact", "Each flag states something a company does, with a one-sentence reason you can check for yourself. Nothing here is an ESG score. The letter grade is not a score either. It applies one plain rule to the flags you are currently looking at, so it tells you what kind of fact is on record rather than how bad we think it is, and it shifts as you change the categories. Where we cannot give a reason in a sentence, there is no flag."],
+  ["We flag documented conduct", "A company that supplies hospital morphine does not carry the opioid flag. A company that has faced opioid-marketing litigation and paid settlements does. We go by what a company has been documented doing. Belonging to an industry is not by itself a finding."],
+  ["Every flag cites a source", "When a flag comes from a company\u2019s filing, it carries a quote from that filing and a link to the document. We drop any flag we cannot support with a quote. What you read is the company describing itself, in its own words."],
+  ["We flag a reported line of business", "A flag has to rest on a reported segment or a principal activity. Selling cigarettes at the register does not qualify, and a passing mention in a risk-factor section does not either."],
+  ["You choose which flags apply", "We do not decide what counts as unethical for you. You pick the flags and we explain what turns up. People screen a few of these in opposite directions, so for those we describe what is there without taking a side."],
+  ["A clean result is never a guarantee", "A clean result tells you that none of the names we track came up. It does not tell you a company has been audited and found sound. Where we cannot see inside a fund, we label it not analyzed and leave it there."],
+  ["Every dataset shows when it was updated", "Every dataset carries the date it was last refreshed, so you can judge how current an answer is."],
+  ["We cover U.S.-listed companies only", "We cover companies that file with the SEC. Foreign-listed companies, including 20-F filers and most ADRs, sit outside that. An empty result for one of those means we did not look, rather than that we looked and found nothing."],
 ];
 const METHOD_LAYERS = [
   ["Curated", "A hand-maintained list of companies, researched from each one’s primary business.", "Precise and defensible for well-known names."],
@@ -942,6 +1017,10 @@ const METHOD_CATALOGUE = [
     { name: "Animal testing", status: "Live", def: "Contract research and cosmetics whose core business involves animal testing.", counts: "Contract research orgs with animal-study operations; cosmetics tied to animal testing.", not: "Medical research where no animal testing is disclosed.", ex: "Charles River Labs, LabCorp." },
     { name: "Fur & exotic leather", status: "Live", def: "Production or primary retail of animal fur and exotic-animal leather.", counts: "Fur farming/processing; brands whose principal line is fur/exotic skins.", not: "General apparel with incidental leather.", ex: "A deliberately narrow, curated set. Few US-listed pure-plays exist." },
   ]],
+  ["Faith-based", [
+    { name: "Pork production", status: "Live", def: "Hog production and pork processing as a reported segment or principal line of business.", counts: "Companies whose own segment reporting names pork, or that state pork as a principal raw material.", not: "Grocers and restaurants that sell pork among many goods; prepared-food brands that buy pork downstream.", ex: "Smithfield Foods, Tyson Foods, Hormel Foods, Seaboard." },
+    { name: "Interest-based finance", status: "Live", def: "Banks and consumer lenders whose principal business is lending at interest, excluded under sharia screening as riba.", counts: "Commercial banks, savings institutions, and card issuers whose filings report net interest income as a primary revenue line.", not: "Conventional insurers, which sharia screens exclude on a separate ground we do not yet cover; payment processors that take fees rather than interest.", ex: "JPMorgan Chase, Bank of America, Capital One, Synchrony Financial." },
+  ]],
 ];
 function Methodology({ onStart }) {
   const wrap = { maxWidth: 900, margin: "0 auto", padding: "0 24px" };
@@ -959,7 +1038,7 @@ function Methodology({ onStart }) {
   return (
     <div style={{ fontFamily: sans, background: L.bg, minHeight: "100dvh" }}>
       <Canvas>
-        <nav style={{ borderBottom: `1px solid ${L.line}`, background: P.band }}>
+        <nav style={{ borderBottom: `1px solid ${L.line}`, background: P.beige }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 28px" }}>
             <a href="#" style={{ fontFamily: wordmark, fontSize: 25, fontWeight: 600, color: L.ink, letterSpacing: "-0.02em", textDecoration: "none" }}>PlainStreet</a>
             <button onClick={onStart} style={startBtn(999, "9px 18px", 14)}>Get started</button>
@@ -976,7 +1055,7 @@ function Methodology({ onStart }) {
       </Canvas>
 
       <section style={{ ...wrap, padding: "clamp(48px,7vw,72px) 24px" }}>
-        <SectionHead title="The principles behind every flag" sub="These are non-negotiable. They are the product’s whole premise." />
+        <SectionHead title="The principles behind every flag" sub="The whole product rests on these." />
         <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 26 }}>
           {METHOD_PRINCIPLES.map(([t, d], i) => (
             <li key={i} style={{ display: "grid", gridTemplateColumns: "9px 1fr", gap: 16 }}>
@@ -1036,7 +1115,7 @@ function Methodology({ onStart }) {
 
       <section style={{ background: L.card, borderTop: `1px solid ${L.line}` }}>
         <div style={{ ...wrap, padding: "clamp(48px,7vw,72px) 24px", textAlign: "center" }}>
-          <p style={{ fontFamily: lede, fontWeight: 400, fontSize: "clamp(22px,3vw,30px)", color: L.pine, lineHeight: 1.45, margin: 0, maxWidth: 700, marginLeft: "auto", marginRight: "auto" }}>
+          <p style={{ fontFamily: sans, fontWeight: 400, fontSize: "clamp(15.5px,1.7vw,18px)", color: L.pine, lineHeight: 1.7, margin: 0, maxWidth: 600, marginLeft: "auto", marginRight: "auto" }}>
             Every flag is a checkable fact with a citation. If we cannot meet that standard, we do not flag the company. No flag means the company is not one of the names we track. It does not mean the company has been audited and found clean.
           </p>
         </div>
@@ -1126,7 +1205,7 @@ function LandingHome({ onStart, snaptrade, meta }) {
       <TickerTape />
       {/* ── Dark hero with the live analyzer ── */}
       <Canvas>
-        <nav style={{ position: "sticky", top: 0, zIndex: 20, borderBottom: `1px solid ${L.line}`, background: P.band }}>
+        <nav style={{ position: "sticky", top: 0, zIndex: 20, borderBottom: `1px solid ${L.line}`, background: P.beige }}>
           {/* Below ~480px, "PlainStreet" + "Methodology" + "Get started" don't fit on one
               line and crowd together with no gap. Methodology is already in the footer,
               so it's the one to drop on narrow screens rather than wrap the sticky nav. */}
@@ -1143,25 +1222,25 @@ function LandingHome({ onStart, snaptrade, meta }) {
         </nav>
         <header>
           <div style={{ ...wrap, textAlign: "center", padding: "clamp(56px,9vw,96px) 24px clamp(48px,7vw,80px)" }}>
-            {/* Set in caps the title measures 16.06em, so holding it on one line means
+            {/* Set in caps and tracked out the title measures 16.76em, so holding it on one line means
                 size is a function of viewport width. Above 620px that formula still
                 leaves it the largest thing on screen; below it, one line would compute
                 to ~20px — smaller than the sub-line under it — so it wraps instead. */}
             <style>{`
               .ps-hero-title { font-size: clamp(30px, 8vw, 44px); }
               @media (min-width: 620px) {
-                .ps-hero-title { white-space: nowrap; font-size: min(calc(6vw - 3px), 57px); }
+                .ps-hero-title { white-space: nowrap; font-size: min(calc(5.4vw - 3px), 50px); }
               }
             `}</style>
-            <h1 className="ps-hero-title" style={{ fontFamily: serifDisplay, fontWeight: 600, lineHeight: 1.06, margin: 0, letterSpacing: "0.015em", textTransform: "uppercase", color: D.ink }}>
+            <h1 className="ps-hero-title" style={{ fontFamily: serifDisplay, fontWeight: 500, lineHeight: 1.12, margin: 0, letterSpacing: "0.075em", textTransform: "uppercase", color: D.ink }}>
               The ethical portfolio analyzer
             </h1>
             {/* Display face here, Varela on the lede below: the two lines sat in near
                 identical humanist sans and blurred into one block. */}
-            <p style={{ fontFamily: serifDisplay, fontWeight: 500, fontSize: "clamp(19px,2.8vw,29px)", lineHeight: 1.24, letterSpacing: "-0.02em", color: D.ink, margin: "16px auto 0", maxWidth: 680 }}>
+            <p style={{ fontFamily: serifDisplay, fontWeight: 400, fontSize: "clamp(18px,2.6vw,27px)", lineHeight: 1.3, letterSpacing: "-0.015em", color: D.ink, margin: "12px auto 0", maxWidth: 660 }}>
               Is your money already funding what you fight against?
             </p>
-            <p style={{ fontFamily: lede, fontSize: "clamp(16.5px,2vw,19.5px)", lineHeight: 1.65, color: D.ink, margin: "24px auto 0", maxWidth: 560 }}>
+            <p style={{ fontFamily: lede, fontSize: "clamp(13px,1.3vw,14.5px)", lineHeight: 1.75, color: D.muted, margin: "46px auto 0", maxWidth: 430 }}>
               Even broad market funds hide holdings that might not match your values. Search any stock or ETF ticker to see what’s really inside your portfolio.
             </p>
             <VerifiedBanner />
@@ -1176,7 +1255,7 @@ function LandingHome({ onStart, snaptrade, meta }) {
 
       {/* ── Charcoal block: how it works. Columns are separated by a rule above each
              one, not by a card, so the band reads as one solid field. ── */}
-      <section style={{ background: P.band }}>
+      <section style={{ background: P.sand }}>
         <div style={{ ...wrap, padding: "clamp(56px,9vw,96px) 24px" }}>
           <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(26px,4vw,38px)", color: L.pine, fontWeight: 600, margin: "0 0 34px", letterSpacing: "-0.02em" }}>How to get started</h2>
           <StepList steps={steps} />
@@ -1185,9 +1264,9 @@ function LandingHome({ onStart, snaptrade, meta }) {
 
       {/* ── Navy block: honesty. A different solid from the band above it, so the seam
              between the two is a hard colour change rather than a rule. ── */}
-      <section style={{ background: P.bandDeep }}>
+      <section style={{ background: P.emerald }}>
         <div style={{ ...wrap, maxWidth: 720, textAlign: "center", padding: "clamp(48px,8vw,80px) 24px" }}>
-          <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(24px,4vw,32px)", color: L.pine, fontWeight: 600, margin: 0, letterSpacing: "-0.02em" }}>We'd rather under-claim than mislead</h2>
+          <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(24px,4vw,32px)", color: D.ink, fontWeight: 600, margin: 0, letterSpacing: "-0.02em" }}>We'd rather under-claim than mislead</h2>
           <p style={{ fontFamily: sans, fontSize: 16, color: D.muted, lineHeight: 1.7, margin: "16px 0 0" }}>
             Every flag is a checkable fact about what a company does, with the reason and, where it comes from a filing, the company's own words. We look inside a fund only when its issuer publishes the holdings: the big S&P 500, total-market, Dow, mid- and small-cap and ESG index funds. We say which file the list came from and when. A fund we can't see inside is labeled "not analyzed," never called clean. Our coverage is U.S.-listed companies that file with the SEC, so a foreign-listed name may come back empty simply because we haven't reached it. A clean result means "none of the names we track," never "audited pure." You draw the lines; we show you where your money already sits.
           </p>
@@ -1560,7 +1639,7 @@ const DarkErr = ({ children }) => <div style={{ marginTop: 12, fontFamily: sans,
 // Buttons — flat, no gloss, full pills. All three primaries are lavender-on-near-black and
 // differ only in border/shadow; they're near-duplicates now and could collapse into one.
 const mintBtn = () => ({
-  background: A.lav, color: A.lavInk, border: `1px solid ${A.lav}`, borderRadius: 0, padding: "12px 20px",
+  background: P.emerald, color: P.butter, border: `1px solid ${A.lav}`, borderRadius: 0, padding: "12px 20px",
   fontFamily: sans, fontSize: 15, fontWeight: 600, cursor: "pointer", letterSpacing: "-0.005em",
 });
 const brassBtn = (r = 0, pad = "14px 24px", fs = 15) => ({
@@ -1569,13 +1648,13 @@ const brassBtn = (r = 0, pad = "14px 24px", fs = 15) => ({
 });
 // Borderless variant with a lift — used for the big page-level CTAs.
 const darkBtn = (r = 0, pad = "14px 24px", fs = 15) => ({
-  background: A.lav, color: A.lavInk, border: "none", borderRadius: r, padding: pad,
+  background: P.emerald, color: P.butter, border: "none", borderRadius: r, padding: pad,
   fontFamily: sans, fontSize: fs, fontWeight: 600, cursor: "pointer", letterSpacing: "-0.005em",
 });
 // "Get started" is the one thing on the page we want people to press, so it gets
 // the sky accent to itself — every other filled button is chartreuse.
 const startBtn = (r = 999, pad = "14px 24px", fs = 15) => ({
-  background: P.sky, color: P.navy, border: `1px solid ${P.sky}`, borderRadius: r, padding: pad,
+  background: P.emerald, color: P.butter, border: `1px solid ${P.emerald}`, borderRadius: r, padding: pad,
   fontFamily: sans, fontSize: fs, fontWeight: 600, cursor: "pointer", letterSpacing: "-0.005em",
 });
 const linkBtn = (color) => ({ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: sans, fontSize: 13, fontWeight: 600, color });
@@ -1603,8 +1682,10 @@ function DeltaBadge({ pct }) {
   return (
     <span style={{
       fontFamily: sans, fontSize: 10.5, fontWeight: 600, borderRadius: 999, padding: "2px 8px",
-      background: up ? A.lime : D.flagBg, color: up ? A.limeInk : D.flag,
-      border: up ? "none" : `1px solid ${D.flagBorder}`, whiteSpace: "nowrap",
+      // The delta sits inside the result panel, which is a light card, so it takes the
+      // page's terracotta rather than the lifted tint the dark bands use.
+      background: up ? A.lime : L.flagBg, color: up ? A.limeInk : L.flag,
+      border: up ? "none" : `1px solid ${L.flagBorder}`, whiteSpace: "nowrap",
     }}>{up ? "+" : ""}{fmtPct(pct)}</span>
   );
 }
@@ -1667,7 +1748,7 @@ function Sparkline({ data, height = 130, color = A.lav, label = "", onScrub, act
             position: "absolute",
             left: `${(activeIdx / (data.length - 1)) * 100}%`,
             top: y(data[activeIdx]) + 6, width: 9, height: 9, borderRadius: "50%",
-            background: color, border: `2px solid ${D.lift}`,
+            background: color, border: `2px solid ${P.butter}`,
             transform: "translate(-50%,-50%)", pointerEvents: "none",
           }} />
         </>
@@ -1800,7 +1881,7 @@ function QuotePanel({ symbol }) {
   return (
     <div style={{ marginTop: 16 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-        <span style={{ fontFamily: sans, fontSize: 12.5, color: D.muted }}>
+        <span style={{ fontFamily: sans, fontSize: 12.5, color: L.muted }}>
           {stamp || `Last price · ${q.label}`}
         </span>
         <div role="group" aria-label="Chart range" style={{ marginLeft: "auto", display: "flex", gap: 4, flexWrap: "wrap" }}>
@@ -1812,8 +1893,8 @@ function QuotePanel({ symbol }) {
                   fontFamily: sans, fontSize: 11.5, fontWeight: 600, cursor: "pointer",
                   borderRadius: 999, padding: "3px 10px", minWidth: 34,
                   background: on ? A.lav : "transparent",
-                  color: on ? A.lavInk : D.muted,
-                  border: `1px solid ${on ? A.lav : D.glassBorder}`,
+                  color: on ? A.lavInk : L.muted,
+                  border: `1px solid ${on ? A.lav : L.line}`,
                   transition: "background .12s, color .12s, border-color .12s",
                 }}>{r.label}</button>
             );
@@ -1821,11 +1902,11 @@ function QuotePanel({ symbol }) {
         </div>
       </div>
       <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginTop: 3 }}>
-        <span style={{ fontFamily: sans, fontSize: 34, fontWeight: 500, letterSpacing: "-0.02em", color: D.ink, lineHeight: 1.1 }}>$ {shownPrice.toFixed(2)}</span>
+        <span style={{ fontFamily: sans, fontSize: 34, fontWeight: 500, letterSpacing: "-0.02em", color: L.ink, lineHeight: 1.1 }}>$ {shownPrice.toFixed(2)}</span>
         <DeltaBadge pct={shownPct} />
       </div>
       <div style={{ opacity: busy ? 0.45 : 1, transition: "opacity .15s" }}>
-        <Sparkline data={q.spark} height={110} color={up ? A.lime : D.flag} label={q.label}
+        <Sparkline data={q.spark} height={110} color={up ? A.lime : L.flag} label={q.label}
           onScrub={setScrub} activeIdx={scrub} />
       </div>
     </div>

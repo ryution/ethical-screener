@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { analyze, lookupSymbol } from "../lib/analyzer.js";
 import { shareMeta } from "../lib/share.js";
-import { flagsFor, isScreenKey, screenCatalogue, companyName } from "../lib/screens.js";
+import { flagsFor, isScreenKey, screenCatalogue, companyName, VALUE_PRESETS, SCREEN_KEYS } from "../lib/screens.js";
 import { knownFund } from "../lib/funds.js";
 import { screensForSic } from "../lib/sic.js";
 import { normalizeTicker } from "../lib/symbols.js";
@@ -206,4 +206,27 @@ test("share meta for a fund carries the deduped count and no HTML", () => {
   assert.match(m.title, /^VOO holds \d+ companies/); assert.ok(!/</.test(m.description));
 });
 
-console.log(`\n${passed} analyzer tests passed ✓`);
+// ── Faith-based presets and the screens they lean on ──────────────────────────
+test("every preset references screens that actually exist", () => {
+  const keys = new Set(SCREEN_KEYS);
+  for (const p of VALUE_PRESETS) {
+    assert.ok(p.screens.length, `${p.key} selects no screens`);
+    for (const k of p.screens) assert.ok(keys.has(k), `${p.key} references unknown screen ${k}`);
+  }
+});
+test("every preset states what it leaves out, not just what it covers", () => {
+  for (const p of VALUE_PRESETS) assert.ok(p.note && p.note.length > 60, `${p.key} has no substantive note`);
+});
+test("commercial banks classify as interest-based finance", () => assert.deepEqual(screensForSic(6021), ["interest_finance"]));
+test("savings institutions classify as interest-based finance", () => assert.deepEqual(screensForSic(6035), ["interest_finance"]));
+test("personal credit (6141) is NOT auto-flagged — sweeps in student lenders and BNPL", () => assert.deepEqual(screensForSic(6141), []));
+test("insurance carriers are NOT interest-based finance — excluded on a different ground", () => assert.deepEqual(screensForSic(6311), []));
+test("meat packing (2011) does not imply pork — the code has no species", () => assert.ok(!screensForSic(2011).includes("pork")));
+test("a curated pork processor carries the pork flag", () => {
+  assert.ok(flagsFor("HRL", ["pork"]).some((f) => f.key === "pork"));
+});
+test("a commercial bank carries the interest flag", () => {
+  assert.ok(flagsFor("JPM", ["interest_finance"]).some((f) => f.key === "interest_finance"));
+});
+
+console.log(`\n${passed} analyzer tests passed \u2713`);
