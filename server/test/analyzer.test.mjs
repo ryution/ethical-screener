@@ -229,4 +229,25 @@ test("a commercial bank carries the interest flag", () => {
   assert.ok(flagsFor("JPM", ["interest_finance"]).some((f) => f.key === "interest_finance"));
 });
 
+// ── The denominator counts companies, not lines in a holdings file ────────────
+test("a fund's company count never exceeds its raw holdings count", () => {
+  for (const sym of ["VOO", "DIA", "VTI"]) {
+    const r = lookupSymbol(sym);
+    if (r?.type !== "fund" || !r.totalCompanies) continue;
+    assert.ok(r.totalCompanies <= r.totalHoldings,
+      `${sym}: ${r.totalCompanies} companies > ${r.totalHoldings} holdings`);
+  }
+});
+test("the S&P 500 basket merges dual share classes, so companies < lines", () => {
+  const r = lookupSymbol("VOO");
+  assert.equal(r.type, "fund");
+  assert.ok(r.totalCompanies, "no company count on the S&P basket");
+  assert.ok(r.totalCompanies < r.totalHoldings, "GOOGL/GOOG, FOXA/FOX and NWSA/NWS should collapse");
+});
+test("the Dow basket is 30 companies — cash is not a holding", () => {
+  const r = lookupSymbol("DIA");
+  assert.equal(r.type, "fund");
+  assert.equal(r.totalCompanies, 30);
+});
+
 console.log(`\n${passed} analyzer tests passed \u2713`);

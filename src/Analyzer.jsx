@@ -715,7 +715,7 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
       </div>
       <p style={{ fontFamily: sans, fontSize: 13.5, color: L.muted, margin: "6px 0 0", lineHeight: 1.5 }}>
         Tracks {result.basis} and holds <b style={{ color: L.ink }}>{contains.length}</b>
-        {result.totalHoldings ? <> of its <b style={{ color: L.ink }}>{result.totalHoldings}</b></> : null} companies you may want to avoid:
+        {result.totalCompanies ? <> of its <b style={{ color: L.ink }}>{result.totalCompanies}</b></> : null} companies you may want to avoid:
       </p>
       {result.asOf && (
         <p style={{ fontFamily: sans, fontSize: 11.5, color: L.faint, margin: "4px 0 0" }}>

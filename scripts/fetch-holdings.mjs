@@ -96,6 +96,16 @@ function parseXlsx(buf) {
 // Decode the entities the shared strings may carry (SPDR uses &amp; in the "as of" block).
 const decode = (s) => String(s).replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&#(\d+);/g, (_, n) => String.fromCharCode(+n));
 
+// "ALPHABET INC CL A" and "ALPHABET INC CL C" are one company holding two listed share
+// classes. Dropping the trailing class marker is what makes them collide, which is how
+// the total comes to mean companies rather than lines in a spreadsheet.
+const companyKey = (name) => String(name ?? "")
+  .toUpperCase()
+  .replace(/\s+/g, " ")
+  .trim()
+  .replace(/\s+(?:CL|CLASS)\s+[A-Z0-9]$/, "")
+  .trim();
+
 function extract(rows) {
   // Header row is the one that names the "Ticker" column; data follows it.
   let hi = -1, tcol = -1;
@@ -104,14 +114,32 @@ function extract(rows) {
     if (c >= 0) { hi = i; tcol = c; break; }
   }
   if (hi < 0) throw new Error("no 'Ticker' header found — holdings file format changed");
-  const tickers = rows.slice(hi + 1).map((r) => r[tcol]).filter((t) => t && /^[A-Z0-9.-]{1,6}$/.test(t));
+  // An index holds share classes, not companies: SPY lists GOOGL and GOOG as separate
+  // rows. The UI merges those into one company on the flagged side, so the total has to
+  // be counted the same way or the sentence compares companies against line items and
+  // overstates the denominator. Counting distinct names is exactly what the UI does.
+  const ncol = rows[hi].findIndex((c) => /^name$/i.test(String(c ?? "").trim()));
+  // A holdings file carries non-equity lines too: DIA ends with ticker "-" named
+  // "US DOLLAR", which is the fund's cash, not a company. Requiring a letter in the
+  // ticker drops those without hardcoding what any issuer happens to call them.
+  const dataRows = rows.slice(hi + 1)
+    .filter((r) => r[tcol] && /^[A-Z0-9.-]{1,6}$/.test(r[tcol]) && /[A-Z]/.test(r[tcol]));
+  const tickers = dataRows.map((r) => r[tcol]);
+  // The issuer writes each class as its own name ("ALPHABET INC CL A" / "CL C"), so the
+  // raw names never collide. Strip the trailing class marker and they do.
+  const names = ncol >= 0 ? dataRows.map((r) => String(r[ncol] ?? "").trim()) : [];
+  // Only trust the company count when every row actually carries a name; otherwise leave
+  // it null and let the UI fall back rather than publish a number built on gaps.
+  const totalCompanies = names.length === dataRows.length && names.every(Boolean)
+    ? new Set(names.map(companyKey)).size
+    : null;
   // "As of DD-Mon-YYYY" appears in the file's header block.
   let asOf = null;
   outer: for (const r of rows) for (const cell of r) {
     const m = decode(cell).match(/As of (\d{1,2}-[A-Za-z]{3}-\d{4})/);
     if (m) { asOf = m[1]; break outer; }
   }
-  return { tickers, asOf };
+  return { tickers, totalCompanies, asOf };
 }
 
 async function main() {
@@ -121,7 +149,7 @@ async function main() {
     process.stdout.write(`Fetching ${src.fund} (${basisKey})… `);
     try {
       const buf = await fetchBuffer(src.url);
-      const { tickers, asOf } = extract(parseXlsx(buf));
+      const { tickers, totalCompanies, asOf } = extract(parseXlsx(buf));
       // Keep the screened names, deduped, in the file's own order (index weight order).
       const seen = new Set();
       const screened = [];
@@ -130,8 +158,8 @@ async function main() {
         if (form && !seen.has(form)) { seen.add(form); screened.push(form); }
       }
       baskets[basisKey] = screened;
-      sources[basisKey] = { fund: src.fund, label: src.label, asOf, totalHoldings: tickers.length, screened: screened.length };
-      console.log(`${tickers.length} holdings, ${screened.length} screened (as of ${asOf || "n/a"})`);
+      sources[basisKey] = { fund: src.fund, label: src.label, asOf, totalHoldings: tickers.length, totalCompanies, screened: screened.length };
+      console.log(`${tickers.length} holdings${totalCompanies ? ` / ${totalCompanies} companies` : ""}, ${screened.length} screened (as of ${asOf || "n/a"})`);
     } catch (e) {
       console.log(`FAILED: ${e.message} — keeping curated fallback for ${basisKey}`);
       sources[basisKey] = { fund: src.fund, label: src.label, error: e.message };
