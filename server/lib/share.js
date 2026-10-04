@@ -45,12 +45,12 @@ export function shareMeta(symbol) {
     for (const c of contains) for (const f of c.flags) byFlag.set(f.label, (byFlag.get(f.label) || 0) + 1);
     const groups = [...byFlag.entries()].sort((a, b) => b[1] - a[1]);
     const top = groups.slice(0, 4).map(([l, n]) => `${n} ${l}`).join(", ");
-    const of = r.totalHoldings ? ` of ${r.totalHoldings}` : "";
+    const of = r.totalCompanies ? ` of ${r.totalCompanies}` : "";
     const title = contains.length
       ? `${sym} holds ${contains.length} companies you may want to avoid · PlainStreet`
       : `${sym}: no flagged holdings among the names we track · PlainStreet`;
     const description = contains.length
-      ? `${r.name} tracks ${r.basis}. ${contains.length}${of} holdings are flagged: ${top}. Every flag has a one-sentence reason and a source.${r.asOf ? ` Holdings as of ${r.asOf}.` : ""}`
+      ? `${r.name} tracks ${r.basis}. ${contains.length}${of} companies are flagged: ${top}. Every flag has a one-sentence reason and a source.${r.asOf ? ` Holdings as of ${r.asOf}.` : ""}`
       : `${r.name} tracks ${r.basis}. None of its holdings are on the lists we track, which means "not one of the names we track," never "audited clean."`;
     return { title, description, ogImage: `/og/${sym}.png`, groups, contains, r };
   }

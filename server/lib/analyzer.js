@@ -94,6 +94,9 @@ export function lookupSymbol(symbol) {
     return {
       symbol: sym, type: "fund", name: fund.name, basis: fund.basis, contains,
       totalHoldings: live ? src.totalHoldings : null,
+      // Distinct companies, which is what the UI compares its flagged count against.
+      // Null when the source file gave us no names to dedupe by.
+      totalCompanies: live ? (src.totalCompanies ?? null) : null,
       asOf: live ? src.asOf : null,
       holdingsSource: live ? `${src.label} (${src.fund}) daily holdings` : "curated constituent list",
       marketConductShare: live ? marketConductShare() : null,
