@@ -214,8 +214,8 @@ export const SCREENS = [
       TEVA: "Teva Pharmaceutical — opioid manufacturer; national opioid settlement.",
       MNK: "Mallinckrodt — opioid manufacturer; opioid-driven bankruptcy settlements.",
       MCK: "McKesson — opioid distributor; national opioid settlement.",
-      CAH: "Cardinal Health — opioid distributor; national opioid settlement.",
-      COR: "Cencora (AmerisourceBergen) — opioid distributor; national opioid settlement.",
+      CAH: "Cardinal Health is one of the three largest U.S. drug distributors. In February 2022 it joined the national distributors' opioid settlement, agreeing to pay ~$6.0B over 18 years alongside McKesson and AmerisourceBergen; the three together agreed up to $21B. Cardinal Health disclosed the agreement in an 8-K. It did not admit wrongdoing.",
+      COR: "Cencora (formerly AmerisourceBergen) is one of the three largest U.S. drug distributors. In February 2022 it joined the national distributors' opioid settlement, agreeing to pay ~$6.1B over 18 years alongside McKesson and Cardinal Health; the three together agreed up to $21B. It did not admit wrongdoing.",
     },
   },
   {
