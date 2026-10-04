@@ -17,6 +17,10 @@
 // employer.
 
 export const EMPLOYER_ALIASES = {
+  // Meatpackers file under the brand on the plant, not the legal entity.
+  TSN: ["Tyson Foods", "Tyson Fresh Meats", "Tyson"],
+  HRL: ["Hormel Foods", "Hormel"],
+  SFD: ["Smithfield Foods", "Smithfield"],
   // 1,139 courier and express delivery sites (NAICS 4921) across 52 states, 2025 ITA.
   UPS: ["UPS"],
   // 2,300 discount department stores (NAICS 4521) across 51 states, 2025 ITA.
@@ -46,6 +50,9 @@ export const aliasPairs = () =>
 // name could belong to a different public company it is deliberately NOT used: "Target"
 // alone would reach Target Hospitality Corp, so Target is matched on its site prefixes.
 export const FACILITY_ALIASES = {
+  TSN:  ["Tyson"],
+  HRL:  ["Hormel"],
+  SFD:  ["Smithfield"],
   WMT:  ["Walmart", "Wal-Mart", "Wal Mart"],          // SUPERCENTER, NEIGHBORHOOD MARKET, DISTRIBUTION, FUEL
   COST: ["Costco"],                                    // WHOLESALE, LOGISTICS, GASOLINE, DEPOT, BUSINESS
   KR:   ["Kroger", "The Kroger"],                      // CO, STORE, FUEL, numbered sites

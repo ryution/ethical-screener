@@ -198,7 +198,7 @@ export const SCREENS = [
     tickers: {
       WRLD: "World Acceptance — high-interest consumer installment loans.",
       EZPW: "EZCORP — pawn loans.",
-      FCFS: "FirstCash — pawn and consumer finance.",
+      FCFS: "FirstCash operates over 1,000 retail pawnshops making short-term pawn loans. The CFPB sued it in November 2021 alleging that since at least October 2016 it charged borrowers covered by the Military Lending Act annual rates above that law's 36% cap, required arbitration, and omitted required disclosures. FirstCash settled in July 2025: $5M in redress, a $4M penalty, and a new pawn product for servicemembers and their families.",
       ENVA: "Enova — online subprime consumer lending.",
       CURO: "CURO Group — payday and title loans.",
       OPRT: "Oportun — subprime consumer lending.",
