@@ -10,10 +10,14 @@
 // whether the firm acted voluntarily or FDA compelled it. We add no judgement of our own.
 //
 // The measure is the SHARE that FDA classed as life-threatening, against the share across
-// every firm filing into the same dataset. Count is useless here and actively misleading:
-// Zimmer Biomet has 1,605 device recalls of which 0.3% are Class I; Medtronic has 1,269 of
-// which 33.2% are. Ranked by count Zimmer looks worse. Ranked by the thing that can kill
-// somebody, it is the other way round by two orders of magnitude.
+// every firm filing into the same dataset.
+//
+// COUNT EVENTS, NOT RECORDS. openFDA files one row per affected model or lot, so a single
+// recall fans out into dozens: Medtronic's 2023 defibrillator recall is one issue and 123
+// rows. Counting rows put Medtronic at 33.2% Class I against a true 11.7%, and understated
+// Zimmer Biomet at 0.3% against a true 1.2% — the error runs in both directions, so it
+// distorted the ranking between them as well as the levels. Zimmer files more ROWS than
+// Medtronic (1,605 to 1,269) and fewer actual RECALLS (322 to 419).
 
 import { readFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -55,7 +59,10 @@ export function recallProfile(ticker) {
     const share = d.recalls ? d.classI / d.recalls : null;
     out.push({
       kind, label: LABEL[kind],
+      // `recalls` is distinct recall EVENTS; `records` is openFDA's one-row-per-model
+      // inventory. Keeping both visible is what stops the wrong one being used again.
       recalls: d.recalls, classI: d.classI, mandated: d.mandated || 0,
+      records: d.records ?? null, classIRecords: d.classIRecords ?? null,
       share: share == null ? null : Number(share.toFixed(4)),
       baseline,
       vsBaseline: (baseline && share != null) ? Number((share / baseline).toFixed(2)) : null,

@@ -1,23 +1,26 @@
 {
-  "lastUpdated": "2026-10-03T17:06:49.172Z",
+  "lastUpdated": "2026-10-04T19:41:33.096Z",
   "source": "openFDA — drug enforcement reports and device recalls (US Food and Drug Administration)",
   "method": "Share of a firm's recalls that FDA classed as Class I (reasonable probability of serious adverse health consequences or death), against the same share across every firm in the dataset. Severity and the voluntary/mandated distinction are FDA's, not ours.",
-  "caveat": "Recall counts scale with how much a firm ships, so the count is context and the Class I share is the measure. attributionRate is the fraction of matched records belonging to firms whose names the company itself filed; below ~0.95 the class counts reach outside the company and should not be graded.",
+  "caveat": "Counted by distinct recall EVENT, never by record: openFDA files one record per affected model or lot, so one recall fans out into dozens and counting records put Medtronic at 33% Class I against a true 11.7%. attributionRate is the fraction of matched records belonging to firms whose names the company itself filed; below ~0.95 the class counts reach outside the company and should not be graded.",
   "baselines": {
     "drug": {
-      "total": 17988,
-      "classI": 1750,
-      "classIShare": 0.0973
+      "total": 4693,
+      "classI": 657,
+      "classIShare": 0.14,
+      "capped": false
     },
     "device": {
-      "total": 40057,
-      "classI": 3655,
-      "classIShare": 0.0912
+      "total": 15029,
+      "classI": 989,
+      "classIShare": 0.0658,
+      "capped": false
     },
     "food": {
-      "total": 29463,
-      "classI": 12965,
-      "classIShare": 0.44
+      "total": 7891,
+      "classI": 3248,
+      "classIShare": 0.4116,
+      "capped": false
     }
   },
   "count": 12,
@@ -25,11 +28,12 @@
     "TEVA": {
       "queriedAs": "TEVA",
       "drug": {
-        "recalls": 294,
+        "recalls": 169,
         "classI": 7,
-        "classII": 217,
-        "classIII": 70,
+        "records": 294,
+        "classIRecords": 7,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 7,
         "attributionRate": 1,
         "firmsRejected": 0
@@ -37,9 +41,10 @@
       "device": {
         "recalls": 0,
         "classI": 0,
-        "classII": 0,
-        "classIII": 0,
+        "records": 0,
+        "classIRecords": 0,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 0,
         "attributionRate": null,
         "firmsRejected": 0
@@ -47,9 +52,10 @@
       "food": {
         "recalls": 0,
         "classI": 0,
-        "classII": 0,
-        "classIII": 0,
+        "records": 0,
+        "classIRecords": 0,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 0,
         "attributionRate": null,
         "firmsRejected": 0
@@ -58,31 +64,34 @@
     "JNJ": {
       "queriedAs": "JOHNSON",
       "drug": {
-        "recalls": 34,
-        "classI": 2,
-        "classII": 30,
-        "classIII": 2,
+        "recalls": 9,
+        "classI": 1,
+        "records": 34,
+        "classIRecords": 2,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 4,
         "attributionRate": 0.941,
         "firmsRejected": 1
       },
       "device": {
-        "recalls": 87,
+        "recalls": 40,
         "classI": 0,
-        "classII": 87,
-        "classIII": 0,
+        "records": 87,
+        "classIRecords": 0,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 5,
         "attributionRate": 0.414,
         "firmsRejected": 1
       },
       "food": {
-        "recalls": 6,
+        "recalls": 5,
         "classI": 2,
-        "classII": 4,
-        "classIII": 0,
+        "records": 6,
+        "classIRecords": 2,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 2,
         "attributionRate": 0.5,
         "firmsRejected": 3
@@ -91,21 +100,23 @@
     "ABBV": {
       "queriedAs": "AbbVie",
       "drug": {
-        "recalls": 16,
+        "recalls": 10,
         "classI": 0,
-        "classII": 9,
-        "classIII": 7,
+        "records": 16,
+        "classIRecords": 0,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 2,
         "attributionRate": 1,
         "firmsRejected": 0
       },
       "device": {
-        "recalls": 4,
+        "recalls": 2,
         "classI": 0,
-        "classII": 4,
-        "classIII": 0,
+        "records": 4,
+        "classIRecords": 0,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 1,
         "attributionRate": 1,
         "firmsRejected": 0
@@ -113,9 +124,10 @@
       "food": {
         "recalls": 0,
         "classI": 0,
-        "classII": 0,
-        "classIII": 0,
+        "records": 0,
+        "classIRecords": 0,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 0,
         "attributionRate": null,
         "firmsRejected": 0
@@ -124,21 +136,23 @@
     "MCK": {
       "queriedAs": "MCKESSON",
       "drug": {
-        "recalls": 188,
+        "recalls": 31,
         "classI": 1,
-        "classII": 171,
-        "classIII": 16,
+        "records": 188,
+        "classIRecords": 1,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 9,
         "attributionRate": 0.995,
         "firmsRejected": 1
       },
       "device": {
-        "recalls": 136,
+        "recalls": 25,
         "classI": 1,
-        "classII": 112,
-        "classIII": 23,
+        "records": 136,
+        "classIRecords": 1,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 9,
         "attributionRate": 1,
         "firmsRejected": 0
@@ -146,9 +160,10 @@
       "food": {
         "recalls": 0,
         "classI": 0,
-        "classII": 0,
-        "classIII": 0,
+        "records": 0,
+        "classIRecords": 0,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 0,
         "attributionRate": null,
         "firmsRejected": 0
@@ -157,21 +172,23 @@
     "CAH": {
       "queriedAs": "CARDINAL",
       "drug": {
-        "recalls": 258,
-        "classI": 8,
-        "classII": 248,
-        "classIII": 2,
+        "recalls": 11,
+        "classI": 3,
+        "records": 258,
+        "classIRecords": 8,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 5,
         "attributionRate": 1,
         "firmsRejected": 0
       },
       "device": {
-        "recalls": 413,
-        "classI": 48,
-        "classII": 365,
-        "classIII": 0,
+        "recalls": 77,
+        "classI": 7,
+        "records": 413,
+        "classIRecords": 48,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 5,
         "attributionRate": 0.995,
         "firmsRejected": 1
@@ -179,9 +196,10 @@
       "food": {
         "recalls": 1,
         "classI": 0,
-        "classII": 1,
-        "classIII": 0,
+        "records": 1,
+        "classIRecords": 0,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 1,
         "attributionRate": 1,
         "firmsRejected": 0
@@ -190,11 +208,12 @@
     "VTRS": {
       "queriedAs": "Viatris",
       "drug": {
-        "recalls": 25,
+        "recalls": 13,
         "classI": 1,
-        "classII": 22,
-        "classIII": 2,
+        "records": 25,
+        "classIRecords": 1,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 3,
         "attributionRate": 1,
         "firmsRejected": 0
@@ -202,9 +221,10 @@
       "device": {
         "recalls": 0,
         "classI": 0,
-        "classII": 0,
-        "classIII": 0,
+        "records": 0,
+        "classIRecords": 0,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 0,
         "attributionRate": null,
         "firmsRejected": 0
@@ -212,9 +232,10 @@
       "food": {
         "recalls": 0,
         "classI": 0,
-        "classII": 0,
-        "classIII": 0,
+        "records": 0,
+        "classIRecords": 0,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 0,
         "attributionRate": null,
         "firmsRejected": 0
@@ -223,11 +244,12 @@
     "PRGO": {
       "queriedAs": "PERRIGO",
       "drug": {
-        "recalls": 136,
+        "recalls": 23,
         "classI": 0,
-        "classII": 127,
-        "classIII": 9,
+        "records": 136,
+        "classIRecords": 0,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 6,
         "attributionRate": 0.949,
         "firmsRejected": 1
@@ -235,9 +257,10 @@
       "device": {
         "recalls": 1,
         "classI": 0,
-        "classII": 1,
-        "classIII": 0,
+        "records": 1,
+        "classIRecords": 0,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 1,
         "attributionRate": 1,
         "firmsRejected": 0
@@ -245,9 +268,10 @@
       "food": {
         "recalls": 4,
         "classI": 1,
-        "classII": 3,
-        "classIII": 0,
+        "records": 4,
+        "classIRecords": 1,
         "mandated": 1,
+        "truncated": false,
         "firmsMatched": 3,
         "attributionRate": 1,
         "firmsRejected": 0
@@ -258,29 +282,32 @@
       "drug": {
         "recalls": 0,
         "classI": 0,
-        "classII": 0,
-        "classIII": 0,
+        "records": 0,
+        "classIRecords": 0,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 0,
         "attributionRate": null,
         "firmsRejected": 0
       },
       "device": {
-        "recalls": 693,
-        "classI": 142,
-        "classII": 545,
-        "classIII": 6,
+        "recalls": 187,
+        "classI": 24,
+        "records": 693,
+        "classIRecords": 142,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 6,
         "attributionRate": 1,
         "firmsRejected": 0
       },
       "food": {
-        "recalls": 18,
-        "classI": 17,
-        "classII": 1,
-        "classIII": 0,
+        "recalls": 5,
+        "classI": 4,
+        "records": 18,
+        "classIRecords": 17,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 2,
         "attributionRate": 0.444,
         "firmsRejected": 2
@@ -291,19 +318,21 @@
       "drug": {
         "recalls": 0,
         "classI": 0,
-        "classII": 0,
-        "classIII": 0,
+        "records": 0,
+        "classIRecords": 0,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 0,
         "attributionRate": null,
         "firmsRejected": 0
       },
       "device": {
-        "recalls": 1605,
-        "classI": 5,
-        "classII": 1597,
-        "classIII": 3,
+        "recalls": 322,
+        "classI": 4,
+        "records": 1605,
+        "classIRecords": 5,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 15,
         "attributionRate": 0.996,
         "firmsRejected": 1
@@ -311,9 +340,10 @@
       "food": {
         "recalls": 0,
         "classI": 0,
-        "classII": 0,
-        "classIII": 0,
+        "records": 0,
+        "classIRecords": 0,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 0,
         "attributionRate": null,
         "firmsRejected": 0
@@ -324,19 +354,21 @@
       "drug": {
         "recalls": 0,
         "classI": 0,
-        "classII": 0,
-        "classIII": 0,
+        "records": 0,
+        "classIRecords": 0,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 0,
         "attributionRate": null,
         "firmsRejected": 0
       },
       "device": {
-        "recalls": 1269,
-        "classI": 421,
-        "classII": 841,
-        "classIII": 7,
+        "recalls": 419,
+        "classI": 49,
+        "records": 1269,
+        "classIRecords": 421,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 33,
         "attributionRate": 0.957,
         "firmsRejected": 1
@@ -344,9 +376,10 @@
       "food": {
         "recalls": 0,
         "classI": 0,
-        "classII": 0,
-        "classIII": 0,
+        "records": 0,
+        "classIRecords": 0,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 0,
         "attributionRate": null,
         "firmsRejected": 0
@@ -355,11 +388,12 @@
     "KR": {
       "queriedAs": "KROGER",
       "drug": {
-        "recalls": 67,
+        "recalls": 1,
         "classI": 0,
-        "classII": 67,
-        "classIII": 0,
+        "records": 67,
+        "classIRecords": 0,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 1,
         "attributionRate": 1,
         "firmsRejected": 0
@@ -367,19 +401,21 @@
       "device": {
         "recalls": 0,
         "classI": 0,
-        "classII": 0,
-        "classIII": 0,
+        "records": 0,
+        "classIRecords": 0,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 0,
         "attributionRate": null,
         "firmsRejected": 0
       },
       "food": {
-        "recalls": 104,
-        "classI": 63,
-        "classII": 38,
-        "classIII": 3,
+        "recalls": 42,
+        "classI": 31,
+        "records": 104,
+        "classIRecords": 63,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 2,
         "attributionRate": 0.115,
         "firmsRejected": 2
@@ -390,9 +426,10 @@
       "drug": {
         "recalls": 0,
         "classI": 0,
-        "classII": 0,
-        "classIII": 0,
+        "records": 0,
+        "classIRecords": 0,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 0,
         "attributionRate": null,
         "firmsRejected": 0
@@ -400,19 +437,21 @@
       "device": {
         "recalls": 0,
         "classI": 0,
-        "classII": 0,
-        "classIII": 0,
+        "records": 0,
+        "classIRecords": 0,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 0,
         "attributionRate": null,
         "firmsRejected": 0
       },
       "food": {
-        "recalls": 6,
+        "recalls": 5,
         "classI": 3,
-        "classII": 3,
-        "classIII": 0,
+        "records": 6,
+        "classIRecords": 3,
         "mandated": 0,
+        "truncated": false,
         "firmsMatched": 2,
         "attributionRate": 1,
         "firmsRejected": 0
