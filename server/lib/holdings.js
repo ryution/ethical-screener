@@ -23,9 +23,15 @@ try {
 } catch { /* no live holdings yet — funds.js falls back to its curated baskets */ }
 
 /** Live screened constituents for a basis key (e.g. "sp500"), or null if we don't have them. */
+// An empty basket counts when the download itself worked: a sector fund can hold 25
+// companies and none of them be on our lists. Without that check the fund vanished from
+// the catalogue and showed up as an unknown symbol.
 export function basketFor(basisKey) {
   const b = _data.baskets?.[basisKey];
-  return Array.isArray(b) && b.length ? b : null;
+  if (!Array.isArray(b)) return null;
+  if (b.length) return b;
+  const src = _data.sources?.[basisKey];
+  return src && !src.error && src.totalHoldings > 0 ? b : null;
 }
 
 /** Freshness metadata for the UI ("holdings as of …"), per basis. */

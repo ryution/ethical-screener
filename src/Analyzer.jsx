@@ -775,8 +775,19 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
           <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: A.lavInk, background: A.lav, borderRadius: 999, padding: "3px 10px" }}>FUND</span>
         </div>
         <p style={{ fontFamily: sans, fontSize: 13.5, color: L.muted, margin: "8px 0 0", lineHeight: 1.5 }}>
-          No holdings in this fund match your selected categories. Turn on more categories above to widen the check.
+          {(() => {
+            // A fund we downloaded with nothing flagged. Say how many companies were checked,
+            // and that zero flagged is not the same as clean.
+            const n = result.totalCompanies || result.totalHoldings;
+            const cats = selectedCount === 1 ? "1 category" : `${selectedCount} categories`;
+            return `None of ${n ? `the ${n} companies in ${result.symbol}` : `the companies in ${result.symbol}`} are on our lists for the ${cats} you picked. That doesn't mean the fund is clean: companies we have no data on aren't counted.`;
+          })()}
         </p>
+        {result.asOf && (
+          <p style={{ fontFamily: sans, fontSize: 11.5, color: L.faint, margin: "6px 0 0" }}>
+            Holdings from {result.holdingsSource}, as of {result.asOf}.
+          </p>
+        )}
         {cta}
       </div>
     );

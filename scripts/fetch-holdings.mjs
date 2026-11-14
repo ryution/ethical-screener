@@ -49,6 +49,39 @@ const SOURCES = {
   dow30:        { fund: "DIA",  label: "SPDR Dow Jones Industrial Average ETF",              url: ssga("dia") },
   midcap:       { fund: "SPMD", label: "SPDR Portfolio S&P 400 Mid Cap ETF",                 url: ssga("spmd") },
   smallcap:     { fund: "SPSM", label: "SPDR Portfolio S&P 600 Small Cap ETF",               url: ssga("spsm") },
+  // Sector, industry and dividend SPDRs. Each tracks its own index, so each is its own
+  // basis with its own daily file.
+  xlk: { fund: "XLK", label: "Technology Select Sector SPDR", url: ssga("xlk") },
+  xlf: { fund: "XLF", label: "Financial Select Sector SPDR", url: ssga("xlf") },
+  xle: { fund: "XLE", label: "Energy Select Sector SPDR", url: ssga("xle") },
+  xly: { fund: "XLY", label: "Consumer Discretionary Select Sector SPDR", url: ssga("xly") },
+  xlp: { fund: "XLP", label: "Consumer Staples Select Sector SPDR", url: ssga("xlp") },
+  xli: { fund: "XLI", label: "Industrial Select Sector SPDR", url: ssga("xli") },
+  xlb: { fund: "XLB", label: "Materials Select Sector SPDR", url: ssga("xlb") },
+  xlu: { fund: "XLU", label: "Utilities Select Sector SPDR", url: ssga("xlu") },
+  xlre: { fund: "XLRE", label: "Real Estate Select Sector SPDR", url: ssga("xlre") },
+  xlc: { fund: "XLC", label: "Communication Services Select Sector SPDR", url: ssga("xlc") },
+  xbi: { fund: "XBI", label: "SPDR S&P Biotech ETF", url: ssga("xbi") },
+  xph: { fund: "XPH", label: "SPDR S&P Pharmaceuticals ETF", url: ssga("xph") },
+  xhe: { fund: "XHE", label: "SPDR S&P Health Care Equipment ETF", url: ssga("xhe") },
+  xhs: { fund: "XHS", label: "SPDR S&P Health Care Services ETF", url: ssga("xhs") },
+  xop: { fund: "XOP", label: "SPDR S&P Oil & Gas Exploration & Production ETF", url: ssga("xop") },
+  xes: { fund: "XES", label: "SPDR S&P Oil & Gas Equipment & Services ETF", url: ssga("xes") },
+  xme: { fund: "XME", label: "SPDR S&P Metals & Mining ETF", url: ssga("xme") },
+  xrt: { fund: "XRT", label: "SPDR S&P Retail ETF", url: ssga("xrt") },
+  xhb: { fund: "XHB", label: "SPDR S&P Homebuilders ETF", url: ssga("xhb") },
+  kre: { fund: "KRE", label: "SPDR S&P Regional Banking ETF", url: ssga("kre") },
+  kbe: { fund: "KBE", label: "SPDR S&P Bank ETF", url: ssga("kbe") },
+  kie: { fund: "KIE", label: "SPDR S&P Insurance ETF", url: ssga("kie") },
+  kce: { fund: "KCE", label: "SPDR S&P Capital Markets ETF", url: ssga("kce") },
+  xar: { fund: "XAR", label: "SPDR S&P Aerospace & Defense ETF", url: ssga("xar") },
+  xsd: { fund: "XSD", label: "SPDR S&P Semiconductor ETF", url: ssga("xsd") },
+  xsw: { fund: "XSW", label: "SPDR S&P Software & Services ETF", url: ssga("xsw") },
+  xtl: { fund: "XTL", label: "SPDR S&P Telecom ETF", url: ssga("xtl") },
+  xtn: { fund: "XTN", label: "SPDR S&P Transportation ETF", url: ssga("xtn") },
+  xntk: { fund: "XNTK", label: "SPDR NYSE Technology ETF", url: ssga("xntk") },
+  sdy: { fund: "SDY", label: "SPDR S&P Dividend ETF", url: ssga("sdy") },
+  spyd: { fund: "SPYD", label: "SPDR Portfolio S&P 500 High Dividend ETF", url: ssga("spyd") },
 };
 
 // A holding counts as screened if EITHER layer flags it. Class shares differ by dot vs
@@ -150,6 +183,8 @@ async function main() {
     try {
       const buf = await fetchBuffer(src.url);
       const { tickers, totalCompanies, asOf } = extract(parseXlsx(buf));
+      // A file with no holdings means the fund closed or the file moved. Keep the old data.
+      if (!tickers.length) throw new Error(`no holdings in the file (as of ${asOf || "unknown"})`);
       // Keep the screened names, deduped, in the file's own order (index weight order).
       const seen = new Set();
       const screened = [];
