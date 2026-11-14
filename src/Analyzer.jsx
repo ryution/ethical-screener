@@ -13,10 +13,11 @@
 // active states, always with deep-navy text on top when used as a fill), and lime is
 // reserved for positive/live indicators. Coral is reserved strictly for flags.
 
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { displayName, reasonParts } from "./format.js";
 import { gradeFor } from "./grade.js";
 import { conductGradeFor, CONDUCT_CATEGORIES } from "./conductGrade.js";
+import { compareFunds } from "./compare.js";
 
 // ── Palette ────────────────────────────────────────────────
 // Deep navy throughout, no light mode. The page is the darkest ground; sections separate
@@ -187,10 +188,17 @@ const initialOnly = () => {
   try { const v = URL_AT_LOAD.get("only"); return v ? v.split(",").filter(Boolean) : null; }
   catch { return null; }
 };
+// "?symbol=VOO&vs=QQQ" opens straight into the side-by-side, so a comparison is as
+// shareable as a single fund, which is the form most of these arrive in an argument.
+const initialVs = () => {
+  try { return (URL_AT_LOAD.get("vs") || "").toUpperCase(); }
+  catch { return ""; }
+};
 // Keep the address bar in sync with what's on screen, so copying it shares this exact view.
-function syncUrl(symbol, selected, screens) {
+function syncUrl(symbol, selected, screens, vs = "") {
   try {
     let qs = `?symbol=${encodeURIComponent(symbol)}`;
+    if (vs) qs += `&vs=${encodeURIComponent(vs)}`;
     // Keys are [a-z_] so the comma can stay readable instead of becoming %2C.
     if (selected && screens.length && selected.size < screens.length) qs += `&only=${[...selected].join(",")}`;
     window.history.replaceState(null, "", qs);
@@ -254,6 +262,16 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
   const [screens, setScreens] = useState([]);
   const [selected, setSelected] = useState(null); // Set of screen keys; null until loaded
   const [presets, setPresets] = useState([]);
+  // ── the second column ──
+  // `vsInput` is what's in the box; `vs` is what's actually being compared, so a half-typed
+  // ticker never changes the view. The raw lookup payloads are kept, not a finished
+  // comparison: the model is rebuilt on every render from the current category selection,
+  // which is what makes toggling a category re-rank without another request.
+  const [vsInput, setVsInput] = useState(initialVs);
+  const [vs, setVs] = useState("");
+  const [cmp, setCmp] = useState(null);
+  const [cmpBusy, setCmpBusy] = useState(false);
+  const [cmpErr, setCmpErr] = useState("");
   useEffect(() => {
     api("/api/screens").then((d) => {
       const list = (d.screens || []).slice().sort((a, b) => a.label.localeCompare(b.label));
@@ -270,7 +288,12 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
   const allOn = selected && screens.length && selected.size === screens.length;
   const setAll = (on) => setSelected(on ? new Set(screens.map((s) => s.key)) : new Set());
   // Filter changes are reflected in the URL (after the first load has settled).
-  useEffect(() => { if (result && selected) syncUrl(result.symbol, selected, screens); /* eslint-disable-next-line */ }, [selected]);
+  // The filter, the fund and the second fund all belong in the address bar, and on a cold
+  // load with "?vs=" they arrive in any order: the categories with /api/screens, the
+  // result and the comparison with their own requests. Watching all three means whichever
+  // lands last rewrites the URL with every part intact, instead of dropping what an
+  // earlier write had already put there.
+  useEffect(() => { if (result && selected) syncUrl(result.symbol, selected, screens, vs); /* eslint-disable-next-line */ }, [selected, vs, result]);
 
   // ── search autocomplete ──
   const [sugg, setSugg] = useState([]);
@@ -302,6 +325,9 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
     const sym = (symbol ?? q).trim().toUpperCase();
     if (!sym) return;
     setBusy(true); setErr(""); setResult(null);
+    // A new base fund makes the old second column meaningless, so it goes rather than
+    // sitting there describing a comparison nobody asked for.
+    setCmp(null); setVs(""); setCmpErr("");
     // Reflect the search in the URL so a result is shareable / bookmarkable.
     syncUrl(sym, selected, screens);
     try {
@@ -309,12 +335,38 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
       setResult(r);
       document.title = pageTitle(r);
       ping("lookup");
+      return r;
     }
     catch (e) { setErr(e.message); }
     finally { setBusy(false); }
   };
+
+  const runCompare = async (symbol, baseSymbol) => {
+    const other = (symbol ?? vsInput).trim().toUpperCase();
+    const base = (baseSymbol || result?.symbol || "").toUpperCase();
+    if (!other || !base) return;
+    if (other === base) { setCmpErr(`${base} is already the fund on this page. Pick a different one.`); return; }
+    setCmpBusy(true); setCmpErr(""); setCmp(null);
+    try {
+      const d = await api(`/api/compare?symbols=${encodeURIComponent(base)},${encodeURIComponent(other)}`);
+      setCmp(d.results || []);
+      setVs(other);
+      syncUrl(base, selected, screens, other);
+      ping("compare");
+    }
+    catch (e) { setCmpErr(e.message); }
+    finally { setCmpBusy(false); }
+  };
+  const clearCompare = () => { setCmp(null); setVs(""); setVsInput(""); setCmpErr(""); syncUrl(result?.symbol || initialSymbol(), selected, screens); };
+
   // Auto-load the initial symbol (from the URL, or VOO) so a visitor sees the surprise immediately.
-  useEffect(() => { captureRef(); ping("landing_view"); run(initialSymbol()); /* eslint-disable-next-line */ }, []);
+  // A "?vs=" in the link opens the comparison with it, in one go.
+  useEffect(() => {
+    captureRef(); ping("landing_view");
+    const want = initialVs();
+    run(initialSymbol()).then((r) => { if (want && r?.type === "fund" && r.analyzable !== false) runCompare(want, r.symbol); });
+    /* eslint-disable-next-line */
+  }, []);
 
   // VOO is the one everybody owns; VTI the whole market; EFIV the ESG fund people assume
   // is clean; QQQ the contrast (almost nothing flagged).
@@ -399,6 +451,19 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
 
       {err && <DarkErr>{err}</DarkErr>}
       {result && <HeroResult result={filterBySelected(result, selected)} onStart={onStart} snaptrade={snaptrade} selectedCount={selected ? selected.size : 0} />}
+      {/* Only a fund we can see inside has a second column worth offering. The model is
+          rebuilt here, on every render, from the categories currently selected. */}
+      {result && result.type === "fund" && result.analyzable !== false && (
+        <div style={{ marginTop: 14, padding: "16px 20px", background: P.card, border: `1px solid ${L.line}`, borderRadius: 14 }}>
+          <CompareInvite symbol={result.symbol} value={vsInput} onChange={setVsInput}
+            onRun={(x) => runCompare(x)} busy={cmpBusy} err={cmpErr} />
+        </div>
+      )}
+      {cmp && result && (
+        <CompareModal title={`${result.symbol} vs ${vs}`} selectedCount={selected ? selected.size : 0} onClose={clearCompare}>
+          <CompareView model={compareFunds(cmp, selected || new Set())} />
+        </CompareModal>
+      )}
       {meta && meta.count > 0 && (
         <p style={{ fontFamily: sans, fontSize: 12, color: D.faint, margin: "14px 0 0", textAlign: "center" }}>
           Tracking {meta.count.toLocaleString("en-US")} U.S.-listed companies across {screens.length || "20"} categories
@@ -759,6 +824,268 @@ const groupByFlag = (contains) => {
   return groups.sort((a, b) => a.label.localeCompare(b.label));
 };
 
+
+// ── Compare two funds ─────────────────────────────────────────────────────────
+// A fund page can tell you VOO holds Exxon. The question people actually have is "VOO or
+// QQQ?", and that one needs both baskets on a single screen. Everything here is computed
+// in the browser from the same /api/lookup payloads the single-fund view already uses (see
+// src/compare.js), so the comparison re-ranks the instant a category is toggled, and it can
+// never contradict the page it was built from.
+
+const COMPARE_PICKS = ["QQQ", "VTI", "EFIV", "SPYX", "XLV", "VTV"];
+
+function CompareInvite({ symbol, value, onChange, onRun, busy, err }) {
+  const picks = COMPARE_PICKS.filter((s) => s !== symbol).slice(0, 4);
+  const field = {
+    fontFamily: sans, fontSize: 14, color: L.ink, background: L.lineSoft,
+    border: `1px solid ${L.line}`, borderRadius: 12, padding: "10px 12px",
+    outline: "none", width: 150, textTransform: "uppercase",
+  };
+  return (
+    <div>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
+        <span style={{ fontFamily: sans, fontSize: 11.5, letterSpacing: "0.08em", textTransform: "uppercase", color: L.faint }}>
+          Compare {symbol} with
+        </span>
+        <input value={value} onChange={(e) => onChange(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter") onRun(); }}
+          placeholder="QQQ" aria-label={`Compare ${symbol} with another fund`}
+          autoComplete="off" style={field} />
+        <button onClick={() => onRun()} disabled={busy || !value.trim()}
+          style={{ fontFamily: sans, fontSize: 13, fontWeight: 600, cursor: busy ? "default" : "pointer",
+            borderRadius: 999, padding: "9px 18px", border: "none",
+            background: A.lav, color: A.lavInk, opacity: busy || !value.trim() ? 0.55 : 1 }}>
+          {busy ? "…" : "Compare"}
+        </button>
+        {picks.map((x) => (
+          <button key={x} onClick={() => { onChange(x); onRun(x); }}
+            style={{ fontFamily: sans, fontSize: 12, fontWeight: 600, cursor: "pointer", borderRadius: 999,
+              padding: "5px 11px", background: "transparent", color: L.muted, border: `1px solid ${L.line}` }}>{x}</button>
+        ))}
+      </div>
+      {err && <div style={{ marginTop: 10, fontFamily: sans, fontSize: 13, color: L.flag, background: L.flagBg,
+        border: `1px solid ${L.flagBorder}`, padding: "9px 12px", borderRadius: 12 }}>{err}</div>}
+    </div>
+  );
+}
+
+// One fund's column: the ladder letter, and underneath it the three numbers the letter is
+// made of. A fund we can't see inside gets the same card and says why instead. It must
+// never read as the clean one.
+function CompareColumn({ col, winner }) {
+  const g = col.grade;
+  const tone = g?.letter === "F" ? { bg: L.flag, ink: "#3A140C" }
+    : g?.letter === "D" ? { bg: A.lav, ink: A.lavInk }
+    : neutralTone(false);
+  const isWinner = winner && col.symbol === winner;
+  return (
+    <div style={{ background: L.lineSoft, border: `1px solid ${isWinner ? A.lav : L.line}`, borderRadius: 14, padding: "13px 14px" }}>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap" }}>
+        <span style={{ fontFamily: display, fontSize: 18, color: L.ink }}>{col.symbol}</span>
+        {isWinner && (
+          <span style={{ fontFamily: sans, fontSize: 10, fontWeight: 600, letterSpacing: "0.05em",
+            color: A.lavInk, background: A.lav, borderRadius: 999, padding: "2px 8px" }}>BETTER MATCH</span>
+        )}
+      </div>
+      <div style={{ fontFamily: sans, fontSize: 12, color: L.muted, margin: "3px 0 10px", lineHeight: 1.4 }}>
+        {col.name || "Not recognized"}{col.basis ? ` · tracks ${col.basis}` : ""}
+      </div>
+      {col.analyzed ? (
+        <>
+          <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+            <Letter letter={g?.letter || null} tone={tone} />
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontFamily: sans, fontSize: 13, fontWeight: 600, color: L.ink, lineHeight: 1.35 }}>
+                {col.flagged} flagged{col.totalCompanies ? <span style={{ fontWeight: 400, color: L.muted }}> of {col.totalCompanies} companies</span> : null}
+              </div>
+              <div style={{ fontFamily: sans, fontSize: 12, color: L.muted, marginTop: 2, lineHeight: 1.4 }}>
+                {col.rankable
+                  ? <>{g.conduct} with a government finding or self-reported violation · <b style={{ color: L.ink }}>{g.share} per 100</b></>
+                  : "Total holdings unknown"}
+              </div>
+              {/* An "A" sitting beside "34 flagged" would read as a contradiction without
+                  the rung's own words: the fund ladder counts conduct, not flags. */}
+              {col.rankable && g.meaning ? (
+                <div style={{ fontFamily: sans, fontSize: 11.5, color: L.faint, marginTop: 2, lineHeight: 1.4 }}>{g.meaning}</div>
+              ) : null}
+              {col.rankable && g.vsMarket ? (
+                <div style={{ fontFamily: sans, fontSize: 11.5, color: L.faint, marginTop: 2 }}>
+                  {g.vsMarket}× the whole market's share
+                </div>
+              ) : null}
+            </div>
+          </div>
+          {!col.rankable && col.reason && (
+            <p style={{ fontFamily: sans, fontSize: 12, color: L.faint, margin: "9px 0 0", lineHeight: 1.5 }}>{col.reason}</p>
+          )}
+          {col.asOf && (
+            <p style={{ fontFamily: sans, fontSize: 11, color: L.faint, margin: "8px 0 0" }}>Holdings as of {col.asOf}.</p>
+          )}
+        </>
+      ) : (
+        <>
+          <span style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 600, color: L.muted,
+            background: L.line, borderRadius: 999, padding: "3px 9px" }}>NOT COMPARED</span>
+          <p style={{ fontFamily: sans, fontSize: 12.5, color: L.muted, margin: "9px 0 0", lineHeight: 1.5 }}>{col.reason}</p>
+        </>
+      )}
+    </div>
+  );
+}
+
+// Category by category, which fund carries how many. The row that matters most is the one
+// where a count is zero, so that cell is marked rather than left for the eye to find.
+function CompareTable({ categories, columns }) {
+  if (!categories.length) return null;
+  const cell = { fontFamily: sans, fontSize: 13, padding: "8px 10px", borderTop: `1px solid ${L.line}` };
+  return (
+    <div style={{ marginTop: 16, border: `1px solid ${L.line}`, borderRadius: 14, overflow: "hidden" }}>
+      <div style={{ display: "grid", gridTemplateColumns: `minmax(130px,1.6fr) repeat(${columns.length}, minmax(64px,1fr))`, alignItems: "stretch" }}>
+        <div style={{ ...cell, borderTop: "none", fontSize: 11, letterSpacing: "0.07em", textTransform: "uppercase", color: L.faint, background: L.lineSoft }}>Category</div>
+        {columns.map((c) => (
+          <div key={c.symbol} style={{ ...cell, borderTop: "none", textAlign: "right", fontWeight: 600, color: L.ink, background: L.lineSoft }}>{c.symbol}</div>
+        ))}
+        {categories.map((row) => (
+          <Fragment key={row.key}>
+            <div style={{ ...cell, color: L.flag, fontWeight: 600 }}>
+              {row.label}
+              {row.only && <span style={{ marginLeft: 7, fontSize: 10.5, fontWeight: 600, color: L.muted,
+                background: L.line, borderRadius: 999, padding: "1px 7px" }}>only {row.only}</span>}
+            </div>
+            {columns.map((c) => {
+              const n = row.counts[c.symbol] || 0;
+              return (
+                <div key={c.symbol} style={{ ...cell, textAlign: "right", color: n ? L.ink : L.faint, fontWeight: n ? 600 : 400 }}>
+                  {n}
+                </div>
+              );
+            })}
+          </Fragment>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const NameChips = ({ items }) => (
+  <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginTop: 7 }}>
+    {items.map((it) => (
+      <span key={it.ticker + it.name} title={it.labels.join(" · ")}
+        style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 600, color: L.ink, background: L.lineSoft,
+          border: `1px solid ${L.line}`, borderRadius: 999, padding: "3px 10px" }}>{it.name}</span>
+    ))}
+  </div>
+);
+
+// The comparison opens over the page rather than below it. The fund breakdown above is
+// already long, and a second column, a category table and two name lists stacked under it
+// put the answer several screens down. Esc, the backdrop and the Close button all close it,
+// the page behind stops scrolling while it is open, and focus moves into the dialog and
+// back to wherever it came from, so a keyboard reader isn't left on a page they can't see.
+function CompareModal({ title, selectedCount, onClose, children }) {
+  const panel = useRef(null);
+  // `onClose` is a fresh function every render. Holding the latest one in a ref keeps the
+  // effect below to a single run, so it doesn't refocus the dialog on every keystroke.
+  const close = useRef(onClose);
+  close.current = onClose;
+  useEffect(() => {
+    const opener = document.activeElement;
+    const onKey = (e) => { if (e.key === "Escape") close.current(); };
+    document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    panel.current?.focus({ preventScroll: true });
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+      if (opener && typeof opener.focus === "function") opener.focus();
+    };
+  }, []);
+
+  return (
+    <div onMouseDown={(e) => { if (e.target === e.currentTarget) close.current(); }}
+      style={{ position: "fixed", inset: 0, zIndex: 100, background: "rgba(6,9,15,0.74)",
+        backdropFilter: "blur(3px)", WebkitBackdropFilter: "blur(3px)", overflowY: "auto",
+        display: "flex", alignItems: "flex-start", justifyContent: "center",
+        padding: "clamp(12px,5vh,56px) 16px" }}>
+      <div ref={panel} tabIndex={-1} role="dialog" aria-modal="true" aria-label={`Comparing ${title}`}
+        style={{ width: "min(920px,100%)", background: P.block, border: `1px solid ${L.line}`,
+          borderRadius: 18, outline: "none", boxShadow: "0 24px 70px rgba(0,0,0,0.55)" }}>
+        <div style={{ position: "sticky", top: 0, zIndex: 1, display: "flex", alignItems: "center", gap: 12,
+          padding: "16px 20px", background: P.block, borderBottom: `1px solid ${L.line}`,
+          borderRadius: "18px 18px 0 0" }}>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontFamily: serif, fontSize: 20, color: L.ink, lineHeight: 1.2 }}>{title}</div>
+            <div style={{ fontFamily: sans, fontSize: 12, color: L.faint, marginTop: 3 }}>
+              {selectedCount
+                ? `Using your ${selectedCount} selected ${selectedCount === 1 ? "category" : "categories"}. Close this to change them.`
+                : "No categories selected."}
+            </div>
+          </div>
+          <button onClick={() => close.current()} aria-label="Close comparison"
+            style={{ marginLeft: "auto", flexShrink: 0, cursor: "pointer", fontFamily: sans, fontSize: 13,
+              fontWeight: 600, color: L.muted, background: "transparent", border: `1px solid ${L.line}`,
+              borderRadius: 999, padding: "7px 14px" }}>Close ✕</button>
+        </div>
+        <div style={{ padding: "2px 20px 22px" }}>{children}</div>
+      </div>
+    </div>
+  );
+}
+
+function CompareView({ model }) {
+  const { verdict } = model;
+  const shown = model.funds.filter((f) => f.analyzed);
+  const sub = { fontFamily: sans, fontSize: 11.5, letterSpacing: "0.08em", textTransform: "uppercase", color: L.faint, margin: "16px 0 0" };
+  return (
+    <div style={{ marginTop: 14 }}>
+      {/* The answer first, then everything it is made of. And where the honest answer is
+          "we can't rank these", that sentence sits in exactly the same place a winner would. */}
+      <div style={{ background: verdict.winner ? "rgba(156,203,245,0.10)" : L.lineSoft,
+        border: `1px solid ${verdict.winner ? A.lav : L.line}`, borderRadius: 14, padding: "14px 16px" }}>
+        <div style={{ fontFamily: serif, fontSize: 18, color: L.ink, lineHeight: 1.35 }}>{verdict.headline}</div>
+        {verdict.detail && (
+          <p style={{ fontFamily: sans, fontSize: 13, color: L.muted, lineHeight: 1.6, margin: "7px 0 0", maxWidth: "76ch" }}>{verdict.detail}</p>
+        )}
+      </div>
+
+      <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: 10 }}>
+        {model.funds.map((col) => <CompareColumn key={col.symbol} col={col} winner={verdict.winner} />)}
+      </div>
+
+      <CompareTable categories={model.categories} columns={shown} />
+
+      {shown.length > 1 && (
+        <div style={{ marginTop: 4 }}>
+          {model.companies.shared.length > 0 && (
+            <>
+              <div style={sub}>Both hold ({model.companies.shared.length})</div>
+              <NameChips items={model.companies.shared} />
+            </>
+          )}
+          {shown.map((c) => {
+            const only = model.companies.only[c.symbol] || [];
+            if (!only.length) return null;
+            return (
+              <Fragment key={c.symbol}>
+                <div style={sub}>Only in {c.symbol} ({only.length})</div>
+                <NameChips items={only} />
+              </Fragment>
+            );
+          })}
+        </div>
+      )}
+
+      {verdict.caveats.length > 0 && (
+        <ul style={{ margin: "16px 0 0", padding: "0 0 0 18px", display: "grid", gap: 6 }}>
+          {verdict.caveats.map((c, i) => (
+            <li key={i} style={{ fontFamily: sans, fontSize: 12, color: L.faint, lineHeight: 1.55, maxWidth: "76ch" }}>{c}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
 
 function FundBreakdown({ groups, theme }) {
   const [open, setOpen] = useState(null);            // evidence panel: "flagKey:TICKER"

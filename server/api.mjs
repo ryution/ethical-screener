@@ -247,6 +247,26 @@ export async function handler(req, res) {
     return sendJson(res, 200, result);
   }
 
+  // ---- compare funds side by side (public, no login) ----
+  // Returns the same per-fund payload /api/lookup returns, one per symbol, and nothing
+  // else: the reader's category filter is applied in the browser exactly as it is for a
+  // single lookup, so toggling a category re-ranks the comparison with no round trip,
+  // and the comparison can never disagree with the single-fund page it was built from.
+  if (req.method === "GET" && path === "/api/compare") {
+    const rl = rateLimit("compare", ip, 240, 60 * 60 * 1000);
+    if (rl.limited) return sendJson(res, 429, { error: "Too many comparisons. Try again shortly." }, { "Retry-After": String(rl.retryAfter) });
+    const symbols = [...new Set(String(url.searchParams.get("symbols") || "")
+      .split(",").map((s) => s.trim().toUpperCase()).filter(Boolean))];
+    if (symbols.length < 2) return sendJson(res, 400, { error: "Give two symbols to compare, like VOO,QQQ." });
+    // Four columns is where a side-by-side stops being readable on a phone, and it caps
+    // the work a single request can ask for.
+    if (symbols.length > 4) return sendJson(res, 400, { error: "Compare up to four funds at a time." });
+    // An unknown symbol is a column that says so, not a 400. One typo shouldn't throw
+    // away the other fund's analysis.
+    const results = symbols.map((s) => lookupSymbol(s) || { symbol: s, type: "none", known: false, contains: [] });
+    return sendJson(res, 200, { results });
+  }
+
   // ---- link-preview / crawler page: server-rendered HTML for one symbol ----
   // The app is a single-page React bundle, so a crawler fetching "/?symbol=VOO" sees an
   // empty <div id="root"> and no title, description, or image — shared links render as a
