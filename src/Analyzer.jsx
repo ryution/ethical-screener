@@ -272,6 +272,7 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
   const [cmp, setCmp] = useState(null);
   const [cmpBusy, setCmpBusy] = useState(false);
   const [cmpErr, setCmpErr] = useState("");
+  const [cmpOpen, setCmpOpen] = useState(false);
   useEffect(() => {
     api("/api/screens").then((d) => {
       const list = (d.screens || []).slice().sort((a, b) => a.label.localeCompare(b.label));
@@ -327,7 +328,7 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
     setBusy(true); setErr(""); setResult(null);
     // A new base fund makes the old second column meaningless, so it goes rather than
     // sitting there describing a comparison nobody asked for.
-    setCmp(null); setVs(""); setCmpErr("");
+    setCmp(null); setVs(""); setCmpErr(""); setCmpOpen(false);
     // Reflect the search in the URL so a result is shareable / bookmarkable.
     syncUrl(sym, selected, screens);
     try {
@@ -345,6 +346,7 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
     const other = (symbol ?? vsInput).trim().toUpperCase();
     const base = (baseSymbol || result?.symbol || "").toUpperCase();
     if (!other || !base) return;
+    setCmpOpen(true);
     if (other === base) { setCmpErr(`${base} is already the fund on this page. Pick a different one.`); return; }
     setCmpBusy(true); setCmpErr(""); setCmp(null);
     try {
@@ -357,7 +359,18 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
     catch (e) { setCmpErr(e.message); }
     finally { setCmpBusy(false); }
   };
-  const clearCompare = () => { setCmp(null); setVs(""); setVsInput(""); setCmpErr(""); syncUrl(result?.symbol || initialSymbol(), selected, screens); };
+  const clearCompare = () => { setCmp(null); setVs(""); setVsInput(""); setCmpErr(""); setCmpOpen(false); syncUrl(result?.symbol || initialSymbol(), selected, screens); };
+  // The Compare button next to Check. It uses whatever is in the search box: if that isn't
+  // the fund already shown, it checks it first, then opens the dialog to pick a second fund.
+  const openCompare = async () => {
+    setShowSug(false);
+    const typed = q.trim().toUpperCase();
+    const r = typed && typed !== result?.symbol ? await run(typed) : result;
+    if (!r) return;
+    if (r.type === "stock") { setErr(`${r.symbol} is a company, not a fund. Compare works with funds like VOO or QQQ.`); return; }
+    if (r.type !== "fund" || r.analyzable === false) { setErr(`We don't have holdings data for ${r.symbol}, so it can't be compared.`); return; }
+    setCmpErr(""); setCmpOpen(true);
+  };
 
   // Auto-load the initial symbol (from the URL, or VOO) so a visitor sees the surprise immediately.
   // A "?vs=" in the link opens the comparison with it, in one go.
@@ -375,8 +388,10 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
     // Wide enough for the results to lay out in columns on a desktop; the search row and
     // its examples stay at a comfortable reading measure inside it.
     <div style={{ maxWidth: 980, margin: "30px auto 0", textAlign: "left" }}>
-      <div style={{ display: "flex", gap: 8, maxWidth: 560, margin: "0 auto" }}>
-        <div style={{ flex: 1, minWidth: 0, position: "relative" }}>
+      {/* Wraps on a phone: the box takes the first line and Check and Compare drop below it,
+          instead of squeezing the box to a third of the screen. */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, maxWidth: 560, margin: "0 auto" }}>
+        <div style={{ flex: "1 1 260px", minWidth: 0, position: "relative" }}>
           <input value={q} onChange={onInput} onKeyDown={onKey}
             onFocus={() => { if (sugg.length) setShowSug(true); }}
             onBlur={() => setTimeout(() => setShowSug(false), 140)}
@@ -403,6 +418,8 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
           )}
         </div>
         <button onClick={() => { setShowSug(false); run(); }} disabled={busy} style={brassBtn(999, "14px 22px", 15)}>{busy ? "…" : "Check"}</button>
+        <button onClick={openCompare} disabled={busy}
+          style={{ ...brassBtn(999, "14px 18px", 15), background: "transparent", color: D.ink, border: `1px solid ${D.glassBorder}` }}>Compare</button>
       </div>
       <div style={{ display: "flex", gap: 7, flexWrap: "wrap", alignItems: "center", maxWidth: 560, margin: "10px auto 0" }}>
         <span style={{ fontFamily: sans, fontSize: 12, color: D.faint }}>Try:</span>
@@ -451,17 +468,16 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
 
       {err && <DarkErr>{err}</DarkErr>}
       {result && <HeroResult result={filterBySelected(result, selected)} onStart={onStart} snaptrade={snaptrade} selectedCount={selected ? selected.size : 0} />}
-      {/* Only a fund we can see inside has a second column worth offering. The model is
-          rebuilt here, on every render, from the categories currently selected. */}
-      {result && result.type === "fund" && result.analyzable !== false && (
-        <div style={{ marginTop: 14, padding: "16px 20px", background: P.card, border: `1px solid ${L.line}`, borderRadius: 14 }}>
-          <CompareInvite symbol={result.symbol} value={vsInput} onChange={setVsInput}
-            onRun={(x) => runCompare(x)} busy={cmpBusy} err={cmpErr} />
-        </div>
-      )}
-      {cmp && result && (
-        <CompareModal title={`${result.symbol} vs ${vs}`} selectedCount={selected ? selected.size : 0} onClose={clearCompare}>
-          <CompareView model={compareFunds(cmp, selected || new Set())} />
+      {/* The picker sits at the top of the dialog so a second fund can be swapped without
+          closing it. The model is rebuilt on every render from the selected categories. */}
+      {cmpOpen && result && (
+        <CompareModal title={cmp ? `${result.symbol} vs ${vs}` : `Compare ${result.symbol}`}
+          selectedCount={selected ? selected.size : 0} onClose={clearCompare}>
+          <div style={{ marginTop: 16 }}>
+            <CompareInvite symbol={result.symbol} value={vsInput} onChange={setVsInput}
+              onRun={(x) => runCompare(x)} busy={cmpBusy} err={cmpErr} autoFocus={!cmp} />
+          </div>
+          {cmp && <CompareView model={compareFunds(cmp, selected || new Set())} />}
         </CompareModal>
       )}
       {meta && meta.count > 0 && (
@@ -834,7 +850,11 @@ const groupByFlag = (contains) => {
 
 const COMPARE_PICKS = ["QQQ", "VTI", "EFIV", "SPYX", "XLV", "VTV"];
 
-function CompareInvite({ symbol, value, onChange, onRun, busy, err }) {
+function CompareInvite({ symbol, value, onChange, onRun, busy, err, autoFocus }) {
+  // Focus the box when the dialog opens so the reader can type straight away. This effect
+  // runs before the dialog's own, which then leaves focus where it is.
+  const box = useRef(null);
+  useEffect(() => { if (autoFocus) box.current?.focus({ preventScroll: true }); /* eslint-disable-next-line */ }, []);
   const picks = COMPARE_PICKS.filter((s) => s !== symbol).slice(0, 4);
   const field = {
     fontFamily: sans, fontSize: 14, color: L.ink, background: L.lineSoft,
@@ -847,7 +867,7 @@ function CompareInvite({ symbol, value, onChange, onRun, busy, err }) {
         <span style={{ fontFamily: sans, fontSize: 11.5, letterSpacing: "0.08em", textTransform: "uppercase", color: L.faint }}>
           Compare {symbol} with
         </span>
-        <input value={value} onChange={(e) => onChange(e.target.value)}
+        <input ref={box} value={value} onChange={(e) => onChange(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter") onRun(); }}
           placeholder="QQQ" aria-label={`Compare ${symbol} with another fund`}
           autoComplete="off" style={field} />
@@ -988,17 +1008,20 @@ function CompareModal({ title, selectedCount, onClose, children }) {
   // effect below to a single run, so it doesn't refocus the dialog on every keystroke.
   const close = useRef(onClose);
   close.current = onClose;
+  // Read during the first render, before the input inside takes focus.
+  const opener = useRef(null);
+  if (opener.current === null) opener.current = document.activeElement;
   useEffect(() => {
-    const opener = document.activeElement;
     const onKey = (e) => { if (e.key === "Escape") close.current(); };
     document.addEventListener("keydown", onKey);
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    panel.current?.focus({ preventScroll: true });
+    if (!panel.current?.contains(document.activeElement)) panel.current?.focus({ preventScroll: true });
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prevOverflow;
-      if (opener && typeof opener.focus === "function") opener.focus();
+      const o = opener.current;
+      if (o && typeof o.focus === "function") o.focus();
     };
   }, []);
 
