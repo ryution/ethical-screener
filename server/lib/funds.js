@@ -219,10 +219,34 @@ const CATALOGUE = {
   VFTAX: { name: "Vanguard FTSE Social Index Fund", basis: "US stocks after social screens (FTSE4Good US Select Index)", basisKey: "vftax" },
 };
 
-/** ticker -> { name, basis (plain-English index), holds (screened constituents) }. */
+// Which funds count as alternatives to each other. A broad S&P 500 fund is set against
+// other broad funds and a tech fund against tech funds: a 25-stock chip fund held in place
+// of the whole market is a different investment, not an alternative to it. Every fund in
+// the catalogue is in exactly one group (server/test/alternatives.test.mjs checks).
+export const FUND_GROUPS = [
+  { key: "broad", label: "Broad US market", tickers: "VOO SPY IVV SPLG FXAIX VFIAX SWPPX RSP VTI ITOT VTSAX SCHB SPTM FSKAX FZROX SWTSX IWB VONE IWV VTHR VV SCHX DIA EFIV SPYX ESGU ESGV SUSA DSI VFTAX USMV QUAL MTUM SPLV MOAT".split(" ") },
+  { key: "growth", label: "Growth", tickers: "QQQ QQQM VUG VIGAX IWF VONG SCHG SPYG IVW VOOG MGK".split(" ") },
+  { key: "value", label: "Value", tickers: "VTV VVIAX IWD VONV SCHV SPYV IVE VOOV COWZ".split(" ") },
+  { key: "dividend", label: "Dividends and income", tickers: "SCHD VIG VYM DGRO DVY HDV NOBL DGRW SDY SPYD JEPI JEPQ".split(" ") },
+  { key: "midsmall", label: "Mid and small caps", tickers: "SPMD IJH MDY SPSM IJR IWM VTWO IWR VO VB VXF SCHM SCHA".split(" ") },
+  { key: "tech", label: "Technology", tickers: "XLK VGT IYW XNTK XSW SMH SOXX XSD".split(" ") },
+  { key: "health", label: "Health care", tickers: "XLV VHT XBI IBB XPH XHE XHS IHI".split(" ") },
+  { key: "financials", label: "Financials", tickers: "XLF VFH KRE KBE KIE KCE".split(" ") },
+  { key: "energy", label: "Energy", tickers: "XLE VDE XOP XES".split(" ") },
+  { key: "consumer", label: "Consumer", tickers: "XLY VCR XLP VDC XRT".split(" ") },
+  { key: "industrials", label: "Industrials and defense", tickers: "XLI VIS XAR ITA PPA XTN JETS".split(" ") },
+  { key: "materials", label: "Materials and mining", tickers: "XLB VAW XME".split(" ") },
+  { key: "realestate", label: "Real estate and homebuilders", tickers: "XLRE VNQ XHB ITB".split(" ") },
+  { key: "utilities", label: "Utilities", tickers: "XLU VPU".split(" ") },
+  { key: "communication", label: "Communication", tickers: "XLC VOX XTL".split(" ") },
+  { key: "ark", label: "ARK active funds", tickers: "ARKK ARKG ARKW ARKQ ARKF".split(" ") },
+];
+const GROUP_OF = Object.fromEntries(FUND_GROUPS.flatMap((g) => g.tickers.map((t) => [t, g.key])));
+
+/** ticker -> { name, basis (plain-English index), holds (screened constituents), group }. */
 export const FUNDS = Object.fromEntries(
   Object.entries(CATALOGUE)
-    .map(([t, f]) => [t, { name: f.name, basis: f.basis, basisKey: f.basisKey, holds: holdsFor(f.basisKey) }])
+    .map(([t, f]) => [t, { name: f.name, basis: f.basis, basisKey: f.basisKey, holds: holdsFor(f.basisKey), group: GROUP_OF[t] || null }])
     .filter(([, f]) => Array.isArray(f.holds)),
 );
 

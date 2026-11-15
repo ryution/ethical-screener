@@ -62,6 +62,12 @@ function dedupeByName(contains) {
  * An analyzed-but-unrankable fund still earns its column. The categories and companies it
  * carries are facts we have. It just cannot win or lose a ranking.
  */
+// The order a ranked list uses: the share of holdings with a government finding or a
+// self-reported violation, then the share flagged at all. It is the same order the
+// head-to-head verdict uses, so the Alternatives list and Compare never disagree.
+export const rankOrder = (a, b) =>
+  (a.grade.share - b.grade.share) || (a.grade.businessShare - b.grade.businessShare);
+
 export function fundColumn(result, selected) {
   const sel = keySet(selected);
   const base = {

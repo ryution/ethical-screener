@@ -194,13 +194,23 @@ const initialVs = () => {
   try { return (URL_AT_LOAD.get("vs") || "").toUpperCase(); }
   catch { return ""; }
 };
+// The categories someone picked, remembered on this device so they don't start over from
+// "everything on" each visit. Browser storage can be missing or blocked (private windows),
+// so every read and write is allowed to fail quietly.
+const SAVED_KEY = "plainstreet.categories";
+const savedSelection = () => {
+  try { const v = JSON.parse(window.localStorage.getItem(SAVED_KEY)); return Array.isArray(v) ? v : null; }
+  catch { return null; }
+};
+const saveSelection = (keys) => { try { window.localStorage.setItem(SAVED_KEY, JSON.stringify(keys)); } catch { /* ignore */ } };
 // Keep the address bar in sync with what's on screen, so copying it shares this exact view.
 function syncUrl(symbol, selected, screens, vs = "") {
   try {
     let qs = `?symbol=${encodeURIComponent(symbol)}`;
     if (vs) qs += `&vs=${encodeURIComponent(vs)}`;
     // Keys are [a-z_] so the comma can stay readable instead of becoming %2C.
-    if (selected && screens.length && selected.size < screens.length) qs += `&only=${[...selected].join(",")}`;
+    // Nothing selected leaves ?only= off; an empty one would just be noise in a shared link.
+    if (selected && selected.size && screens.length && selected.size < screens.length) qs += `&only=${[...selected].join(",")}`;
     window.history.replaceState(null, "", qs);
   } catch { /* ignore */ }
 }
@@ -273,16 +283,25 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
   const [cmpBusy, setCmpBusy] = useState(false);
   const [cmpErr, setCmpErr] = useState("");
   const [cmpOpen, setCmpOpen] = useState(false);
+  // ── alternatives ── a ranked list of funds in one group, for the selected categories
+  const [altOpen, setAltOpen] = useState(false);
+  const [altGroup, setAltGroup] = useState(null);   // null: the group of the fund on the page
+  const [alt, setAlt] = useState(null);
+  const [altBusy, setAltBusy] = useState(false);
+  const [altErr, setAltErr] = useState("");
   useEffect(() => {
     api("/api/screens").then((d) => {
       const list = (d.screens || []).slice().sort((a, b) => a.label.localeCompare(b.label));
       setScreens(list);
       setPresets(d.presets || []);
+      // A link's ?only= wins; otherwise what this device remembers; otherwise nothing, so a
+      // first visit starts with the reader choosing their own categories.
       const only = initialOnly();
-      const valid = only && only.filter((k) => list.some((s) => s.key === k));
-      setSelected(new Set(valid && valid.length ? valid : list.map((s) => s.key)));
+      const pick = only || savedSelection();
+      setSelected(new Set(pick ? pick.filter((k) => list.some((s) => s.key === k)) : []));
     }).catch(() => {});
   }, []);
+  useEffect(() => { if (selected) saveSelection([...selected]); }, [selected]);
   const toggle = (k) => setSelected((prev) => {
     const n = new Set(prev); if (n.has(k)) n.delete(k); else n.add(k); return n;
   });
@@ -328,7 +347,7 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
     setBusy(true); setErr(""); setResult(null);
     // A new base fund makes the old second column meaningless, so it goes rather than
     // sitting there describing a comparison nobody asked for.
-    setCmp(null); setVs(""); setCmpErr(""); setCmpOpen(false);
+    setCmp(null); setVs(""); setCmpErr(""); setCmpOpen(false); setAltOpen(false);
     // Reflect the search in the URL so a result is shareable / bookmarkable.
     syncUrl(sym, selected, screens);
     try {
@@ -371,6 +390,37 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
     if (r.type !== "fund" || r.analyzable === false) { setErr(`We don't have holdings data for ${r.symbol}, so it can't be compared.`); return; }
     setCmpErr(""); setCmpOpen(true);
   };
+  // The Alternatives button. Like Compare it checks what's typed first. A stock gets the
+  // broad-market funds, since a stock has no group of its own.
+  const openAlternatives = async () => {
+    setShowSug(false);
+    const typed = q.trim().toUpperCase();
+    const r = typed && typed !== result?.symbol ? await run(typed) : result;
+    if (!r) return;
+    setAlt(null); setAltErr(""); setAltGroup(null); setAltOpen(true);
+  };
+  // "Find funds for these", from the category list: the same dialog, starting on the broad market.
+  const openFinder = () => { setAlt(null); setAltErr(""); setAltGroup("broad"); setAltOpen(true); };
+  // Refetch whenever the dialog is open and the group or the categories change. Only the
+  // newest request may write, so a slow answer can't overwrite a newer one.
+  const altReq = useRef(0);
+  useEffect(() => {
+    if (!altOpen || !selected) return;
+    const id = ++altReq.current;
+    const t = setTimeout(async () => {
+      setAltBusy(true); setAltErr("");
+      try {
+        const qs = new URLSearchParams({ keys: [...selected].join(","), symbol: result?.symbol || "" });
+        if (altGroup) qs.set("group", altGroup);
+        const d = await api(`/api/alternatives?${qs}`);
+        if (id === altReq.current) setAlt(d);
+      } catch (e) { if (id === altReq.current) setAltErr(e.message); }
+      finally { if (id === altReq.current) setAltBusy(false); }
+    }, 150);
+    return () => clearTimeout(t);
+    /* eslint-disable-next-line */
+  }, [altOpen, altGroup, selected, result]);
+  const closeAlternatives = () => { setAltOpen(false); setAlt(null); setAltGroup(null); };
 
   // Auto-load the initial symbol (from the URL, or VOO) so a visitor sees the surprise immediately.
   // A "?vs=" in the link opens the comparison with it, in one go.
@@ -391,7 +441,7 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
       {/* Wraps on a phone: the box takes the first line and Check and Compare drop below it,
           instead of squeezing the box to a third of the screen. */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, maxWidth: 560, margin: "0 auto" }}>
-        <div style={{ flex: "1 1 260px", minWidth: 0, position: "relative" }}>
+        <div style={{ flex: "1 1 220px", minWidth: 0, position: "relative" }}>
           <input value={q} onChange={onInput} onKeyDown={onKey}
             onFocus={() => { if (sugg.length) setShowSug(true); }}
             onBlur={() => setTimeout(() => setShowSug(false), 140)}
@@ -417,9 +467,11 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
             </ul>
           )}
         </div>
-        <button onClick={() => { setShowSug(false); run(); }} disabled={busy} style={brassBtn(999, "14px 22px", 15)}>{busy ? "…" : "Check"}</button>
-        <button onClick={openCompare} disabled={busy}
-          style={{ ...brassBtn(999, "14px 18px", 15), background: "transparent", color: D.ink, border: `1px solid ${D.glassBorder}` }}>Compare</button>
+        <div style={{ display: "flex", gap: 8, flex: "0 0 auto" }}>
+          <button onClick={() => { setShowSug(false); run(); }} disabled={busy} style={brassBtn(999, "14px 18px", 15)}>{busy ? "…" : "Check"}</button>
+          <button onClick={openCompare} disabled={busy} style={ghostBtn}>Compare</button>
+          <button onClick={openAlternatives} disabled={busy} style={ghostBtn}>Alternatives</button>
+        </div>
       </div>
       <div style={{ display: "flex", gap: 7, flexWrap: "wrap", alignItems: "center", maxWidth: 560, margin: "10px auto 0" }}>
         <span style={{ fontFamily: sans, fontSize: 12, color: D.faint }}>Try:</span>
@@ -441,6 +493,9 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
               )}
               {selected.size > 0 && (
                 <button onClick={() => setAll(false)} style={filterLink}>Clear all</button>
+              )}
+              {selected.size > 0 && (
+                <button onClick={openFinder} style={{ ...filterLink, fontWeight: 600 }}>Find funds for these</button>
               )}
             </div>
           </div>
@@ -478,6 +533,17 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
               onRun={(x) => runCompare(x)} busy={cmpBusy} err={cmpErr} autoFocus={!cmp} />
           </div>
           {cmp && <CompareView model={compareFunds(cmp, selected || new Set())} />}
+        </CompareModal>
+      )}
+      {altOpen && (
+        <CompareModal
+          title={result?.type === "fund" && result.analyzable !== false && altGroup === null ? `Alternatives to ${result.symbol}` : "Funds for your categories"}
+          selectedCount={selected ? selected.size : 0} onClose={closeAlternatives}>
+          <AlternativesView data={alt} busy={altBusy} err={altErr} onGroup={setAltGroup}
+            base={result?.type === "fund" && result.analyzable !== false ? result.symbol : null}
+            note={result && result.type !== "fund" ? result.symbol : null}
+            onCheck={(sym) => { closeAlternatives(); setQ(sym); run(sym); }}
+            onCompare={(sym) => { closeAlternatives(); setVsInput(sym); runCompare(sym); }} />
         </CompareModal>
       )}
       {meta && meta.count > 0 && (
@@ -682,6 +748,25 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
   // uses the light ramp rather than the band's.
   const panel = { marginTop: 14, padding: "18px 20px", background: P.card, border: `1px solid ${L.line}`, borderRadius: 14 };
   const cta = <HeroCTA onStart={onStart} snaptrade={snaptrade} />;
+
+  // Nothing selected yet, which is how a first visit starts. Ask for categories instead
+  // of reporting "none of 500 companies match", which would read as clean.
+  if (!selectedCount && (result.type === "stock" || (result.type === "fund" && result.analyzable !== false))) {
+    const n = result.totalCompanies || result.totalHoldings;
+    return (
+      <div style={panel}>
+        <div style={{ fontFamily: serif, fontSize: 20, color: L.ink }}>
+          {result.symbol}{result.name ? <span style={{ color: L.muted, fontFamily: sans, fontSize: 15 }}> · {displayName(result.name)}</span> : null}
+        </div>
+        <p style={{ fontFamily: sans, fontSize: 14, color: L.muted, margin: "8px 0 0", lineHeight: 1.55 }}>
+          {result.type === "fund"
+            ? `Choose the categories you care about above, or a faith-based set, to see which of ${n ? `${result.symbol}'s ${n} companies` : `the companies in ${result.symbol}`} are on our lists.`
+            : `Choose the categories you care about above, or a faith-based set, to see whether ${result.symbol} is on our lists.`}
+        </p>
+        {cta}
+      </div>
+    );
+  }
 
   if (result.type === "none") {
     // Two different honest answers. A company we know and found nothing on is "no flags";
@@ -1013,6 +1098,84 @@ const NameChips = ({ items }) => (
 // put the answer several screens down. Esc, the backdrop and the Close button all close it,
 // the page behind stops scrolling while it is open, and focus moves into the dialog and
 // back to wherever it came from, so a keyboard reader isn't left on a page they can't see.
+// Outlined button that sits beside the filled Check button.
+const ghostBtn = { ...brassBtnBase(), background: "transparent", color: D.ink, border: `1px solid ${D.glassBorder}` };
+function brassBtnBase() { return { borderRadius: 999, padding: "14px 16px", fontFamily: sans, fontSize: 15, fontWeight: 600, cursor: "pointer", letterSpacing: "-0.005em" }; }
+
+// The Alternatives dialog: funds in one group, ranked for the categories picked. Each row
+// says how many of the page fund's flagged companies it also holds, because a fund can
+// rank well on its share and still hold every one of them (VTI holds all of VOO's).
+function AlternativesView({ data, busy, err, onGroup, base, note, onCheck, onCompare }) {
+  const chip = (on) => ({ fontFamily: sans, fontSize: 12, fontWeight: 600, cursor: "pointer", borderRadius: 999,
+    padding: "5px 11px", border: `1px solid ${on ? A.lav : L.line}`, background: on ? A.lav : "transparent", color: on ? A.lavInk : L.muted });
+  const small = { fontFamily: sans, fontSize: 12, color: L.faint, lineHeight: 1.5 };
+  const btn = (primary) => ({ fontFamily: sans, fontSize: 12.5, fontWeight: 600, cursor: "pointer", borderRadius: 999, padding: "6px 13px",
+    border: primary ? "none" : `1px solid ${L.line}`, background: primary ? A.lav : "transparent", color: primary ? A.lavInk : L.ink });
+  return (
+    <div style={{ marginTop: 16 }}>
+      {note && (
+        <p style={{ ...small, margin: "0 0 12px", color: L.muted }}>
+          {note} is a single company, so these are funds. We don't suggest single stocks: a stock with no flags usually means we have no data on it, not that it's clean.
+        </p>
+      )}
+      {data && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+          {data.groups.map((g) => (
+            <button key={g.key} onClick={() => onGroup(g.key)} style={chip(g.key === data.group)}>{g.label}</button>
+          ))}
+        </div>
+      )}
+      {err && <p style={{ ...small, color: L.flag, marginTop: 14 }}>{err}</p>}
+      {!data && !err && <p style={{ ...small, marginTop: 14 }}>{busy ? "Loading…" : ""}</p>}
+      {data && !data.selectedCount && (
+        <p style={{ fontFamily: sans, fontSize: 14, color: L.muted, marginTop: 16 }}>No categories selected. Turn on at least one category to rank funds.</p>
+      )}
+      {data && data.selectedCount > 0 && (
+        <>
+          <p style={{ ...small, margin: "14px 0 0" }}>
+            Fewest first: ranked by the share of holdings with a government finding or self-reported violation, then by the share flagged at all. Compare uses the same order.{busy ? " Updating…" : ""}
+          </p>
+          <ol style={{ listStyle: "none", margin: "12px 0 0", padding: 0, display: "grid", gap: 8, opacity: busy ? 0.6 : 1 }}>
+            {data.rows.map((r, i) => (
+              <li key={r.symbols[0]} style={{ background: r.current ? "rgba(156,203,245,0.10)" : L.lineSoft,
+                border: `1px solid ${r.current ? A.lav : L.line}`, borderRadius: 12, padding: "11px 14px" }}>
+                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
+                  <span style={{ fontFamily: sans, fontSize: 12, color: L.faint, minWidth: 20 }}>{i + 1}.</span>
+                  <span style={{ fontFamily: sans, fontSize: 15, fontWeight: 700, color: L.ink }}>{r.symbols[0]}</span>
+                  {r.symbols.length > 1 && <span style={small}>same holdings as {r.symbols.slice(1).join(", ")}</span>}
+                  {r.current && <span style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 700, color: A.lavInk, background: A.lav, borderRadius: 999, padding: "2px 8px" }}>ON THIS PAGE</span>}
+                  <span style={{ marginLeft: "auto", display: "flex", gap: 6 }}>
+                    {!r.current && <button onClick={() => onCheck(r.symbols[0])} style={btn(false)}>Check</button>}
+                    {!r.current && base && <button onClick={() => onCompare(r.symbols[0])} style={btn(true)}>Compare with {base}</button>}
+                  </span>
+                </div>
+                <div style={{ ...small, color: L.muted, marginTop: 4 }}>{r.name} · tracks {r.basis}</div>
+                <div style={{ fontFamily: sans, fontSize: 13, color: L.ink, marginTop: 6, lineHeight: 1.5 }}>
+                  <b>{r.flagged} flagged</b> of {r.totalCompanies} companies ({r.flaggedPer100} per 100) · {r.conduct} with a government finding or self-reported violation ({r.conductPer100} per 100)
+                </div>
+                <div style={{ ...small, marginTop: 3 }}>
+                  {r.overlap && <>Also holds <b style={{ color: r.overlap.held === r.overlap.of ? L.flag : L.muted }}>{r.overlap.held} of {r.overlap.symbol}'s {r.overlap.of}</b> flagged companies. </>}
+                  {r.asOf && <>Holdings as of {r.asOf}.</>}
+                </div>
+              </li>
+            ))}
+          </ol>
+          {!data.rows.length && <p style={{ ...small, marginTop: 14 }}>No funds in this group could be ranked.</p>}
+          <ul style={{ margin: "16px 0 0", padding: "0 0 0 18px", display: "grid", gap: 6 }}>
+            {[
+              "Funds that track the same index hold the same companies, so they share a row.",
+              base ? `Funds with thousands of small companies can rank higher partly because most legal findings in our data are about large companies. The "also holds" line shows how many of ${base}'s flagged companies each one still owns.` : null,
+              "Fewer flagged companies doesn't mean a fund is clean. Companies we have no data on aren't counted.",
+              "SPDR funds use daily holdings. The others come from quarterly SEC filings, so their dates are older.",
+              "This only compares holdings. It doesn't cover fees, returns, or whether a fund is right for you.",
+            ].filter(Boolean).map((c) => <li key={c} style={{ ...small, maxWidth: "76ch" }}>{c}</li>)}
+          </ul>
+        </>
+      )}
+    </div>
+  );
+}
+
 function CompareModal({ title, selectedCount, onClose, children }) {
   const panel = useRef(null);
   // `onClose` is a fresh function every render. Holding the latest one in a ref keeps the

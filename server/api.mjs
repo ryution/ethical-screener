@@ -14,6 +14,7 @@ import { hashPassword, verifyPassword, dummyVerify, newToken, sessionFromCookie,
 import { mailerEnabled, siteUrl, sendMail, resetEmail, verifyEmail } from "./lib/mailer.js";
 import { snaptradeEnabled, registerUser as stRegister, connectionPortalUrl, allPositions } from "./lib/snaptrade.js";
 import { analyze, lookupSymbol, coverageMeta } from "./lib/analyzer.js";
+import { alternatives } from "./lib/alternatives.js";
 import { suggest } from "./lib/suggest.js";
 import { screenCatalogue, isScreenKey, VALUE_PRESETS } from "./lib/screens.js";
 import { hotNews } from "./lib/news.js";
@@ -252,6 +253,21 @@ export async function handler(req, res) {
   // else: the reader's category filter is applied in the browser exactly as it is for a
   // single lookup, so toggling a category re-ranks the comparison with no round trip,
   // and the comparison can never disagree with the single-fund page it was built from.
+  // ---- ranked fund lists for the Alternatives dialog (public, no login) ----
+  // Unlike /api/compare this one applies the categories on the server: a group can hold
+  // two dozen funds and VTI alone has 600 flagged companies, too much to send for the
+  // browser to rank. ?keys= is the reader's categories; unknown keys are dropped.
+  if (req.method === "GET" && path === "/api/alternatives") {
+    const rl = rateLimit("alternatives", ip, 600, 60 * 60 * 1000);
+    if (rl.limited) return sendJson(res, 429, { error: "Too many requests. Try again shortly." }, { "Retry-After": String(rl.retryAfter) });
+    const keys = String(url.searchParams.get("keys") || "").split(",").map((k) => k.trim()).filter(isScreenKey);
+    return sendJson(res, 200, alternatives({
+      keys,
+      group: url.searchParams.get("group") || null,
+      symbol: String(url.searchParams.get("symbol") || "").slice(0, 12),
+    }));
+  }
+
   if (req.method === "GET" && path === "/api/compare") {
     const rl = rateLimit("compare", ip, 240, 60 * 60 * 1000);
     if (rl.limited) return sendJson(res, 429, { error: "Too many comparisons. Try again shortly." }, { "Retry-After": String(rl.retryAfter) });
