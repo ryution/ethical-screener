@@ -9,7 +9,16 @@
 // HONESTY: the numbers here are computed from the same lookup the app uses, at request
 // time — never a hand-typed figure that goes stale.
 
+import { existsSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { lookupSymbol } from "./analyzer.js";
+
+// A fund's own preview image if scripts/build-og.mjs has made one, otherwise the general
+// one. Without this check a fund added after the last image build pointed at a missing file
+// and shared links showed no picture.
+const OG_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "public", "og");
+const ogFor = (sym) => (existsSync(join(OG_DIR, `${sym}.png`)) ? `/og/${sym}.png` : "/og/default.png");
 import { displayName, reasonParts } from "../../src/format.js";
 
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -52,7 +61,7 @@ export function shareMeta(symbol) {
     const description = contains.length
       ? `${r.name} tracks ${r.basis}. ${contains.length}${of} companies are flagged: ${top}. Every flag has a one-sentence reason and a source.${r.asOf ? ` Holdings as of ${r.asOf}.` : ""}`
       : `${r.name} tracks ${r.basis}. None of its holdings are on the lists we track, which means "not one of the names we track," never "audited clean."`;
-    return { title, description, ogImage: `/og/${sym}.png`, groups, contains, r };
+    return { title, description, ogImage: ogFor(sym), groups, contains, r };
   }
   if (r.type === "stock") {
     const labels = r.flags.map((f) => f.label).join(", ");
