@@ -1547,7 +1547,7 @@ function HotNews({ wrap }) {
     <section id="news" style={{ ...wrap, padding: "clamp(40px,5vw,60px) 24px 0", scrollMarginTop: 70 }}>
       <div style={{ marginBottom: 26 }}>
         <h2 style={{ fontFamily: headline, fontSize: "clamp(32px,4.6vw,48px)", color: L.pine, fontWeight: 400, margin: 0, letterSpacing: "-0.01em" }}>Hot off the wire</h2>
-        <p style={{ fontFamily: sans, fontSize: 15, color: L.muted, margin: "8px 0 0" }}>Recent BBC and New York Times headlines that name a company we flag, with the flag it carries. Headline and source only.</p>
+        <p style={{ fontFamily: sans, fontSize: 15, color: L.muted, margin: "8px 0 0" }}>Recent BBC and New York Times headlines that name a company we flag, with the flag it carries.</p>
       </div>
       {!items ? (
         <p style={{ textAlign: "center", fontFamily: sans, color: L.faint, fontSize: 14 }}>Loading…</p>
