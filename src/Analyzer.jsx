@@ -1603,9 +1603,9 @@ const METHOD_PRINCIPLES = [
   ["We cover U.S.-listed companies only", "We cover companies that file with the SEC. Foreign-listed companies, including 20-F filers and most ADRs, sit outside that. An empty result for one of those means we did not look, rather than that we looked and found nothing."],
 ];
 const METHOD_LAYERS = [
-  ["Curated", "A hand-maintained list of companies, researched from each one's primary business.", "Precise and defensible for well-known names."],
-  ["Industry code (SIC)", "The company's SEC-registered industry code, mapped to a flag where the code is a plain fact (oil refining, cigarettes).", "Broad, automatic, and deterministic across the market."],
-  ["Filing-cited (10-K)", "We read the relevant section of a company's annual report and return a verified, verbatim quote.", "Catches secondary lines of business and produces a real receipt."],
+  ["Curated", "A hand-maintained list of companies, researched from each one's primary business.", "This is where the names people ask about most live: ExxonMobil, Lockheed Martin, Altria. Each entry is written and checked by hand, so the list is short."],
+  ["Industry code (SIC)", "The company's SEC-registered industry code, mapped to a flag where the code is a plain fact (oil refining, cigarettes).", "It covers every SEC filer without anyone typing anything. It only knows a company's main industry, though."],
+  ["Filing-cited (10-K)", "We read the relevant section of a company's annual report and return a verified, verbatim quote.", "Berkshire Hathaway's industry code says insurance. Its annual report also describes about 20,900 miles of gas pipeline, and that's how it gets flagged here, with the quote attached so you can read it yourself."],
 ];
 const METHOD_CATALOGUE = [
   ["Environment", [
@@ -1694,14 +1694,13 @@ function Methodology({ onStart }) {
 
       <section style={{ background: L.card, borderTop: `1px solid ${L.line}`, borderBottom: `1px solid ${L.line}` }}>
         <div style={{ ...wrap, padding: "clamp(36px,5vw,52px) 24px" }}>
-          <SectionHead title="The three layers of detection" sub="A company is flagged if any layer flags it. When layers overlap, the most precise reason wins." />
+          <SectionHead title="How a company gets flagged" sub="A company is flagged if any layer flags it. When layers overlap, the most precise reason wins." />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(230px,1fr))", gap: 16 }}>
             {METHOD_LAYERS.map(([name, what, strength], i) => (
               <div key={i} style={card({ padding: "22px 20px", background: L.bg })}>
-                <div style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: L.brass }}>Layer {i + 1}</div>
-                <div style={{ fontFamily: serif, fontSize: 19, fontWeight: 600, color: L.pine, letterSpacing: "-0.01em", margin: "6px 0 8px" }}>{name}</div>
+                <div style={{ fontFamily: serif, fontSize: 19, fontWeight: 600, color: L.pine, letterSpacing: "-0.01em", margin: "0 0 8px" }}>{name}</div>
                 <p style={{ margin: 0, fontFamily: sans, fontSize: 14, color: L.muted, lineHeight: 1.55 }}>{what}</p>
-                <p style={{ margin: "8px 0 0", fontFamily: sans, fontSize: 13, color: L.faint, lineHeight: 1.5, fontStyle: "italic" }}>{strength}</p>
+                <p style={{ margin: "10px 0 0", fontFamily: sans, fontSize: 14, color: L.muted, lineHeight: 1.55 }}>{strength}</p>
               </div>
             ))}
           </div>
@@ -1813,45 +1812,85 @@ function StepList({ steps }) {
   );
 }
 
-// Hero illustration: flat sky and coral shapes with white line work, in the page's own
-// colors. A coin read as a fund (the navy wedges are its holdings), a magnifying glass
-// over it, and dotted leader lines out to tickers, like labels on a technical drawing.
-const HERO_STARS = [[56, 360, 7], [92, 330, 4], [120, 392, 5], [338, 372, 6], [380, 420, 4], [300, 436, 7], [26, 300, 4], [372, 70, 5], [400, 128, 3]];
+// Hero image: VOO drawn from its real holdings. One dot per company, laid out in a
+// sunflower spiral; the companies on at least one of our lists are coral. The count and
+// the share are the live numbers, so the picture changes when the holdings do.
+// Where a flagged company sits in the spiral is set by a hash of its name, so it stays
+// put between visits; the position itself means nothing, and the caption doesn't claim it does.
+const HERO_FUND = "VOO";
+const HERO_LABELS = ["XOM", "LMT", "MO", "META"];
+const mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+const hashName = (s) => { let h = 2166136261; for (const ch of String(s)) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 function HeroArt() {
-  const sky = P.sky, coral = P.coral, navy = P.page, ink = P.ink;
-  const star = ([x, y, r], i) => (
-    <g key={i} transform={`translate(${x} ${y})`} stroke={ink} strokeWidth={r > 5 ? 2 : 1.5} strokeLinecap="round">
-      <line x1={-r} y1="0" x2={r} y2="0" /><line x1={-r / 2} y1={-r * 0.87} x2={r / 2} y2={r * 0.87} /><line x1={-r / 2} y1={r * 0.87} x2={r / 2} y2={-r * 0.87} />
-    </g>
-  );
-  const label = { fontFamily: headline, fontStyle: "italic", fontSize: 17, fill: ink };
+  const [fund, setFund] = useState(null);
+  useEffect(() => { api(`/api/lookup?symbol=${HERO_FUND}`).then(setFund).catch(() => {}); }, []);
+  const total = fund?.totalCompanies || fund?.totalHoldings || 500;
+  const flagged = fund ? dedupeByName(fund.contains || []) : [];
+
+  const W = 460, cx = 230, cy = 200, R = 150;
+  const dots = Array.from({ length: total }, (_, i) => {
+    const r = (R * Math.sqrt(i + 0.5)) / Math.sqrt(total);
+    const a = i * 2.399963;   // the golden angle, in radians
+    return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a), r };
+  });
+  // Give each flagged company its own dot.
+  const owner = new Map();
+  for (const c of flagged) {
+    let i = hashName(c.name) % total;
+    while (owner.has(i)) i = (i + 1) % total;
+    owner.set(i, c);
+  }
+  // Labels sit in fixed slots down each side, so they never run off the edge or stack on
+  // each other; an elbowed leader line runs from each slot to its dot.
+  const picked = [...owner].filter(([, c]) => HERO_LABELS.includes(c.ticker)).slice(0, 4);
+  const labelled = [];
+  for (const side of [-1, 1]) {
+    const mine = picked.filter(([i]) => (dots[i].x < cx ? -1 : 1) === side).sort((a, b) => dots[a[0]].y - dots[b[0]].y);
+    mine.forEach(([i, c], k) => {
+      const slotY = cy - ((mine.length - 1) * 34) / 2 + k * 34;
+      labelled.push({ i, c, side, slotY, x: cx + side * (R + 30) });
+    });
+  }
+
   return (
-    <svg className="ps-hero-art" viewBox="0 0 420 460" role="img" aria-label="A magnifying glass over a coin, with tickers marked inside it"
-      style={{ width: "100%", maxWidth: 440, justifySelf: "end" }}>
-      <circle cx="168" cy="150" r="118" fill={sky} />
-      <circle cx="168" cy="150" r="104" fill="none" stroke={navy} strokeWidth="2.5" strokeDasharray="1.5 7" strokeLinecap="round" />
-      <circle cx="168" cy="150" r="74" fill="none" stroke={navy} strokeWidth="3" />
-      <path d="M168 150 L168 76 A74 74 0 0 1 238 127 Z" fill={navy} />
-      <path d="M168 150 L238 127 A74 74 0 0 1 212 210 Z" fill={navy} opacity="0.5" />
-      <path d="M168 150 L120 206 A74 74 0 0 1 96 132 Z" fill={navy} opacity="0.75" />
-      <line x1="168" y1="150" x2="168" y2="224" stroke={navy} strokeWidth="3" />
-      <rect x="252" y="318" width="168" height="142" fill={coral} />
-      <rect x="276" y="410" width="20" height="50" fill={navy} />
-      <rect x="306" y="386" width="20" height="74" fill={navy} />
-      <rect x="336" y="398" width="20" height="62" fill={navy} />
-      <rect x="366" y="356" width="20" height="104" fill={navy} />
-      <circle cx="268" cy="214" r="62" fill="none" stroke={ink} strokeWidth="3" />
-      <line x1="312" y1="258" x2="378" y2="324" stroke={ink} strokeWidth="11" strokeLinecap="round" />
-      <path d="M40 286 Q 190 352 336 250" fill="none" stroke={ink} strokeWidth="1.6" strokeDasharray="1 6" strokeLinecap="round" />
-      <line x1="212" y1="96" x2="300" y2="40" stroke={ink} strokeWidth="1.2" strokeDasharray="3 4" />
-      <text x="304" y="38" style={label}>XOM</text>
-      <line x1="226" y1="182" x2="332" y2="168" stroke={ink} strokeWidth="1.2" strokeDasharray="3 4" />
-      <text x="336" y="173" style={label}>LMT</text>
-      <line x1="112" y1="176" x2="34" y2="236" stroke={ink} strokeWidth="1.2" strokeDasharray="3 4" />
-      <text x="2" y="256" style={label}>MO</text>
-      <line x1="0" y1="404" x2="252" y2="452" stroke={ink} strokeWidth="1.4" strokeDasharray="7 6" />
-      {HERO_STARS.map(star)}
-    </svg>
+    <figure className="ps-hero-art" style={{ margin: 0, width: "100%", maxWidth: 440, justifySelf: "end" }}>
+      <svg viewBox={`0 0 ${W} 400`} role="img" style={{ width: "100%", display: "block" }}
+        aria-label={fund ? `${total} dots, one per company in ${HERO_FUND}; ${flagged.length} are highlighted as flagged` : `Dots for the companies in ${HERO_FUND}`}>
+        {Array.from({ length: 72 }, (_, k) => {
+          const a = (k / 72) * Math.PI * 2, long = k % 6 === 0;
+          const r1 = R + 12, r2 = R + (long ? 22 : 17);
+          return <line key={k} x1={cx + r1 * Math.cos(a)} y1={cy + r1 * Math.sin(a)} x2={cx + r2 * Math.cos(a)} y2={cy + r2 * Math.sin(a)} stroke={P.ink} strokeOpacity={long ? 0.5 : 0.22} strokeWidth="1" />;
+        })}
+        {dots.map((d, i) => {
+          const c = owner.get(i);
+          if (c) return null;
+          return <circle key={i} cx={d.x} cy={d.y} r="2.8" fill={P.sky} fillOpacity={0.66 - 0.36 * (d.r / R)} />;
+        })}
+        {[...owner].map(([i, c]) => (
+          <circle key={c.name} cx={dots[i].x} cy={dots[i].y} r="3.8" fill={P.coral}>
+            <title>{displayName(c.name)}</title>
+          </circle>
+        ))}
+        {labelled.map(({ i, c, side, slotY, x }) => {
+          const d = dots[i];
+          const elbowX = cx + side * (R + 14);
+          return (
+            <g key={c.ticker}>
+              <circle cx={d.x} cy={d.y} r="7.5" fill="none" stroke={P.coral} strokeWidth="1.3" />
+              <polyline points={`${d.x + side * 7.5},${d.y} ${elbowX},${slotY} ${x},${slotY}`} fill="none" stroke={P.ink} strokeOpacity="0.6" strokeWidth="1" />
+              <text x={x + side * 6} y={slotY + 4} textAnchor={side > 0 ? "start" : "end"}
+                style={{ fontFamily: mono, fontSize: 13, fill: P.ink, letterSpacing: "0.04em" }}>{c.ticker}</text>
+            </g>
+          );
+        })}
+      </svg>
+      {fund && (
+        <figcaption style={{ fontFamily: mono, fontSize: 11.5, color: D.faint, lineHeight: 1.55, marginTop: 6, textAlign: "center" }}>
+          {HERO_FUND}: {total} companies, one dot each.{" "}
+          <span style={{ color: P.coral }}>{flagged.length}</span> are on at least one of our lists.
+        </figcaption>
+      )}
+    </figure>
   );
 }
 
