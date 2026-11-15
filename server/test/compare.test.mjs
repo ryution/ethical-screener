@@ -49,10 +49,18 @@ test("ranking two different indexes always carries the different-index caveat", 
     "a lighter index is not a better conscience, and the verdict must say so");
 });
 
-test("a fund with no published total is shown but never ranked", () => {
-  // QQQ is the live case: four flagged names we are sure of, and no holdings list to
-  // divide them by. Inventing the denominator would be the one thing this page can't do.
+test("funds with holdings from different dates say so", () => {
   const c = cmp(["VOO", "QQQ"]);
+  assert.ok(c.verdict.caveats.some((x) => /different dates/.test(x) && /VOO on/.test(x) && /QQQ on/.test(x)));
+  const same = cmp(["VOO", "EFIV"]);
+  assert.ok(!same.verdict.caveats.some((x) => /different dates/.test(x)), "both SPDR files share a date");
+});
+
+test("a fund with no published total is shown but never ranked", () => {
+  // QQQ now has a real total from its SEC filing, so remove it here to test the case of a
+  // fund we can see inside but can't divide. Guessing the total is what this must not do.
+  const qqq = { ...lookupSymbol("QQQ"), totalHoldings: null, totalCompanies: null };
+  const c = compareFunds([lookupSymbol("VOO"), qqq], ALL);
   assert.deepEqual(c.analyzed, ["VOO", "QQQ"], "we can still see inside both");
   assert.deepEqual(c.rankable, ["VOO"]);
   assert.equal(c.verdict.kind, "listed");
@@ -95,11 +103,11 @@ test("a concentrated sector fund loses to the whole market on conduct", () => {
 
 test("a category in one fund and not the other is marked as exclusive", () => {
   const c = cmp(["VOO", "QQQ"]);
-  const fossil = c.categories.find((r) => r.key === "fossil_fuels");
-  assert.ok(fossil, "the S&P 500 holds oil companies");
-  assert.equal(fossil.only, "VOO", "and the Nasdaq-100 does not");
-  assert.equal(fossil.counts.QQQ, 0);
-  assert.ok(fossil.counts.VOO > 0);
+  const tobacco = c.categories.find((r) => r.key === "tobacco");
+  assert.ok(tobacco, "the S&P 500 holds tobacco companies");
+  assert.equal(tobacco.only, "VOO", "and the Nasdaq-100 does not");
+  assert.equal(tobacco.counts.QQQ, 0);
+  assert.ok(tobacco.counts.VOO > 0);
 });
 
 test("companies both funds hold are shared; the rest belong to exactly one", () => {

@@ -8,6 +8,7 @@
 
 import { SCREENS, SCREEN_KEYS, isScreenKey } from "../server/lib/screens.js";
 import { FUNDS } from "../server/lib/funds.js";
+import { holdingsMeta } from "../server/lib/holdings.js";
 import { screensForSic, SIC_CLASSIFIED, CURATED_ONLY } from "../server/lib/sic.js";
 import { readFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -49,7 +50,14 @@ console.log("funds.js");
     if (!TICKER_RE.test(ticker)) err(`fund key malformed: "${ticker}"`);
     if (!f.name) err(`fund ${ticker} has no name`);
     if (!f.basis) err(`fund ${ticker} has no basis`);
-    if (!Array.isArray(f.holds) || !f.holds.length) { err(`fund ${ticker} holds nothing`); continue; }
+    if (!Array.isArray(f.holds)) { err(`fund ${ticker} holds nothing`); continue; }
+    // Zero flagged companies is real when the download worked (a materials fund can hold
+    // 25 companies and none be on our lists). Without a confirmed download it's an error.
+    if (!f.holds.length) {
+      const src = holdingsMeta().sources?.[f.basisKey];
+      if (!(src && !src.error && src.totalHoldings > 0)) err(`fund ${ticker} holds nothing`);
+      continue;
+    }
     const seen = new Set();
     for (const h of f.holds) {
       if (!TICKER_RE.test(h)) err(`fund ${ticker}: malformed constituent "${h}"`);
@@ -103,35 +111,45 @@ console.log("generated/companies.json");
   }
 }
 
-// ── generated/fund-holdings.json (live ETF holdings overlay) ─────────────────────
-console.log("generated/fund-holdings.json");
-{
-  const FILE = join(dirname(fileURLToPath(import.meta.url)), "..", "server", "generated", "fund-holdings.json");
-  if (!existsSync(FILE)) {
-    warn("no live holdings yet — run `node scripts/fetch-holdings.mjs` (funds.js uses curated fallback)");
-  } else {
-    let d;
-    try { d = JSON.parse(readFileSync(FILE, "utf8")); } catch (e) { err(`unparseable: ${e.message}`); d = null; }
-    if (d) {
-      if (!d.lastUpdated || Number.isNaN(Date.parse(d.lastUpdated))) err("missing/invalid lastUpdated");
-      const baskets = d.baskets || {};
-      if (!Object.keys(baskets).length) err("no baskets — the fetch produced nothing");
-      for (const [basis, list] of Object.entries(baskets)) {
-        if (!Array.isArray(list) || !list.length) { err(`basket ${basis} is empty`); continue; }
-        const seen = new Set();
-        for (const t of list) {
-          if (!TICKER_RE.test(t)) err(`basket ${basis}: malformed constituent "${t}"`);
-          if (seen.has(t)) warn(`basket ${basis}: ${t} listed twice`);
-          seen.add(t);
-        }
-      }
-      const stale = d.lastUpdated ? Math.floor((Date.now() - Date.parse(d.lastUpdated)) / 86400000) : null;
-      if (stale != null && stale > 45) warn(`holdings are ${stale} days old — consider re-running the fetch`);
-      const summary = Object.entries(baskets).map(([b, l]) => `${b}:${l.length}`).join(", ");
-      console.log(`  ${Object.keys(baskets).length} baskets (${summary}), updated ${d.lastUpdated?.slice(0, 10)}`);
+// ── generated holdings files: SPDR daily files and SEC N-PORT filings ─────────────
+function checkHoldingsFile(name, missingHint) {
+  console.log(`generated/${name}`);
+  const FILE = join(dirname(fileURLToPath(import.meta.url)), "..", "server", "generated", name);
+  if (!existsSync(FILE)) { warn(missingHint); return; }
+  let d;
+  try { d = JSON.parse(readFileSync(FILE, "utf8")); } catch (e) { err(`unparseable: ${e.message}`); return; }
+  if (!d.lastUpdated || Number.isNaN(Date.parse(d.lastUpdated))) err("missing/invalid lastUpdated");
+  const baskets = d.baskets || {};
+  const sources = d.sources || {};
+  if (!Object.keys(baskets).length) err("no baskets: the fetch produced nothing");
+  for (const [basis, list] of Object.entries(baskets)) {
+    if (!Array.isArray(list)) { err(`basket ${basis} is not a list`); continue; }
+    // An empty basket is fine only when the download worked and found holdings.
+    if (!list.length) {
+      const src = sources[basis];
+      if (!(src && !src.error && src.totalHoldings > 0)) err(`basket ${basis} is empty`);
+      continue;
+    }
+    const seen = new Set();
+    for (const t of list) {
+      if (!TICKER_RE.test(t)) err(`basket ${basis}: malformed constituent "${t}"`);
+      if (seen.has(t)) warn(`basket ${basis}: ${t} listed twice`);
+      seen.add(t);
     }
   }
+  for (const [basis, src] of Object.entries(sources)) {
+    if (src.error) warn(`${basis} (${src.fund}): last fetch failed: ${src.error}`);
+    // N-PORT holdings are matched to tickers by CUSIP and name. Say so when much of a
+    // fund didn't match, because unmatched holdings can only make it look cleaner.
+    if (src.matchedShare != null && src.matchedShare < 0.8) warn(`${basis} (${src.fund}): only ${Math.round(src.matchedShare * 100)}% of its value matched a ticker`);
+  }
+  const stale = d.lastUpdated ? Math.floor((Date.now() - Date.parse(d.lastUpdated)) / 86400000) : null;
+  if (stale != null && stale > 45) warn(`holdings are ${stale} days old; consider re-running the fetch`);
+  const summary = Object.entries(baskets).map(([b, l]) => `${b}:${l.length}`).join(", ");
+  console.log(`  ${Object.keys(baskets).length} baskets (${summary}), updated ${d.lastUpdated?.slice(0, 10)}`);
 }
+checkHoldingsFile("fund-holdings.json", "no live holdings yet. Run `node scripts/fetch-holdings.mjs` (funds.js uses curated fallback)");
+checkHoldingsFile("fund-holdings-nport.json", "no N-PORT holdings yet. Run `node scripts/fetch-nport.mjs`");
 
 console.log(`\n${errors} error${errors === 1 ? "" : "s"}, ${warnings} warning${warnings === 1 ? "" : "s"}`);
 process.exit(errors ? 1 : 0);

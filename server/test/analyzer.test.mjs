@@ -16,7 +16,7 @@ const positions = [
   { account: "Ind", symbol: "XOM",   description: "ExxonMobil",      kind: "stock",      units: 10,  price: 110,   valueCents: 110000 },
   { account: "Ind", symbol: "LMT",   description: "Lockheed Martin", kind: "stock",      units: 2,   price: 450,   valueCents: 90000 },
   { account: "Ind", symbol: "VOO",   description: "Vanguard S&P 500",kind: "etf",        units: 15,  price: 500,   valueCents: 750000 },
-  { account: "IRA", symbol: "ARKK",  description: "ARK Innovation",  kind: "etf",        units: 10,  price: 50,    valueCents: 50000 },
+  { account: "IRA", symbol: "AIQ",   description: "Global X AI ETF", kind: "etf",        units: 10,  price: 50,    valueCents: 50000 },
   { account: "Ind", symbol: "BTC",   description: "Bitcoin",         kind: "crypto",     units: 0.25,price: 59000, valueCents: 1475000 },
 ];
 
@@ -83,7 +83,8 @@ test("supplier_audit_violations reason states remediation, not just the violatio
 console.log("funds:");
 test("VOO is a known fund", () => assert.ok(knownFund("VOO")));
 test("VOO holds Exxon and Lockheed", () => { const f = knownFund("VOO"); assert.ok(f.holds.includes("XOM") && f.holds.includes("LMT")); });
-test("ARKK is not a known fund", () => assert.equal(knownFund("ARKK"), null));
+test("AIQ is not a known fund", () => assert.equal(knownFund("AIQ"), null));
+test("ARKK is read from its SEC filing", () => assert.ok(knownFund("ARKK")));
 
 console.log("analyzer — direct stocks:");
 test("flags exactly the conflicted stocks", () => {
@@ -117,9 +118,9 @@ test("VOO respects the active screens", () => {
   const voo = a.holdings.find((h) => h.symbol === "VOO");
   assert.ok(voo.contains.every((c) => c.flags.every((f) => f.key === "fossil_fuels")));
 });
-test("unknown fund ARKK stays not-analyzed, never called clean", () => {
+test("unknown fund AIQ stays not-analyzed, never called clean", () => {
   const a = analyze(positions, ["fossil_fuels", "weapons"]);
-  const arkk = a.holdings.find((h) => h.symbol === "ARKK");
+  const arkk = a.holdings.find((h) => h.symbol === "AIQ");
   assert.equal(arkk.analyzable, false);
   assert.equal(arkk.conflicted, false);
 });
@@ -139,7 +140,7 @@ test("byFlag rolls up stock dollars and fund companies", () => {
 test("summary counts analyzed vs opaque funds", () => {
   const a = analyze(positions, ["fossil_fuels"]);
   assert.equal(a.summary.analyzedFunds, 1);   // VOO
-  assert.equal(a.summary.opaqueFunds, 1);     // ARKK
+  assert.equal(a.summary.opaqueFunds, 1);     // AIQ
 });
 test("no active screens -> nothing conflicted", () => {
   const a = analyze(positions, []);
@@ -189,9 +190,14 @@ test("a known filer with no flags is 'none' with known:true and a name", () => {
   const r = lookupSymbol("MSFT");
   assert.equal(r.type, "none"); assert.equal(r.known, true); assert.ok(r.name);
 });
-test("an ESG fund we can't see inside is 'not analyzed', not empty", () => {
+test("a fund we can't see inside is 'not analyzed', not empty", () => {
+  const r = lookupSymbol("VXUS");
+  assert.equal(r.type, "fund"); assert.equal(r.analyzable, false); assert.ok(/international/i.test(r.notAnalyzedReason));
+});
+test("an ESG fund read from its SEC filing reports its size and date", () => {
   const r = lookupSymbol("ESGV");
-  assert.equal(r.type, "fund"); assert.equal(r.analyzable, false); assert.ok(/not|doesn't publish/i.test(r.notAnalyzedReason));
+  assert.equal(r.type, "fund"); assert.notEqual(r.analyzable, false);
+  assert.ok(r.totalHoldings > 500); assert.ok(r.asOf); assert.match(r.holdingsSource, /N-PORT/);
 });
 test("a live-basket fund reports its index size and as-of date", () => {
   const r = lookupSymbol("VOO");

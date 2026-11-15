@@ -3,6 +3,8 @@
 # Two free, no-key data layers age on their own:
 #   • EDGAR/SIC classification (scripts/enrich-edgar.mjs) — new SEC filers appear.
 #   • ETF holdings (scripts/fetch-holdings.mjs) — index membership drifts.
+#   • Fund holdings from SEC Form N-PORT filings (scripts/fetch-nport.mjs), for funds
+#     outside the SPDR range. New filings arrive each quarter.
 #
 # This job re-runs both on a schedule, validates the result, and commits the
 # regenerated files back to the repo. That commit triggers the normal Vercel
@@ -55,7 +57,8 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add server/generated/companies.json server/generated/fund-holdings.json
+          git add server/generated/companies.json server/generated/fund-holdings.json \
+                  server/generated/fund-holdings-nport.json server/generated/cusip-tickers.json
           if git diff --cached --quiet; then
             echo "No data changes — nothing to commit."
           else

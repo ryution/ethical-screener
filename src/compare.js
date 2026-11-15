@@ -183,6 +183,11 @@ function verdictFor(analyzed, rankable, all, sel) {
     caveats.push(`These funds track different indexes (${bases.join(" and ")}), so they hold different industries, and some of the difference comes from that. For example, a tech index holds few oil companies.`);
   }
   for (const e of excluded) caveats.push(`${e.symbol} isn't included: ${e.reason}`);
+  // SPDR files are daily, SEC filings are quarterly, so two funds can be months apart.
+  const dates = analyzed.filter((f) => f.asOf);
+  if (new Set(dates.map((f) => f.asOf)).size > 1) {
+    caveats.push(`These holdings are from different dates (${dates.map((f) => `${f.symbol} on ${f.asOf}`).join(", ")}). A fund can change what it holds in between.`);
+  }
   caveats.push("Fewer flagged companies doesn't mean a fund is clean. It only means fewer of its companies are on the lists you turned on. Companies we have no data on aren't counted.");
   caveats.push("This only compares holdings. It doesn't cover fees, returns, or whether either fund is right for you.");
 

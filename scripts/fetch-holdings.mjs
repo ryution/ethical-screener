@@ -30,6 +30,9 @@ import { filingFlagsFor } from "../server/lib/filings.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const OUT = join(HERE, "..", "server", "generated", "fund-holdings.json");
+// Every CUSIP-to-ticker pair seen in these files. fetch-nport.mjs uses it to turn SEC
+// filings, which list CUSIPs and names but rarely tickers, into tickers.
+const CUSIP_OUT = join(HERE, "..", "server", "generated", "cusip-tickers.json");
 const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
 
 // One authoritative, daily-published fund per basis. QQQ's issuer (Invesco) blocks
@@ -152,6 +155,7 @@ function extract(rows) {
   // be counted the same way or the sentence compares companies against line items and
   // overstates the denominator. Counting distinct names is exactly what the UI does.
   const ncol = rows[hi].findIndex((c) => /^name$/i.test(String(c ?? "").trim()));
+  const icol = rows[hi].findIndex((c) => /^identifier$/i.test(String(c ?? "").trim()));
   // A holdings file carries non-equity lines too: DIA ends with ticker "-" named
   // "US DOLLAR", which is the fund's cash, not a company. Requiring a letter in the
   // ticker drops those without hardcoding what any issuer happens to call them.
@@ -172,17 +176,22 @@ function extract(rows) {
     const m = decode(cell).match(/As of (\d{1,2}-[A-Za-z]{3}-\d{4})/);
     if (m) { asOf = m[1]; break outer; }
   }
-  return { tickers, totalCompanies, asOf };
+  const cusips = icol >= 0
+    ? dataRows.map((r) => [String(r[icol] ?? "").trim().toUpperCase(), r[tcol]]).filter(([c]) => /^[0-9A-Z]{9}$/.test(c))
+    : [];
+  return { tickers, totalCompanies, asOf, cusips };
 }
 
 async function main() {
   const baskets = {};
   const sources = {};
+  const cusipMap = {};
   for (const [basisKey, src] of Object.entries(SOURCES)) {
     process.stdout.write(`Fetching ${src.fund} (${basisKey})… `);
     try {
       const buf = await fetchBuffer(src.url);
-      const { tickers, totalCompanies, asOf } = extract(parseXlsx(buf));
+      const { tickers, totalCompanies, asOf, cusips } = extract(parseXlsx(buf));
+      for (const [c, t] of cusips) cusipMap[c] = t;
       // A file with no holdings means the fund closed or the file moved. Keep the old data.
       if (!tickers.length) throw new Error(`no holdings in the file (as of ${asOf || "unknown"})`);
       // Keep the screened names, deduped, in the file's own order (index weight order).
@@ -200,7 +209,9 @@ async function main() {
       sources[basisKey] = { fund: src.fund, label: src.label, error: e.message };
     }
   }
-  sources.nasdaq100 = { curated: true, note: "No free live source (Invesco blocks scripted downloads); curated fallback in funds.js." };
+  // Invesco blocks scripted downloads. fetch-nport.mjs fills the Nasdaq-100 from QQQ's SEC
+  // filing; this marker only matters if that file is missing.
+  sources.nasdaq100 = { curated: true, note: "Filled from QQQ's SEC N-PORT filing by fetch-nport.mjs; curated fallback in funds.js otherwise." };
 
   if (!Object.keys(baskets).length) {
     console.error("\nNo baskets fetched — leaving fund-holdings.json untouched.");
@@ -214,6 +225,8 @@ async function main() {
     sources,
     baskets,
   }, null, 0) + "\n");
+  writeFileSync(CUSIP_OUT, JSON.stringify({ lastUpdated: new Date().toISOString(), source: "CUSIP and ticker columns of the SPDR daily holdings files", count: Object.keys(cusipMap).length, map: cusipMap }) + "\n");
+  console.log(`Wrote ${Object.keys(cusipMap).length} CUSIP-to-ticker pairs → ${CUSIP_OUT}`);
   const total = Object.values(baskets).reduce((n, b) => n + b.length, 0);
   console.log(`\nWrote ${Object.keys(baskets).length} live baskets (${total} screened constituents) → ${OUT}`);
 }

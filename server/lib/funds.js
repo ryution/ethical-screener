@@ -66,7 +66,8 @@ const HEALTHCARE = ["JNJ", "MCK", "CAH", "COR"];
 // fetched them, from the issuer's daily holdings (see holdings.js / fetch-holdings.mjs);
 // otherwise from the conservative curated fallback above. Grouping by basis means one
 // authoritative live source refreshes every fund that tracks it (SPY→S&P 500, SPTM→total,
-// SPYG→growth, SPYV→value). The Nasdaq-100 has no free live source, so it stays curated.
+// SPYG→growth, SPYV→value). The Nasdaq-100 comes from QQQ's SEC filing; the curated list
+// is only used if that filing is missing.
 const FALLBACK = { sp500: SP500, total: TOTAL, nasdaq100: NASDAQ100, large_growth: GROWTH, large_value: VALUE, healthcare: HEALTHCARE };
 // Bases with no curated fallback (ESG / fossil-free / Dow / mid / small) exist only while
 // the live basket is present; without it the fund is simply not in the catalogue, which
@@ -81,18 +82,18 @@ const CATALOGUE = {
   FXAIX: { name: "Fidelity 500 Index Fund",                 basis: "the S&P 500",             basisKey: "sp500" },
   VFIAX: { name: "Vanguard 500 Index Fund",                 basis: "the S&P 500",             basisKey: "sp500" },
   SWPPX: { name: "Schwab S&P 500 Index Fund",               basis: "the S&P 500",             basisKey: "sp500" },
-  VTI:   { name: "Vanguard Total Stock Market ETF",         basis: "the total US market",     basisKey: "total" },
-  ITOT:  { name: "iShares Core S&P Total US Stock Market",  basis: "the total US market",     basisKey: "total" },
-  VTSAX: { name: "Vanguard Total Stock Market Index Fund",  basis: "the total US market",     basisKey: "total" },
-  SCHB:  { name: "Schwab U.S. Broad Market ETF",            basis: "the total US market",     basisKey: "total" },
-  QQQ:   { name: "Invesco QQQ Trust (Nasdaq-100)",          basis: "the Nasdaq-100",          basisKey: "nasdaq100" },
+  VTI: { name: "Vanguard Total Stock Market ETF", basis: "the total US market (CRSP US Total Market Index)", basisKey: "crsp_total" },
+  ITOT: { name: "iShares Core S&P Total US Stock Market ETF", basis: "the total US market (S&P Total Market Index)", basisKey: "sp_total" },
+  VTSAX: { name: "Vanguard Total Stock Market Index Fund", basis: "the total US market (CRSP US Total Market Index)", basisKey: "crsp_total" },
+  SCHB: { name: "Schwab U.S. Broad Market ETF", basis: "the broad US market (Dow Jones U.S. Broad Stock Market Index)", basisKey: "dj_broad" },
+  QQQ: { name: "Invesco QQQ Trust (Nasdaq-100)", basis: "the Nasdaq-100", basisKey: "nasdaq100" },
   XLV:   { name: "Health Care Select Sector SPDR",          basis: "the U.S. health-care sector", basisKey: "healthcare" },
-  VUG:   { name: "Vanguard Growth ETF",                     basis: "large-cap US growth",     basisKey: "large_growth" },
-  IWF:   { name: "iShares Russell 1000 Growth ETF",         basis: "large-cap US growth",     basisKey: "large_growth" },
-  SCHG:  { name: "Schwab U.S. Large-Cap Growth ETF",        basis: "large-cap US growth",     basisKey: "large_growth" },
-  VTV:   { name: "Vanguard Value ETF",                      basis: "large-cap US value",      basisKey: "large_value" },
-  IWD:   { name: "iShares Russell 1000 Value ETF",          basis: "large-cap US value",      basisKey: "large_value" },
-  SCHV:  { name: "Schwab U.S. Large-Cap Value ETF",         basis: "large-cap US value",      basisKey: "large_value" },
+  VUG: { name: "Vanguard Growth ETF", basis: "US large-cap growth (CRSP US Large Cap Growth Index)", basisKey: "crsp_growth" },
+  IWF: { name: "iShares Russell 1000 Growth ETF", basis: "the Russell 1000 Growth", basisKey: "r1000_growth" },
+  SCHG: { name: "Schwab U.S. Large-Cap Growth ETF", basis: "US large-cap growth (Dow Jones U.S. Large-Cap Growth Index)", basisKey: "dj_lc_growth" },
+  VTV: { name: "Vanguard Value ETF", basis: "US large-cap value (CRSP US Large Cap Value Index)", basisKey: "crsp_value" },
+  IWD: { name: "iShares Russell 1000 Value ETF", basis: "the Russell 1000 Value", basisKey: "r1000_value" },
+  SCHV: { name: "Schwab U.S. Large-Cap Value ETF", basis: "US large-cap value (Dow Jones U.S. Large-Cap Value Index)", basisKey: "dj_lc_value" },
   // "Responsible" cuts of the S&P 500 — the question people actually ask is whether the
   // ESG version of their fund is clean. Live holdings only (see holdsFor).
   EFIV:  { name: "SPDR S&P 500 ESG ETF",                    basis: "the S&P 500 ESG index",   basisKey: "sp500_esg" },
@@ -104,7 +105,7 @@ const CATALOGUE = {
   IJR:   { name: "iShares Core S&P Small-Cap ETF",          basis: "the S&P SmallCap 600",    basisKey: "smallcap" },
   // SPDR funds that track an index already covered above.
   MDY:   { name: "SPDR S&P MidCap 400 ETF Trust", basis: "the S&P MidCap 400", basisKey: "midcap" },
-  SPTM:  { name: "SPDR Portfolio S&P 1500 Composite Stock Market ETF", basis: "the total US market", basisKey: "total" },
+  SPTM: { name: "SPDR Portfolio S&P 1500 Composite Stock Market ETF", basis: "the total US market (S&P Composite 1500)", basisKey: "total" },
   // Sector, industry and dividend SPDRs, each with its own daily holdings file. Live
   // holdings only, like the ESG funds above.
   XLK: { name: "Technology Select Sector SPDR", basis: "U.S. large-cap technology stocks", basisKey: "xlk" },
@@ -138,6 +139,84 @@ const CATALOGUE = {
   XNTK: { name: "SPDR NYSE Technology ETF", basis: "large U.S.-listed technology stocks", basisKey: "xntk" },
   SDY: { name: "SPDR S&P Dividend ETF", basis: "U.S. stocks that have raised dividends for 20+ years", basisKey: "sdy" },
   SPYD: { name: "SPDR Portfolio S&P 500 High Dividend ETF", basis: "the 80 highest-yielding S&P 500 stocks", basisKey: "spyd" },
+  // Funds read from their SEC Form N-PORT filings (scripts/fetch-nport.mjs). Holdings
+  // are as of the filing's quarter end, which the page shows.
+  QQQM: { name: "Invesco NASDAQ 100 ETF", basis: "the Nasdaq-100", basisKey: "nasdaq100" },
+  VIGAX: { name: "Vanguard Growth Index Fund", basis: "US large-cap growth (CRSP US Large Cap Growth Index)", basisKey: "crsp_growth" },
+  VVIAX: { name: "Vanguard Value Index Fund", basis: "US large-cap value (CRSP US Large Cap Value Index)", basisKey: "crsp_value" },
+  VONG: { name: "Vanguard Russell 1000 Growth ETF", basis: "the Russell 1000 Growth", basisKey: "r1000_growth" },
+  VONV: { name: "Vanguard Russell 1000 Value ETF", basis: "the Russell 1000 Value", basisKey: "r1000_value" },
+  SPYG: { name: "SPDR Portfolio S&P 500 Growth ETF", basis: "the S&P 500 Growth Index", basisKey: "large_growth" },
+  IVW: { name: "iShares S&P 500 Growth ETF", basis: "the S&P 500 Growth Index", basisKey: "large_growth" },
+  VOOG: { name: "Vanguard S&P 500 Growth ETF", basis: "the S&P 500 Growth Index", basisKey: "large_growth" },
+  SPYV: { name: "SPDR Portfolio S&P 500 Value ETF", basis: "the S&P 500 Value Index", basisKey: "large_value" },
+  IVE: { name: "iShares S&P 500 Value ETF", basis: "the S&P 500 Value Index", basisKey: "large_value" },
+  VOOV: { name: "Vanguard S&P 500 Value ETF", basis: "the S&P 500 Value Index", basisKey: "large_value" },
+  RSP: { name: "Invesco S&P 500 Equal Weight ETF", basis: "the S&P 500", basisKey: "sp500" },
+  FSKAX: { name: "Fidelity Total Market Index Fund", basis: "the total US market (Dow Jones U.S. Total Stock Market Index)", basisKey: "fid_total" },
+  FZROX: { name: "Fidelity ZERO Total Market Index Fund", basis: "the total US market (Fidelity U.S. Total Investable Market Index)", basisKey: "fzrox" },
+  SWTSX: { name: "Schwab Total Stock Market Index Fund", basis: "the total US market (Dow Jones U.S. Total Stock Market Index)", basisKey: "swtsx" },
+  IWB: { name: "iShares Russell 1000 ETF", basis: "the Russell 1000", basisKey: "russell1000" },
+  VONE: { name: "Vanguard Russell 1000 ETF", basis: "the Russell 1000", basisKey: "russell1000" },
+  IWM: { name: "iShares Russell 2000 ETF", basis: "the Russell 2000", basisKey: "russell2000" },
+  VTWO: { name: "Vanguard Russell 2000 ETF", basis: "the Russell 2000", basisKey: "russell2000" },
+  IWV: { name: "iShares Russell 3000 ETF", basis: "the Russell 3000", basisKey: "russell3000" },
+  VTHR: { name: "Vanguard Russell 3000 ETF", basis: "the Russell 3000", basisKey: "russell3000" },
+  IWR: { name: "iShares Russell Mid-Cap ETF", basis: "the Russell Midcap", basisKey: "russell_mid" },
+  VV: { name: "Vanguard Large-Cap ETF", basis: "US large caps (CRSP US Large Cap Index)", basisKey: "crsp_large" },
+  VO: { name: "Vanguard Mid-Cap ETF", basis: "US mid caps (CRSP US Mid Cap Index)", basisKey: "crsp_mid" },
+  VB: { name: "Vanguard Small-Cap ETF", basis: "US small caps (CRSP US Small Cap Index)", basisKey: "crsp_small" },
+  VXF: { name: "Vanguard Extended Market ETF", basis: "US stocks outside the S&P 500", basisKey: "crsp_ext" },
+  SCHX: { name: "Schwab U.S. Large-Cap ETF", basis: "US large caps (Dow Jones U.S. Large-Cap Index)", basisKey: "dj_lc" },
+  SCHM: { name: "Schwab U.S. Mid-Cap ETF", basis: "US mid caps (Dow Jones U.S. Mid-Cap Index)", basisKey: "dj_mc" },
+  SCHA: { name: "Schwab U.S. Small-Cap ETF", basis: "US small caps (Dow Jones U.S. Small-Cap Index)", basisKey: "dj_sc" },
+  MGK: { name: "Vanguard Mega Cap Growth ETF", basis: "the largest US growth stocks (CRSP US Mega Cap Growth Index)", basisKey: "crsp_mega_growth" },
+  SCHD: { name: "Schwab U.S. Dividend Equity ETF", basis: "US dividend stocks (Dow Jones U.S. Dividend 100 Index)", basisKey: "schd" },
+  VIG: { name: "Vanguard Dividend Appreciation ETF", basis: "US stocks with 10+ years of dividend growth", basisKey: "vig" },
+  VYM: { name: "Vanguard High Dividend Yield ETF", basis: "US high-dividend stocks (FTSE High Dividend Yield Index)", basisKey: "vym" },
+  DGRO: { name: "iShares Core Dividend Growth ETF", basis: "US dividend-growth stocks (Morningstar index)", basisKey: "dgro" },
+  DVY: { name: "iShares Select Dividend ETF", basis: "US high-dividend stocks (Dow Jones U.S. Select Dividend Index)", basisKey: "dvy" },
+  HDV: { name: "iShares Core High Dividend ETF", basis: "US high-dividend stocks (Morningstar Dividend Yield Focus Index)", basisKey: "hdv" },
+  NOBL: { name: "ProShares S&P 500 Dividend Aristocrats ETF", basis: "S&P 500 stocks with 25+ years of dividend increases", basisKey: "nobl" },
+  DGRW: { name: "WisdomTree U.S. Quality Dividend Growth Fund", basis: "US dividend-growth stocks (WisdomTree index)", basisKey: "dgrw" },
+  VGT: { name: "Vanguard Information Technology ETF", basis: "US technology stocks (MSCI index)", basisKey: "vgt" },
+  VHT: { name: "Vanguard Health Care ETF", basis: "US health care stocks (MSCI index)", basisKey: "vht" },
+  VNQ: { name: "Vanguard Real Estate ETF", basis: "US real estate stocks (MSCI index)", basisKey: "vnq" },
+  VFH: { name: "Vanguard Financials ETF", basis: "US financial stocks (MSCI index)", basisKey: "vfh" },
+  VDE: { name: "Vanguard Energy ETF", basis: "US energy stocks (MSCI index)", basisKey: "vde" },
+  VCR: { name: "Vanguard Consumer Discretionary ETF", basis: "US consumer discretionary stocks (MSCI index)", basisKey: "vcr" },
+  VDC: { name: "Vanguard Consumer Staples ETF", basis: "US consumer staples stocks (MSCI index)", basisKey: "vdc" },
+  VIS: { name: "Vanguard Industrials ETF", basis: "US industrial stocks (MSCI index)", basisKey: "vis" },
+  VAW: { name: "Vanguard Materials ETF", basis: "US materials stocks (MSCI index)", basisKey: "vaw" },
+  VPU: { name: "Vanguard Utilities ETF", basis: "US utility stocks (MSCI index)", basisKey: "vpu" },
+  VOX: { name: "Vanguard Communication Services ETF", basis: "US communication services stocks (MSCI index)", basisKey: "vox" },
+  SMH: { name: "VanEck Semiconductor ETF", basis: "the 25 largest US-listed chip companies", basisKey: "smh" },
+  SOXX: { name: "iShares Semiconductor ETF", basis: "US-listed semiconductor stocks (NYSE index)", basisKey: "soxx" },
+  IBB: { name: "iShares Biotechnology ETF", basis: "US-listed biotech stocks (Nasdaq index)", basisKey: "ibb" },
+  IYW: { name: "iShares U.S. Technology ETF", basis: "US technology stocks (Dow Jones index)", basisKey: "iyw" },
+  IHI: { name: "iShares U.S. Medical Devices ETF", basis: "US medical device stocks", basisKey: "ihi" },
+  ITA: { name: "iShares U.S. Aerospace & Defense ETF", basis: "US aerospace and defense stocks (Dow Jones index)", basisKey: "ita" },
+  ITB: { name: "iShares U.S. Home Construction ETF", basis: "US homebuilder stocks (Dow Jones index)", basisKey: "itb" },
+  PPA: { name: "Invesco Aerospace & Defense ETF", basis: "US aerospace and defense stocks (SPADE index)", basisKey: "ppa" },
+  JETS: { name: "U.S. Global Jets ETF", basis: "airline stocks", basisKey: "jets" },
+  USMV: { name: "iShares MSCI USA Min Vol Factor ETF", basis: "lower-volatility US stocks (MSCI index)", basisKey: "usmv" },
+  QUAL: { name: "iShares MSCI USA Quality Factor ETF", basis: "US quality stocks (MSCI index)", basisKey: "qual" },
+  MTUM: { name: "iShares MSCI USA Momentum Factor ETF", basis: "US momentum stocks (MSCI index)", basisKey: "mtum" },
+  SPLV: { name: "Invesco S&P 500 Low Volatility ETF", basis: "the 100 least volatile S&P 500 stocks", basisKey: "splv" },
+  JEPI: { name: "JPMorgan Equity Premium Income ETF", basis: "an actively managed portfolio of US stocks", basisKey: "jepi" },
+  JEPQ: { name: "JPMorgan Nasdaq Equity Premium Income ETF", basis: "an actively managed portfolio of Nasdaq-100 stocks", basisKey: "jepq" },
+  COWZ: { name: "Pacer US Cash Cows 100 ETF", basis: "100 US stocks with high free cash flow", basisKey: "cowz" },
+  MOAT: { name: "VanEck Morningstar Wide Moat ETF", basis: "US stocks Morningstar rates as having a wide moat", basisKey: "moat" },
+  ARKK: { name: "ARK Innovation ETF", basis: "ARK's actively managed innovation picks", basisKey: "arkk" },
+  ARKG: { name: "ARK Genomic Revolution ETF", basis: "ARK's actively managed genomics picks", basisKey: "arkg" },
+  ARKW: { name: "ARK Next Generation Internet ETF", basis: "ARK's actively managed internet picks", basisKey: "arkw" },
+  ARKQ: { name: "ARK Autonomous Technology & Robotics ETF", basis: "ARK's actively managed robotics picks", basisKey: "arkq" },
+  ARKF: { name: "ARK Fintech Innovation ETF", basis: "ARK's actively managed fintech picks", basisKey: "arkf" },
+  ESGU: { name: "iShares ESG Aware MSCI USA ETF", basis: "US stocks weighted toward higher ESG ratings (MSCI index)", basisKey: "esgu" },
+  ESGV: { name: "Vanguard ESG U.S. Stock ETF", basis: "US stocks after ESG exclusions (FTSE US All Cap Choice Index)", basisKey: "esgv" },
+  SUSA: { name: "iShares MSCI USA ESG Select ETF", basis: "US stocks with high ESG ratings (MSCI ESG Select Index)", basisKey: "susa" },
+  DSI: { name: "iShares MSCI KLD 400 Social ETF", basis: "400 US stocks picked on ESG ratings (MSCI KLD 400 Social Index)", basisKey: "dsi" },
+  VFTAX: { name: "Vanguard FTSE Social Index Fund", basis: "US stocks after social screens (FTSE4Good US Select Index)", basisKey: "vftax" },
 };
 
 /** ticker -> { name, basis (plain-English index), holds (screened constituents) }. */
@@ -146,6 +225,9 @@ export const FUNDS = Object.fromEntries(
     .map(([t, f]) => [t, { name: f.name, basis: f.basis, basisKey: f.basisKey, holds: holdsFor(f.basisKey) }])
     .filter(([, f]) => Array.isArray(f.holds)),
 );
+
+/** Every ticker in the catalogue, whether or not its holdings loaded (for tests). */
+export const catalogueTickers = () => Object.keys(CATALOGUE);
 
 /** The fund record for a ticker we can see inside, or null. */
 export const knownFund = (t) => FUNDS[String(t || "").toUpperCase()] || null;
@@ -169,13 +251,7 @@ const NOT_ANALYZED = {
   // Popular ESG / "socially responsible" funds whose issuers don't publish holdings in a
   // form we can fetch for free. Listing them keeps a search from reading as "clean" —
   // and points the visitor at the one ESG index fund we CAN see inside.
-  ESGV: { name: "Vanguard ESG U.S. Stock ETF",                kind: "esg" },
-  ESGU: { name: "iShares ESG Aware MSCI USA ETF",             kind: "esg" },
-  SUSA: { name: "iShares MSCI USA ESG Select ETF",            kind: "esg" },
-  DSI:  { name: "iShares MSCI KLD 400 Social ETF",            kind: "esg" },
-  VFTAX:{ name: "Vanguard FTSE Social Index Fund",            kind: "esg" },
   ESGD: { name: "iShares ESG Aware MSCI EAFE ETF",            kind: "international" },
-  ARKK: { name: "ARK Innovation ETF",                         kind: "active" },
 };
 const NOT_ANALYZED_REASON = {
   international: "An international fund. Our screens cover US-listed companies, so we don't look inside this one yet.",

@@ -98,7 +98,9 @@ export function lookupSymbol(symbol) {
       // Null when the source file gave us no names to dedupe by.
       totalCompanies: live ? (src.totalCompanies ?? null) : null,
       asOf: live ? src.asOf : null,
-      holdingsSource: live ? `${src.label} (${src.fund}) daily holdings` : "curated constituent list",
+      holdingsSource: live
+        ? (src.via === "nport" ? `${src.fund}'s SEC Form N-PORT filing` : `${src.label} (${src.fund}) daily holdings`)
+        : "curated constituent list",
       marketConductShare: live ? marketConductShare() : null,
     };
   }

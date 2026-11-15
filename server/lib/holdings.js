@@ -15,12 +15,29 @@ import { readFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const FILE = join(dirname(fileURLToPath(import.meta.url)), "..", "generated", "fund-holdings.json");
+const GEN = join(dirname(fileURLToPath(import.meta.url)), "..", "generated");
+const FILE = join(GEN, "fund-holdings.json");
+// Funds read from SEC Form N-PORT filings (scripts/fetch-nport.mjs).
+const NPORT_FILE = join(GEN, "fund-holdings-nport.json");
 
 let _data = { lastUpdated: null, source: null, baskets: {} };
 try {
   if (existsSync(FILE)) _data = JSON.parse(readFileSync(FILE, "utf8"));
 } catch { /* no live holdings yet — funds.js falls back to its curated baskets */ }
+// A fund in the N-PORT file is added only where that fetch worked, so a failed filing
+// never replaces what the SPDR file or the curated list already gives.
+try {
+  if (existsSync(NPORT_FILE)) {
+    const n = JSON.parse(readFileSync(NPORT_FILE, "utf8"));
+    _data.sources = { ...(_data.sources || {}) };
+    _data.baskets = { ...(_data.baskets || {}) };
+    for (const [k, src] of Object.entries(n.sources || {})) {
+      if (src.error || !Array.isArray(n.baskets?.[k])) continue;
+      _data.sources[k] = src;
+      _data.baskets[k] = n.baskets[k];
+    }
+  }
+} catch { /* keep whatever loaded above */ }
 
 /** Live screened constituents for a basis key (e.g. "sp500"), or null if we don't have them. */
 // An empty basket counts when the download itself worked: a sector fund can hold 25
