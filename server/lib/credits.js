@@ -75,7 +75,7 @@ export function creditsFor(ticker, activeKeys = CREDIT_KEYS) {
         label: creditLabel("safer_than_industry"),
         strength: "measured",
         headline: `Injury rate below its industry ${ys.length} years running`,
-        detail: `${latest.dart} days-away/restricted cases per 100 workers against an industry figure of ${latest.industryDart} — about ${Math.round(avg * 100)}% of the rate its peers report, across ${latest.sites.toLocaleString()} establishments. From its own OSHA Form 300A submissions, which employers file under legal mandate.`,
+        detail: `${latest.dart} days-away/restricted cases per 100 workers against an industry figure of ${latest.industryDart}, about ${Math.round(avg * 100)}% of the rate its peers report, across ${latest.sites.toLocaleString()} establishments. From its own OSHA Form 300A submissions, which employers file under legal mandate.`,
         source: "OSHA Form 300A, filed by the employer",
         measured: latest.year,
       });

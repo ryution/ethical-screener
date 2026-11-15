@@ -151,5 +151,17 @@ function checkHoldingsFile(name, missingHint) {
 checkHoldingsFile("fund-holdings.json", "no live holdings yet. Run `node scripts/fetch-holdings.mjs` (funds.js uses curated fallback)");
 checkHoldingsFile("fund-holdings-nport.json", "no N-PORT holdings yet. Run `node scripts/fetch-nport.mjs`");
 
+// ── copy shown on the site: summaries written for the site use no em dashes ─────────
+// (Verbatim 10-K quotes are left as filed.) A summary with one is flagged for a rewrite.
+{
+  const F = join(dirname(fileURLToPath(import.meta.url)), "..", "server", "generated", "10k-flags.json");
+  if (existsSync(F)) {
+    const d = JSON.parse(readFileSync(F, "utf8"));
+    for (const [t, c] of Object.entries(d.companies || {})) {
+      for (const f of c.flags || []) if (String(f.summary || "").includes("\u2014")) warn(`10-K summary for ${t}/${f.key} uses an em dash; rewrite it as plain sentences`);
+    }
+  }
+}
+
 console.log(`\n${errors} error${errors === 1 ? "" : "s"}, ${warnings} warning${warnings === 1 ? "" : "s"}`);
 process.exit(errors ? 1 : 0);

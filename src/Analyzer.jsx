@@ -73,6 +73,8 @@ const wordmark = "'Gabarito', 'Familjen Grotesk', -apple-system, sans-serif";
 // Single-weight (400 only, no bold, no italic), so it is used only on running text that
 // never needs emphasis — asking for bold would synthesize a fake one.
 const lede = "'Varela', 'Hanken Grotesk', -apple-system, sans-serif";
+// High-contrast serif for headlines only. Everything else stays in the grotesks above.
+const headline = "'DM Serif Display', Georgia, 'Times New Roman', serif";
 
 // A flat panel over the canvas: solid fill, hairline rule, square corners, no blur.
 const glass = (o = {}) => ({
@@ -424,15 +426,15 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
   return (
     // Wide enough for the results to lay out in columns on a desktop; the search row and
     // its examples stay at a comfortable reading measure inside it.
-    <div style={{ maxWidth: 980, margin: "30px auto 0", textAlign: "left" }}>
+    <div style={{ margin: "32px 0 0", textAlign: "left" }}>
       {/* Wraps on a phone: the box takes the first line and Check and Compare drop below it,
           instead of squeezing the box to a third of the screen. */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, maxWidth: 560, margin: "0 auto" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, maxWidth: 640 }}>
         <div style={{ flex: "1 1 220px", minWidth: 0, position: "relative" }}>
           <input value={q} onChange={onInput} onKeyDown={onKey}
             onFocus={() => { if (sugg.length) setShowSug(true); }}
             onBlur={() => setTimeout(() => setShowSug(false), 140)}
-            placeholder="Search a stock or ETF: try “Apple”, VOO, XLV…" aria-label="Search a stock or ETF"
+            placeholder="Search a stock or ETF, like Apple, VOO or XLV" aria-label="Search a stock or ETF"
             autoComplete="off" role="combobox" aria-expanded={showSug} aria-autocomplete="list"
             style={{ width: "100%", boxSizing: "border-box", fontFamily: sans, fontSize: 15, color: D.ink, background: "rgba(237,239,243,0.10)",
               border: `1px solid ${D.glassBorder}`, borderRadius: 14, padding: "14px 15px", outline: "none", }} />
@@ -460,7 +462,7 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
           <button onClick={openAlternatives} disabled={busy} style={ghostBtn}>Alternatives</button>
         </div>
       </div>
-      <div style={{ display: "flex", gap: 7, flexWrap: "wrap", alignItems: "center", maxWidth: 560, margin: "10px auto 0" }}>
+      <div style={{ display: "flex", gap: 7, flexWrap: "wrap", alignItems: "center", maxWidth: 640, margin: "10px 0 0" }}>
         <span style={{ fontFamily: sans, fontSize: 12, color: D.faint }}>Try:</span>
         {examples.map((x) => (
           <button key={x} onClick={() => { setQ(x); run(x); }} style={{ background: "rgba(237,239,243,0.08)", border: `1px solid ${D.glassBorder}`, color: D.muted, borderRadius: 999, padding: "4px 11px", fontFamily: sans, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>{x}</button>
@@ -640,7 +642,7 @@ function GradeBadge({ flags, selectedCount, known = true, dark = false }) {
     : neutralTone(dark);
   const sub = g.tripped
     ? `Trips ${g.tripped} of the ${g.of === 1 ? "1 category" : `${g.of} categories`} you picked`
-    : known ? `Not on any of the ${g.of === 1 ? "1 list" : `${g.of} lists`} you picked — which is not the same as checked and clear`
+    : known ? `Not on any of the ${g.of === 1 ? "1 list" : `${g.of} lists`} you picked. That isn't the same as checked and clear`
             : null;
   return <Badge title="What it sells" letter={g.letter} meaning={g.meaning} sub={sub} tone={tone} dark={dark} />;
 }
@@ -1383,7 +1385,7 @@ function FlagEvidence({ quote, source, asOf, muted, link }) {
     <div style={{ display: "grid", gap: 5 }}>
       {quote && (
         <div style={{ fontFamily: sans, fontSize: 12, color: muted, fontStyle: "italic", borderLeft: `2px solid ${muted}`, paddingLeft: 9, lineHeight: 1.5 }}>
-          “{quote}”
+          "{quote}"
         </div>
       )}
       {source && (
@@ -1542,7 +1544,7 @@ function HotNews({ wrap }) {
 
   if (items && items.length === 0) return null; // nothing tracked is in the news right now
   return (
-    <section style={{ ...wrap, padding: "clamp(56px,9vw,96px) 24px 0" }}>
+    <section style={{ ...wrap, padding: "clamp(40px,5vw,60px) 24px 0" }}>
       <div style={{ textAlign: "center", marginBottom: 34 }}>
         <p style={{ fontFamily: sans, fontSize: 12.5, letterSpacing: "0.16em", textTransform: "uppercase", color: L.brass, marginBottom: 10 }}>From BBC &amp; The New York Times</p>
         <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(26px,4vw,38px)", color: L.pine, fontWeight: 600, margin: 0, letterSpacing: "-0.02em" }}>Hot off the wire.</h2>
@@ -1593,7 +1595,7 @@ function HotNews({ wrap }) {
 const METHOD_PRINCIPLES = [
   ["Every flag is a verifiable fact", "Each flag states something a company does, with a one-sentence reason you can check for yourself. Nothing here is an ESG score. The letter grade is not a score either. It applies one plain rule to the flags you are currently looking at, so it tells you what kind of fact is on record rather than how bad we think it is, and it shifts as you change the categories. Where we cannot give a reason in a sentence, there is no flag."],
   ["We flag documented conduct", "A company that supplies hospital morphine does not carry the opioid flag. A company that has faced opioid-marketing litigation and paid settlements does. We go by what a company has been documented doing. Belonging to an industry is not by itself a finding."],
-  ["Every flag cites a source", "When a flag comes from a company\u2019s filing, it carries a quote from that filing and a link to the document. We drop any flag we cannot support with a quote. What you read is the company describing itself, in its own words."],
+  ["Every flag cites a source", "When a flag comes from a company's filing, it carries a quote from that filing and a link to the document. We drop any flag we cannot support with a quote. What you read is the company describing itself, in its own words."],
   ["We flag a reported line of business", "A flag has to rest on a reported segment or a principal activity. Selling cigarettes at the register does not qualify, and a passing mention in a risk-factor section does not either."],
   ["You choose which flags apply", "We do not decide what counts as unethical for you. You pick the flags and we explain what turns up. People screen a few of these in opposite directions, so for those we describe what is there without taking a side."],
   ["A clean result is never a guarantee", "A clean result tells you that none of the names we track came up. It does not tell you a company has been audited and found sound. Where we cannot see inside a fund, we label it not analyzed and leave it there."],
@@ -1601,9 +1603,9 @@ const METHOD_PRINCIPLES = [
   ["We cover U.S.-listed companies only", "We cover companies that file with the SEC. Foreign-listed companies, including 20-F filers and most ADRs, sit outside that. An empty result for one of those means we did not look, rather than that we looked and found nothing."],
 ];
 const METHOD_LAYERS = [
-  ["Curated", "A hand-maintained list of companies, researched from each one’s primary business.", "Precise and defensible for well-known names."],
-  ["Industry code (SIC)", "The company’s SEC-registered industry code, mapped to a flag where the code is a plain fact (oil refining, cigarettes).", "Broad, automatic, and deterministic across the market."],
-  ["Filing-cited (10-K)", "We read the relevant section of a company’s annual report and return a verified, verbatim quote.", "Catches secondary lines of business and produces a real receipt."],
+  ["Curated", "A hand-maintained list of companies, researched from each one's primary business.", "Precise and defensible for well-known names."],
+  ["Industry code (SIC)", "The company's SEC-registered industry code, mapped to a flag where the code is a plain fact (oil refining, cigarettes).", "Broad, automatic, and deterministic across the market."],
+  ["Filing-cited (10-K)", "We read the relevant section of a company's annual report and return a verified, verbatim quote.", "Catches secondary lines of business and produces a real receipt."],
 ];
 const METHOD_CATALOGUE = [
   ["Environment", [
@@ -1612,29 +1614,29 @@ const METHOD_CATALOGUE = [
   ]],
   ["Weapons & conflict", [
     { name: "Weapons & defense", status: "Live", def: "Manufacture of military weapons and defense contracting.", counts: "Defense primes, munitions, missiles, military aircraft/vehicles, defense electronics as a principal business.", not: "Dual-use suppliers with no material defense segment; civilian aerospace.", ex: "Lockheed Martin, RTX, General Dynamics, Northrop Grumman." },
-    { name: "Civilian firearms", status: "Live", def: "Manufacture and large-scale retail of civilian guns and ammunition.", counts: "Civilian firearm and ammunition makers; major firearms retailers.", not: "Military-only ordnance (that’s weapons); shops where firearms are a minor line.", ex: "Smith & Wesson, Sturm Ruger, Olin/Winchester." },
+    { name: "Civilian firearms", status: "Live", def: "Manufacture and large-scale retail of civilian guns and ammunition.", counts: "Civilian firearm and ammunition makers; major firearms retailers.", not: "Military-only ordnance (that's weapons); shops where firearms are a minor line.", ex: "Smith & Wesson, Sturm Ruger, Olin/Winchester." },
   ]],
   ["Social & human rights", [
     { name: "Private prisons & detention", status: "Live", def: "For-profit incarceration, detention, and closely-tied services.", counts: "Operators of private prisons and immigration-detention centers.", not: "A general contractor that once built a facility; incidental government clients.", ex: "GEO Group, CoreCivic." },
     { name: "Surveillance & data brokers", status: "Live", def: "Business models built on large-scale collection and sale of personal data.", counts: "Ad businesses built on personal-data profiling; data brokers; mass-surveillance analytics.", not: "Software companies generally; a one-off privacy breach without a data-driven model.", ex: "Meta, Alphabet, Palantir, LiveRamp." },
     { name: "Predatory lending", status: "Live", def: "High-cost consumer lending with predatory terms: payday, title, pawn, and subprime.", counts: "Triple-digit-APR lending, title loans, and lenders with enforcement actions defining the practice.", not: "Ordinary consumer credit, prime installment lending, mainstream banks.", ex: "World Acceptance, EZCORP, Enova, Credit Acceptance." },
-    { name: "Supply-chain forced labor", status: "Live", def: "A subsidiary named on a current US government forced-labor determination.", counts: "US DHS's UFLPA Entity List or an active CBP Withhold Release Order against a company the business controls.", not: "Boilerplate “we prohibit forced labor” policy language; NGO allegations without a government finding.", ex: "Zijin Mining Group (Xinjiang subsidiaries on the UFLPA list; a Serbian subsidiary under an active CBP order)." },
+    { name: "Supply-chain forced labor", status: "Live", def: "A subsidiary named on a current US government forced-labor determination.", counts: "US DHS's UFLPA Entity List or an active CBP Withhold Release Order against a company the business controls.", not: "Boilerplate 'we prohibit forced labor' policy language; NGO allegations without a government finding.", ex: "Zijin Mining Group (Xinjiang subsidiaries on the UFLPA list; a Serbian subsidiary under an active CBP order)." },
     { name: "Self-reported supply-chain violations", status: "Live", def: "Labor violations a company's own supplier audits found and disclosed.", counts: "A company's own published audit findings. This is a lower bar than a government determination, but it is the company's own admission, remediation included.", not: "Third-party allegations the company hasn't itself confirmed.", ex: "Apple (its own 2025 supply-chain report disclosed 10 Core Violations in 2024)." },
-    { name: "Leadership enforcement actions", status: "Live", def: "A CURRENT top executive facing real SEC, DOJ, or government fraud enforcement.", counts: "An actual enforcement proceeding against a sitting CEO/chair/controlling shareholder, stated with its actual resolution (settled without admission, convicted, etc.).", not: "News-cycle “controversy”; a departed executive; a pardoned or dismissed case.", ex: "Tesla (Musk, 2018 SEC settlement), Icahn Enterprises (Icahn, 2024 SEC settlement)." },
+    { name: "Leadership enforcement actions", status: "Live", def: "A CURRENT top executive facing real SEC, DOJ, or government fraud enforcement.", counts: "An actual enforcement proceeding against a sitting CEO/chair/controlling shareholder, stated with its actual resolution (settled without admission, convicted, etc.).", not: "News-cycle 'controversy'; a departed executive; a pardoned or dismissed case.", ex: "Tesla (Musk, 2018 SEC settlement), Icahn Enterprises (Icahn, 2024 SEC settlement)." },
   ]],
   ["Historical", [
     { name: "WWII-era forced labor", status: "Live", def: "Documented use of forced or slave labor during the Nazi era, by the company or a direct predecessor.", counts: "Historically documented forced/slave labor, always shown alongside what restitution was made, if any.", not: "Unrelated modern-day criticism; contested historical characterizations without a primary source.", ex: "Volkswagen, Ford, IBM, Bayer, BASF. Restitution status differs by company and is stated for each." },
   ]],
   ["Health & vice", [
     { name: "Tobacco & nicotine", status: "Live", def: "Cigarettes, cigars, vaping, and other nicotine products.", counts: "Manufacturers and leaf suppliers as a principal business.", not: "Retailers that stock tobacco among many goods.", ex: "Altria, Philip Morris International, Turning Point Brands." },
-    { name: "Alcohol", status: "Live", def: "Producers and wholesalers of beer, wine, and spirits.", counts: "Brewing, winemaking, distilling, and alcohol wholesale.", not: "Restaurants/retailers that serve alcohol; generic non-alcoholic “Beverages.”", ex: "Anheuser-Busch InBev, Molson Coors, Constellation Brands." },
+    { name: "Alcohol", status: "Live", def: "Producers and wholesalers of beer, wine, and spirits.", counts: "Brewing, winemaking, distilling, and alcohol wholesale.", not: "Restaurants/retailers that serve alcohol; generic non-alcoholic 'Beverages.'", ex: "Anheuser-Busch InBev, Molson Coors, Constellation Brands." },
     { name: "Gambling", status: "Live", def: "Casinos, sportsbooks, and betting platforms.", counts: "Casino operators, sports-betting/iGaming, racetrack betting as a principal business.", not: "Payment processors; hospitality with no gaming operation.", ex: "DraftKings, Las Vegas Sands, Caesars, Flutter." },
     { name: "Adult entertainment", status: "Live", def: "Pornography and adult-content businesses.", counts: "Adult content production/distribution; adult nightclubs as a principal business.", not: "General media/streaming with incidental mature content.", ex: "RCI Hospitality." },
     { name: "Cannabis", status: "Live", def: "Cultivation, processing, and sale of cannabis and cannabis products.", counts: "Multi-state operators, cultivators, cannabis-product makers.", not: "Hemp/CBD wellness only; medical cannabinoids (flag separately if desired).", ex: "Canopy Growth, Tilray, Green Thumb, Curaleaf.", contested: true },
     { name: "Opioid crisis", status: "Live", def: "Documented culpability in the opioid epidemic, not legitimate pain medication.", counts: "Opioid-marketing litigation, DEA enforcement, and settlements (makers and distributors).", not: "A company supplying medically-appropriate opioids with no misconduct record.", ex: "Implicated manufacturers and the big-three distributors, by public settlement." },
   ]],
   ["Animal welfare", [
-    { name: "Factory farming", status: "Live", def: "Industrial animal agriculture and meat/poultry processing.", counts: "Large-scale meat/poultry slaughter and packing, industrial feedlots.", not: "Plant-based food; small/pasture operations; prepared-food brands that buy meat to make jerky or deli meals (the slaughter is upstream).", ex: "Tyson Foods, Hormel, Smithfield, Pilgrim’s Pride." },
+    { name: "Factory farming", status: "Live", def: "Industrial animal agriculture and meat/poultry processing.", counts: "Large-scale meat/poultry slaughter and packing, industrial feedlots.", not: "Plant-based food; small/pasture operations; prepared-food brands that buy meat to make jerky or deli meals (the slaughter is upstream).", ex: "Tyson Foods, Hormel, Smithfield, Pilgrim's Pride." },
     { name: "Animal testing", status: "Live", def: "Contract research and cosmetics whose core business involves animal testing.", counts: "Contract research orgs with animal-study operations; cosmetics tied to animal testing.", not: "Medical research where no animal testing is disclosed.", ex: "Charles River Labs, LabCorp." },
     { name: "Fur & exotic leather", status: "Live", def: "Production or primary retail of animal fur and exotic-animal leather.", counts: "Fur farming/processing; brands whose principal line is fur/exotic skins.", not: "General apparel with incidental leather.", ex: "A deliberately narrow, curated set. Few US-listed pure-plays exist." },
   ]],
@@ -1675,7 +1677,7 @@ function Methodology({ onStart }) {
         </header>
       </Canvas>
 
-      <section style={{ ...wrap, padding: "clamp(48px,7vw,72px) 24px" }}>
+      <section style={{ ...wrap, padding: "clamp(36px,5vw,52px) 24px" }}>
         <SectionHead title="The principles behind every flag" sub="The whole product rests on these." />
         <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 26 }}>
           {METHOD_PRINCIPLES.map(([t, d], i) => (
@@ -1691,7 +1693,7 @@ function Methodology({ onStart }) {
       </section>
 
       <section style={{ background: L.card, borderTop: `1px solid ${L.line}`, borderBottom: `1px solid ${L.line}` }}>
-        <div style={{ ...wrap, padding: "clamp(48px,7vw,72px) 24px" }}>
+        <div style={{ ...wrap, padding: "clamp(36px,5vw,52px) 24px" }}>
           <SectionHead title="The three layers of detection" sub="A company is flagged if any layer flags it. When layers overlap, the most precise reason wins." />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(230px,1fr))", gap: 16 }}>
             {METHOD_LAYERS.map(([name, what, strength], i) => (
@@ -1706,8 +1708,8 @@ function Methodology({ onStart }) {
         </div>
       </section>
 
-      <section style={{ ...wrap, padding: "clamp(48px,7vw,72px) 24px" }}>
-        <SectionHead title="The flag catalogue" subFont={lede} sub="Every screen we can apply, grouped by theme. “Planned” flags are agreed for a coming build." />
+      <section style={{ ...wrap, padding: "clamp(36px,5vw,52px) 24px" }}>
+        <SectionHead title="The flag catalogue" subFont={lede} sub="Every screen we can apply, grouped by theme. 'Planned' flags are agreed for a coming build." />
         <div style={{ display: "grid", gap: 40 }}>
           {METHOD_CATALOGUE.map(([group, flags]) => (
             <div key={group}>
@@ -1723,7 +1725,7 @@ function Methodology({ onStart }) {
                     <div style={{ display: "grid", gap: 8 }}>
                       <Field label="Definition">{f.def}</Field>
                       <Field label="Counts" color={L.good}>{f.counts}</Field>
-                      <Field label="Doesn’t count" color={L.flag}>{f.not}</Field>
+                      <Field label="Doesn't count" color={L.flag}>{f.not}</Field>
                       <Field label="Examples">{f.ex}</Field>
                     </div>
                   </div>
@@ -1735,14 +1737,14 @@ function Methodology({ onStart }) {
       </section>
 
       <section style={{ background: L.card, borderTop: `1px solid ${L.line}` }}>
-        <div style={{ ...wrap, padding: "clamp(48px,7vw,72px) 24px", textAlign: "center" }}>
+        <div style={{ ...wrap, padding: "clamp(36px,5vw,52px) 24px", textAlign: "center" }}>
           <p style={{ fontFamily: sans, fontWeight: 400, fontSize: "clamp(15.5px,1.7vw,18px)", color: L.pine, lineHeight: 1.7, margin: 0, maxWidth: 600, marginLeft: "auto", marginRight: "auto" }}>
             Every flag is a checkable fact with a citation. If we cannot meet that standard, we do not flag the company. No flag means the company is not one of the names we track. It does not mean the company has been audited and found clean.
           </p>
         </div>
       </section>
 
-      <section style={{ ...wrap, textAlign: "center", padding: "clamp(48px,8vw,90px) 24px" }}>
+      <section style={{ ...wrap, textAlign: "center", padding: "clamp(36px,5vw,60px) 24px" }}>
         <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(32px,5.5vw,50px)", color: L.pine, fontWeight: 600, margin: "0 0 22px", letterSpacing: "-0.02em" }}>See what you own.</h2>
         <button onClick={onStart} style={startBtn(999, "16px 32px", 16)}>Get started</button>
       </section>
@@ -1795,10 +1797,9 @@ function StepList({ steps }) {
             style={{
               display: "block", width: "100%", textAlign: "left", cursor: "pointer",
               background: "none", border: "none", borderBottom: `1px solid ${L.line}`,
-              padding: "24px 0", color: "inherit", font: "inherit",
+              padding: "18px 0", color: "inherit", font: "inherit",
             }}>
-            <div style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: on ? L.brass : L.muted, transition: "color .2s" }}>Step {s.n}</div>
-            <div style={{ fontFamily: serifDisplay, fontSize: "clamp(25px,4.2vw,40px)", fontWeight: 600, letterSpacing: "-0.028em", lineHeight: 1.08, marginTop: 8, color: on ? L.pine : L.muted, transition: "color .2s" }}>{s.t}</div>
+            <div style={{ fontFamily: headline, fontSize: "clamp(26px,3.8vw,38px)", fontWeight: 400, letterSpacing: "-0.01em", lineHeight: 1.08, color: on ? L.pine : L.muted, transition: "color .2s" }}>{s.t}</div>
             {/* 0fr -> 1fr animates to the body's natural height without measuring it. */}
             <div style={{ display: "grid", gridTemplateRows: on ? "1fr" : "0fr", transition: "grid-template-rows .3s ease" }}>
               <div style={{ overflow: "hidden" }}>
@@ -1809,6 +1810,48 @@ function StepList({ steps }) {
         );
       })}
     </div>
+  );
+}
+
+// Hero illustration: flat sky and coral shapes with white line work, in the page's own
+// colors. A coin read as a fund (the navy wedges are its holdings), a magnifying glass
+// over it, and dotted leader lines out to tickers, like labels on a technical drawing.
+const HERO_STARS = [[56, 360, 7], [92, 330, 4], [120, 392, 5], [338, 372, 6], [380, 420, 4], [300, 436, 7], [26, 300, 4], [372, 70, 5], [400, 128, 3]];
+function HeroArt() {
+  const sky = P.sky, coral = P.coral, navy = P.page, ink = P.ink;
+  const star = ([x, y, r], i) => (
+    <g key={i} transform={`translate(${x} ${y})`} stroke={ink} strokeWidth={r > 5 ? 2 : 1.5} strokeLinecap="round">
+      <line x1={-r} y1="0" x2={r} y2="0" /><line x1={-r / 2} y1={-r * 0.87} x2={r / 2} y2={r * 0.87} /><line x1={-r / 2} y1={r * 0.87} x2={r / 2} y2={-r * 0.87} />
+    </g>
+  );
+  const label = { fontFamily: headline, fontStyle: "italic", fontSize: 17, fill: ink };
+  return (
+    <svg className="ps-hero-art" viewBox="0 0 420 460" role="img" aria-label="A magnifying glass over a coin, with tickers marked inside it"
+      style={{ width: "100%", maxWidth: 440, justifySelf: "end" }}>
+      <circle cx="168" cy="150" r="118" fill={sky} />
+      <circle cx="168" cy="150" r="104" fill="none" stroke={navy} strokeWidth="2.5" strokeDasharray="1.5 7" strokeLinecap="round" />
+      <circle cx="168" cy="150" r="74" fill="none" stroke={navy} strokeWidth="3" />
+      <path d="M168 150 L168 76 A74 74 0 0 1 238 127 Z" fill={navy} />
+      <path d="M168 150 L238 127 A74 74 0 0 1 212 210 Z" fill={navy} opacity="0.5" />
+      <path d="M168 150 L120 206 A74 74 0 0 1 96 132 Z" fill={navy} opacity="0.75" />
+      <line x1="168" y1="150" x2="168" y2="224" stroke={navy} strokeWidth="3" />
+      <rect x="252" y="318" width="168" height="142" fill={coral} />
+      <rect x="276" y="410" width="20" height="50" fill={navy} />
+      <rect x="306" y="386" width="20" height="74" fill={navy} />
+      <rect x="336" y="398" width="20" height="62" fill={navy} />
+      <rect x="366" y="356" width="20" height="104" fill={navy} />
+      <circle cx="268" cy="214" r="62" fill="none" stroke={ink} strokeWidth="3" />
+      <line x1="312" y1="258" x2="378" y2="324" stroke={ink} strokeWidth="11" strokeLinecap="round" />
+      <path d="M40 286 Q 190 352 336 250" fill="none" stroke={ink} strokeWidth="1.6" strokeDasharray="1 6" strokeLinecap="round" />
+      <line x1="212" y1="96" x2="300" y2="40" stroke={ink} strokeWidth="1.2" strokeDasharray="3 4" />
+      <text x="304" y="38" style={label}>XOM</text>
+      <line x1="226" y1="182" x2="332" y2="168" stroke={ink} strokeWidth="1.2" strokeDasharray="3 4" />
+      <text x="336" y="173" style={label}>LMT</text>
+      <line x1="112" y1="176" x2="34" y2="236" stroke={ink} strokeWidth="1.2" strokeDasharray="3 4" />
+      <text x="2" y="256" style={label}>MO</text>
+      <line x1="0" y1="404" x2="252" y2="452" stroke={ink} strokeWidth="1.4" strokeDasharray="7 6" />
+      {HERO_STARS.map(star)}
+    </svg>
   );
 }
 
@@ -1835,35 +1878,31 @@ function LandingHome({ onStart, snaptrade, meta }) {
               page gutter instead of being pulled inward by the 1000px content column. */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 28px" }}>
             <span style={{ fontFamily: wordmark, fontSize: 25, fontWeight: 600, color: L.ink, letterSpacing: "-0.02em" }}>PlainStreet</span>
-            <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-              <a href="#methodology" className="ps-nav-methodology" style={{ fontFamily: sans, fontSize: 13.5, color: L.muted, textDecoration: "none" }}>Methodology</a>
-              <button onClick={onStart} style={startBtn(999, "9px 18px", 14)}>Get started</button>
+            <div style={{ display: "flex", alignItems: "center", gap: 26 }}>
+              <a href="#how-it-works" className="ps-nav-methodology" style={{ fontFamily: sans, fontSize: 15, color: L.ink, textDecoration: "none" }}>How it works</a>
+              <a href="#methodology" className="ps-nav-methodology" style={{ fontFamily: sans, fontSize: 15, color: L.ink, textDecoration: "none" }}>Methodology</a>
+              <button onClick={onStart} style={startBtn(999, "10px 20px", 15)}>Get started</button>
             </div>
           </div>
         </nav>
         <header>
-          <div style={{ ...wrap, textAlign: "center", padding: "clamp(56px,9vw,96px) 24px clamp(48px,7vw,80px)" }}>
-            {/* Set in caps and tracked out the title measures 16.76em, so holding it on one line means
-                size is a function of viewport width. Above 620px that formula still
-                leaves it the largest thing on screen; below it, one line would compute
-                to ~20px — smaller than the sub-line under it — so it wraps instead. */}
-            <style>{`
-              .ps-hero-title { font-size: clamp(30px, 8vw, 44px); }
-              @media (min-width: 620px) {
-                .ps-hero-title { white-space: nowrap; font-size: min(calc(5.4vw - 3px), 50px); }
-              }
-            `}</style>
-            <h1 className="ps-hero-title" style={{ fontFamily: serifDisplay, fontWeight: 500, lineHeight: 1.12, margin: 0, letterSpacing: "0.075em", textTransform: "uppercase", color: D.ink }}>
-              The ethical portfolio analyzer
-            </h1>
-            {/* Display face here, Varela on the lede below: the two lines sat in near
-                identical humanist sans and blurred into one block. */}
-            <p style={{ fontFamily: serifDisplay, fontWeight: 400, fontSize: "clamp(18px,2.6vw,27px)", lineHeight: 1.3, letterSpacing: "-0.015em", color: D.ink, margin: "12px auto 0", maxWidth: 660 }}>
-              Is your money already funding what you fight against?
-            </p>
-            <p style={{ fontFamily: lede, fontSize: "clamp(13px,1.3vw,14.5px)", lineHeight: 1.75, color: D.muted, margin: "46px auto 0", maxWidth: 430 }}>
-              Even broad market funds hide holdings that might not match your values. Search any stock or ETF ticker to see what’s really inside your portfolio.
-            </p>
+          <style>{`
+            .ps-hero { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 28px; align-items: center; }
+            .ps-hero-title { font-size: clamp(42px, 5.6vw, 72px); }
+            @media (max-width: 760px) { .ps-hero { grid-template-columns: 1fr; } .ps-hero-art { display: none; } }
+          `}</style>
+          <div style={{ ...wrap, maxWidth: 1160, padding: "clamp(36px,6vw,72px) 24px clamp(32px,4vw,48px)" }}>
+            <div className="ps-hero">
+              <div>
+                <h1 className="ps-hero-title" style={{ fontFamily: headline, fontWeight: 400, lineHeight: 1.0, letterSpacing: "-0.015em", margin: 0, color: D.ink }}>
+                  Is your money already funding what you fight against?
+                </h1>
+                <p style={{ fontFamily: sans, fontSize: "clamp(17px,1.7vw,21px)", lineHeight: 1.45, color: D.muted, margin: "22px 0 0", maxWidth: 540 }}>
+                  Even broad market funds hold companies that might not match your values. Search any stock or ETF to see what's really inside.
+                </p>
+              </div>
+              <HeroArt />
+            </div>
             <VerifiedBanner />
             <HeroAnalyzer onStart={onStart} wrap={wrap} snaptrade={snaptrade} meta={meta} />
             <p style={{ fontFamily: sans, fontSize: 12.5, color: D.faint, marginTop: 18 }}>Read-only analysis. We never move your money without your say-so.</p>
@@ -1876,9 +1915,9 @@ function LandingHome({ onStart, snaptrade, meta }) {
 
       {/* ── Charcoal block: how it works. Columns are separated by a rule above each
              one, not by a card, so the band reads as one solid field. ── */}
-      <section style={{ background: P.band }}>
-        <div style={{ ...wrap, padding: "clamp(56px,9vw,96px) 24px" }}>
-          <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(26px,4vw,38px)", color: L.pine, fontWeight: 600, margin: "0 0 34px", letterSpacing: "-0.02em" }}>How to get started</h2>
+      <section id="how-it-works" style={{ background: P.band }}>
+        <div style={{ ...wrap, padding: "clamp(40px,5vw,60px) 24px" }}>
+          <h2 style={{ fontFamily: headline, fontSize: "clamp(32px,4.6vw,48px)", color: L.pine, fontWeight: 400, margin: "0 0 26px", letterSpacing: "-0.01em" }}>How it works</h2>
           <StepList steps={steps} />
         </div>
       </section>
@@ -1886,26 +1925,26 @@ function LandingHome({ onStart, snaptrade, meta }) {
       {/* ── Navy block: honesty. A different solid from the band above it, so the seam
              between the two is a hard colour change rather than a rule. ── */}
       <section style={{ background: P.bandDeep }}>
-        <div style={{ ...wrap, maxWidth: 720, textAlign: "center", padding: "clamp(48px,8vw,80px) 24px" }}>
-          <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(24px,4vw,32px)", color: D.ink, fontWeight: 600, margin: 0, letterSpacing: "-0.02em" }}>We'd rather under-claim than mislead</h2>
+        <div style={{ ...wrap, maxWidth: 720, textAlign: "center", padding: "clamp(36px,5vw,56px) 24px" }}>
+          <h2 style={{ fontFamily: headline, fontSize: "clamp(30px,4.4vw,42px)", color: D.ink, fontWeight: 400, margin: 0, letterSpacing: "-0.01em" }}>We'd rather under-claim than mislead</h2>
           <p style={{ fontFamily: sans, fontSize: 16, color: D.muted, lineHeight: 1.7, margin: "16px 0 0" }}>
-            Every flag is a checkable fact about what a company does, with the reason and, where it comes from a filing, the company's own words. We look inside a fund only when its issuer publishes the holdings: the big S&P 500, total-market, Dow, mid- and small-cap and ESG index funds. We say which file the list came from and when. A fund we can't see inside is labeled "not analyzed," never called clean. Our coverage is U.S.-listed companies that file with the SEC, so a foreign-listed name may come back empty simply because we haven't reached it. A clean result means "none of the names we track," never "audited pure." You draw the lines; we show you where your money already sits.
+            Every flag is a checkable fact about what a company does, with the reason and, where it comes from a filing, the company's own words. We look inside more than 100 funds: SPDR funds from State Street's daily holdings files, and the rest from each fund's quarterly SEC filing. Every result says which source it used and its date. A fund we can't see inside is labeled "not analyzed," never called clean. Our coverage is U.S.-listed companies that file with the SEC, so a foreign-listed name may come back empty simply because we haven't reached it. A clean result means "none of the names we track," never "audited pure." You draw the lines; we show you where your money already sits.
           </p>
         </div>
       </section>
 
       {/* ── CTA ── */}
-      <section style={{ ...wrap, textAlign: "center", padding: "clamp(60px,10vw,110px) 24px" }}>
-        <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(34px,6vw,58px)", color: L.pine, fontWeight: 600, margin: "0 0 12px", letterSpacing: "-0.02em" }}>See what you own.</h2>
+      <section style={{ ...wrap, textAlign: "center", padding: "clamp(40px,5vw,64px) 24px" }}>
+        <h2 style={{ fontFamily: headline, fontSize: "clamp(40px,6.4vw,68px)", color: L.pine, fontWeight: 400, margin: "0 0 12px", letterSpacing: "-0.015em" }}>See what you own.</h2>
         <p style={{ fontFamily: sans, fontSize: 16, color: L.muted, margin: "0 0 26px" }}>Free, read-only, about two minutes.</p>
         <button onClick={onStart} style={startBtn(999, "16px 32px", 16)}>Get started</button>
       </section>
 
-      <footer style={{ ...wrap, borderTop: `1px solid ${L.line}`, padding: "22px 24px", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 10, alignItems: "center" }}>
-        <span style={{ fontFamily: serif, fontSize: 15, fontWeight: 600, color: L.muted }}>PlainStreet</span>
-        <div style={{ display: "flex", gap: 18, alignItems: "center" }}>
-          <a href="#methodology" style={{ fontFamily: sans, fontSize: 12.5, color: L.muted, textDecoration: "none" }}>Methodology</a>
-          <span style={{ fontFamily: sans, fontSize: 12.5, color: L.faint }}>Read-only portfolio analysis. Not investment advice.</span>
+      <footer style={{ borderTop: `1px solid ${L.line}` }}>
+        <div style={{ ...wrap, padding: "22px 24px", display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "8px 22px", alignItems: "center" }}>
+          <a href="#how-it-works" style={{ fontFamily: sans, fontSize: 14, color: L.muted, textDecoration: "none" }}>How it works</a>
+          <a href="#methodology" style={{ fontFamily: sans, fontSize: 14, color: L.muted, textDecoration: "none" }}>Methodology</a>
+          <span style={{ fontFamily: sans, fontSize: 14, color: L.faint }}>Read-only portfolio analysis. Not investment advice.</span>
         </div>
       </footer>
     </div>
@@ -2160,7 +2199,7 @@ function Results({ analysis }) {
         <>
           <SubHead>Held directly</SubHead>
           {conflictedStocks.map((h) => (
-            <div key={h.account + h.symbol} style={card({ padding: "15px 17px", marginBottom: 10, borderLeft: `3px solid ${L.flag}` })}>
+            <div key={h.account + h.symbol} style={card({ padding: "15px 17px", marginBottom: 10 })}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10 }}>
                 <div><span style={{ fontFamily: sans, fontSize: 15, fontWeight: 600, color: L.ink }}>{h.symbol}</span><span style={{ fontFamily: sans, fontSize: 13, color: L.muted }}> · {h.description}</span></div>
                 <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: L.ink }}>{money(h.valueCents)}</span>
@@ -2182,7 +2221,7 @@ function Results({ analysis }) {
             const fundContains = dedupeByName(h.contains);
             const groups = groupByFlag(fundContains);
             return (
-              <div key={h.account + h.symbol} style={card({ padding: "15px 17px", marginBottom: 10, borderLeft: `3px solid ${L.brass}` })}>
+              <div key={h.account + h.symbol} style={card({ padding: "15px 17px", marginBottom: 10 })}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10 }}>
                   <div><span style={{ fontFamily: sans, fontSize: 15, fontWeight: 600, color: L.ink }}>{h.symbol}</span><span style={{ fontFamily: sans, fontSize: 13, color: L.muted }}> · {h.description}</span></div>
                   <span style={{ fontFamily: sans, fontSize: 14, fontWeight: 600, color: L.ink }}>{money(h.valueCents)}</span>

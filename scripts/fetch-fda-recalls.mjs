@@ -197,7 +197,7 @@ async function main() {
   mkdirSync(dirname(OUT), { recursive: true });
   writeFileSync(OUT, JSON.stringify({
     lastUpdated: new Date().toISOString(),
-    source: "openFDA — drug enforcement reports and device recalls (US Food and Drug Administration)",
+    source: "openFDA: drug enforcement reports and device recalls (US Food and Drug Administration)",
     method: "Share of a firm's recalls that FDA classed as Class I (reasonable probability of serious adverse health consequences or death), against the same share across every firm in the dataset. Severity and the voluntary/mandated distinction are FDA's, not ours.",
     caveat: "Counted by distinct recall EVENT, never by record: openFDA files one record per affected model or lot, so one recall fans out into dozens and counting records put Medtronic at 33% Class I against a true 11.7%. attributionRate is the fraction of matched records belonging to firms whose names the company itself filed; below ~0.95 the class counts reach outside the company and should not be graded.",
     baselines, count: Object.keys(companies).length, companies,

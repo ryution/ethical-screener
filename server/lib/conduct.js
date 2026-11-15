@@ -78,7 +78,7 @@ export function conductSignalsFor(ticker, activeKeys = CONDUCT_KEYS) {
         headline: a.headline,
         detail: a.detail,
         measured: null,
-        source: "openFDA — FDA drug, device and food enforcement reports",
+        source: "openFDA: FDA drug, device and food enforcement reports",
       });
     }
   }

@@ -48,7 +48,7 @@ export function gradeFor(flags = [], selected = 0, known = true) {
   // Grading against nothing would be grading for checking nothing.
   if (!selected) return { letter: null, meaning: "Pick some categories to grade against", tripped: 0, of: 0 };
   if (!tripped) {
-    return { letter: null, meaning: "Nothing on the lists we keep — we haven't examined this company", tripped: 0, of: selected };
+    return { letter: null, meaning: "Nothing on the lists we keep. We haven't examined this company", tripped: 0, of: selected };
   }
   let letter;
   if (flags.some((f) => FINDING.has(f.key))) letter = "F";
