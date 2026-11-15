@@ -1537,51 +1537,61 @@ function HotNews({ wrap }) {
     el.scrollBy({ left: dir * el.clientWidth * 0.95, behavior: "smooth" });
   };
   const arrowBtn = (side) => ({
-    position: "absolute", top: "50%", [side]: -4, transform: "translateY(-50%)",
-    width: 40, height: 40, borderRadius: "50%", border: `1px solid ${L.line}`,
-    background: L.card, color: L.pine, fontFamily: sans, fontSize: 18, cursor: "pointer", display: "grid", placeItems: "center", zIndex: 2,
+    position: "absolute", top: "50%", [side]: 8, transform: "translateY(-50%)",
+    width: 40, height: 40, borderRadius: 0, border: "none",
+    background: "rgba(13,17,25,0.72)", color: P.ink, fontFamily: sans, fontSize: 20, cursor: "pointer", display: "grid", placeItems: "center", zIndex: 2,
   });
 
   if (items && items.length === 0) return null; // nothing tracked is in the news right now
   return (
-    <section style={{ ...wrap, padding: "clamp(40px,5vw,60px) 24px 0" }}>
-      <div style={{ textAlign: "center", marginBottom: 34 }}>
-        <p style={{ fontFamily: sans, fontSize: 12.5, letterSpacing: "0.16em", textTransform: "uppercase", color: L.brass, marginBottom: 10 }}>From BBC &amp; The New York Times</p>
-        <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(26px,4vw,38px)", color: L.pine, fontWeight: 600, margin: 0, letterSpacing: "-0.02em" }}>Hot off the wire.</h2>
-        <p style={{ fontFamily: sans, fontSize: 14.5, color: L.muted, margin: "10px 0 0" }}>Recent reporting on companies we flag, with the flag they carry. Headline and source only.</p>
+    <section id="news" style={{ ...wrap, padding: "clamp(40px,5vw,60px) 24px 0", scrollMarginTop: 70 }}>
+      <div style={{ marginBottom: 26 }}>
+        <h2 style={{ fontFamily: headline, fontSize: "clamp(32px,4.6vw,48px)", color: L.pine, fontWeight: 400, margin: 0, letterSpacing: "-0.01em" }}>Hot off the wire</h2>
+        <p style={{ fontFamily: sans, fontSize: 15, color: L.muted, margin: "8px 0 0" }}>Recent BBC and New York Times headlines that name a company we flag, with the flag it carries. Headline and source only.</p>
       </div>
       {!items ? (
         <p style={{ textAlign: "center", fontFamily: sans, color: L.faint, fontSize: 14 }}>Loading…</p>
       ) : (
         <div style={{ position: "relative" }}>
-          <button onClick={() => scrollByCards(-1)} aria-label="Scroll left" style={arrowBtn("left")}>‹</button>
-          <button onClick={() => scrollByCards(1)} aria-label="Scroll right" style={arrowBtn("right")}>›</button>
+          <button onClick={() => scrollByCards(-1)} aria-label="Scroll left" className="ps-news-arrow" style={arrowBtn("left")}>‹</button>
+          <button onClick={() => scrollByCards(1)} aria-label="Scroll right" className="ps-news-arrow" style={arrowBtn("right")}>›</button>
+          {/* Each story is one photo, edge to edge. It darkens toward the bottom, where the
+              source, the flagged company and the headline sit over it. No frame or panel:
+              the space between photos is the only separation. */}
+          <style>{`
+            .ps-news-tile img { transition: transform .5s ease; }
+            .ps-news-tile:hover img, .ps-news-tile:focus-visible img { transform: scale(1.04); }
+            .ps-news-tile:focus-visible { outline: 2px solid ${A.lav}; outline-offset: 3px; }
+            @media (max-width: 600px) { .ps-news-arrow { display: none !important; } }
+          `}</style>
           <div ref={trackRef} style={{
-            display: "flex", gap: 18, overflowX: "auto", scrollSnapType: "x mandatory",
-            padding: "4px 4px 14px", margin: "0 -4px", scrollbarWidth: "none",
+            display: "flex", gap: 14, overflowX: "auto", scrollSnapType: "x mandatory",
+            padding: "0 0 6px", scrollbarWidth: "none",
           }}>
             {items.map((it, i) => (
-              <a key={i} href={it.link} target="_blank" rel="noopener noreferrer"
+              <a key={i} href={it.link} target="_blank" rel="noopener noreferrer" className="ps-news-tile"
                  style={{
-                   ...card({ padding: 0, overflow: "hidden", borderRadius: 14 }), display: "block", textDecoration: "none", color: "inherit",
-                   flex: "0 0 clamp(250px, 31%, 340px)", scrollSnapAlign: "start",
+                   position: "relative", display: "block", overflow: "hidden", textDecoration: "none", color: "inherit",
+                   height: 340, background: P.card, flex: "0 0 clamp(250px, 31%, 340px)", scrollSnapAlign: "start",
                  }}>
-                <div style={{ padding: "16px 18px 14px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
-                    <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, letterSpacing: "0.04em", color: L.teal, background: L.lineSoft, borderRadius: 999, padding: "3px 10px" }}>{it.source}</span>
-                    {it.companies.slice(0, 2).map((c) => (
-                      <span key={c.ticker} style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: L.muted }}>
-                        {c.name}{c.flags?.length ? <span style={{ color: L.flag, fontWeight: 600 }}> · {c.flags[0]}</span> : null}
-                      </span>
-                    ))}
-                    {agoLabel(it.publishedAt) && <span style={{ fontFamily: sans, fontSize: 11, color: L.faint, marginLeft: "auto" }}>{agoLabel(it.publishedAt)}</span>}
-                  </div>
-                  <div style={{ fontFamily: serif, fontSize: 16.5, color: L.ink, fontWeight: 600, lineHeight: 1.35, letterSpacing: "-0.01em", minHeight: "2.7em" }}>{it.title}</div>
-                </div>
                 {it.image && (
                   <img src={it.image} alt="" loading="lazy"
-                       style={{ width: "100%", height: 150, objectFit: "cover", display: "block", borderTop: `1px solid ${L.lineSoft}` }} />
+                       style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                 )}
+                <div aria-hidden style={{ position: "absolute", inset: 0,
+                  background: "linear-gradient(to bottom, rgba(13,17,25,0) 30%, rgba(13,17,25,0.72) 58%, rgba(13,17,25,0.96) 100%)" }} />
+                <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "0 18px 18px" }}>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
+                    <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: A.lav }}>{it.source}</span>
+                    {agoLabel(it.publishedAt) && <span style={{ fontFamily: sans, fontSize: 11, color: "rgba(237,239,243,0.7)" }}>{agoLabel(it.publishedAt)}</span>}
+                  </div>
+                  <div style={{ fontFamily: headline, fontSize: 21, color: P.ink, fontWeight: 400, lineHeight: 1.2 }}>{it.title}</div>
+                  {it.companies.slice(0, 2).map((c) => (
+                    <div key={c.ticker} style={{ fontFamily: sans, fontSize: 12, fontWeight: 600, color: "rgba(237,239,243,0.82)", marginTop: 8 }}>
+                      {c.name}{c.flags?.length ? <span style={{ color: P.coral }}> · {c.flags[0]}</span> : null}
+                    </div>
+                  ))}
+                </div>
               </a>
             ))}
           </div>
@@ -1770,11 +1780,19 @@ function Landing({ onStart }) {
   // companies the data covers.
   const [server, setServer] = useState({ snaptrade: null, meta: null });
   useEffect(() => {
-    const h = () => { setRoute(window.location.hash); window.scrollTo(0, 0); };
+    const h = () => setRoute(window.location.hash);
     window.addEventListener("hashchange", h);
     api("/api/screens").then((d) => setServer({ snaptrade: !!d.snaptrade, meta: d.data || null })).catch(() => {});
     return () => window.removeEventListener("hashchange", h);
   }, []);
+  // "#methodology" is its own page and opens at the top. Any other hash is a section on the
+  // home page (#news, #how-it-works), so scroll to it once the page is on screen.
+  useEffect(() => {
+    const id = route.slice(1);
+    const el = id && route !== "#methodology" ? document.getElementById(id) : null;
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    else window.scrollTo(0, 0);
+  }, [route]);
   if (route === "#methodology") return <Methodology onStart={onStart} />;
   return <LandingHome onStart={onStart} snaptrade={server.snaptrade} meta={server.meta} />;
 }
@@ -1918,6 +1936,7 @@ function LandingHome({ onStart, snaptrade, meta }) {
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 28px" }}>
             <span style={{ fontFamily: wordmark, fontSize: 25, fontWeight: 600, color: L.ink, letterSpacing: "-0.02em" }}>PlainStreet</span>
             <div style={{ display: "flex", alignItems: "center", gap: 26 }}>
+              <a href="#news" className="ps-nav-methodology" style={{ fontFamily: sans, fontSize: 15, color: L.ink, textDecoration: "none" }}>News</a>
               <a href="#how-it-works" className="ps-nav-methodology" style={{ fontFamily: sans, fontSize: 15, color: L.ink, textDecoration: "none" }}>How it works</a>
               <a href="#methodology" className="ps-nav-methodology" style={{ fontFamily: sans, fontSize: 15, color: L.ink, textDecoration: "none" }}>Methodology</a>
               <button onClick={onStart} style={startBtn(999, "10px 20px", 15)}>Get started</button>
@@ -1954,7 +1973,7 @@ function LandingHome({ onStart, snaptrade, meta }) {
 
       {/* ── Charcoal block: how it works. Columns are separated by a rule above each
              one, not by a card, so the band reads as one solid field. ── */}
-      <section id="how-it-works" style={{ background: P.band }}>
+      <section id="how-it-works" style={{ background: P.band, scrollMarginTop: 70 }}>
         <div style={{ ...wrap, padding: "clamp(40px,5vw,60px) 24px" }}>
           <h2 style={{ fontFamily: headline, fontSize: "clamp(32px,4.6vw,48px)", color: L.pine, fontWeight: 400, margin: "0 0 26px", letterSpacing: "-0.01em" }}>How it works</h2>
           <StepList steps={steps} />
@@ -1981,6 +2000,7 @@ function LandingHome({ onStart, snaptrade, meta }) {
 
       <footer style={{ borderTop: `1px solid ${L.line}` }}>
         <div style={{ ...wrap, padding: "22px 24px", display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "8px 22px", alignItems: "center" }}>
+          <a href="#news" style={{ fontFamily: sans, fontSize: 14, color: L.muted, textDecoration: "none" }}>News</a>
           <a href="#how-it-works" style={{ fontFamily: sans, fontSize: 14, color: L.muted, textDecoration: "none" }}>How it works</a>
           <a href="#methodology" style={{ fontFamily: sans, fontSize: 14, color: L.muted, textDecoration: "none" }}>Methodology</a>
           <span style={{ fontFamily: sans, fontSize: 14, color: L.faint }}>Read-only portfolio analysis. Not investment advice.</span>

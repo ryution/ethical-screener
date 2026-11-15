@@ -14,12 +14,14 @@
 
 import { SCREENS, flagsFor, SCREEN_KEYS } from "./screens.js";
 import { enrichedTickers, enrichedName, enrichedFlagsFor } from "./enriched.js";
-import { filingFlagsFor } from "./filings.js";
+import { filingFlagsFor, filingTickers, filingName } from "./filings.js";
 
+const NYT = (section) => ({ source: "The New York Times", url: `https://rss.nytimes.com/services/xml/rss/nyt/${section}.xml` });
+const BBC = (section) => ({ source: "BBC", url: `https://feeds.bbci.co.uk/news/${section}/rss.xml` });
 const FEEDS = [
-  { source: "BBC", url: "https://feeds.bbci.co.uk/news/business/rss.xml" },
-  { source: "The New York Times", url: "https://rss.nytimes.com/services/xml/rss/nyt/Business.xml" },
-  { source: "The New York Times", url: "https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml" },
+  BBC("business"), BBC("technology"), BBC("science_and_environment"),
+  NYT("Business"), NYT("Technology"), NYT("Economy"), NYT("EnergyEnvironment"), NYT("Dealbook"),
+  NYT("YourMoney"), NYT("MediaandAdvertising"), NYT("Climate"), NYT("Health"),
 ];
 
 const UA = "PlainStreet News research@plainstreet.app";
@@ -65,23 +67,50 @@ async function fetchFeed({ source, url }) {
   }
 }
 
-// Built once per process from the same name sources the rest of the app uses
-// (companyName()'s parsing isn't exported, so curated names are re-derived here the
-// same way: the text before " — " in a screen's reason string).
+// Headlines say "Exxon" and "Lockheed", not "EXXON MOBIL CORP" or "Lockheed Martin Corp".
+// SEC names are cut down to how a reporter would write them: legal suffixes and SEC
+// state tags dropped, all-caps names put back in normal case.
+const LEGAL = /[,\s]+(inc|incorporated|corp|corporation|co|company|ltd|limited|plc|llc|l\.?p|n\.?v|s\.?a|ag|se|the)\.?$/i;
+function shortName(raw) {
+  let n = String(raw || "").replace(/\s*\/[A-Z0-9 .]+\/?\s*$/, "").trim();
+  for (let k = 0; k < 3; k++) n = n.replace(LEGAL, "").trim();
+  if (n === n.toUpperCase()) n = n.toLowerCase().replace(/\b[a-z]/g, (c) => c.toUpperCase());
+  return n.replace(/[,.]+$/, "").trim();
+}
+// The names reporters actually use for the best-known flagged companies. Each is only
+// used if that ticker is flagged by at least one layer.
+const ALIASES = {
+  Exxon: "XOM", ExxonMobil: "XOM", Chevron: "CVX", ConocoPhillips: "COP", Halliburton: "HAL", Occidental: "OXY",
+  Google: "GOOGL", Alphabet: "GOOGL", YouTube: "GOOGL", Meta: "META", Facebook: "META", Instagram: "META", WhatsApp: "META",
+  Lockheed: "LMT", Raytheon: "RTX", Boeing: "BA", Northrop: "NOC", "General Dynamics": "GD", Palantir: "PLTR",
+  Altria: "MO", Marlboro: "PM", "Philip Morris": "PM", Tyson: "TSN", Hormel: "HRL",
+  DraftKings: "DKNG", FanDuel: "FLUT", "MGM Resorts": "MGM", "Las Vegas Sands": "LVS",
+  "Berkshire Hathaway": "BRK.B", Berkshire: "BRK.B", "Smith & Wesson": "SWBI", "Sturm Ruger": "RGR",
+  "Johnson & Johnson": "JNJ", McKesson: "MCK", Cencora: "COR", "Cardinal Health": "CAH",
+};
+// Company names that are also everyday words. In a title-case headline "Block" or
+// "Target" can't be told from the word, so these never match on their own.
+const COMMON_WORDS = new Set(["block", "target", "gap", "snap", "visa", "chime", "ring", "bonk", "tron", "ford", "match", "box", "shift", "square", "compass", "clean energy", "energy", "first capital", "strategy", "progress", "dominion", "entergy", "southern", "constellation"]);
+
 let _index = null;
 function companyIndex() {
   if (_index) return _index;
-  const byTicker = new Map();
-  for (const s of SCREENS) for (const [t, reason] of Object.entries(s.tickers)) if (!byTicker.has(t)) byTicker.set(t, reason.split(" — ")[0]);
-  for (const t of enrichedTickers()) if (!byTicker.has(t)) { const n = enrichedName(t); if (n) byTicker.set(t, n); }
+  const flagged = (t) => flagsFor(t, SCREEN_KEYS).length || enrichedFlagsFor(t, SCREEN_KEYS).length || filingFlagsFor(t, SCREEN_KEYS).length;
+  const byName = new Map();   // match text -> ticker; the first source to claim a name keeps it
+  const add = (name, ticker) => {
+    const n = shortName(name);
+    if (n.length < 4 || COMMON_WORDS.has(n.toLowerCase()) || byName.has(n.toLowerCase())) return;
+    byName.set(n.toLowerCase(), { ticker, name: n });
+  };
+  for (const [alias, t] of Object.entries(ALIASES)) if (flagged(t)) add(alias, t);
+  for (const s of SCREENS) for (const [t, reason] of Object.entries(s.tickers)) add(reason.split(" \u2014 ")[0], t);   // the name before the screens.js separator
+  for (const t of filingTickers()) add(filingName(t), t);
+  for (const t of enrichedTickers()) add(enrichedName(t), t);
 
-  _index = [...byTicker.entries()]
-    .filter(([, name]) => name.length >= 4) // skip names too short/generic to word-match safely
-    .map(([ticker, name]) => ({
-      ticker,
-      name,
-      re: new RegExp(`\\b${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i"),
-    }));
+  _index = [...byName.values()].map(({ ticker, name }) => ({
+    ticker, name,
+    re: new RegExp(`(^|[^\\p{L}\\p{N}])${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?=$|[^\\p{L}\\p{N}])`, "iu"),
+  }));
   return _index;
 }
 
@@ -94,7 +123,8 @@ function flagLabels(ticker) {
 }
 function matchCompanies(text) {
   const out = [];
-  for (const c of companyIndex()) if (c.re.test(text)) out.push({ ticker: c.ticker, name: c.name, flags: flagLabels(c.ticker) });
+  // Two names for one company ("Facebook and Instagram") are one tag, not two.
+  for (const c of companyIndex()) if (c.re.test(text) && !out.some((o) => o.ticker === c.ticker)) out.push({ ticker: c.ticker, name: c.name, flags: flagLabels(c.ticker) });
   return out;
 }
 
@@ -108,7 +138,9 @@ export async function hotNews({ symbol, limit = 30 } = {}) {
   for (const feedItems of feedResults) {
     for (const it of feedItems) {
       if (seen.has(it.link)) continue;
-      const companies = matchCompanies(`${it.title} ${it.description || ""}`);
+      // Headline only. A company named in the summary is often a passing mention (an
+      // Nvidia story citing Apple), and tagging it would misdescribe the story.
+      const companies = matchCompanies(it.title);
       const matched = wantTicker ? companies.filter((c) => c.ticker === wantTicker) : companies;
       if (!matched.length) continue;
       seen.add(it.link);
