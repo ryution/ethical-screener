@@ -156,6 +156,9 @@ function extract(rows) {
   // overstates the denominator. Counting distinct names is exactly what the UI does.
   const ncol = rows[hi].findIndex((c) => /^name$/i.test(String(c ?? "").trim()));
   const icol = rows[hi].findIndex((c) => /^identifier$/i.test(String(c ?? "").trim()));
+  // Percent of the fund each line is. Kept for the flagged names, so the page can say how much
+  // of the fund they are, not just how many.
+  const wcol = rows[hi].findIndex((c) => /^weight$/i.test(String(c ?? "").trim()));
   // A holdings file carries non-equity lines too: DIA ends with ticker "-" named
   // "US DOLLAR", which is the fund's cash, not a company. Requiring a letter in the
   // ticker drops those without hardcoding what any issuer happens to call them.
@@ -179,29 +182,35 @@ function extract(rows) {
   const cusips = icol >= 0
     ? dataRows.map((r) => [String(r[icol] ?? "").trim().toUpperCase(), r[tcol]]).filter(([c]) => /^[0-9A-Z]{9}$/.test(c))
     : [];
-  return { tickers, totalCompanies, asOf, cusips };
+  const weights = wcol >= 0 ? dataRows.map((r) => Number(r[wcol]) || 0) : null;
+  return { tickers, totalCompanies, asOf, cusips, weights };
 }
 
 async function main() {
   const baskets = {};
   const sources = {};
   const cusipMap = {};
+  const weights = {};   // basisKey -> { TICKER: percent of the fund }
   for (const [basisKey, src] of Object.entries(SOURCES)) {
     process.stdout.write(`Fetching ${src.fund} (${basisKey})… `);
     try {
       const buf = await fetchBuffer(src.url);
-      const { tickers, totalCompanies, asOf, cusips } = extract(parseXlsx(buf));
+      const { tickers, totalCompanies, asOf, cusips, weights: w } = extract(parseXlsx(buf));
       for (const [c, t] of cusips) cusipMap[c] = t;
       // A file with no holdings means the fund closed or the file moved. Keep the old data.
       if (!tickers.length) throw new Error(`no holdings in the file (as of ${asOf || "unknown"})`);
       // Keep the screened names, deduped, in the file's own order (index weight order).
       const seen = new Set();
       const screened = [];
-      for (const raw of tickers) {
+      const wt = {};
+      tickers.forEach((raw, i) => {
         const form = screenedForm(raw);
-        if (form && !seen.has(form)) { seen.add(form); screened.push(form); }
-      }
+        if (!form) return;
+        if (!seen.has(form)) { seen.add(form); screened.push(form); }
+        if (w) wt[form] = Number(((wt[form] || 0) + w[i]).toFixed(4));
+      });
       baskets[basisKey] = screened;
+      if (w) weights[basisKey] = wt;
       sources[basisKey] = { fund: src.fund, label: src.label, asOf, totalHoldings: tickers.length, totalCompanies, screened: screened.length };
       console.log(`${tickers.length} holdings${totalCompanies ? ` / ${totalCompanies} companies` : ""}, ${screened.length} screened (as of ${asOf || "n/a"})`);
     } catch (e) {
@@ -224,6 +233,7 @@ async function main() {
     source: "Issuer daily-published holdings (State Street SPDR)",
     sources,
     baskets,
+    weights,
   }, null, 0) + "\n");
   writeFileSync(CUSIP_OUT, JSON.stringify({ lastUpdated: new Date().toISOString(), source: "CUSIP and ticker columns of the SPDR daily holdings files", count: Object.keys(cusipMap).length, map: cusipMap }) + "\n");
   console.log(`Wrote ${Object.keys(cusipMap).length} CUSIP-to-ticker pairs → ${CUSIP_OUT}`);

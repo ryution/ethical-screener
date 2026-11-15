@@ -16,7 +16,7 @@ import { politicalFor } from "./political.js";
 import { enrichedFlagsFor, enrichedName, enrichedTickers, dataMeta } from "./enriched.js";
 import { filingFlagsFor, filingName, filingTickers, filingMeta } from "./filings.js";
 import { normalizeTicker } from "./symbols.js";
-import { holdingsMeta } from "./holdings.js";
+import { holdingsMeta, weightsFor } from "./holdings.js";
 import { knownTicker, tickerName } from "./suggest.js";
 
 export { dataMeta };
@@ -82,15 +82,22 @@ export function lookupSymbol(symbol) {
   if (!sym) return null;
   const fund = knownFund(sym);
   if (fund) {
-    const contains = [];
-    for (const t of fund.holds) {
-      const fl = allFlagsFor(t, SCREEN_KEYS);
-      if (fl.length) contains.push({ ticker: t, name: nameFor(t), flags: fl });
-    }
     // Where the basket came from and how big the whole index is, so the UI can say
     // "92 of 504 holdings, as of 9-Sep-2026" instead of a bare count.
     const src = holdingsMeta().sources?.[fund.basisKey];
     const live = src && !src.curated && !src.error;
+    // Each flagged company's share of the fund, in percent: from the issuer file or SEC
+    // filing, or one equal slice for an equal-weight fund. Null when we don't have it,
+    // never a guess.
+    const w = weightsFor(fund.basisKey);
+    const weighting = fund.equalWeight && live && src.totalHoldings ? "equal" : (live && w ? "market" : null);
+    const weightOf = (t) => weighting === "equal" ? Number((100 / src.totalHoldings).toFixed(4))
+      : weighting === "market" ? (w[t] ?? null) : null;
+    const contains = [];
+    for (const t of fund.holds) {
+      const fl = allFlagsFor(t, SCREEN_KEYS);
+      if (fl.length) contains.push({ ticker: t, name: nameFor(t), flags: fl, weight: weightOf(t) });
+    }
     return {
       symbol: sym, type: "fund", name: fund.name, basis: fund.basis, contains,
       totalHoldings: live ? src.totalHoldings : null,
@@ -102,6 +109,7 @@ export function lookupSymbol(symbol) {
         ? (src.via === "nport" ? `${src.fund}'s SEC Form N-PORT filing` : `${src.label} (${src.fund}) daily holdings`)
         : "curated constituent list",
       marketConductShare: live ? marketConductShare() : null,
+      weighting,
     };
   }
   const na = unanalyzedFund(sym);

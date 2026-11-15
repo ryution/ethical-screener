@@ -209,43 +209,103 @@ function syncUrl(symbol, selected, screens, vs = "") {
 // the choice someone actually made rather than stacked up for all five at once.
 const filterLink = { background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: sans, fontSize: 11.5, color: D.mint };
 
-function PresetRow({ presets, screens, selected, onApply }) {
-  if (!presets.length) return null;
+// Categories as one dropdown instead of a wall of 27 chips. The button says what is
+// picked; the list opens below it with the faith-based sets first, then every category as a
+// checkbox. Esc, Done or a click outside closes it.
+function CategoryPicker({ screens, presets, selected, toggle, setAll, allOn, onApply, onFind }) {
+  const [open, setOpen] = useState(false);
+  const box = useRef(null);
+  useEffect(() => {
+    if (!open) return;
+    const away = (e) => { if (box.current && !box.current.contains(e.target)) setOpen(false); };
+    const esc = (e) => { if (e.key === "Escape") setOpen(false); };
+    document.addEventListener("mousedown", away);
+    document.addEventListener("keydown", esc);
+    return () => { document.removeEventListener("mousedown", away); document.removeEventListener("keydown", esc); };
+  }, [open]);
+
   const have = new Set(screens.map((s) => s.key));
   // A preset can name a screen this deployment doesn't carry; drop those rather than
   // selecting keys that would silently match nothing.
-  const usable = presets
-    .map((p) => ({ ...p, screens: p.screens.filter((k) => have.has(k)) }))
-    .filter((p) => p.screens.length);
-  if (!usable.length) return null;
-  const isActive = (p) => selected && selected.size === p.screens.length && p.screens.every((k) => selected.has(k));
-  // Editing the chips by hand drops the exact match, and the note goes with it — it would
-  // be describing a set that is no longer what is selected.
+  const usable = (presets || []).map((p) => ({ ...p, screens: p.screens.filter((k) => have.has(k)) })).filter((p) => p.screens.length);
+  const isActive = (p) => selected.size === p.screens.length && p.screens.every((k) => selected.has(k));
   const active = usable.find(isActive);
+  const labelOf = (k) => screens.find((s) => s.key === k)?.label || k;
+  const picked = screens.filter((s) => selected.has(s.key)).map((s) => s.label);
+  const summary = !selected.size ? "Choose categories"
+    : allOn ? `All ${screens.length} categories`
+    : active ? active.label
+    : picked.length <= 2 ? picked.join(", ")
+    : `${picked.slice(0, 2).join(", ")} +${picked.length - 2}`;
+
+  const check = (on) => ({ width: 16, height: 16, flexShrink: 0, display: "grid", placeItems: "center", fontSize: 12, fontWeight: 700,
+    border: `1.5px solid ${on ? P.coral : D.glassBorder}`, background: on ? P.coral : "transparent", color: P.page });
+  const row = { display: "flex", alignItems: "center", gap: 10, width: "100%", textAlign: "left", cursor: "pointer",
+    background: "none", border: "none", padding: "7px 8px", fontFamily: sans, fontSize: 13.5, color: D.ink };
+  const head = { fontFamily: sans, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: D.faint, margin: "4px 8px 4px" };
+
   return (
-    <div style={{ marginBottom: 10 }}>
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 7 }}>
-        <span style={{ fontFamily: sans, fontSize: 11.5, color: D.faint }}>Faith-based sets:</span>
-        {usable.map((p) => {
-          const on = isActive(p);
-          return (
-            <button key={p.key} onClick={() => onApply(p.screens)} aria-pressed={on}
-              style={{ fontFamily: sans, fontSize: 12, fontWeight: 600, cursor: "pointer", borderRadius: 999, padding: "4px 12px",
-                border: `1px solid ${on ? A.lav : D.glassBorder}`,
-                background: on ? A.lav : "transparent",
-                color: on ? A.lavInk : D.muted, transition: "all .12s" }}>
-              {p.label}
-            </button>
-          );
-        })}
+    <div style={{ marginTop: 16 }}>
+      <div ref={box} style={{ position: "relative", display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 16px" }}>
+        <button onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-haspopup="true"
+          style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", fontFamily: sans, fontSize: 14, fontWeight: 600,
+            color: D.ink, background: "rgba(237,239,243,0.06)", border: `1px solid ${selected.size ? "rgba(238,120,86,0.55)" : D.glassBorder}`,
+            padding: "10px 14px", maxWidth: "100%" }}>
+          <span style={{ color: D.faint, fontWeight: 500 }}>Categories:</span>
+          <span style={{ color: selected.size ? D.flag : D.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{summary}</span>
+          <span aria-hidden style={{ fontSize: 10, color: D.muted, transform: open ? "rotate(180deg)" : "none", transition: "transform .15s" }}>▼</span>
+        </button>
+        {selected.size > 0 && <button onClick={onFind} style={{ ...filterLink, fontSize: 13, fontWeight: 600 }}>Find funds for these</button>}
+
+        {open && (
+          <div role="dialog" aria-label="Choose categories"
+            style={{ position: "absolute", top: "calc(100% + 6px)", left: 0, zIndex: 40, width: "min(620px, 100%)",
+              background: D.lift, border: `1px solid ${D.glassBorder}`, boxShadow: "0 18px 50px rgba(0,0,0,0.5)", padding: "10px 8px 8px" }}>
+            {usable.length > 0 && (
+              <>
+                <div style={head}>Faith-based sets</div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(180px,1fr))", marginBottom: 6 }}>
+                  {usable.map((p) => {
+                    const on = isActive(p);
+                    return (
+                      <button key={p.key} onClick={() => onApply(p.screens)} aria-pressed={on} style={row}>
+                        <span style={{ ...check(on), borderRadius: "50%" }}>{on ? "✓" : ""}</span>{p.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+            <div style={{ ...head, display: "flex", justifyContent: "space-between", alignItems: "baseline", borderTop: `1px solid ${D.glassBorder}`, paddingTop: 10, margin: "4px 8px" }}>
+              <span>Categories</span>
+              <span style={{ display: "flex", gap: 14, textTransform: "none", letterSpacing: 0 }}>
+                {!allOn && <button onClick={() => setAll(true)} style={filterLink}>Select all</button>}
+                {selected.size > 0 && <button onClick={() => setAll(false)} style={filterLink}>Clear all</button>}
+              </span>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(230px,1fr))", maxHeight: "min(52vh, 420px)", overflowY: "auto" }}>
+              {screens.map((s) => {
+                const on = selected.has(s.key);
+                return (
+                  <button key={s.key} onClick={() => toggle(s.key)} title={s.blurb} role="checkbox" aria-checked={on} style={row}>
+                    <span style={check(on)}>{on ? "✓" : ""}</span>{s.label}
+                  </button>
+                );
+              })}
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", borderTop: `1px solid ${D.glassBorder}`, marginTop: 6, paddingTop: 8 }}>
+              <button onClick={() => setOpen(false)} style={{ ...brassBtn(0, "8px 18px", 13.5) }}>Done</button>
+            </div>
+          </div>
+        )}
       </div>
       {active && (
-        <div style={{ marginTop: 9, padding: "11px 13px", background: "rgba(156,203,245,0.08)", border: `1px solid ${D.glassBorder}`, borderRadius: 12 }}>
+        <div style={{ marginTop: 10, padding: "11px 13px", background: "rgba(156,203,245,0.08)", border: `1px solid ${D.glassBorder}` }}>
           <div style={{ fontFamily: sans, fontSize: 12, color: D.brassSoft, marginBottom: 4 }}>
-            {active.screens.map((k) => screens.find((s) => s.key === k)?.label).filter(Boolean).join(" · ")}
+            {active.screens.map(labelOf).join(" · ")}
           </div>
           <p style={{ margin: 0, fontFamily: sans, fontSize: 12, color: D.muted, lineHeight: 1.55 }}>
-            {active.note} Edit the categories below to make it yours.
+            {active.note} Open Categories to make it yours.
           </p>
         </div>
       )}
@@ -283,11 +343,12 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
       const list = (d.screens || []).slice().sort((a, b) => a.label.localeCompare(b.label));
       setScreens(list);
       setPresets(d.presets || []);
-      // A link's ?only= wins; otherwise what this device remembers; otherwise nothing, so a
-      // first visit starts with the reader choosing their own categories.
+      // A link's ?only= wins; otherwise what this device remembers (an empty list stays
+      // empty: that's what "Clear all" meant); otherwise everything, and the reader unticks
+      // what they don't care about.
       const only = initialOnly();
       const pick = only || savedSelection();
-      setSelected(new Set(pick ? pick.filter((k) => list.some((s) => s.key === k)) : []));
+      setSelected(new Set(pick ? pick.filter((k) => list.some((s) => s.key === k)) : list.map((s) => s.key)));
     }).catch(() => {});
   }, []);
   useEffect(() => { if (selected) saveSelection([...selected]); }, [selected]);
@@ -470,44 +531,8 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
       </div>
 
       {screens.length > 0 && selected && (
-        <div style={{ marginTop: 14, borderTop: `1px solid ${D.glassBorder}`, paddingTop: 12 }}>
-          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, marginBottom: 9 }}>
-            <span style={{ fontFamily: sans, fontSize: 11.5, letterSpacing: "0.08em", textTransform: "uppercase", color: D.faint }}>Filter to what you care about</span>
-            {/* Two buttons, not one toggle. A single toggle only offered "Clear all" once
-                everything was on, so clearing a faith set or a hand-picked few meant
-                selecting all of them first. Each is shown only when it would do something. */}
-            <div style={{ display: "flex", alignItems: "baseline", gap: 12, flexShrink: 0 }}>
-              {!allOn && (
-                <button onClick={() => setAll(true)} style={filterLink}>Select all</button>
-              )}
-              {selected.size > 0 && (
-                <button onClick={() => setAll(false)} style={filterLink}>Clear all</button>
-              )}
-              {selected.size > 0 && (
-                <button onClick={openFinder} style={{ ...filterLink, fontWeight: 600 }}>Find funds for these</button>
-              )}
-            </div>
-          </div>
-          <PresetRow presets={presets} screens={screens} selected={selected} onApply={(keys) => setSelected(new Set(keys))} />
-          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 7 }}>
-            <span style={{ fontFamily: sans, fontSize: 11.5, color: D.faint }}>Individual categories:</span>
-            {screens.map((s) => {
-              const on = selected.has(s.key);
-              return (
-                <button key={s.key} onClick={() => toggle(s.key)} title={s.blurb}
-                  style={{ fontFamily: sans, fontSize: 12, fontWeight: 600, cursor: "pointer", borderRadius: 999, padding: "4px 12px",
-                    // Selected categories use the flag coral, not the lavender accent: this
-                    // is the same red the category wears in the results, so picking a
-                    // category and seeing it come back flagged is one continuous colour.
-                    border: `1px solid ${on ? "rgba(238,120,86,0.5)" : D.glassBorder}`,
-                    background: on ? "rgba(238,120,86,0.18)" : "transparent",
-                    color: on ? D.flag : D.faint, transition: "all .12s" }}>
-                  {on ? "✓ " : ""}{s.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        <CategoryPicker screens={screens} presets={presets} selected={selected} toggle={toggle}
+          setAll={setAll} allOn={allOn} onApply={(keys) => setSelected(new Set(keys))} onFind={openFinder} />
       )}
 
       {err && <DarkErr>{err}</DarkErr>}
@@ -881,7 +906,14 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
       </div>
       <p style={{ fontFamily: sans, fontSize: 13.5, color: L.muted, margin: "6px 0 0", lineHeight: 1.5 }}>
         Tracks {result.basis} and holds <b style={{ color: L.ink }}>{contains.length}</b>
-        {result.totalCompanies ? <> of its <b style={{ color: L.ink }}>{result.totalCompanies}</b></> : null} companies you may want to avoid:
+        {result.totalCompanies ? <> of its <b style={{ color: L.ink }}>{result.totalCompanies}</b></> : null} companies you may want to avoid.
+        {(() => {
+          // How much of the fund those companies are, by weight. Only when every one of
+          // them has a weight; a partial sum would understate it.
+          if (!contains.length || contains.some((c) => c.weight == null)) return null;
+          const total = contains.reduce((n, c) => n + c.weight, 0);
+          return <> Together they're <b style={{ color: L.ink }}>{pctLabel(total)}</b> of the fund{result.weighting === "equal" ? ", which gives every company an equal share" : ""}.</>;
+        })()}
       </p>
       {result.asOf && (
         <p style={{ fontFamily: sans, fontSize: 11.5, color: L.faint, margin: "4px 0 0" }}>
@@ -908,20 +940,29 @@ const dedupeByName = (contains) => {
     const prev = m.get(key);
     if (!prev) { m.set(key, { ...c, flags: [...c.flags] }); continue; }
     for (const f of c.flags) if (!prev.flags.some((p) => p.key === f.key)) prev.flags.push(f);
+    // Two share classes of one company (GOOGL, GOOG) are one weight.
+    if (c.weight != null) prev.weight = Number(((prev.weight ?? 0) + c.weight).toFixed(4));
   }
   return [...m.values()];
 };
 
+// A fund weight as people read it: "7.9%", "0.31%", "under 0.01%".
+const pctLabel = (w) => (w == null ? "" : w >= 10 ? `${w.toFixed(1)}%` : w >= 0.01 ? `${w.toFixed(2)}%` : "under 0.01%");
 const groupByFlag = (contains) => {
   const m = new Map();
   for (const c of contains) for (const f of c.flags) {
     if (!m.has(f.key)) m.set(f.key, { key: f.key, label: f.label, items: [] });
-    m.get(f.key).items.push({ name: c.name, ticker: c.ticker, reason: f.reason, quote: f.quote, source: f.source, asOf: f.asOf });
+    m.get(f.key).items.push({ name: c.name, ticker: c.ticker, weight: c.weight ?? null, reason: f.reason, quote: f.quote, source: f.source, asOf: f.asOf });
   }
-  // Alphabetical by category label, and alphabetical by company name within each category,
-  // so the list order is predictable — not "whatever we happen to have the most of."
+  // Categories alphabetical so the list is predictable. Inside one, the biggest share of the
+  // fund comes first when we know the weights (that's the question: is Brown-Forman 0.1% or
+  // 10%?), otherwise alphabetical.
   const groups = [...m.values()];
-  for (const g of groups) g.items.sort((a, b) => (a.name || a.ticker).localeCompare(b.name || b.ticker));
+  for (const g of groups) {
+    const known = g.items.every((it) => it.weight != null);
+    g.weight = known ? Number(g.items.reduce((n, it) => n + it.weight, 0).toFixed(4)) : null;
+    g.items.sort((a, b) => known ? b.weight - a.weight : (a.name || a.ticker).localeCompare(b.name || b.ticker));
+  }
   return groups.sort((a, b) => a.label.localeCompare(b.label));
 };
 
@@ -1312,8 +1353,8 @@ function FundBreakdown({ groups, theme }) {
               <span style={{
                 marginLeft: "auto", fontSize: 11.5, fontWeight: 600, color: c.ink,
                 background: c.panel, border: `1px solid ${c.border}`, borderRadius: 999,
-                padding: "1px 9px", minWidth: 26, textAlign: "center",
-              }}>{g.items.length}</span>
+                padding: "1px 9px", minWidth: 26, textAlign: "center", whiteSpace: "nowrap",
+              }}>{g.items.length}{g.weight != null ? ` · ${pctLabel(g.weight)}` : ""}</span>
               <span aria-hidden style={{
                 fontSize: 11, color: c.muted, lineHeight: 1,
                 transform: isOpen ? "rotate(180deg)" : "none", transition: "transform .15s",
@@ -1335,7 +1376,7 @@ function FundBreakdown({ groups, theme }) {
                           color: chipOpen ? A.lavInk : c.ink,
                           border: `1px solid ${chipOpen ? A.lav : c.border}`,
                           transition: "background .12s, color .12s, border-color .12s",
-                        }}>{displayName(it.name)}</button>
+                        }}>{displayName(it.name)}{it.weight != null && <span style={{ fontWeight: 500, opacity: 0.75 }}> {pctLabel(it.weight)}</span>}</button>
                     );
                   })}
                 </div>
@@ -1427,21 +1468,25 @@ function ReportControl({ item, group, linkColor, muted }) {
     </div>
   );
 }
-// §3.5 — the one accent-filled card on a result screen: a prompt with an action.
-// When the server has no SnapTrade keys, "Connect brokerage" would lead to an account
-// and then an error. Ask for an email instead and say plainly what it's for.
+// The follow-up under a result. It used to be a filled light-blue card, loud enough that it
+// was read before the result itself. Now it's one quiet line below a rule; the email field
+// only appears once someone asks to be notified. When SnapTrade isn't configured, the
+// line asks for an email instead of offering a connect that would fail.
 const HeroCTA = ({ onStart, snaptrade }) => (
-  <div style={{ marginTop: 18 }}>
-    {snaptrade === false
-      ? <WaitlistCallout />
-      : <Callout label="That's one ticker" headline="See your whole portfolio at once."
-          actionLabel="Connect brokerage →" onAction={onStart} />}
+  <div style={{ marginTop: 18, paddingTop: 12, borderTop: `1px solid ${L.line}` }}>
+    {snaptrade === false ? <WaitlistCallout /> : (
+      <p style={{ margin: 0, fontFamily: sans, fontSize: 13, color: L.muted, lineHeight: 1.6 }}>
+        That's one ticker. To check your whole portfolio at once,{" "}
+        <button onClick={onStart} style={{ ...ctaLink }}>connect your brokerage</button> (read-only).
+      </p>
+    )}
   </div>
 );
+const ctaLink = { background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: sans, fontSize: 13, fontWeight: 600, color: A.lav, textDecoration: "underline", textUnderlineOffset: 3 };
 
 function WaitlistCallout() {
   const [email, setEmail] = useState("");
-  const [state, setState] = useState("idle"); // idle | busy | done | error
+  const [state, setState] = useState("idle"); // idle | asking | busy | done | error
   const [msg, setMsg] = useState("");
   const submit = async () => {
     setState("busy");
@@ -1450,25 +1495,27 @@ function WaitlistCallout() {
       setState("done"); ping("waitlist_join");
     } catch (e) { setMsg(e.message); setState("error"); }
   };
-  const dim = "rgba(13,17,25,0.66)";
+  const text = { margin: 0, fontFamily: sans, fontSize: 13, color: L.muted, lineHeight: 1.6 };
+  if (state === "done") return <p style={text}>You're on the list. We'll email once, when whole-account checking opens.</p>;
+  if (state === "idle") {
+    return (
+      <p style={text}>
+        Checking a whole brokerage account at once is coming.{" "}
+        <button onClick={() => setState("asking")} style={ctaLink}>Get notified</button>
+      </p>
+    );
+  }
   return (
-    <div style={{ background: A.lav, borderRadius: 14, padding: "15px 16px", display: "grid", gap: 9 }}>
-      <span style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: dim }}>That's one ticker</span>
-      <div style={{ fontFamily: sans, fontSize: 18, fontWeight: 600, color: A.lavInk, letterSpacing: "-0.01em", lineHeight: 1.3 }}>
-        Checking a whole brokerage account at once is coming.
-      </div>
-      {state === "done" ? (
-        <div style={{ fontFamily: sans, fontSize: 13.5, color: A.lavInk }}>You're on the list. We'll email once, when it opens.</div>
-      ) : (
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <input id="waitlist-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" aria-label="Email for the waitlist"
-            onKeyDown={(e) => e.key === "Enter" && submit()}
-            style={{ flex: "1 1 200px", fontFamily: sans, fontSize: 14, padding: "9px 12px", borderRadius: 999, border: "1px solid rgba(13,17,25,0.25)", background: "rgba(237,239,243,0.90)", color: A.lavInk, outline: "none" }} />
-          <button onClick={submit} disabled={state === "busy"} style={onAccentBtn(999, "9px 16px", 13)}>{state === "busy" ? "…" : "Tell me when"}</button>
-          {state === "error" && <span style={{ fontFamily: sans, fontSize: 12.5, color: A.lavInk, flexBasis: "100%" }}>{msg}</span>}
-        </div>
-      )}
-      <span style={{ fontFamily: sans, fontSize: 11.5, color: dim }}>Read-only, through your broker's own login. We never move money.</span>
+    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8 }}>
+      <input id="waitlist-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com"
+        aria-label="Email for the waitlist" autoFocus onKeyDown={(e) => e.key === "Enter" && submit()}
+        style={{ flex: "1 1 200px", fontFamily: sans, fontSize: 13.5, padding: "8px 11px", border: `1px solid ${L.line}`, background: "transparent", color: L.ink, outline: "none" }} />
+      <button onClick={submit} disabled={state === "busy"} style={{ ...ctaLink, textDecoration: "none", border: `1px solid ${A.lav}`, padding: "7px 14px" }}>
+        {state === "busy" ? "…" : "Notify me"}
+      </button>
+      <span style={{ ...text, fontSize: 12, flexBasis: "100%" }}>
+        {state === "error" ? msg : "One email when it opens. Read-only, through your broker's own login; we never move money."}
+      </span>
     </div>
   );
 }
@@ -2380,13 +2427,6 @@ const linkBtn = (color) => ({ background: "none", border: "none", padding: 0, cu
 
 // ── Design-system components — see DESIGN.md §3 ──────────────────────────────
 
-// §3.1 — a button sitting ON a pastel fill is white, not lavender-on-lavender, or it
-// dissolves into its own card.
-const onAccentBtn = (r = 0, pad = "8px 16px", fs = 13) => ({
-  background: P.ink, color: A.lavInk, border: "none", borderRadius: r, padding: pad,
-  fontFamily: sans, fontSize: fs, fontWeight: 600, cursor: "pointer", letterSpacing: "-0.005em",
-});
-
 // §3.6 — delta badge. Lime when up, coral when down; each carries its own ink.
 // An all-time change can be five figures (AAPL is up ~246,000% since its 1980 IPO).
 // Two decimals on that is noise, and the digits overflow the badge — drop to whole
@@ -2494,29 +2534,6 @@ function StatCard({ label, value, sub, delta, accent = false, action }) {
       </div>
       {sub && <div style={{ fontFamily: sans, fontSize: 12, color: dim, lineHeight: 1.45 }}>{sub}</div>}
       {action}
-    </div>
-  );
-}
-
-// §3.5 — accent callout: pastel fill, dark ink, dismissible, white on-accent action.
-function Callout({ tone = "lav", label, headline, actionLabel, onAction }) {
-  const [gone, setGone] = useState(false);
-  if (gone) return null;
-  const lime = tone === "lime";
-  const fill = lime ? A.lime : A.lav;
-  const ink = lime ? A.limeInk : A.lavInk;
-  const dim = lime ? "rgba(13,17,25,0.66)" : "rgba(13,17,25,0.66)";
-  return (
-    <div style={{ background: fill, borderRadius: 0, padding: "15px 16px", display: "grid", gap: 9, marginBottom: 16 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        {label && <span style={{ fontFamily: sans, fontSize: 12.5, fontWeight: 600, color: dim }}>{label}</span>}
-        <button onClick={() => setGone(true)} aria-label="Dismiss"
-          style={{ marginLeft: "auto", background: "none", border: "none", cursor: "pointer", color: dim, fontFamily: sans, fontSize: 17, lineHeight: 1, padding: 2 }}>×</button>
-      </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
-        <div style={{ fontFamily: sans, fontSize: 18, fontWeight: 600, color: ink, letterSpacing: "-0.01em", lineHeight: 1.3, flex: "1 1 240px" }}>{headline}</div>
-        {actionLabel && <button onClick={onAction} style={onAccentBtn()}>{actionLabel}</button>}
-      </div>
     </div>
   );
 }

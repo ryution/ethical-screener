@@ -41,6 +41,8 @@ function dedupeByName(contains) {
     const prev = m.get(key);
     if (!prev) { m.set(key, { ...c, flags: [...(c.flags || [])] }); continue; }
     for (const f of c.flags || []) if (!prev.flags.some((p) => p.key === f.key)) prev.flags.push(f);
+    // Two share classes of one company (GOOGL, GOOG) are one weight.
+    if (c.weight != null) prev.weight = Number(((prev.weight ?? 0) + c.weight).toFixed(4));
   }
   return [...m.values()];
 }

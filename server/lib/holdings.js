@@ -31,10 +31,12 @@ try {
     const n = JSON.parse(readFileSync(NPORT_FILE, "utf8"));
     _data.sources = { ...(_data.sources || {}) };
     _data.baskets = { ...(_data.baskets || {}) };
+    _data.weights = { ...(_data.weights || {}) };
     for (const [k, src] of Object.entries(n.sources || {})) {
       if (src.error || !Array.isArray(n.baskets?.[k])) continue;
       _data.sources[k] = src;
       _data.baskets[k] = n.baskets[k];
+      if (n.weights?.[k]) _data.weights[k] = n.weights[k];
     }
   }
 } catch { /* keep whatever loaded above */ }
@@ -49,6 +51,12 @@ export function basketFor(basisKey) {
   if (b.length) return b;
   const src = _data.sources?.[basisKey];
   return src && !src.error && src.totalHoldings > 0 ? b : null;
+}
+
+/** Percent of the fund each flagged ticker is, for a basis ({ TICKER: 2.31 }), or null when
+ *  the source file had no weights. Market-cap weights from the issuer file or SEC filing. */
+export function weightsFor(basisKey) {
+  return _data.weights?.[basisKey] || null;
 }
 
 /** Freshness metadata for the UI ("holdings as of …"), per basis. */

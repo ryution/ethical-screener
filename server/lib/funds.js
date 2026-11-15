@@ -152,7 +152,9 @@ const CATALOGUE = {
   SPYV: { name: "SPDR Portfolio S&P 500 Value ETF", basis: "the S&P 500 Value Index", basisKey: "large_value" },
   IVE: { name: "iShares S&P 500 Value ETF", basis: "the S&P 500 Value Index", basisKey: "large_value" },
   VOOV: { name: "Vanguard S&P 500 Value ETF", basis: "the S&P 500 Value Index", basisKey: "large_value" },
-  RSP: { name: "Invesco S&P 500 Equal Weight ETF", basis: "the S&P 500", basisKey: "sp500" },
+  // Same 500 companies as SPY, but each one is an equal slice of the fund, so its weights
+  // come from the count rather than from SPY's file.
+  RSP: { name: "Invesco S&P 500 Equal Weight ETF", basis: "the S&P 500", basisKey: "sp500", equalWeight: true },
   FSKAX: { name: "Fidelity Total Market Index Fund", basis: "the total US market (Dow Jones U.S. Total Stock Market Index)", basisKey: "fid_total" },
   FZROX: { name: "Fidelity ZERO Total Market Index Fund", basis: "the total US market (Fidelity U.S. Total Investable Market Index)", basisKey: "fzrox" },
   SWTSX: { name: "Schwab Total Stock Market Index Fund", basis: "the total US market (Dow Jones U.S. Total Stock Market Index)", basisKey: "swtsx" },
@@ -246,7 +248,7 @@ const GROUP_OF = Object.fromEntries(FUND_GROUPS.flatMap((g) => g.tickers.map((t)
 /** ticker -> { name, basis (plain-English index), holds (screened constituents), group }. */
 export const FUNDS = Object.fromEntries(
   Object.entries(CATALOGUE)
-    .map(([t, f]) => [t, { name: f.name, basis: f.basis, basisKey: f.basisKey, holds: holdsFor(f.basisKey), group: GROUP_OF[t] || null }])
+    .map(([t, f]) => [t, { name: f.name, basis: f.basis, basisKey: f.basisKey, holds: holdsFor(f.basisKey), group: GROUP_OF[t] || null, equalWeight: !!f.equalWeight }])
     .filter(([, f]) => Array.isArray(f.holds)),
 );
 
