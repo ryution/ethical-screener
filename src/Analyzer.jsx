@@ -186,7 +186,9 @@ const initialVs = () => {
 // The categories someone picked, remembered on this device so they don't start over from
 // "everything on" each visit. Browser storage can be missing or blocked (private windows),
 // so every read and write is allowed to fail quietly.
-const SAVED_KEY = "plainstreet.categories";
+// v2: the first version also saved the automatic starting selection, so visitors from the
+// days when that was "nothing" stayed stuck on nothing. A new name drops those.
+const SAVED_KEY = "plainstreet.categories.v2";
 const savedSelection = () => {
   try { const v = JSON.parse(window.localStorage.getItem(SAVED_KEY)); return Array.isArray(v) ? v : null; }
   catch { return null; }
@@ -351,12 +353,14 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
       setSelected(new Set(pick ? pick.filter((k) => list.some((s) => s.key === k)) : list.map((s) => s.key)));
     }).catch(() => {});
   }, []);
-  useEffect(() => { if (selected) saveSelection([...selected]); }, [selected]);
-  const toggle = (k) => setSelected((prev) => {
+  // Remember a selection only once the reader has changed it, never the automatic start.
+  const chose = useRef(false);
+  useEffect(() => { if (selected && chose.current) saveSelection([...selected]); }, [selected]);
+  const toggle = (k) => { chose.current = true; setSelected((prev) => {
     const n = new Set(prev); if (n.has(k)) n.delete(k); else n.add(k); return n;
-  });
+  }); };
   const allOn = selected && screens.length && selected.size === screens.length;
-  const setAll = (on) => setSelected(on ? new Set(screens.map((s) => s.key)) : new Set());
+  const setAll = (on) => { chose.current = true; setSelected(on ? new Set(screens.map((s) => s.key)) : new Set()); };
   // Filter changes are reflected in the URL (after the first load has settled).
   // The filter, the fund and the second fund all belong in the address bar, and on a cold
   // load with "?vs=" they arrive in any order: the categories with /api/screens, the
@@ -532,7 +536,7 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
 
       {screens.length > 0 && selected && (
         <CategoryPicker screens={screens} presets={presets} selected={selected} toggle={toggle}
-          setAll={setAll} allOn={allOn} onApply={(keys) => setSelected(new Set(keys))} onFind={openFinder} />
+          setAll={setAll} allOn={allOn} onApply={(keys) => { chose.current = true; setSelected(new Set(keys)); }} onFind={openFinder} />
       )}
 
       {err && <DarkErr>{err}</DarkErr>}
