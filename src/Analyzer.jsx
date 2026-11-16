@@ -70,9 +70,6 @@ const serifDisplay = display;
 // The wordmark gets its own face so the brand isn't just the heading font at a larger
 // size. Gabarito stands in for Okine, which Google Fonts doesn't carry.
 const wordmark = "'Gabarito', 'Familjen Grotesk', -apple-system, sans-serif";
-// Single-weight (400 only, no bold, no italic), so it is used only on running text that
-// never needs emphasis — asking for bold would synthesize a fake one.
-const lede = "'Varela', 'Hanken Grotesk', -apple-system, sans-serif";
 // High-contrast serif for headlines only. Everything else stays in the grotesks above.
 const headline = "'DM Serif Display', Georgia, 'Times New Roman', serif";
 
@@ -1721,122 +1718,6 @@ const METHOD_CATALOGUE = [
     { name: "Interest-based finance", status: "Live", def: "Banks and consumer lenders whose principal business is lending at interest, excluded under sharia screening as riba.", counts: "Commercial banks, savings institutions, and card issuers whose filings report net interest income as a primary revenue line.", not: "Conventional insurers, which sharia screens exclude on a separate ground we do not yet cover; payment processors that take fees rather than interest.", ex: "JPMorgan Chase, Bank of America, Capital One, Synchrony Financial." },
   ]],
 ];
-function Methodology({ onStart }) {
-  const wrap = { maxWidth: 900, margin: "0 auto", padding: "0 24px" };
-  const StatusBadge = ({ s }) => (
-    <span style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase",
-      color: s === "Live" ? L.good : L.brass, background: s === "Live" ? "rgba(95,207,146,0.12)" : "rgba(156,203,245,0.16)",
-      border: `1px solid ${s === "Live" ? "rgba(95,207,146,0.40)" : "rgba(237,239,243,0.20)"}`, borderRadius: 0, padding: "2px 7px", whiteSpace: "nowrap" }}>{s}</span>
-  );
-  const Field = ({ label, children, color }) => (
-    <div style={{ display: "grid", gridTemplateColumns: "112px 1fr", gap: 12, alignItems: "baseline" }}>
-      <span style={{ fontFamily: sans, fontSize: 11.5, fontWeight: 600, letterSpacing: "0.03em", textTransform: "uppercase", color: color || L.faint }}>{label}</span>
-      <span style={{ fontFamily: sans, fontSize: 14.5, color: L.ink, lineHeight: 1.55 }}>{children}</span>
-    </div>
-  );
-  return (
-    <div style={{ fontFamily: sans, background: L.bg, minHeight: "100dvh" }}>
-      <Canvas>
-        <nav style={{ borderBottom: `1px solid ${L.line}`, background: P.band }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 28px" }}>
-            <a href="#" style={{ fontFamily: wordmark, fontSize: 25, fontWeight: 600, color: L.ink, letterSpacing: "-0.02em", textDecoration: "none" }}>PlainStreet</a>
-            <button onClick={onStart} style={startBtn(999, "9px 18px", 14)}>Get started</button>
-          </div>
-        </nav>
-        <header>
-          <div style={{ ...wrap, padding: "clamp(48px,7vw,80px) 24px clamp(36px,5vw,56px)" }}>
-            <p style={{ fontFamily: sans, fontSize: 13, letterSpacing: "0.18em", textTransform: "uppercase", color: D.brassSoft, margin: "0 0 18px" }}>Methodology</p>
-            <h1 style={{ fontFamily: serifDisplay, fontWeight: 600, fontSize: "clamp(30px,5vw,50px)", lineHeight: 1.06, margin: 0, letterSpacing: "-0.035em", color: D.ink }}>
-              How PlainStreet decides what to flag
-            </h1>
-          </div>
-        </header>
-      </Canvas>
-
-      <section style={{ ...wrap, padding: "clamp(36px,5vw,52px) 24px" }}>
-        <SectionHead title="The principles behind every flag" sub="The whole product rests on these." />
-        <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: 26 }}>
-          {METHOD_PRINCIPLES.map(([t, d], i) => (
-            <li key={i} style={{ display: "grid", gridTemplateColumns: "9px 1fr", gap: 16 }}>
-              <span aria-hidden style={{ width: 9, height: 9, background: L.brass, marginTop: 7 }} />
-              <div>
-                <h3 style={{ margin: 0, fontFamily: serif, fontSize: 17.5, fontWeight: 600, color: L.pine, letterSpacing: "-0.012em" }}>{t}</h3>
-                <p style={{ margin: "7px 0 0", fontFamily: sans, fontSize: 15.5, lineHeight: 1.6, color: L.muted }}>{d}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section style={{ background: L.card, borderTop: `1px solid ${L.line}`, borderBottom: `1px solid ${L.line}` }}>
-        <div style={{ ...wrap, padding: "clamp(36px,5vw,52px) 24px" }}>
-          <SectionHead title="How a company gets flagged" sub="A company is flagged if any layer flags it. When layers overlap, the most precise reason wins." />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(230px,1fr))", gap: 16 }}>
-            {METHOD_LAYERS.map(([name, what, strength], i) => (
-              <div key={i} style={card({ padding: "22px 20px", background: L.bg })}>
-                <div style={{ fontFamily: serif, fontSize: 19, fontWeight: 600, color: L.pine, letterSpacing: "-0.01em", margin: "0 0 8px" }}>{name}</div>
-                <p style={{ margin: 0, fontFamily: sans, fontSize: 14, color: L.muted, lineHeight: 1.55 }}>{what}</p>
-                <p style={{ margin: "10px 0 0", fontFamily: sans, fontSize: 14, color: L.muted, lineHeight: 1.55 }}>{strength}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section style={{ ...wrap, padding: "clamp(36px,5vw,52px) 24px" }}>
-        <SectionHead title="The flag catalogue" subFont={lede} sub="Every screen we can apply, grouped by theme. 'Planned' flags are agreed for a coming build." />
-        <div style={{ display: "grid", gap: 40 }}>
-          {METHOD_CATALOGUE.map(([group, flags]) => (
-            <div key={group}>
-              <h3 style={{ fontFamily: serif, fontSize: 22, fontWeight: 600, color: L.pine, letterSpacing: "-0.015em", margin: "0 0 16px", paddingBottom: 10, borderBottom: `2px solid ${L.line}` }}>{group}</h3>
-              <div style={{ display: "grid", gap: 16 }}>
-                {flags.map((f) => (
-                  <div key={f.name} style={card({ padding: "20px 22px" })}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
-                      <span style={{ fontFamily: serif, fontSize: 19, fontWeight: 600, color: L.ink, letterSpacing: "-0.01em" }}>{f.name}</span>
-                      <StatusBadge s={f.status} />
-                      {f.contested && <span style={{ fontFamily: sans, fontSize: 10.5, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase", color: L.muted, background: "rgba(237,239,243,0.08)", border: `1px solid ${L.line}`, borderRadius: 0, padding: "2px 7px" }}>Contested</span>}
-                    </div>
-                    <div style={{ display: "grid", gap: 8 }}>
-                      <Field label="Definition">{f.def}</Field>
-                      <Field label="Counts" color={L.good}>{f.counts}</Field>
-                      <Field label="Doesn't count" color={L.flag}>{f.not}</Field>
-                      <Field label="Examples">{f.ex}</Field>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section style={{ background: L.card, borderTop: `1px solid ${L.line}` }}>
-        <div style={{ ...wrap, padding: "clamp(36px,5vw,52px) 24px", textAlign: "center" }}>
-          <p style={{ fontFamily: sans, fontWeight: 400, fontSize: "clamp(15.5px,1.7vw,18px)", color: L.pine, lineHeight: 1.7, margin: 0, maxWidth: 600, marginLeft: "auto", marginRight: "auto" }}>
-            Every flag is a checkable fact with a citation. If we cannot meet that standard, we do not flag the company. No flag means the company is not one of the names we track. It does not mean the company has been audited and found clean.
-          </p>
-        </div>
-      </section>
-
-      <section style={{ ...wrap, textAlign: "center", padding: "clamp(36px,5vw,60px) 24px" }}>
-        <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(32px,5.5vw,50px)", color: L.pine, fontWeight: 600, margin: "0 0 22px", letterSpacing: "-0.02em" }}>See what you own.</h2>
-        <button onClick={onStart} style={startBtn(999, "16px 32px", 16)}>Get started</button>
-      </section>
-
-      <footer style={{ ...wrap, maxWidth: 1000, borderTop: `1px solid ${L.line}`, padding: "22px 24px", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
-        <a href="#" style={{ fontFamily: serif, fontSize: 15, fontWeight: 600, color: L.muted, textDecoration: "none" }}>PlainStreet</a>
-        <span style={{ fontFamily: sans, fontSize: 12.5, color: L.faint }}>Read-only portfolio analysis. Not investment advice.</span>
-      </footer>
-    </div>
-  );
-}
-const SectionHead = ({ title, sub, subFont = sans }) => (
-  <div style={{ marginBottom: 28 }}>
-    <h2 style={{ fontFamily: serifDisplay, fontSize: "clamp(24px,3.6vw,34px)", color: L.pine, fontWeight: 600, margin: 0, letterSpacing: "-0.02em" }}>{title}</h2>
-    {sub && <p style={{ fontFamily: subFont, fontSize: 16, color: L.muted, lineHeight: 1.6, margin: "10px 0 0", maxWidth: 620 }}>{sub}</p>}
-  </div>
-);
 
 // ── Landing ─────────────────────────────────────────────────────────────────
 function Landing({ onStart, onSignIn }) {
@@ -1862,6 +1743,123 @@ function Landing({ onStart, onSignIn }) {
   if (route === "#methodology") return <Methodology onStart={onStart} />;
   return <LandingHome onStart={onStart} onSignIn={onSignIn} snaptrade={server.snaptrade} meta={server.meta} />;
 }
+
+// ── Methodology ───────────────────────────────────────────────────────────────
+// Reads like an article down to the categories: one column, the rules as paragraphs with a
+// bold lead-in, the three sources as a small table. The categories are a reference list:
+// a search box, and one line per category that opens to what counts and what doesn't.
+function Methodology({ onStart }) {
+  const [q, setQ] = useState("");
+  const [open, setOpen] = useState(null);
+  const col = { maxWidth: 760, margin: "0 auto", padding: "0 24px" };
+  const h2 = { fontFamily: headline, fontWeight: 400, fontSize: "clamp(30px,4vw,40px)", lineHeight: 1.1, color: D.ink, margin: "64px 0 18px" };
+  const para = { fontFamily: sans, fontSize: 17.5, lineHeight: 1.7, color: D.muted, margin: "0 0 18px" };
+  const cell = { padding: "14px 12px 14px 0", borderTop: `1px solid ${L.line}`, verticalAlign: "top", fontFamily: sans, fontSize: 15, lineHeight: 1.55, color: D.muted };
+  const needle = q.trim().toLowerCase();
+  const groups = METHOD_CATALOGUE
+    .map(([g, flags]) => [g, flags.filter((f) => !needle || `${f.name} ${f.def} ${f.counts} ${f.ex}`.toLowerCase().includes(needle))])
+    .filter(([, f]) => f.length);
+  return (
+    <div style={{ background: P.page, minHeight: "100dvh", color: D.ink }}>
+      <MethodNav onStart={onStart} />
+      <style>{`@media (max-width: 560px) { .ps-cat-row { flex-wrap: wrap; } .ps-cat-name { min-width: 0 !important; width: 100%; } }`}</style>
+      <header style={{ ...col, padding: "clamp(48px,8vw,96px) 24px 8px" }}>
+        <h1 style={{ fontFamily: headline, fontWeight: 400, fontSize: "clamp(42px,6.2vw,68px)", lineHeight: 1.02, letterSpacing: "-0.015em", margin: 0 }}>How PlainStreet decides what to flag</h1>
+        <p style={{ ...para, fontSize: "clamp(18px,2vw,21px)", color: D.ink, opacity: 0.85, margin: "22px 0 0" }}>{METHOD_INTRO}</p>
+      </header>
+      <article style={{ ...col, paddingBottom: 48 }}>
+        <h2 style={h2}>The rules</h2>
+        {METHOD_PRINCIPLES.map(([t, d]) => (
+          <p key={t} style={para}><b style={{ color: D.ink, fontWeight: 600 }}>{t}.</b> {d}</p>
+        ))}
+
+        <h2 style={h2}>Where flags come from</h2>
+        <p style={para}>A company is flagged if any of three sources flags it. When two agree, the more precise reason is the one you see.</p>
+        <table style={{ width: "100%", borderCollapse: "collapse", margin: "8px 0 0" }}>
+          <tbody>
+            {METHOD_LAYERS.map(([name, what, strength]) => (
+              <tr key={name}>
+                <td style={{ ...cell, width: "26%", color: D.ink, fontWeight: 600 }}>{name}</td>
+                <td style={cell}>{what} {strength}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <h2 style={h2}>Categories</h2>
+        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search categories, like coal or opioids" aria-label="Search categories"
+          style={{ width: "100%", maxWidth: 460, boxSizing: "border-box", fontFamily: sans, fontSize: 15, color: D.ink, background: "transparent",
+            border: `1px solid ${D.glassBorder}`, borderRadius: 999, padding: "11px 16px", outline: "none", marginBottom: 20 }} />
+        {!groups.length && <p style={{ fontFamily: sans, color: D.muted }}>No category matches "{q}".</p>}
+        {groups.map(([g, flags]) => (
+          <div key={g} style={{ marginBottom: 28 }}>
+            <div style={{ fontFamily: sans, fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: D.faint, marginBottom: 4 }}>{g}</div>
+            {flags.map((f) => {
+              const isOpen = open === f.name;
+              return (
+                <div key={f.name} style={{ borderTop: `1px solid ${L.line}` }}>
+                  <button onClick={() => setOpen(isOpen ? null : f.name)} aria-expanded={isOpen} className="ps-cat-row"
+                    style={{ width: "100%", display: "flex", alignItems: "baseline", gap: "4px 14px", background: "none", border: "none", cursor: "pointer", padding: "14px 0", textAlign: "left" }}>
+                    <span className="ps-cat-name" style={{ fontFamily: sans, fontSize: 15.5, fontWeight: 600, color: D.ink, minWidth: 190 }}>{f.name}</span>
+                    <span style={{ fontFamily: sans, fontSize: 14, color: D.muted, flex: 1 }}>{f.def}</span>
+                    <span aria-hidden style={{ color: D.faint, fontSize: 12, transform: isOpen ? "rotate(180deg)" : "none", transition: "transform .15s" }}>▼</span>
+                  </button>
+                  {isOpen && (
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 18, padding: "0 0 18px" }}>
+                      {[["Counts", f.counts, L.good], ["Doesn't count", f.not, L.flag], ["For example", f.ex, D.faint]].map(([k, val, c]) => (
+                        <div key={k}>
+                          <div style={{ fontFamily: sans, fontSize: 12, fontWeight: 700, color: c, marginBottom: 4 }}>{k}</div>
+                          <div style={{ fontFamily: sans, fontSize: 14, lineHeight: 1.55, color: D.muted }}>{val}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </article>
+      <MethodClose onStart={onStart} />
+    </div>
+  );
+}
+
+// The Methodology page's nav, closing line and footer, in the landing page's style.
+function MethodNav({ onStart }) {
+  return (
+    <nav style={{ position: "sticky", top: 0, zIndex: 20, borderBottom: `1px solid ${L.line}`, background: P.band }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 28px" }}>
+        <a href="#" style={{ fontFamily: wordmark, fontSize: 25, fontWeight: 600, color: L.ink, letterSpacing: "-0.02em", textDecoration: "none" }}>PlainStreet</a>
+        <div style={{ display: "flex", alignItems: "center", gap: 22 }}>
+          <a href="#" style={{ fontFamily: sans, fontSize: 15, color: L.ink, textDecoration: "none" }}>Check a fund</a>
+          <button onClick={onStart} style={startBtn(999, "10px 20px", 15)}>Get started</button>
+        </div>
+      </div>
+    </nav>
+  );
+}
+function MethodClose({ onStart }) {
+  return (
+    <>
+      <section style={{ borderTop: `1px solid ${L.line}` }}>
+        <div style={{ maxWidth: 760, margin: "0 auto", padding: "clamp(40px,6vw,64px) 24px clamp(64px,8vw,96px)", textAlign: "center" }}>
+          <p style={{ fontFamily: headline, fontSize: "clamp(24px,3.4vw,32px)", lineHeight: 1.25, color: D.ink, margin: 0 }}>
+            No flag means a company isn't one of the names we track. It never means it was audited and found clean.
+          </p>
+          <button onClick={onStart} style={{ ...startBtn(999, "14px 28px", 16), marginTop: 28 }}>See what you own</button>
+        </div>
+      </section>
+      <footer style={{ borderTop: `1px solid ${L.line}` }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto", padding: "22px 24px 80px", display: "flex", justifyContent: "center", gap: "8px 22px", flexWrap: "wrap" }}>
+          <a href="#" style={{ fontFamily: sans, fontSize: 14, color: L.muted, textDecoration: "none" }}>PlainStreet</a>
+          <span style={{ fontFamily: sans, fontSize: 14, color: L.faint }}>Read-only portfolio analysis. Not investment advice.</span>
+        </div>
+      </footer>
+    </>
+  );
+}
+const METHOD_INTRO = "A flag is a checkable fact about what a company does, with a reason and a source. Here is what counts, what doesn't, and where each flag comes from.";
 
 // The steps read as a list of headlines; the body for one appears when the pointer or
 // keyboard focus lands on it. Hover alone would strand touch and keyboard users, so each
