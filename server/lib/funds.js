@@ -19,7 +19,17 @@
 // where its membership is stable and well-known. They are the FALLBACK — when
 // fetch-holdings.mjs has run, holdings.js overlays the issuer's live constituents.
 
+import { readFileSync, existsSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { basketFor } from "./holdings.js";
+
+// Every registered U.S. fund ticker, from the SEC (scripts/fetch-fund-tickers.mjs). Used
+// only to recognize a fund we don't look inside, so it reads "not analyzed" rather than
+// "we don't recognize this symbol".
+const FUND_TICKERS_FILE = join(dirname(fileURLToPath(import.meta.url)), "..", "generated", "fund-tickers.json");
+let REGISTERED_FUNDS = new Set();
+try { if (existsSync(FUND_TICKERS_FILE)) REGISTERED_FUNDS = new Set(JSON.parse(readFileSync(FUND_TICKERS_FILE, "utf8")).symbols); } catch { /* recognition only */ }
 
 // Screened companies that are established S&P 500 constituents.
 const SP500 = [
@@ -278,6 +288,17 @@ const NOT_ANALYZED = {
   // form we can fetch for free. Listing them keeps a search from reading as "clean" —
   // and points the visitor at the one ESG index fund we CAN see inside.
   ESGD: { name: "iShares ESG Aware MSCI EAFE ETF",            kind: "international" },
+  // Commodity funds people ask about. Several are commodity pools rather than registered
+  // funds, so the SEC's fund list doesn't include them.
+  PDBC: { name: "Invesco Optimum Yield Diversified Commodity Strategy No K-1 ETF", kind: "commodity" },
+  DBC:  { name: "Invesco DB Commodity Index Tracking Fund",   kind: "commodity" },
+  GSG:  { name: "iShares S&P GSCI Commodity-Indexed Trust",   kind: "commodity" },
+  DBA:  { name: "Invesco DB Agriculture Fund",                kind: "commodity" },
+  USO:  { name: "United States Oil Fund",                     kind: "commodity" },
+  UNG:  { name: "United States Natural Gas Fund",             kind: "commodity" },
+  IAU:  { name: "iShares Gold Trust",                         kind: "commodity" },
+  GLDM: { name: "SPDR Gold MiniShares Trust",                 kind: "commodity" },
+  SLV:  { name: "iShares Silver Trust",                       kind: "commodity" },
 };
 const NOT_ANALYZED_REASON = {
   international: "An international fund. Our screens cover US-listed companies, so we don't look inside this one yet.",
@@ -286,11 +307,15 @@ const NOT_ANALYZED_REASON = {
   esg: "An ESG-labeled fund. Its issuer doesn't publish holdings in a form we can read yet, so we can't check whether the label holds up. Try EFIV, the S&P 500 ESG ETF, to see what an ESG index fund still holds.",
   active: "An actively managed fund. We only look inside index funds whose issuer publishes daily holdings, so this one isn't analyzed yet.",
 };
+const otherFundReason = () => `A fund we don't look inside yet. We read the holdings of ${Object.keys(FUNDS).length} index, sector, dividend and ESG funds, and this isn't one of them.`;
 
 /** A widely-held fund we recognize but don't analyze, or null. */
 export function unanalyzedFund(t) {
-  const f = NOT_ANALYZED[String(t || "").toUpperCase()];
-  return f ? { name: f.name, reason: NOT_ANALYZED_REASON[f.kind] } : null;
+  const sym = String(t || "").toUpperCase();
+  const f = NOT_ANALYZED[sym];
+  if (f) return { name: f.name, reason: NOT_ANALYZED_REASON[f.kind] };
+  // Any other registered fund: we know it's a fund, not what's in it.
+  return REGISTERED_FUNDS.has(sym) ? { name: null, reason: otherFundReason() } : null;
 }
 
 /** [ticker, name] for every fund we recognize — for search autocomplete. */

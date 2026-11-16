@@ -18,6 +18,7 @@ import { displayName, reasonParts } from "./format.js";
 import { gradeFor } from "./grade.js";
 import { conductGradeFor, CONDUCT_CATEGORIES } from "./conductGrade.js";
 import { compareFunds } from "./compare.js";
+import { parsePortfolioCsv } from "./portfolioCsv.js";
 
 // ── Palette ────────────────────────────────────────────────
 // Deep navy throughout, no light mode. The page is the darkest ground; sections separate
@@ -215,6 +216,15 @@ const filterLink = { background: "none", border: "none", padding: 0, cursor: "po
 // Categories as one dropdown instead of a wall of 27 chips. The button says what is
 // picked; the list opens below it with the faith-based sets first, then every category as a
 // checkbox. Esc, Done or a click outside closes it.
+// Hover and entrance for the category picker; inline styles can't do :hover.
+const PICKER_CSS = `
+.ps-pick-trigger:hover { border-color: rgba(237,239,243,0.3) !important; }
+.ps-pick-row:hover { background: rgba(237,239,243,0.06) !important; }
+.ps-pick-chip:hover { border-color: rgba(156,203,245,0.6) !important; }
+@keyframes ps-pick-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+.ps-pick-menu { animation: ps-pick-in .18s ease both; }
+@media (prefers-reduced-motion: reduce) { .ps-pick-menu { animation: none; } }
+`;
 function CategoryPicker({ screens, presets, selected, toggle, setAll, allOn, onApply, onFind }) {
   const [open, setOpen] = useState(false);
   const box = useRef(null);
@@ -235,75 +245,94 @@ function CategoryPicker({ screens, presets, selected, toggle, setAll, allOn, onA
   const active = usable.find(isActive);
   const labelOf = (k) => screens.find((s) => s.key === k)?.label || k;
   const picked = screens.filter((s) => selected.has(s.key)).map((s) => s.label);
-  const summary = !selected.size ? "Choose categories"
-    : allOn ? `All ${screens.length} categories`
+  const summary = !selected.size ? "None selected yet"
+    : allOn ? "All categories"
     : active ? active.label
     : picked.length <= 2 ? picked.join(", ")
     : `${picked.slice(0, 2).join(", ")} +${picked.length - 2}`;
 
-  const check = (on) => ({ width: 16, height: 16, flexShrink: 0, display: "grid", placeItems: "center", fontSize: 12, fontWeight: 700,
-    border: `1.5px solid ${on ? P.coral : D.glassBorder}`, background: on ? P.coral : "transparent", color: P.page });
-  const row = { display: "flex", alignItems: "center", gap: 10, width: "100%", textAlign: "left", cursor: "pointer",
-    background: "none", border: "none", padding: "7px 8px", fontFamily: sans, fontSize: 13.5, color: D.ink };
-  const head = { fontFamily: sans, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: D.faint, margin: "4px 8px 4px" };
+  const check = (on) => ({ width: 18, height: 18, flexShrink: 0, display: "grid", placeItems: "center", borderRadius: 5,
+    border: `1.5px solid ${on ? P.sky : "rgba(237,239,243,0.28)"}`, background: on ? P.sky : "transparent", color: P.navy,
+    transition: "background .12s, border-color .12s" });
+  const head = { fontFamily: sans, fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: D.faint };
+  const tick = <svg width="11" height="11" viewBox="0 0 12 12" aria-hidden><path d="M2.5 6.2 5 8.6 9.6 3.6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>;
 
   return (
-    <div style={{ marginTop: 16 }}>
-      <div ref={box} style={{ position: "relative", display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px 16px" }}>
-        <button onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-haspopup="true"
-          style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", fontFamily: sans, fontSize: 14, fontWeight: 600,
-            color: D.ink, background: "rgba(237,239,243,0.06)", border: `1px solid ${selected.size ? "rgba(238,120,86,0.55)" : D.glassBorder}`,
-            padding: "10px 14px", maxWidth: "100%" }}>
-          <span style={{ color: D.faint, fontWeight: 500 }}>Categories:</span>
-          <span style={{ color: selected.size ? D.flag : D.ink, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{summary}</span>
-          <span aria-hidden style={{ fontSize: 10, color: D.muted, transform: open ? "rotate(180deg)" : "none", transition: "transform .15s" }}>▼</span>
+    <div style={{ marginTop: 22, maxWidth: 640 }}>
+      <style>{PICKER_CSS}</style>
+      {/* Says what this control is for, so a first-time visitor knows this is where they
+          choose their values. */}
+      <div style={{ fontFamily: sans, fontSize: 15, fontWeight: 600, color: D.ink }}>Choose what you care about</div>
+      <div style={{ fontFamily: sans, fontSize: 13, color: D.muted, margin: "3px 0 10px" }}>
+        Pick the categories you want flagged, or start from a faith-based set.
+      </div>
+      <div ref={box} style={{ position: "relative" }}>
+        <button className="ps-pick-trigger" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-haspopup="true"
+          style={{ display: "flex", alignItems: "center", gap: 10, width: "100%", boxSizing: "border-box", cursor: "pointer",
+            fontFamily: sans, fontSize: 15, color: D.ink, background: "rgba(237,239,243,0.10)",
+            border: `1px solid ${open ? "rgba(156,203,245,0.55)" : D.glassBorder}`, borderRadius: 14, padding: "13px 15px", textAlign: "left" }}>
+          <span style={{ flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: selected.size ? D.ink : D.muted }}>{summary}</span>
+          <span style={{ flexShrink: 0, fontSize: 12, fontWeight: 600, color: P.navy, background: selected.size ? P.sky : "rgba(237,239,243,0.3)",
+            borderRadius: 999, padding: "2px 9px" }}>{selected.size}/{screens.length}</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden style={{ flexShrink: 0, color: D.muted, transform: open ? "rotate(180deg)" : "none", transition: "transform .18s" }}>
+            <path d="M3 5.2 7 9l4-3.8" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
         </button>
-        {selected.size > 0 && <button onClick={onFind} style={{ ...filterLink, fontSize: 13, fontWeight: 600 }}>Find funds for these</button>}
+        {selected.size > 0 && !open && (
+          <button onClick={onFind} style={{ ...filterLink, fontSize: 13, fontWeight: 600, marginTop: 9 }}>Find funds for these →</button>
+        )}
 
         {open && (
-          <div role="dialog" aria-label="Choose categories"
-            style={{ position: "absolute", top: "calc(100% + 6px)", left: 0, zIndex: 40, width: "min(620px, 100%)",
-              background: D.lift, border: `1px solid ${D.glassBorder}`, boxShadow: "0 18px 50px rgba(0,0,0,0.5)", padding: "10px 8px 8px" }}>
+          <div role="dialog" aria-label="Choose categories" className="ps-pick-menu"
+            style={{ position: "absolute", top: "calc(100% + 8px)", left: 0, right: 0, zIndex: 40,
+              background: D.lift, border: `1px solid ${D.glassBorder}`, borderRadius: 16, boxShadow: "0 20px 50px rgba(0,0,0,0.45)", overflow: "hidden" }}>
             {usable.length > 0 && (
-              <>
-                <div style={head}>Faith-based sets</div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(180px,1fr))", marginBottom: 6 }}>
+              <div style={{ padding: "14px 16px 12px", borderBottom: `1px solid ${D.glassBorder}` }}>
+                <div style={{ ...head, marginBottom: 9 }}>Faith-based sets</div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
                   {usable.map((p) => {
                     const on = isActive(p);
                     return (
-                      <button key={p.key} onClick={() => onApply(p.screens)} aria-pressed={on} style={row}>
-                        <span style={{ ...check(on), borderRadius: "50%" }}>{on ? "✓" : ""}</span>{p.label}
-                      </button>
+                      <button key={p.key} onClick={() => onApply(p.screens)} aria-pressed={on} className="ps-pick-chip"
+                        style={{ cursor: "pointer", fontFamily: sans, fontSize: 13, fontWeight: 600, borderRadius: 999, padding: "6px 13px",
+                          color: on ? P.navy : D.ink, background: on ? P.sky : "rgba(237,239,243,0.06)",
+                          border: `1px solid ${on ? P.sky : D.glassBorder}` }}>{p.label}</button>
                     );
                   })}
                 </div>
-              </>
+              </div>
             )}
-            <div style={{ ...head, display: "flex", justifyContent: "space-between", alignItems: "baseline", borderTop: `1px solid ${D.glassBorder}`, paddingTop: 10, margin: "4px 8px" }}>
-              <span>Categories</span>
-              <span style={{ display: "flex", gap: 14, textTransform: "none", letterSpacing: 0 }}>
-                {!allOn && <button onClick={() => setAll(true)} style={filterLink}>Select all</button>}
-                {selected.size > 0 && <button onClick={() => setAll(false)} style={filterLink}>Clear all</button>}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 16px 4px" }}>
+              <span style={head}>Categories</span>
+              <span style={{ display: "flex", gap: 14 }}>
+                {!allOn && <button onClick={() => setAll(true)} style={{ ...filterLink, fontSize: 12.5 }}>Select all</button>}
+                {selected.size > 0 && <button onClick={() => setAll(false)} style={{ ...filterLink, fontSize: 12.5 }}>Clear all</button>}
               </span>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(230px,1fr))", maxHeight: "min(52vh, 420px)", overflowY: "auto" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(210px,1fr))", gap: 2,
+              padding: "4px 8px 8px", maxHeight: "min(46vh, 380px)", overflowY: "auto" }}>
               {screens.map((s) => {
                 const on = selected.has(s.key);
                 return (
-                  <button key={s.key} onClick={() => toggle(s.key)} title={s.blurb} role="checkbox" aria-checked={on} style={row}>
-                    <span style={check(on)}>{on ? "✓" : ""}</span>{s.label}
+                  <button key={s.key} onClick={() => toggle(s.key)} title={s.blurb} role="checkbox" aria-checked={on} className="ps-pick-row"
+                    style={{ display: "flex", alignItems: "center", gap: 11, width: "100%", textAlign: "left", cursor: "pointer",
+                      background: "none", border: "none", borderRadius: 9, padding: "8px 8px", fontFamily: sans, fontSize: 14,
+                      color: on ? D.ink : D.muted }}>
+                    <span style={check(on)}>{on ? tick : null}</span>{s.label}
                   </button>
                 );
               })}
             </div>
-            <div style={{ display: "flex", justifyContent: "flex-end", borderTop: `1px solid ${D.glassBorder}`, marginTop: 6, paddingTop: 8 }}>
-              <button onClick={() => setOpen(false)} style={{ ...brassBtn(0, "8px 18px", 13.5) }}>Done</button>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12,
+              borderTop: `1px solid ${D.glassBorder}`, padding: "10px 12px 10px 16px" }}>
+              <span style={{ fontFamily: sans, fontSize: 12.5, color: D.faint }}>{selected.size} of {screens.length} selected</span>
+              <button onClick={() => setOpen(false)} style={{ ...brassBtn(999, "8px 20px", 13.5) }}>Done</button>
             </div>
           </div>
         )}
       </div>
       {active && (
-        <div style={{ marginTop: 10, padding: "11px 13px", background: "rgba(156,203,245,0.08)", border: `1px solid ${D.glassBorder}` }}>
+        <div style={{ marginTop: 10, padding: "11px 13px", background: "rgba(156,203,245,0.08)", border: `1px solid ${D.glassBorder}`, borderRadius: 12 }}>
           <div style={{ fontFamily: sans, fontSize: 12, color: D.brassSoft, marginBottom: 4 }}>
             {active.screens.map(labelOf).join(" · ")}
           </div>
@@ -337,6 +366,7 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
   const [cmpOpen, setCmpOpen] = useState(false);
   // ── alternatives ── a ranked list of funds in one group, for the selected categories
   const [altOpen, setAltOpen] = useState(false);
+  const [pfOpen, setPfOpen] = useState(false);
   const [altGroup, setAltGroup] = useState(null);   // null: the group of the fund on the page
   const [alt, setAlt] = useState(null);
   const [altBusy, setAltBusy] = useState(false);
@@ -533,6 +563,8 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
         {examples.map((x) => (
           <button key={x} onClick={() => { setQ(x); run(x); }} style={{ background: "rgba(237,239,243,0.08)", border: `1px solid ${D.glassBorder}`, color: D.muted, borderRadius: 999, padding: "4px 11px", fontFamily: sans, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>{x}</button>
         ))}
+        <span style={{ fontFamily: sans, fontSize: 12, color: D.faint, marginLeft: 6 }}>or</span>
+        <button onClick={() => setPfOpen(true)} style={{ ...filterLink, fontSize: 12.5, fontWeight: 600 }}>Upload your portfolio (CSV)</button>
       </div>
 
       {screens.length > 0 && selected && (
@@ -552,6 +584,12 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
               onRun={(x) => runCompare(x)} busy={cmpBusy} err={cmpErr} autoFocus={!cmp} />
           </div>
           {cmp && <CompareView model={compareFunds(cmp, selected || new Set())} />}
+        </CompareModal>
+      )}
+      {pfOpen && (
+        <CompareModal title="Check your portfolio" selectedCount={selected ? selected.size : 0} onClose={() => setPfOpen(false)}>
+          <PortfolioView selected={selected || new Set()}
+            onCheck={(sym) => { setPfOpen(false); setQ(sym); run(sym); }} />
         </CompareModal>
       )}
       {altOpen && (
@@ -859,7 +897,7 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
     return (
       <div style={panel}>
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10, flexWrap: "wrap" }}>
-          <div style={{ fontFamily: serif, fontSize: 20, color: L.ink }}>{result.symbol} · <span style={{ color: L.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></div>
+          <div style={{ fontFamily: serif, fontSize: 20, color: L.ink }}>{result.symbol}{result.name ? <> · <span style={{ color: L.muted, fontFamily: sans, fontSize: 15 }}>{result.name}</span></> : null}</div>
           <span style={{ fontFamily: sans, fontSize: 11, fontWeight: 600, color: L.muted, background: L.lineSoft, borderRadius: 999, padding: "3px 10px" }}>NOT ANALYZED</span>
         </div>
         <p style={{ fontFamily: sans, fontSize: 13.5, color: L.muted, margin: "8px 0 0", lineHeight: 1.55 }}>
@@ -1213,6 +1251,137 @@ function AlternativesView({ data, busy, err, onGroup, base, note, onCheck, onCom
 
 // Every pop-up enters the same way: the page behind dims and blurs, and the panel fades in
 // while rising a little. About half a second, so it reads as arriving rather than snapping.
+// ── Uploaded portfolio ── a broker's positions CSV, read in the browser, checked against the
+// selected categories. Until live brokerage tracking is ready, this is how someone sees
+// their whole portfolio at once. Nothing is saved; changing categories re-checks it.
+const usd = (c) => c == null ? null : (c / 100).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+function PortfolioView({ selected, onCheck }) {
+  const [holdings, setHoldings] = useState(null);
+  const [fileName, setFileName] = useState("");
+  const [data, setData] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  const keys = [...selected].sort().join(",");
+
+  const onFile = async (file) => {
+    if (!file) return;
+    setErr(""); setData(null); setHoldings(null); setFileName(file.name);
+    if (file.size > 5 * 1024 * 1024) { setErr("That file is over 5 MB. A positions export is usually much smaller; check it's the right file."); return; }
+    try { setHoldings(parsePortfolioCsv(await file.text())); }
+    catch (e) { setErr(e.message || "Couldn't read that file."); }
+  };
+
+  useEffect(() => {
+    if (!holdings) return;
+    let live = true;
+    setBusy(true); setErr("");
+    fetch("/api/portfolio", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ holdings, keys: keys ? keys.split(",") : [] }) })
+      .then(async (r) => { const j = await r.json().catch(() => ({})); if (!r.ok) throw new Error(j.error || "Couldn't check that portfolio."); return j; })
+      .then((j) => { if (live) setData(j); })
+      .catch((e) => { if (live) setErr(e.message); })
+      .finally(() => { if (live) setBusy(false); });
+    return () => { live = false; };
+  }, [holdings, keys]);
+
+  const card = { background: P.card, border: `1px solid ${L.line}`, borderRadius: 12, padding: "14px 16px" };
+  const pill = { display: "inline-block", fontFamily: sans, fontSize: 11.5, fontWeight: 600, color: D.flag, background: L.flagBg, border: `1px solid ${L.flagBorder}`, borderRadius: 999, padding: "2px 9px", margin: "4px 6px 0 0" };
+  const sym = (x) => <button onClick={() => onCheck(x)} style={{ ...filterLink, fontSize: 14, fontWeight: 700, color: L.ink }}>{x}</button>;
+  const rows = data?.rows || [];
+  const stocks = rows.filter((r) => r.kind === "stock" && r.flags.length);
+  const funds = rows.filter((r) => r.kind === "fund" && r.flaggedCount).sort((a, b) => (b.exposureCents ?? 0) - (a.exposureCents ?? 0));
+  const clean = rows.filter((r) => (r.kind === "stock" && !r.flags.length) || (r.kind === "fund" && !r.flaggedCount));
+  const unseen = rows.filter((r) => r.kind === "not_analyzed" || r.kind === "unknown");
+  const sm = data?.summary;
+
+  return (
+    <div style={{ paddingTop: 16, fontFamily: sans, color: L.ink }}>
+      <p style={{ margin: "0 0 12px", fontSize: 14, color: L.muted, lineHeight: 1.55 }}>
+        Export your positions from your broker as a CSV (Fidelity, Schwab, Vanguard, Robinhood and most others have one) and choose it here.
+        We need a Symbol column; a value column lets us show dollars. The file is read in your browser and nothing is saved.
+      </p>
+      <label style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", cursor: "pointer", border: `1.5px dashed ${L.line}`, borderRadius: 12, padding: "16px 18px" }}
+        onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); onFile(e.dataTransfer.files?.[0]); }}>
+        <input type="file" accept=".csv,text/csv" onChange={(e) => onFile(e.target.files?.[0])} style={{ display: "none" }} />
+        <span style={{ ...brassBtn(999, "9px 18px", 14) }}>Choose CSV file</span>
+        <span style={{ fontSize: 13, color: L.faint }}>{fileName || "or drop it here"}</span>
+      </label>
+
+      {err && <div role="alert" style={{ marginTop: 12, fontSize: 13.5, color: D.flag }}>{err}</div>}
+      {busy && <div style={{ marginTop: 14, fontSize: 13.5, color: L.muted }}>Checking {holdings?.length} holdings…</div>}
+
+      {data && !busy && (
+        <>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(170px,1fr))", gap: 10, marginTop: 16 }}>
+            <div style={card}>
+              <div style={{ fontSize: 12, color: L.faint }}>Holdings read</div>
+              <div style={{ fontSize: 22, fontWeight: 700, marginTop: 2 }}>{sm.holdings}</div>
+              {sm.totalCents != null && <div style={{ fontSize: 12.5, color: L.muted }}>{usd(sm.totalCents)} total</div>}
+            </div>
+            <div style={card}>
+              <div style={{ fontSize: 12, color: L.faint }}>Stocks you own that are flagged</div>
+              <div style={{ fontSize: 22, fontWeight: 700, marginTop: 2, color: sm.directFlagged ? D.flag : L.ink }}>{sm.directFlagged}</div>
+              {sm.directCents > 0 && <div style={{ fontSize: 12.5, color: L.muted }}>{usd(sm.directCents)}</div>}
+            </div>
+            <div style={card}>
+              <div style={{ fontSize: 12, color: L.faint }}>Funds holding flagged companies</div>
+              <div style={{ fontSize: 22, fontWeight: 700, marginTop: 2, color: sm.fundsWithFlags ? D.flag : L.ink }}>{sm.fundsWithFlags}</div>
+              {sm.fundExposureCents > 0 && <div style={{ fontSize: 12.5, color: L.muted }}>about {usd(sm.fundExposureCents)} of your money in them</div>}
+            </div>
+          </div>
+          {!selected.size && <p style={{ fontSize: 13.5, color: D.flag, marginTop: 12 }}>No categories are selected, so nothing is flagged. Close this and choose some.</p>}
+
+          {stocks.length > 0 && <h3 style={{ fontSize: 15, margin: "20px 0 8px" }}>Stocks you own directly</h3>}
+          <div style={{ display: "grid", gap: 8 }}>
+            {stocks.map((r) => (
+              <div key={r.symbol} style={card}>
+                <div style={{ display: "flex", gap: 10, alignItems: "baseline", flexWrap: "wrap" }}>
+                  {sym(r.symbol)}<span style={{ fontSize: 13, color: L.muted }}>{r.name}</span>
+                  {r.valueCents != null && <span style={{ marginLeft: "auto", fontSize: 13, color: L.muted }}>{usd(r.valueCents)}</span>}
+                </div>
+                <div>{r.flags.map((f) => <span key={f.key} style={pill}>{f.label}</span>)}</div>
+              </div>
+            ))}
+          </div>
+
+          {funds.length > 0 && <h3 style={{ fontSize: 15, margin: "20px 0 8px" }}>Funds that hold flagged companies</h3>}
+          <div style={{ display: "grid", gap: 8 }}>
+            {funds.map((r) => (
+              <div key={r.symbol} style={card}>
+                <div style={{ display: "flex", gap: 10, alignItems: "baseline", flexWrap: "wrap" }}>
+                  {sym(r.symbol)}<span style={{ fontSize: 13, color: L.muted }}>{r.name}</span>
+                  {r.valueCents != null && <span style={{ marginLeft: "auto", fontSize: 13, color: L.muted }}>{usd(r.valueCents)}</span>}
+                </div>
+                <div style={{ fontSize: 13, color: L.muted, marginTop: 4 }}>
+                  {r.flaggedCount}{r.total ? ` of ${r.total.toLocaleString("en-US")}` : ""} companies flagged
+                  {r.flaggedWeight != null && `, ${r.flaggedWeight.toFixed(1)}% of the fund`}
+                  {r.exposureCents != null && ` (about ${usd(r.exposureCents)} of yours)`}
+                </div>
+                <div style={{ fontSize: 12.5, color: L.faint, marginTop: 6, lineHeight: 1.6 }}>
+                  Largest: {r.flagged.slice(0, 5).map((c) => `${c.name}${c.weight != null ? ` ${c.weight.toFixed(1)}%` : ""}`).join(", ")}
+                  {r.flaggedCount > 5 ? `, and ${r.flaggedCount - 5} more` : ""}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {clean.length > 0 && (
+            <p style={{ fontSize: 13, color: L.muted, margin: "18px 0 0", lineHeight: 1.6 }}>
+              <strong style={{ color: L.ink }}>No flags for your categories:</strong> {clean.map((r) => r.symbol).join(", ")}
+            </p>
+          )}
+          {unseen.length > 0 && (
+            <p style={{ fontSize: 13, color: L.muted, margin: "10px 0 0", lineHeight: 1.6 }}>
+              <strong style={{ color: L.ink }}>Not checked:</strong> {unseen.map((r) => r.symbol).join(", ")}.
+              {" "}These are funds we can't see inside yet, cash, bonds or symbols we don't recognize. Not checked is not the same as clean.
+            </p>
+          )}
+          {data.truncated && <p style={{ fontSize: 13, color: L.faint }}>Only the first 500 holdings were checked.</p>}
+        </>
+      )}
+    </div>
+  );
+}
+
 const MODAL_CSS = `
 @keyframes ps-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes ps-panel-in { from { opacity: 0; transform: translateY(22px) scale(.985); } to { opacity: 1; transform: none; } }
@@ -1251,7 +1420,7 @@ function CompareModal({ title, selectedCount, onClose, children }) {
         display: "flex", alignItems: "flex-start", justifyContent: "center",
         padding: "clamp(12px,5vh,56px) 16px" }}>
       <style>{MODAL_CSS}</style>
-      <div ref={panel} className="ps-panel" tabIndex={-1} role="dialog" aria-modal="true" aria-label={`Comparing ${title}`}
+      <div ref={panel} className="ps-panel" tabIndex={-1} role="dialog" aria-modal="true" aria-label={title}
         style={{ width: "min(920px,100%)", background: P.block, border: `1px solid ${L.line}`,
           borderRadius: 18, outline: "none", boxShadow: "0 24px 70px rgba(0,0,0,0.55)" }}>
         <div style={{ position: "sticky", top: 0, zIndex: 1, display: "flex", alignItems: "center", gap: 12,
@@ -2018,7 +2187,7 @@ function LandingHome({ onStart, onSignIn, snaptrade, meta }) {
             <div className="ps-hero">
               <div>
                 <h1 className="ps-hero-title" style={{ fontFamily: headline, fontWeight: 400, lineHeight: 1.0, letterSpacing: "-0.015em", margin: 0, color: D.ink }}>
-                  Is your money already funding what you fight against?
+                  Is your money invested where your values are?
                 </h1>
                 <p style={{ fontFamily: sans, fontSize: "clamp(17px,1.7vw,21px)", lineHeight: 1.45, color: D.muted, margin: "22px 0 0", maxWidth: 540 }}>
                   Even broad market funds hold companies that might not match your values. Search any stock or ETF to see what's really inside.
@@ -2051,7 +2220,7 @@ function LandingHome({ onStart, onSignIn, snaptrade, meta }) {
         <div style={{ ...wrap, maxWidth: 720, textAlign: "center", padding: "clamp(36px,5vw,56px) 24px" }}>
           <h2 style={{ fontFamily: headline, fontSize: "clamp(30px,4.4vw,42px)", color: D.ink, fontWeight: 400, margin: 0, letterSpacing: "-0.01em" }}>We'd rather under-claim than mislead</h2>
           <p style={{ fontFamily: sans, fontSize: 16, color: D.muted, lineHeight: 1.7, margin: "16px 0 0" }}>
-            Every flag is a checkable fact about what a company does, with the reason and, where it comes from a filing, the company's own words. We look inside more than 100 funds: SPDR funds from State Street's daily holdings files, and the rest from each fund's quarterly SEC filing. Every result says which source it used and its date. A fund we can't see inside is labeled "not analyzed," never called clean. Our coverage is U.S.-listed companies that file with the SEC, so a foreign-listed name may come back empty simply because we haven't reached it. A clean result means "none of the names we track," never "audited pure." You draw the lines; we show you where your money already sits.
+            Every flag is a checkable fact about what a company does, with a reason and a source. We read the holdings of more than 100 funds and show where each list came from and how recent it is. A fund we can't see inside is marked "not analyzed," never clean. We cover U.S.-listed companies, so no flags means none of the names we track, not that a company was audited and found clean.
           </p>
         </div>
       </section>
@@ -2136,7 +2305,7 @@ function AuthModal({ mode, setMode, onClose, onAuthed }) {
   onGoogle.current = async (resp) => {
     setErr(""); setInfo(""); setBusy(true);
     try {
-      const d = await api("/api/auth/google", { method: "POST", body: { credential: resp.credential } });
+      const d = await api("/api/auth-google", { method: "POST", body: { credential: resp.credential } });
       if (d.created) ping("signup");
       onAuthed(d.user);
     } catch (e) { setErr(e.message); } finally { setBusy(false); }
@@ -2166,7 +2335,7 @@ function AuthModal({ mode, setMode, onClose, onAuthed }) {
     setErr(""); setInfo(""); setBusy(true);
     try {
       if (mode === "forgot") {
-        const d = await api("/api/reset/request", { method: "POST", body: { email } });
+        const d = await api("/api/reset-request", { method: "POST", body: { email } });
         setInfo(d.message + (d.devLink ? ` Dev link: ${d.devLink}` : ""));
         return;
       }
@@ -2279,10 +2448,10 @@ function Dashboard({ user, onSignOut, onGoHome }) {
   }, []);
 
   const toggle = (key) => { setSaved(false); setSelected((s) => { const n = new Set(s); if (n.has(key)) n.delete(key); else n.add(key); return n; }); };
-  const saveScreens = async () => { await api("/api/screens/select", { method: "POST", body: { screens: [...selected] } }); setSaved(true); if (analysis) refresh(); };
+  const saveScreens = async () => { await api("/api/screens-select", { method: "POST", body: { screens: [...selected] } }); setSaved(true); if (analysis) refresh(); };
   const connect = async () => {
     setErr("");
-    try { const { url } = await api("/api/brokerage/connect", { method: "POST" }); window.location.href = url; }
+    try { const { url } = await api("/api/brokerage-connect", { method: "POST" }); window.location.href = url; }
     catch (e) { setErr(e.message); }
   };
 

@@ -15,6 +15,7 @@ import { mailerEnabled, siteUrl, sendMail, resetEmail, verifyEmail } from "./lib
 import { snaptradeEnabled, registerUser as stRegister, connectionPortalUrl, allPositions } from "./lib/snaptrade.js";
 import { analyze, lookupSymbol, coverageMeta } from "./lib/analyzer.js";
 import { alternatives } from "./lib/alternatives.js";
+import { checkPortfolio } from "./lib/portfolio.js";
 import { verifyGoogleIdToken, GOOGLE_CLIENT_ID } from "./lib/google.js";
 import { suggest } from "./lib/suggest.js";
 import { screenCatalogue, isScreenKey, VALUE_PRESETS } from "./lib/screens.js";
@@ -162,6 +163,13 @@ const CSP = [
   "base-uri 'none'",
   "object-src 'none'",
 ].join("; ");
+const ROUTE_ALIASES = {
+  "/api/auth-google": "/api/auth/google",
+  "/api/screens-select": "/api/screens/select",
+  "/api/reset-request": "/api/reset/request",
+  "/api/verify-request": "/api/verify/request",
+  "/api/brokerage-connect": "/api/brokerage/connect",
+};
 function securityHeaders() {
   const h = {
     "Content-Security-Policy": CSP,
@@ -224,7 +232,11 @@ async function issueVerification(user) {
 export async function handler(req, res) {
  try {
   const url = new URL(req.url, `http://localhost:${PORT}`);
-  const path = url.pathname;
+  // On Vercel, api/[...path].mjs only receives one segment after /api/, so a request to
+  // /api/auth/google never reached this handler: the platform answered 404 itself. The page
+  // calls one-segment names instead (/api/auth-google), mapped here to the routes below.
+  // The two-segment names still work for the long-running local server.
+  const path = ROUTE_ALIASES[url.pathname] || url.pathname;
   const ip = clientIp(req);
 
   // Reject cross-site state changes before any handler runs (see csrfRejected).
@@ -341,6 +353,21 @@ export async function handler(req, res) {
   // ---- health ----
   if (req.method === "GET" && path === "/api/health") {
     return sendJson(res, 200, { ok: true, snaptrade: snaptradeEnabled(), errors: errorLog.length, ...db.stats() });
+  }
+
+  // ---- uploaded portfolio: holdings from a broker CSV, checked against the chosen categories.
+  // Public and not stored; the file itself is read in the browser.
+  if (req.method === "POST" && path === "/api/portfolio") {
+    const rl = rateLimit("portfolio", ip, 60, 60 * 60 * 1000);
+    if (rl.limited) return sendJson(res, 429, { error: "Too many uploads. Try again later." }, { "Retry-After": String(rl.retryAfter) });
+    const body = await readBody(req);
+    if (!body || !Array.isArray(body.holdings) || !body.holdings.length) return sendJson(res, 400, { error: "No holdings to check." });
+    const keys = Array.isArray(body.keys) ? body.keys.filter((k) => typeof k === "string" && isScreenKey(k)) : [];
+    const num = (v) => (typeof v === "number" && Number.isFinite(v) ? v : null);
+    const holdings = body.holdings
+      .filter((h) => h && typeof h.symbol === "string" && /^[A-Za-z][A-Za-z0-9.-]{0,9}$/.test(h.symbol))
+      .map((h) => ({ symbol: h.symbol.toUpperCase(), quantity: num(h.quantity), valueCents: num(h.valueCents) != null ? Math.round(h.valueCents) : null }));
+    return sendJson(res, 200, checkPortfolio(holdings, keys));
   }
 
   // ---- waitlist: capture demand while real money is gated behind compliance ----

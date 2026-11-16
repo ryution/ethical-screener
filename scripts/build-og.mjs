@@ -85,7 +85,7 @@ const cards = [];
 {
   const voo = lookupSymbol("VOO");
   cards.push(["default", page({
-    title: "Is your money already funding what you fight against?",
+    title: "Is your money invested where your values are?",
     sub: "Search any stock or ETF to see what's really inside it.",
     art: dotField(voo.totalCompanies || voo.totalHoldings, flaggedNames(voo)),
   })]);
