@@ -32,11 +32,13 @@ try {
     _data.sources = { ...(_data.sources || {}) };
     _data.baskets = { ...(_data.baskets || {}) };
     _data.weights = { ...(_data.weights || {}) };
+    _data.top = { ...(_data.top || {}) };
     for (const [k, src] of Object.entries(n.sources || {})) {
       if (src.error || !Array.isArray(n.baskets?.[k])) continue;
       _data.sources[k] = src;
       _data.baskets[k] = n.baskets[k];
       if (n.weights?.[k]) _data.weights[k] = n.weights[k];
+      if (n.top?.[k]) _data.top[k] = n.top[k];
     }
   }
 } catch { /* keep whatever loaded above */ }
@@ -57,6 +59,11 @@ export function basketFor(basisKey) {
  *  the source file had no weights. Market-cap weights from the issuer file or SEC filing. */
 export function weightsFor(basisKey) {
   return _data.weights?.[basisKey] || null;
+}
+
+/** The fund's largest holdings, flagged or not: [[TICKER, percent], ...], or null. */
+export function topHoldingsFor(basisKey) {
+  return _data.top?.[basisKey] || null;
 }
 
 /** Freshness metadata for the UI ("holdings as of …"), per basis. */

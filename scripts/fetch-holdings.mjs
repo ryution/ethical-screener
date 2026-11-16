@@ -186,11 +186,25 @@ function extract(rows) {
   return { tickers, totalCompanies, asOf, cusips, weights };
 }
 
+// The fund's largest holdings by weight, whether or not they're flagged, so a stock's page
+// can say which funds hold it and how much. Class shares (GOOGL, GOOG) stay separate.
+export const TOP_N = 25;
+function topHoldings(tickers, w) {
+  const by = new Map();
+  tickers.forEach((raw, i) => {
+    const t = String(raw || "").trim().toUpperCase().replace(/-/g, ".");
+    if (!/^[A-Z][A-Z0-9.]{0,9}$/.test(t) || !(w[i] > 0)) return;
+    by.set(t, (by.get(t) || 0) + w[i]);
+  });
+  return [...by].sort((a, b) => b[1] - a[1]).slice(0, TOP_N).map(([t, p]) => [t, Number(p.toFixed(3))]);
+}
+
 async function main() {
   const baskets = {};
   const sources = {};
   const cusipMap = {};
   const weights = {};   // basisKey -> { TICKER: percent of the fund }
+  const top = {};       // basisKey -> [[TICKER, percent], ...] the largest holdings, flagged or not
   for (const [basisKey, src] of Object.entries(SOURCES)) {
     process.stdout.write(`Fetching ${src.fund} (${basisKey})… `);
     try {
@@ -211,6 +225,7 @@ async function main() {
       });
       baskets[basisKey] = screened;
       if (w) weights[basisKey] = wt;
+      if (w) top[basisKey] = topHoldings(tickers, w);
       sources[basisKey] = { fund: src.fund, label: src.label, asOf, totalHoldings: tickers.length, totalCompanies, screened: screened.length };
       console.log(`${tickers.length} holdings${totalCompanies ? ` / ${totalCompanies} companies` : ""}, ${screened.length} screened (as of ${asOf || "n/a"})`);
     } catch (e) {
@@ -234,6 +249,7 @@ async function main() {
     sources,
     baskets,
     weights,
+    top,
   }, null, 0) + "\n");
   writeFileSync(CUSIP_OUT, JSON.stringify({ lastUpdated: new Date().toISOString(), source: "CUSIP and ticker columns of the SPDR daily holdings files", count: Object.keys(cusipMap).length, map: cusipMap }) + "\n");
   console.log(`Wrote ${Object.keys(cusipMap).length} CUSIP-to-ticker pairs → ${CUSIP_OUT}`);

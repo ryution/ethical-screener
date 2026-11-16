@@ -33,8 +33,16 @@ for (const t of allKnownTickers()) {
 
 /** Canonical form of a ticker, mapping known broker-format variants (BF-B, BFB, BF B)
  *  back to our dot notation (BF.B). Unknown tickers pass through unchanged. */
+// Old tickers people still type, and share classes of one company. Each maps to the
+// ticker our data uses for the same company.
+//   SQ    Block changed its ticker to XYZ in January 2025.
+//   FB    Meta changed its ticker to META in June 2022.
+//   ANTM  Anthem became Elevance Health (ELV) in June 2022.
+//   BRK.A Berkshire's A shares: the same company as the B shares we track.
+const SAME_COMPANY = { SQ: "XYZ", FB: "META", ANTM: "ELV", "BRK.A": "BRK.B", "BRK-A": "BRK.B", BRKA: "BRK.B", "BRK A": "BRK.B" };
+
 export function normalizeTicker(raw) {
   const t = String(raw || "").trim().toUpperCase();
   if (!t) return t;
-  return _variants.get(t) || t;
+  return SAME_COMPANY[t] || _variants.get(t) || t;
 }

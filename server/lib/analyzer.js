@@ -16,7 +16,7 @@ import { politicalFor } from "./political.js";
 import { enrichedFlagsFor, enrichedName, enrichedTickers, dataMeta } from "./enriched.js";
 import { filingFlagsFor, filingName, filingTickers, filingMeta } from "./filings.js";
 import { normalizeTicker } from "./symbols.js";
-import { holdingsMeta, weightsFor } from "./holdings.js";
+import { holdingsMeta, weightsFor, topHoldingsFor } from "./holdings.js";
 import { knownTicker, tickerName } from "./suggest.js";
 
 export { dataMeta };
@@ -77,6 +77,27 @@ const nameFor = (ticker, fallback) =>
  * A visitor hasn't chosen screens, so we surface everything we'd flag.
  * Returns { type: "fund" | "stock" | "none", ... }.
  */
+// Which of our funds hold a stock, and how much of each fund it is. Funds tracking the
+// same index (VOO, SPY, IVV) share one entry. The weight comes from the fund's largest
+// holdings or, for a flagged company, from the flagged weights, so it is only listed where
+// we actually have the number. Largest share first.
+export function fundsHolding(symbol) {
+  const sym = normalizeTicker(symbol);
+  const byBasis = new Map();
+  for (const [t, f] of Object.entries(FUNDS)) {
+    let entry = byBasis.get(f.basisKey);
+    if (entry === undefined) {
+      const top = topHoldingsFor(f.basisKey);
+      const hit = top?.find(([x]) => x === sym);
+      const w = hit ? hit[1] : weightsFor(f.basisKey)?.[sym];
+      entry = w > 0 ? { basis: f.basis, weight: Number(Number(w).toFixed(2)), funds: [] } : null;
+      byBasis.set(f.basisKey, entry);
+    }
+    if (entry) entry.funds.push(t);
+  }
+  return [...byBasis.values()].filter(Boolean).sort((a, b) => b.weight - a.weight);
+}
+
 export function lookupSymbol(symbol) {
   const sym = normalizeTicker(symbol);
   if (!sym) return null;
@@ -119,12 +140,13 @@ export function lookupSymbol(symbol) {
   const credits = creditsFor(sym);
   // Shown, never graded — it is not an input to any letter.
   const political = politicalFor(sym);
-  if (flags.length) return { symbol: sym, type: "stock", name: nameFor(sym), flags, conduct, credits, political };
+  const inFunds = fundsHolding(sym);
+  if (flags.length) return { symbol: sym, type: "stock", name: nameFor(sym), flags, conduct, credits, political, inFunds };
   // "none" comes in two honest flavours: a US filer we know and found nothing on, or a
   // symbol we don't recognize at all (a fund we can't see inside, a foreign listing, a
   // typo). The UI words them differently — the second must never read as "clean".
   const known = knownTicker(sym);
-  return { symbol: sym, type: "none", known, name: known ? (tickerName(sym) || null) : null, conduct, credits, political };
+  return { symbol: sym, type: "none", known, name: known ? (tickerName(sym) || null) : null, conduct, credits, political, inFunds: known ? inFunds : [] };
 }
 
 const distinctLabels = (contains) => {

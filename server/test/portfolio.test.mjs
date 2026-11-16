@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { parsePortfolioCsv, csvRows } from "../../src/portfolioCsv.js";
 import { checkPortfolio } from "../lib/portfolio.js";
 import { SCREEN_KEYS } from "../lib/screens.js";
+import { lookupSymbol, fundsHolding } from "../lib/analyzer.js";
 
 let passed = 0;
 const test = (name, fn) => { fn(); console.log(`  ✓ ${name}`); passed++; };
@@ -59,6 +60,22 @@ test("no categories selected means nothing is flagged", () => {
   const r = checkPortfolio([{ symbol: "XOM" }, { symbol: "VOO" }], []);
   assert.equal(r.summary.directFlagged, 0);
   assert.equal(r.summary.fundsWithFlags, 0);
+});
+
+test("old tickers and other share classes find the company", () => {
+  assert.equal(lookupSymbol("SQ").symbol, "XYZ");
+  assert.equal(lookupSymbol("FB").symbol, "META");
+  assert.equal(lookupSymbol("BRK.A").symbol, "BRK.B");
+  assert.equal(lookupSymbol("BRK-A").symbol, "BRK.B");
+});
+
+test("a stock lists the funds that hold it, largest share first, one entry per index", () => {
+  const f = fundsHolding("NVDA");
+  const sp = f.find((x) => x.funds.includes("VOO"));
+  assert.ok(sp && sp.weight > 1, "NVDA is a large part of the S&P 500");
+  assert.ok(sp.funds.includes("SPY") && sp.funds.includes("IVV"));
+  for (let i = 1; i < f.length; i++) assert.ok(f[i - 1].weight >= f[i].weight);
+  assert.deepEqual(lookupSymbol("ZZZZQ").inFunds, []);
 });
 
 console.log(`\n${passed} portfolio tests passed ✓`);

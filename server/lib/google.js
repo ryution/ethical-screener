@@ -8,9 +8,9 @@
 // GOOGLE_CLIENT_ID overrides it. The client secret is not used: this flow doesn't need it.
 
 import { createPublicKey, verify } from "node:crypto";
+import { DEFAULT_GOOGLE_CLIENT_ID } from "../../src/googleClient.js";
 
-export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
-  || "1085970294005-t3oohllhj901iprj8dgrogsqlf6r78so.apps.googleusercontent.com";
+export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || DEFAULT_GOOGLE_CLIENT_ID;
 
 const CERTS_URL = "https://www.googleapis.com/oauth2/v3/certs";
 const ISSUERS = new Set(["accounts.google.com", "https://accounts.google.com"]);

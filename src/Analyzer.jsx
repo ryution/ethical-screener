@@ -19,6 +19,7 @@ import { gradeFor } from "./grade.js";
 import { conductGradeFor, CONDUCT_CATEGORIES } from "./conductGrade.js";
 import { compareFunds } from "./compare.js";
 import { parsePortfolioCsv } from "./portfolioCsv.js";
+import { DEFAULT_GOOGLE_CLIENT_ID } from "./googleClient.js";
 
 // ── Palette ────────────────────────────────────────────────
 // Deep navy throughout, no light mode. The page is the darkest ground; sections separate
@@ -128,6 +129,13 @@ export default function Analyzer() {
   // A signed-in user can choose to browse the public search page without signing out.
   const [viewHome, setViewHome] = useState(false);
   useEffect(() => { api("/api/me").then((d) => setUser(d.user)).catch(() => setUser(null)); }, []);
+  // Signed-out visitors get Google's sign-in script in the background, so the button is
+  // already there when they open Sign in or Get started.
+  useEffect(() => {
+    if (user !== null) return;
+    const t = setTimeout(() => loadGsi().catch(() => {}), 1200);
+    return () => clearTimeout(t);
+  }, [user]);
 
   if (user === undefined) return <Splash />;
   if (user && !viewHome) {
@@ -216,8 +224,16 @@ const filterLink = { background: "none", border: "none", padding: 0, cursor: "po
 // Categories as one dropdown instead of a wall of 27 chips. The button says what is
 // picked; the list opens below it with the faith-based sets first, then every category as a
 // checkbox. Esc, Done or a click outside closes it.
+// The search result card has its own type: Figtree for text, Bricolage Grotesque for the
+// symbol and the big numbers (anything the card sets in the heading face). Its pieces set
+// fonts inline, so these rules use !important to win over them, scoped to the card only.
+const RESULT_FONTS_CSS = `
+.ps-result, .ps-result * { font-family: "Figtree", ${sans} !important; }
+.ps-result [style*="Familjen"], .ps-result .ps-num { font-family: "Bricolage Grotesque", "Figtree", sans-serif !important; letter-spacing: -0.02em; }
+`;
 // Hover and entrance for the category picker; inline styles can't do :hover.
 const PICKER_CSS = `
+.ps-upload:hover { background: rgba(156,203,245,0.12) !important; border-color: rgba(156,203,245,0.7) !important; }
 .ps-pick-trigger:hover { border-color: rgba(237,239,243,0.3) !important; }
 .ps-pick-row:hover { background: rgba(237,239,243,0.06) !important; }
 .ps-pick-chip:hover { border-color: rgba(156,203,245,0.6) !important; }
@@ -563,9 +579,21 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
         {examples.map((x) => (
           <button key={x} onClick={() => { setQ(x); run(x); }} style={{ background: "rgba(237,239,243,0.08)", border: `1px solid ${D.glassBorder}`, color: D.muted, borderRadius: 999, padding: "4px 11px", fontFamily: sans, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>{x}</button>
         ))}
-        <span style={{ fontFamily: sans, fontSize: 12, color: D.faint, marginLeft: 6 }}>or</span>
-        <button onClick={() => setPfOpen(true)} style={{ ...filterLink, fontSize: 12.5, fontWeight: 600 }}>Upload your portfolio (CSV)</button>
       </div>
+      {/* Its own row, so it reads as a second way in rather than one more example. */}
+      <button onClick={() => setPfOpen(true)} className="ps-upload"
+        style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", maxWidth: 640, boxSizing: "border-box", marginTop: 14,
+          cursor: "pointer", textAlign: "left", fontFamily: sans, color: D.ink, background: "rgba(156,203,245,0.07)",
+          border: "1px dashed rgba(156,203,245,0.45)", borderRadius: 14, padding: "12px 15px" }}>
+        <span aria-hidden style={{ flexShrink: 0, width: 34, height: 34, borderRadius: 10, display: "grid", placeItems: "center", background: "rgba(156,203,245,0.16)", color: P.sky }}>
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 11V3M4.5 6.5 8 3l3.5 3.5M3 13h10" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        </span>
+        <span style={{ minWidth: 0 }}>
+          <span style={{ display: "block", fontSize: 15, fontWeight: 600 }}>Check your whole portfolio</span>
+          <span style={{ display: "block", fontSize: 13, color: D.muted, marginTop: 1 }}>Upload a positions CSV from your broker. Nothing is saved.</span>
+        </span>
+        <span aria-hidden style={{ marginLeft: "auto", flexShrink: 0, color: P.sky, fontSize: 18 }}>→</span>
+      </button>
 
       {screens.length > 0 && selected && (
         <CategoryPicker screens={screens} presets={presets} selected={selected} toggle={toggle}
@@ -573,7 +601,12 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
       )}
 
       {err && <DarkErr>{err}</DarkErr>}
-      {result && <HeroResult result={filterBySelected(result, selected)} onStart={onStart} snaptrade={snaptrade} selectedCount={selected ? selected.size : 0} />}
+      {result && (
+        <div className="ps-result">
+          <style>{RESULT_FONTS_CSS}</style>
+          <HeroResult result={filterBySelected(result, selected)} onStart={onStart} snaptrade={snaptrade} selectedCount={selected ? selected.size : 0} />
+        </div>
+      )}
       {/* The picker sits at the top of the dialog so a second fund can be swapped without
           closing it. The model is rebuilt on every render from the selected categories. */}
       {cmpOpen && result && (
@@ -800,6 +833,45 @@ function Grades({ flags, conduct, credits, political, selectedCount, known = tru
   );
 }
 
+// Which funds hold this stock, and how much of each fund it is. Answers "do I already own
+// this through my index fund?", the question a no-flags result otherwise leaves open.
+function FundsHolding({ items, symbol }) {
+  const [all, setAll] = useState(false);
+  if (!items || !items.length) return null;
+  const shown = all ? items : items.slice(0, 5);
+  const max = Math.max(...items.map((x) => x.weight));
+  return (
+    <div style={{ marginTop: 18, paddingTop: 16, borderTop: `1px solid ${L.line}` }}>
+      <div style={{ fontFamily: sans, fontSize: 15, fontWeight: 600, color: L.ink }}>Funds that hold {symbol}</div>
+      <div style={{ fontFamily: sans, fontSize: 12.5, color: L.faint, margin: "2px 0 10px" }}>Its share of each fund, from the fund's latest holdings.</div>
+      <div style={{ display: "grid", gap: 10 }}>
+        {shown.map((x) => (
+          <div key={x.funds.join()}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+              <span style={{ fontFamily: sans, fontSize: 13.5, color: L.ink, minWidth: 0, flex: 1 }}>
+                {x.funds.slice(0, 4).map((t, i) => (
+                  <Fragment key={t}>{i ? ", " : ""}<a href={`/?symbol=${t}`} style={{ color: L.ink, fontWeight: 700, textDecoration: "none" }}>{t}</a></Fragment>
+                ))}
+                {x.funds.length > 4 ? ` +${x.funds.length - 4}` : ""}
+                <span style={{ color: L.muted }}> · tracks {x.basis}</span>
+              </span>
+              <span className="ps-num" style={{ fontFamily: sans, fontSize: 14, fontWeight: 700, color: L.ink, flexShrink: 0 }}>{x.weight < 0.1 ? "<0.1" : x.weight.toFixed(1)}%</span>
+            </div>
+            <div aria-hidden style={{ height: 5, borderRadius: 3, background: L.lineSoft, marginTop: 5 }}>
+              <div style={{ height: "100%", width: `${Math.max(2, (x.weight / max) * 100)}%`, borderRadius: 3, background: P.sky, opacity: 0.75 }} />
+            </div>
+          </div>
+        ))}
+      </div>
+      {items.length > 5 && (
+        <button onClick={() => setAll((v) => !v)} style={{ ...filterLink, fontSize: 13, marginTop: 10 }}>
+          {all ? "Show fewer" : `Show all ${items.length}`}
+        </button>
+      )}
+    </div>
+  );
+}
+
 function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
   // The result panel is a light card sitting on the dark band, so everything inside it
   // uses the light ramp rather than the band's.
@@ -808,7 +880,7 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
 
   // Nothing selected yet, which is how a first visit starts. Ask for categories instead
   // of reporting "none of 500 companies match", which would read as clean.
-  if (!selectedCount && (result.type === "stock" || (result.type === "fund" && result.analyzable !== false))) {
+  if (!selectedCount && (result.type === "stock" || (result.type === "none" && result.known) || (result.type === "fund" && result.analyzable !== false))) {
     const n = result.totalCompanies || result.totalHoldings;
     return (
       <div style={panel}>
@@ -853,10 +925,15 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
         {/* Nothing on our lists, which is not a pass — so the sell-side letter is absent
             and says so. The conduct letter beside it is the one that can still speak here,
             and for Amazon or FedEx it does. The unknown-symbol branch above gets neither. */}
-        <div style={{ marginTop: 14 }}><Grades flags={[]} conduct={result.conduct} credits={result.credits} political={result.political} selectedCount={selectedCount} /></div>
-        <p style={{ fontFamily: sans, fontSize: 13, color: L.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
-          It isn't on any of the lists we track. That doesn't mean it's audited clean. It only means "none of the names we track." We cover U.S.-listed companies that file with the SEC, so a foreign-listed name may simply be out of scope.
+        <p style={{ fontFamily: sans, fontSize: 14.5, color: L.ink, lineHeight: 1.55, margin: "10px 0 0" }}>
+          We checked {result.name ? displayName(result.name) : result.symbol} against your {selectedCount} {selectedCount === 1 ? "category" : "categories"}. It isn't on any of them.
         </p>
+        <p style={{ fontFamily: sans, fontSize: 13, color: L.muted, lineHeight: 1.55, margin: "6px 0 0" }}>
+          That means none of our lists name it, not that it was audited and found clean.
+        </p>
+        <QuotePanel symbol={result.symbol} />
+        <div style={{ marginTop: 14 }}><Grades flags={[]} conduct={result.conduct} credits={result.credits} political={result.political} selectedCount={selectedCount} /></div>
+        <FundsHolding items={result.inFunds} symbol={result.symbol} />
         {cta}
       </div>
     );
@@ -871,6 +948,8 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
           <p style={{ fontFamily: sans, fontSize: 13, color: L.muted, lineHeight: 1.55, margin: "8px 0 0" }}>
             Turn on more categories above to widen the check.
           </p>
+          <QuotePanel symbol={result.symbol} />
+          <FundsHolding items={result.inFunds} symbol={result.symbol} />
           {cta}
         </div>
       );
@@ -887,6 +966,7 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
         <div style={{ marginTop: 14, display: "grid", gap: 10 }}>
           {flags.map((f) => <FlagCard key={f.key} flag={f} company={result.name} />)}
         </div>
+        <FundsHolding items={result.inFunds} symbol={result.symbol} />
         {cta}
       </div>
     );
@@ -2160,17 +2240,21 @@ function LandingHome({ onStart, onSignIn, snaptrade, meta }) {
       {/* ── Dark hero with the live analyzer ── */}
       <Canvas>
         <nav style={{ position: "sticky", top: 0, zIndex: 20, borderBottom: `1px solid ${L.line}`, background: P.band }}>
-          {/* Below ~480px, "PlainStreet" + "Methodology" + "Get started" don't fit on one
-              line and crowd together with no gap. Methodology is already in the footer,
-              so it's the one to drop on narrow screens rather than wrap the sticky nav. */}
-          <style>{`@media (max-width: 480px) { .ps-nav-methodology { display: none; } .ps-nav-actions { gap: 16px !important; } }`}</style>
+          {/* Nothing in the nav wraps. As the screen narrows, the section links drop out
+              (all three are in the footer too): News and How it works first, then
+              Methodology, so the logo, Sign in and Get started always fit on one line. */}
+          <style>{`
+            .ps-nav-actions > * { white-space: nowrap; }
+            @media (max-width: 900px) { .ps-nav-extra { display: none; } .ps-nav-actions { gap: 20px !important; } }
+            @media (max-width: 560px) { .ps-nav-methodology { display: none; } .ps-nav-actions { gap: 16px !important; } }
+          `}</style>
           {/* Full-bleed on purpose: the nav is chrome, so the wordmark sits against the
               page gutter instead of being pulled inward by the 1000px content column. */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 28px" }}>
-            <span style={{ fontFamily: wordmark, fontSize: 25, fontWeight: 600, color: L.ink, letterSpacing: "-0.02em" }}>PlainStreet</span>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20, padding: "14px clamp(16px,3vw,28px)" }}>
+            <span style={{ flexShrink: 0, fontFamily: wordmark, fontSize: 25, fontWeight: 600, color: L.ink, letterSpacing: "-0.02em" }}>PlainStreet</span>
             <div className="ps-nav-actions" style={{ display: "flex", alignItems: "center", gap: 26 }}>
-              <a href="#news" className="ps-nav-methodology" style={{ fontFamily: sans, fontSize: 15, color: L.ink, textDecoration: "none" }}>News</a>
-              <a href="#how-it-works" className="ps-nav-methodology" style={{ fontFamily: sans, fontSize: 15, color: L.ink, textDecoration: "none" }}>How it works</a>
+              <a href="#news" className="ps-nav-extra" style={{ fontFamily: sans, fontSize: 15, color: L.ink, textDecoration: "none" }}>News</a>
+              <a href="#how-it-works" className="ps-nav-extra" style={{ fontFamily: sans, fontSize: 15, color: L.ink, textDecoration: "none" }}>How it works</a>
               <a href="#methodology" className="ps-nav-methodology" style={{ fontFamily: sans, fontSize: 15, color: L.ink, textDecoration: "none" }}>Methodology</a>
               <button onClick={onSignIn} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: sans, fontSize: 15, color: L.ink }}>Sign in</button>
               <button onClick={onStart} style={startBtn(999, "10px 20px", 15)}>Get started</button>
@@ -2189,7 +2273,7 @@ function LandingHome({ onStart, onSignIn, snaptrade, meta }) {
                 <h1 className="ps-hero-title" style={{ fontFamily: headline, fontWeight: 400, lineHeight: 1.0, letterSpacing: "-0.015em", margin: 0, color: D.ink }}>
                   Is your money invested where your values are?
                 </h1>
-                <p style={{ fontFamily: sans, fontSize: "clamp(17px,1.7vw,21px)", lineHeight: 1.45, color: D.muted, margin: "22px 0 0", maxWidth: 540 }}>
+                <p style={{ fontFamily: "'IBM Plex Sans', " + sans, fontSize: "clamp(16px,1.6vw,20px)", lineHeight: 1.5, color: D.muted, margin: "22px 0 0", maxWidth: 540 }}>
                   Even broad market funds hold companies that might not match your values. Search any stock or ETF to see what's really inside.
                 </p>
               </div>
@@ -2315,8 +2399,9 @@ function AuthModal({ mode, setMode, onClose, onAuthed }) {
     let cancelled = false;
     (async () => {
       try {
-        const { googleClientId } = await api("/api/screens");
-        if (!googleClientId || cancelled) return;
+        // Built in, not fetched: asking the server first left the button missing for
+        // several seconds whenever the server was waking up.
+        const googleClientId = DEFAULT_GOOGLE_CLIENT_ID;
         await loadGsi();
         if (cancelled || !gBox.current || !window.google?.accounts?.id) return;
         window.google.accounts.id.initialize({ client_id: googleClientId, callback: (r) => onGoogle.current(r), ux_mode: "popup" });
@@ -2378,7 +2463,7 @@ function AuthModal({ mode, setMode, onClose, onAuthed }) {
               {/* Google draws its button in its own frame, so the thin white border sits on
                   a box that hugs it. */}
               <div ref={gBox} style={{ display: "flex", justifyContent: "center", width: "fit-content", margin: "0 auto",
-                borderRadius: 999, overflow: "hidden", border: gReady ? "1px solid rgba(237,239,243,0.85)" : "none" }} />
+                borderRadius: 999, overflow: "hidden", border: gReady ? "1px solid rgba(237,239,243,0.85)" : "none", minHeight: gReady ? 0 : 42 }} />
               {gReady && (
                 <div aria-hidden style={{ display: "flex", alignItems: "center", gap: 12, fontFamily: sans, fontSize: 12.5, color: D.faint, margin: "4px 0" }}>
                   <span style={{ flex: 1, height: 1, background: D.glassBorder }} />or with email<span style={{ flex: 1, height: 1, background: D.glassBorder }} />
@@ -2909,7 +2994,7 @@ function QuotePanel({ symbol }) {
         </div>
       </div>
       <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginTop: 3 }}>
-        <span style={{ fontFamily: sans, fontSize: 34, fontWeight: 500, letterSpacing: "-0.02em", color: L.ink, lineHeight: 1.1 }}>$ {shownPrice.toFixed(2)}</span>
+        <span className="ps-num" style={{ fontFamily: sans, fontSize: 34, fontWeight: 500, letterSpacing: "-0.02em", color: L.ink, lineHeight: 1.1 }}>$ {shownPrice.toFixed(2)}</span>
         <DeltaBadge pct={shownPct} />
       </div>
       <div style={{ opacity: busy ? 0.45 : 1, transition: "opacity .15s" }}>

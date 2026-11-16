@@ -24,7 +24,7 @@ test("no grade at all when nothing is flagged — there is no top letter", () =>
   // nobody has looked at.
   assert.equal(grade("MSFT"), null);
   assert.equal(grade("NVDA"), null);
-  assert.match(gradeFor([], SCREEN_KEYS.length).meaning, /haven't examined/);
+  assert.match(gradeFor([], SCREEN_KEYS.length).meaning, /not on any of them/);
 });
 test("B for one flagged line of business", () => {
   for (const t of ["CVX", "XOM", "LMT", "MO"]) assert.equal(grade(t), "B", t);

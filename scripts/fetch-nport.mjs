@@ -163,19 +163,23 @@ export async function fundFromNport(ticker, series, lookups) {
   const byValue = [...doc.equities].sort((a, b) => b.value - a.value);
   const seen = new Set(), screened = [], how = { ticker: 0, cusip: 0, name: 0 };
   const weights = {};   // flagged ticker -> percent of the fund (the filing's pctVal)
+  const topBy = new Map(); // every matched ticker -> percent, for the fund's largest holdings
   let mapped = 0, mappedValue = 0, totalValue = 0;
   for (const h of byValue) {
     totalValue += h.value;
     const hit = tickerFor(h, lookups);
     if (!hit) continue;
     mapped++; mappedValue += h.value; how[hit.how]++;
+    const plain = String(hit.t).toUpperCase().replace(/-/g, ".");
+    topBy.set(plain, (topBy.get(plain) || 0) + h.pct);
     const form = screenedForm(hit.t);
     if (form && !seen.has(form)) { seen.add(form); screened.push(form); }
     if (form) weights[form] = Number(((weights[form] || 0) + h.pct).toFixed(4));
   }
   const companies = new Set(doc.equities.map((h) => normName(h.name) || h.cusip)).size;
+  const top = [...topBy].sort((a, b) => b[1] - a[1]).slice(0, 25).map(([t, p]) => [t, Number(p.toFixed(3))]);
   return {
-    basket: screened, weights,
+    basket: screened, weights, top,
     source: {
       fund: ticker, label: doc.seriesName, via: "nport", asOf: fmtDate(doc.asOf), filed: filing.filed, url: filing.url,
       totalHoldings: doc.equities.length, totalCompanies: companies, screened: screened.length,
@@ -189,15 +193,15 @@ async function main() {
   const wanted = Object.entries(SOURCES).filter(([, t]) => !only.length || only.includes(t));
   // Start from what we already have, so a fund whose fetch fails keeps its last good data.
   const prev = existsSync(OUT) ? JSON.parse(readFileSync(OUT, "utf8")) : { baskets: {}, sources: {} };
-  const baskets = { ...prev.baskets }, sources = { ...prev.sources }, weights = { ...(prev.weights || {}) };
+  const baskets = { ...prev.baskets }, sources = { ...prev.sources }, weights = { ...(prev.weights || {}) }, top = { ...(prev.top || {}) };
   const lookups = loadLookups();
   const series = await seriesByTicker();
   let ok = 0;
   for (const [basisKey, ticker] of wanted) {
     process.stdout.write(`${ticker.padEnd(6)}(${basisKey}) `);
     try {
-      const { basket, source, weights: w } = await fundFromNport(ticker, series, lookups);
-      baskets[basisKey] = basket; sources[basisKey] = source; weights[basisKey] = w; ok++;
+      const { basket, source, weights: w, top: tp } = await fundFromNport(ticker, series, lookups);
+      baskets[basisKey] = basket; sources[basisKey] = source; weights[basisKey] = w; top[basisKey] = tp; ok++;
       console.log(`${source.totalHoldings} stocks, ${source.screened} flagged, ${Math.round(source.matchedShare * 100)}% of value matched (as of ${source.asOf})`);
     } catch (e) {
       console.log(`FAILED: ${e.message}${baskets[basisKey] ? " (keeping the last good data)" : ""}`);
@@ -205,7 +209,7 @@ async function main() {
     }
   }
   if (!ok) { console.error("\nNothing fetched. Leaving the file as it was."); process.exit(1); }
-  writeFileSync(OUT, JSON.stringify({ lastUpdated: new Date().toISOString(), source: "SEC Form N-PORT filings", sources, baskets, weights }) + "\n");
+  writeFileSync(OUT, JSON.stringify({ lastUpdated: new Date().toISOString(), source: "SEC Form N-PORT filings", sources, baskets, weights, top }) + "\n");
   console.log(`\nWrote ${ok} of ${wanted.length} funds → ${OUT}`);
 }
 
