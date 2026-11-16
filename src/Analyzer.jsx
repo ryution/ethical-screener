@@ -76,12 +76,6 @@ const lede = "'Varela', 'Hanken Grotesk', -apple-system, sans-serif";
 // High-contrast serif for headlines only. Everything else stays in the grotesks above.
 const headline = "'DM Serif Display', Georgia, 'Times New Roman', serif";
 
-// A flat panel over the canvas: solid fill, hairline rule, square corners, no blur.
-const glass = (o = {}) => ({
-  background: D.lift,
-  border: `1px solid ${D.glassBorder}`,
-  ...o,
-});
 // Solid block, square corners, no lift. Separation comes from the fill and the rule.
 const card = (o = {}) => ({
   background: L.card, border: `1px solid ${L.line}`,
@@ -130,19 +124,29 @@ function ping(name) {
 
 export default function Analyzer() {
   const [user, setUser] = useState(undefined);
-  const [showAuth, setShowAuth] = useState(() => !!URL_AT_LOAD.get("reset"));
+  // null, or which pop-up is open: "signup" (Get started), "login" (Sign in), or "reset"
+  // when the visitor arrives from a password-reset email.
+  const [authMode, setAuthMode] = useState(() => (URL_AT_LOAD.get("reset") ? "reset" : null));
   // A signed-in user can choose to browse the public search page without signing out.
   const [viewHome, setViewHome] = useState(false);
   useEffect(() => { api("/api/me").then((d) => setUser(d.user)).catch(() => setUser(null)); }, []);
 
   if (user === undefined) return <Splash />;
   if (user && !viewHome) {
-    return <Dashboard user={user} onSignOut={() => { setUser(null); setShowAuth(false); }} onGoHome={() => setViewHome(true)} />;
+    return <Dashboard user={user} onSignOut={() => { setUser(null); setAuthMode(null); }} onGoHome={() => setViewHome(true)} />;
   }
-  if (!user && showAuth) return <Auth onAuthed={(u) => { setUser(u); setViewHome(false); }} onBack={() => setShowAuth(false)} />;
-  // Already signed in and just browsing home: "Get started" returns to the dashboard
-  // instead of showing the signup form again.
-  return <Landing onStart={() => (user ? setViewHome(false) : setShowAuth(true))} />;
+  // Already signed in and just browsing home: "Get started" and "Sign in" return to the
+  // dashboard instead of opening the form again.
+  const openAuth = (mode) => (user ? setViewHome(false) : setAuthMode(mode));
+  return (
+    <>
+      <Landing onStart={() => openAuth("signup")} onSignIn={() => openAuth("login")} />
+      {!user && authMode && (
+        <AuthModal mode={authMode} setMode={setAuthMode} onClose={() => setAuthMode(null)}
+          onAuthed={(u) => { setUser(u); setViewHome(false); setAuthMode(null); }} />
+      )}
+    </>
+  );
 }
 
 // ── The navy canvas: one flat block of deep navy, no gradient and no glow. The page is
@@ -1210,6 +1214,17 @@ function AlternativesView({ data, busy, err, onGroup, base, note, onCheck, onCom
   );
 }
 
+// Every pop-up enters the same way: the page behind dims and blurs, and the panel fades in
+// while rising a little. About half a second, so it reads as arriving rather than snapping.
+const MODAL_CSS = `
+@keyframes ps-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ps-panel-in { from { opacity: 0; transform: translateY(22px) scale(.985); } to { opacity: 1; transform: none; } }
+.ps-backdrop { animation: ps-backdrop-in .45s ease both; }
+.ps-panel { animation: ps-panel-in .6s cubic-bezier(.2,.7,.2,1) .06s both; }
+@media (prefers-reduced-motion: reduce) { .ps-backdrop, .ps-panel { animation-duration: .01s; animation-delay: 0s; } }
+`;
+const BACKDROP = { position: "fixed", inset: 0, zIndex: 100, background: "rgba(8,11,18,0.55)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" };
+
 function CompareModal({ title, selectedCount, onClose, children }) {
   const panel = useRef(null);
   // `onClose` is a fresh function every render. Holding the latest one in a ref keeps the
@@ -1234,12 +1249,12 @@ function CompareModal({ title, selectedCount, onClose, children }) {
   }, []);
 
   return (
-    <div onMouseDown={(e) => { if (e.target === e.currentTarget) close.current(); }}
-      style={{ position: "fixed", inset: 0, zIndex: 100, background: "rgba(6,9,15,0.74)",
-        backdropFilter: "blur(3px)", WebkitBackdropFilter: "blur(3px)", overflowY: "auto",
+    <div className="ps-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) close.current(); }}
+      style={{ ...BACKDROP, overflowY: "auto",
         display: "flex", alignItems: "flex-start", justifyContent: "center",
         padding: "clamp(12px,5vh,56px) 16px" }}>
-      <div ref={panel} tabIndex={-1} role="dialog" aria-modal="true" aria-label={`Comparing ${title}`}
+      <style>{MODAL_CSS}</style>
+      <div ref={panel} className="ps-panel" tabIndex={-1} role="dialog" aria-modal="true" aria-label={`Comparing ${title}`}
         style={{ width: "min(920px,100%)", background: P.block, border: `1px solid ${L.line}`,
           borderRadius: 18, outline: "none", boxShadow: "0 24px 70px rgba(0,0,0,0.55)" }}>
         <div style={{ position: "sticky", top: 0, zIndex: 1, display: "flex", alignItems: "center", gap: 12,
@@ -1824,7 +1839,7 @@ const SectionHead = ({ title, sub, subFont = sans }) => (
 );
 
 // ── Landing ─────────────────────────────────────────────────────────────────
-function Landing({ onStart }) {
+function Landing({ onStart, onSignIn }) {
   const [route, setRoute] = useState(typeof window !== "undefined" ? window.location.hash : "");
   // Server capabilities + data freshness, fetched once and handed to the hero: whether
   // brokerage connect is configured (decides which call-to-action to show) and how many
@@ -1845,7 +1860,7 @@ function Landing({ onStart }) {
     else window.scrollTo(0, 0);
   }, [route]);
   if (route === "#methodology") return <Methodology onStart={onStart} />;
-  return <LandingHome onStart={onStart} snaptrade={server.snaptrade} meta={server.meta} />;
+  return <LandingHome onStart={onStart} onSignIn={onSignIn} snaptrade={server.snaptrade} meta={server.meta} />;
 }
 
 // The steps read as a list of headlines; the body for one appears when the pointer or
@@ -1963,7 +1978,7 @@ function HeroArt() {
   );
 }
 
-function LandingHome({ onStart, snaptrade, meta }) {
+function LandingHome({ onStart, onSignIn, snaptrade, meta }) {
   const wrap = { maxWidth: 1000, margin: "0 auto", padding: "0 24px" };
   const steps = [
     { n: "1", t: "Pick what matters to you", b: "Fossil fuels, weapons, tobacco, gambling, surveillance, and more. Flip on the causes you care about. We only ever check for what you choose." },
@@ -1981,15 +1996,16 @@ function LandingHome({ onStart, snaptrade, meta }) {
           {/* Below ~480px, "PlainStreet" + "Methodology" + "Get started" don't fit on one
               line and crowd together with no gap. Methodology is already in the footer,
               so it's the one to drop on narrow screens rather than wrap the sticky nav. */}
-          <style>{`@media (max-width: 480px) { .ps-nav-methodology { display: none; } }`}</style>
+          <style>{`@media (max-width: 480px) { .ps-nav-methodology { display: none; } .ps-nav-actions { gap: 16px !important; } }`}</style>
           {/* Full-bleed on purpose: the nav is chrome, so the wordmark sits against the
               page gutter instead of being pulled inward by the 1000px content column. */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 28px" }}>
             <span style={{ fontFamily: wordmark, fontSize: 25, fontWeight: 600, color: L.ink, letterSpacing: "-0.02em" }}>PlainStreet</span>
-            <div style={{ display: "flex", alignItems: "center", gap: 26 }}>
+            <div className="ps-nav-actions" style={{ display: "flex", alignItems: "center", gap: 26 }}>
               <a href="#news" className="ps-nav-methodology" style={{ fontFamily: sans, fontSize: 15, color: L.ink, textDecoration: "none" }}>News</a>
               <a href="#how-it-works" className="ps-nav-methodology" style={{ fontFamily: sans, fontSize: 15, color: L.ink, textDecoration: "none" }}>How it works</a>
               <a href="#methodology" className="ps-nav-methodology" style={{ fontFamily: sans, fontSize: 15, color: L.ink, textDecoration: "none" }}>Methodology</a>
+              <button onClick={onSignIn} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: sans, fontSize: 15, color: L.ink }}>Sign in</button>
               <button onClick={onStart} style={startBtn(999, "10px 20px", 15)}>Get started</button>
             </div>
           </div>
@@ -2078,13 +2094,76 @@ function VerifiedBanner() {
   );
 }
 
-function Auth({ onAuthed, onBack }) {
-  const [mode, setMode] = useState(() => (resetTokenFromUrl() ? "reset" : "signup")); // signup | login | forgot | reset
+// Google's sign-in script, loaded once, the first time a sign-in pop-up opens.
+let gsiLoading = null;
+function loadGsi() {
+  if (window.google?.accounts?.id) return Promise.resolve();
+  if (!gsiLoading) {
+    gsiLoading = new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = "https://accounts.google.com/gsi/client";
+      s.async = true;
+      s.onload = resolve;
+      s.onerror = () => { gsiLoading = null; reject(new Error("Google sign-in didn't load")); };
+      document.head.appendChild(s);
+    });
+  }
+  return gsiLoading;
+}
+
+// Sign in and Get started as a pop-up over the page, after Medium's: the page blurs, a
+// centered panel with a serif heading, the form, and a line to switch to the other one.
+function AuthModal({ mode, setMode, onClose, onAuthed }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
   const [info, setInfo] = useState("");
   const [busy, setBusy] = useState(false);
+  const close = useRef(onClose);
+  close.current = onClose;
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === "Escape") close.current(); };
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
+  }, []);
+  const go = (m) => { setMode(m); setErr(""); setInfo(""); };
+  // "Continue with Google": Google's own button, drawn into this box. It only appears once
+  // the server has a client ID and Google's script has loaded; otherwise the email form is
+  // all there is, and nothing about it changes.
+  const gBox = useRef(null);
+  const [gReady, setGReady] = useState(false);
+  const onGoogle = useRef(null);
+  onGoogle.current = async (resp) => {
+    setErr(""); setInfo(""); setBusy(true);
+    try {
+      const d = await api("/api/auth/google", { method: "POST", body: { credential: resp.credential } });
+      if (d.created) ping("signup");
+      onAuthed(d.user);
+    } catch (e) { setErr(e.message); } finally { setBusy(false); }
+  };
+  useEffect(() => {
+    if (mode !== "login" && mode !== "signup") return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { googleClientId } = await api("/api/screens");
+        if (!googleClientId || cancelled) return;
+        await loadGsi();
+        if (cancelled || !gBox.current || !window.google?.accounts?.id) return;
+        window.google.accounts.id.initialize({ client_id: googleClientId, callback: (r) => onGoogle.current(r), ux_mode: "popup" });
+        gBox.current.innerHTML = "";
+        window.google.accounts.id.renderButton(gBox.current, {
+          theme: "filled_black", size: "large", shape: "pill", logo_alignment: "left",
+          text: mode === "signup" ? "signup_with" : "signin_with",
+          width: Math.min(360, gBox.current.parentElement?.offsetWidth || 360),
+        });
+        setGReady(true);
+      } catch { /* no Google button; email still works */ }
+    })();
+    return () => { cancelled = true; };
+  }, [mode]);
   const submit = async () => {
     setErr(""); setInfo(""); setBusy(true);
     try {
@@ -2104,42 +2183,66 @@ function Auth({ onAuthed, onBack }) {
       onAuthed(d.user);
     } catch (e) { setErr(e.message); } finally { setBusy(false); }
   };
-  const titles = { signup: "Create your account", login: "Welcome back", forgot: "Reset your password", reset: "Choose a new password" };
+  const heads = { signup: "Join PlainStreet.", login: "Welcome back.", forgot: "Reset your password.", reset: "Choose a new password." };
   const subs = {
-    signup: "See what's really inside your portfolio.", login: "See what's really inside your portfolio.",
-    forgot: "Enter your email and we'll send a reset link.", reset: "At least 10 characters.",
+    signup: "See what's really inside your portfolio. Free and read-only.",
+    login: null,
+    forgot: "Enter your email and we'll send you a reset link.",
+    reset: "At least 10 characters.",
   };
+  const field = { width: "100%", boxSizing: "border-box", fontFamily: sans, fontSize: 15, color: D.ink, background: "transparent",
+    border: `1px solid ${D.glassBorder}`, borderRadius: 999, padding: "13px 18px", outline: "none" };
+  const small = { fontFamily: sans, fontSize: 14.5, color: D.muted, margin: 0 };
+  const underline = { ...linkBtn(D.ink), fontSize: 14.5, fontWeight: 500, textDecoration: "underline", textUnderlineOffset: 3 };
   return (
-    <Canvas>
-      <div style={{ minHeight: "100dvh", display: "grid", placeItems: "center", padding: "40px 20px" }}>
-        <div style={glass({ width: "100%", maxWidth: 420, padding: "34px 32px" })}>
-          {onBack && <button onClick={onBack} style={{ ...linkBtn(D.mint), marginBottom: 20, color: D.muted }}>← Back</button>}
-          <h1 style={{ fontFamily: serifDisplay, fontSize: 30, color: D.ink, margin: "0 0 6px", letterSpacing: "-0.02em" }}>
-            {titles[mode]}
-          </h1>
-          <p style={{ fontFamily: sans, fontSize: 14.5, color: D.muted, margin: "0 0 24px", lineHeight: 1.5 }}>{subs[mode]}</p>
-          {mode !== "reset" && <DarkField label="Email" type="email" value={email} onChange={setEmail} placeholder="you@example.com" onEnter={mode === "forgot" ? submit : undefined} />}
-          {mode !== "forgot" && <>
-            {mode !== "reset" && <div style={{ height: 12 }} />}
-            <DarkField label={mode === "reset" ? "New password" : "Password"} type="password" value={password} onChange={setPassword}
-              placeholder={mode === "login" ? "Your password" : "At least 10 characters"} onEnter={submit} />
-          </>}
+    <div className="ps-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) close.current(); }}
+      style={{ ...BACKDROP, overflowY: "auto", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+      <style>{MODAL_CSS}</style>
+      <div className="ps-panel" role="dialog" aria-modal="true" aria-label={heads[mode]}
+        style={{ position: "relative", width: "min(640px,100%)", background: P.card, borderRadius: 4,
+          padding: "clamp(44px,8vh,72px) 24px clamp(32px,6vh,52px)", boxShadow: "0 30px 90px rgba(0,0,0,0.55)", textAlign: "center" }}>
+        <button onClick={onClose} aria-label="Close"
+          style={{ position: "absolute", top: 14, right: 16, background: "none", border: "none", cursor: "pointer", color: D.muted, fontSize: 24, lineHeight: 1, padding: 6 }}>×</button>
+        <h2 style={{ fontFamily: headline, fontWeight: 400, fontSize: "clamp(32px,5vw,42px)", color: D.ink, margin: 0, letterSpacing: "-0.01em" }}>{heads[mode]}</h2>
+        {subs[mode] && <p style={{ ...small, margin: "12px auto 0", maxWidth: 380, lineHeight: 1.5 }}>{subs[mode]}</p>}
+        <div style={{ maxWidth: 360, margin: "32px auto 0", display: "grid", gap: 12, textAlign: "left" }}>
+          {(mode === "login" || mode === "signup") && (
+            <>
+              {/* Google draws its button in its own frame, so the thin white border sits on
+                  a box that hugs it. */}
+              <div ref={gBox} style={{ display: "flex", justifyContent: "center", width: "fit-content", margin: "0 auto",
+                borderRadius: 999, overflow: "hidden", border: gReady ? "1px solid rgba(237,239,243,0.85)" : "none" }} />
+              {gReady && (
+                <div aria-hidden style={{ display: "flex", alignItems: "center", gap: 12, fontFamily: sans, fontSize: 12.5, color: D.faint, margin: "4px 0" }}>
+                  <span style={{ flex: 1, height: 1, background: D.glassBorder }} />or with email<span style={{ flex: 1, height: 1, background: D.glassBorder }} />
+                </div>
+              )}
+            </>
+          )}
+          {mode !== "reset" && (
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" aria-label="Email" autoFocus
+              onKeyDown={(e) => e.key === "Enter" && (mode === "forgot" ? submit() : null)} style={field} />
+          )}
+          {mode !== "forgot" && (
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoFocus={mode === "reset"}
+              placeholder={mode === "login" ? "Password" : mode === "reset" ? "New password" : "Password (at least 10 characters)"}
+              aria-label={mode === "reset" ? "New password" : "Password"} onKeyDown={(e) => e.key === "Enter" && submit()} style={field} />
+          )}
           {err && <DarkErr>{err}</DarkErr>}
-          {info && <div role="status" style={{ marginTop: 12, fontFamily: sans, fontSize: 13, color: D.ink, background: "rgba(237,239,243,0.08)", border: `1px solid ${D.glassBorder}`, padding: "10px 12px", borderRadius: 0, lineHeight: 1.5, overflowWrap: "anywhere" }}>{info}</div>}
-          <button onClick={submit} disabled={busy} style={{ ...mintBtn(), marginTop: 20, width: "100%" }}>
+          {info && <div role="status" style={{ fontFamily: sans, fontSize: 13, color: D.ink, background: "rgba(237,239,243,0.08)", border: `1px solid ${D.glassBorder}`, padding: "10px 12px", lineHeight: 1.5, overflowWrap: "anywhere" }}>{info}</div>}
+          <button onClick={submit} disabled={busy} style={{ ...startBtn(999, "13px 20px", 15), width: "100%", marginTop: 4 }}>
             {busy ? "…" : { signup: "Create account", login: "Sign in", forgot: "Send reset link", reset: "Set new password" }[mode]}
           </button>
-          {mode === "login" && (
-            <button onClick={() => { setMode("forgot"); setErr(""); setInfo(""); }} style={{ ...linkBtn(D.muted), marginTop: 14, display: "block", width: "100%", textAlign: "center", fontWeight: 500 }}>
-              Forgot your password?
-            </button>
-          )}
-          <button onClick={() => { setMode(mode === "signup" ? "login" : "signup"); setErr(""); setInfo(""); }} style={{ ...linkBtn(D.mint), marginTop: mode === "login" ? 10 : 16, display: "block", width: "100%", textAlign: "center" }}>
-            {mode === "signup" ? "Already have an account? Sign in" : "New here? Create an account"}
-          </button>
         </div>
+        <div style={{ marginTop: 30, display: "grid", gap: 12 }}>
+          {mode === "login" && <p style={small}>No account? <button onClick={() => go("signup")} style={underline}>Create one</button></p>}
+          {mode === "login" && <p style={small}>Forgot your password? <button onClick={() => go("forgot")} style={underline}>Reset it</button>.</p>}
+          {mode === "signup" && <p style={small}>Already have an account? <button onClick={() => go("login")} style={underline}>Sign in</button></p>}
+          {(mode === "forgot" || mode === "reset") && <p style={small}><button onClick={() => go("login")} style={underline}>Back to sign in</button></p>}
+        </div>
+        <p style={{ ...small, fontSize: 12.5, color: D.faint, marginTop: 30 }}>Read-only. We never move your money.</p>
       </div>
-    </Canvas>
+    </div>
   );
 }
 
@@ -2391,27 +2494,12 @@ function LSection({ n, title, sub, children }) {
     </section>
   );
 }
-function DarkField({ label, type = "text", value, onChange, placeholder, onEnter }) {
-  return (
-    <label style={{ display: "block" }}>
-      <div style={{ fontFamily: sans, fontSize: 11.5, color: D.muted, marginBottom: 5 }}>{label}</div>
-      <input type={type} value={value} placeholder={placeholder}
-        onChange={(e) => onChange(e.target.value)} onKeyDown={(e) => e.key === "Enter" && onEnter && onEnter()}
-        style={{ width: "100%", fontFamily: sans, fontSize: 14, color: D.ink, background: "rgba(237,239,243,0.08)",
-          border: `1px solid ${D.glassBorder}`, borderRadius: 0, padding: "12px 13px", outline: "none", }} />
-    </label>
-  );
-}
 const Muted = ({ children }) => <div style={{ fontFamily: sans, fontSize: 13.5, color: L.muted }}>{children}</div>;
 const LErr = ({ children }) => <div style={{ marginTop: 12, fontFamily: sans, fontSize: 13, color: L.flag, background: L.flagBg, border: `1px solid ${L.flagBorder}`, padding: "10px 12px", borderRadius: 0 }}>{children}</div>;
 const DarkErr = ({ children }) => <div style={{ marginTop: 12, fontFamily: sans, fontSize: 13, color: D.flag, background: D.flagBg, border: `1px solid ${D.flagBorder}`, padding: "10px 12px", borderRadius: 0 }}>{children}</div>;
 
 // Buttons — flat, no gloss, full pills. All three primaries are lavender-on-near-black and
 // differ only in border/shadow; they're near-duplicates now and could collapse into one.
-const mintBtn = () => ({
-  background: A.lav, color: A.lavInk, border: `1px solid ${A.lav}`, borderRadius: 0, padding: "12px 20px",
-  fontFamily: sans, fontSize: 15, fontWeight: 600, cursor: "pointer", letterSpacing: "-0.005em",
-});
 const brassBtn = (r = 0, pad = "14px 24px", fs = 15) => ({
   background: A.lav, color: A.lavInk, border: `1px solid ${A.lav}`, borderRadius: r, padding: pad,
   fontFamily: sans, fontSize: fs, fontWeight: 600, cursor: "pointer", letterSpacing: "-0.005em",

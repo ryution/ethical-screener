@@ -15,6 +15,7 @@ import { mailerEnabled, siteUrl, sendMail, resetEmail, verifyEmail } from "./lib
 import { snaptradeEnabled, registerUser as stRegister, connectionPortalUrl, allPositions } from "./lib/snaptrade.js";
 import { analyze, lookupSymbol, coverageMeta } from "./lib/analyzer.js";
 import { alternatives } from "./lib/alternatives.js";
+import { verifyGoogleIdToken, GOOGLE_CLIENT_ID } from "./lib/google.js";
 import { suggest } from "./lib/suggest.js";
 import { screenCatalogue, isScreenKey, VALUE_PRESETS } from "./lib/screens.js";
 import { hotNews } from "./lib/news.js";
@@ -144,16 +145,18 @@ function csrfRejected(req) {
 const IS_PROD = !!process.env.DATABASE_URL;
 const CSP = [
   "default-src 'self'",
-  "script-src 'self'",
   // The UI face (Plus Jakarta Sans) is served by Google Fonts — the stylesheet from
   // fonts.googleapis.com, the files from fonts.gstatic.com. Without both allowances the
   // self-hosted server (`npm start`) silently fell back to the system font.
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  // Sign in with Google: its script, button frame and styles come from accounts.google.com.
+  "script-src 'self' https://accounts.google.com/gsi/client",
+  "frame-src https://accounts.google.com/gsi/",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com/gsi/style",
   "font-src 'self' data: https://fonts.gstatic.com",
   // News thumbnails come straight from the publisher (BBC, NYT) — no proxying, so their
   // image hosts need an explicit CSP allowance.
   "img-src 'self' data: https://ichef.bbci.co.uk https://static01.nyt.com https://static.nytimes.com",
-  "connect-src 'self'",
+  "connect-src 'self' https://accounts.google.com/gsi/",
   "form-action 'self'",
   "frame-ancestors 'none'",
   "base-uri 'none'",
@@ -166,7 +169,9 @@ function securityHeaders() {
     "X-Frame-Options": "DENY",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "Permissions-Policy": "geolocation=(), microphone=(), camera=(), payment=()",
-    "Cross-Origin-Opener-Policy": "same-origin",
+    // same-origin-allow-popups, not same-origin: Google's sign-in opens a pop-up that has
+    // to report back to this page.
+    "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
   };
   // Only meaningful over HTTPS, and actively harmful to set on a localhost http dev
   // server (the browser would then refuse plain http on localhost for two years).
@@ -229,7 +234,7 @@ export async function handler(req, res) {
 
   // ---- the ethical screens catalogue (public reference data) ----
   if (req.method === "GET" && path === "/api/screens") {
-    return sendJson(res, 200, { screens: screenCatalogue, presets: VALUE_PRESETS, snaptrade: snaptradeEnabled(), data: coverageMeta() });
+    return sendJson(res, 200, { screens: screenCatalogue, presets: VALUE_PRESETS, snaptrade: snaptradeEnabled(), googleClientId: GOOGLE_CLIENT_ID, data: coverageMeta() });
   }
 
   // ---- search autocomplete (ticker / company-name suggestions) ----
@@ -470,7 +475,8 @@ export async function handler(req, res) {
     if (loginBlocked(key)) return sendJson(res, 429, { error: "Too many attempts. Try again in a few minutes." });
     const user = db.getUserByEmail(body.email);
     // Always spend the same work whether or not the account exists (see dummyVerify).
-    const ok = user
+    // An account made with Google has no password, so a password can't sign in to it.
+    const ok = user && user.passHash
       ? verifyPassword(body.password || "", user.salt, user.passHash)
       : dummyVerify(body.password);
     if (!ok) {
@@ -482,6 +488,31 @@ export async function handler(req, res) {
     const token = newToken();
     db.createSession(user.id, token);
     return sendJson(res, 200, { user: publicUser(user) }, { "Set-Cookie": sessionCookie(token) });
+  }
+
+  // ---- sign in or sign up with Google ----
+  // The browser posts the ID token from Google's button. A verified Google email signs in
+  // to the account with that email, or creates one (with no password) if there isn't one.
+  if (req.method === "POST" && path === "/api/auth/google") {
+    const rl = rateLimit("google", ip, 30, 10 * 60 * 1000);
+    if (rl.limited) return sendJson(res, 429, { error: "Too many attempts. Try again in a few minutes." }, { "Retry-After": String(rl.retryAfter) });
+    const body = await readBody(req);
+    if (!body || !body.credential) return sendJson(res, 400, { error: "Missing Google credential." });
+    let g;
+    try { g = await verifyGoogleIdToken(body.credential); }
+    catch (e) { return sendJson(res, 401, { error: `Google sign-in didn't work: ${e.message}.` }); }
+    let user = db.getUserByEmail(g.email);
+    let created = false;
+    if (!user) {
+      user = db.createUser({ email: g.email, salt: null, passHash: null });
+      created = true;
+    }
+    // Google checked the address, so it counts as verified.
+    if (!user.emailVerified || !user.googleSub) { user.emailVerified = true; user.googleSub = g.sub; db.saveUser(user); }
+    db.audit(user, created ? "account_signup_google" : "login_google");
+    const token = newToken();
+    db.createSession(user.id, token);
+    return sendJson(res, 200, { user: publicUser(user), created }, { "Set-Cookie": sessionCookie(token) });
   }
 
   // ---- logout ----
