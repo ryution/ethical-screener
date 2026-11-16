@@ -2679,6 +2679,28 @@ const QUOTE_RANGES = [
 // §1.2 + §3.9 — the headline figure with its chart directly beneath, and the window it
 // covers stated rather than implied. Self-fetching and self-hiding: if there's no quote
 // for this symbol the panel simply doesn't render.
+// The price chart sits on a pane of "liquid glass": translucent and frosted, a bright edge
+// along the top, a soft sheen fading down, and a blurred glow behind it in the trend's
+// color (mint up, coral down) so the glass has something to catch.
+const GLASS_CSS = `
+.ps-glass { position: relative; isolation: isolate; overflow: hidden; border-radius: 22px; padding: 16px 18px 6px;
+  background: linear-gradient(150deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03) 48%, rgba(255,255,255,0.07));
+  border: 1px solid rgba(255,255,255,0.16);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.34), inset 0 -1px 0 rgba(255,255,255,0.05), inset 0 0 26px rgba(255,255,255,0.04), 0 16px 40px rgba(0,0,0,0.32);
+  backdrop-filter: blur(22px) saturate(170%); -webkit-backdrop-filter: blur(22px) saturate(170%); }
+.ps-glass::before { content: ""; position: absolute; inset: -35%; z-index: -1; pointer-events: none; opacity: .6; filter: blur(34px);
+  background: radial-gradient(38% 46% at 22% 82%, var(--ps-glow) 0%, transparent 70%), radial-gradient(32% 38% at 84% 16%, rgba(156,203,245,0.38) 0%, transparent 70%); }
+.ps-glass::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,255,255,0.13) 0%, rgba(255,255,255,0) 26%); }
+.ps-seg { display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.13); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12); }
+.ps-seg button { font-family: inherit; font-size: 11.5px; font-weight: 600; cursor: pointer; border: none; border-radius: 999px;
+  padding: 4px 11px; min-width: 34px; background: transparent; color: rgba(237,239,243,0.62); transition: background .2s, color .2s, box-shadow .2s; }
+.ps-seg button:hover { color: rgba(237,239,243,0.9); }
+.ps-seg button[aria-pressed="true"] { color: #fff; background: linear-gradient(180deg, rgba(255,255,255,0.30), rgba(255,255,255,0.12));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.55), inset 0 -1px 0 rgba(255,255,255,0.08), 0 2px 10px rgba(0,0,0,0.28); }
+`;
+
 function QuotePanel({ symbol }) {
   const [range, setRange] = useState("1M");
   const [q, setQ] = useState(null);
@@ -2705,26 +2727,16 @@ function QuotePanel({ symbol }) {
   const stamp = scrubbing && q.times && q.times[scrub] ? fmtStamp(q.times[scrub], q.range) : null;
   const up = q.changePercent >= 0;
   return (
-    <div style={{ marginTop: 16 }}>
+    <div className="ps-glass" style={{ marginTop: 16, fontFamily: sans, "--ps-glow": up ? "rgba(95,207,146,0.55)" : "rgba(238,120,86,0.55)" }}>
+      <style>{GLASS_CSS}</style>
       <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
         <span style={{ fontFamily: sans, fontSize: 12.5, color: L.muted }}>
           {stamp || `Last price · ${q.label}`}
         </span>
-        <div role="group" aria-label="Chart range" style={{ marginLeft: "auto", display: "flex", gap: 4, flexWrap: "wrap" }}>
-          {QUOTE_RANGES.map((r) => {
-            const on = r.key === range;
-            return (
-              <button key={r.key} onClick={() => setRange(r.key)} aria-pressed={on}
-                style={{
-                  fontFamily: sans, fontSize: 11.5, fontWeight: 600, cursor: "pointer",
-                  borderRadius: 999, padding: "3px 10px", minWidth: 34,
-                  background: on ? A.lav : "transparent",
-                  color: on ? A.lavInk : L.muted,
-                  border: `1px solid ${on ? A.lav : L.line}`,
-                  transition: "background .12s, color .12s, border-color .12s",
-                }}>{r.label}</button>
-            );
-          })}
+        <div role="group" aria-label="Chart range" className="ps-seg" style={{ marginLeft: "auto" }}>
+          {QUOTE_RANGES.map((r) => (
+            <button key={r.key} onClick={() => setRange(r.key)} aria-pressed={r.key === range}>{r.label}</button>
+          ))}
         </div>
       </div>
       <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginTop: 3 }}>
