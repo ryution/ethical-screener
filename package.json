@@ -12,6 +12,7 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "lint:data": "node scripts/lint-data.mjs",
+    "build:icons": "node scripts/build-icons.mjs",
     "enrich": "node scripts/enrich-edgar.mjs",
     "enrich:holdings": "node scripts/fetch-holdings.mjs",
     "enrich:nport": "node scripts/fetch-nport.mjs",

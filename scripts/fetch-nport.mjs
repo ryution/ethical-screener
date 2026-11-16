@@ -60,11 +60,22 @@ export const SOURCES = {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // The SEC allows 10 requests a second. Stay well under it.
+// Each request gets 60 seconds (body included) and up to three tries. Without a limit, one
+// SEC response that never finished left the whole run waiting forever.
 async function get(url, json = false) {
-  await sleep(150);
-  const res = await fetch(url, { headers: { "User-Agent": UA, Accept: "*/*" } });
-  if (!res.ok) throw new Error(`${res.status} ${res.statusText} for ${url}`);
-  return json ? res.json() : res.text();
+  let last;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    await sleep(attempt === 1 ? 150 : 2000 * attempt);
+    try {
+      const res = await fetch(url, { headers: { "User-Agent": UA, Accept: "*/*" }, signal: AbortSignal.timeout(60_000) });
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText} for ${url}`);
+      return await (json ? res.json() : res.text());
+    } catch (e) {
+      last = e.name === "TimeoutError" ? new Error(`timed out after 60s for ${url}`) : e;
+      if (/^4\d\d /.test(last.message) && !/^429 /.test(last.message)) break;
+    }
+  }
+  throw last;
 }
 
 const decode = (s) => String(s ?? "").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
@@ -142,21 +153,43 @@ async function seriesByTicker() {
 }
 
 // The newest original N-PORT filing for a series (amendments are skipped).
-async function latestFiling(seriesId) {
-  const atom = await get(`https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=${seriesId}&type=NPORT-P&dateb=&owner=include&count=10&output=atom`);
-  for (const [, e] of atom.matchAll(/<entry>([\s\S]*?)<\/entry>/g)) {
-    const type = (e.match(/<filing-type>([^<]+)/) || [])[1];
-    const href = (e.match(/<filing-href>([^<]+)/) || [])[1];
-    const date = (e.match(/<filing-date>([^<]+)/) || [])[1];
-    if (type === "NPORT-P" && href) return { url: href.replace(/[^/]+$/, "primary_doc.xml"), filed: date };
+//
+// A fund family files one N-PORT per fund under a single registrant (Vanguard Index Funds
+// files about a hundred each quarter). data.sec.gov lists the registrant's filings; the
+// small header file of each one names the fund (series) it covers. We walk them newest
+// first and remember every series we pass, so the next fund from the same family is
+// usually already found. (EDGAR's older company-search page stopped answering scripted
+// requests, which is what this replaced.)
+const byRegistrant = new Map();   // cik -> { filings: [...], next: 0, found: Map(seriesId -> filing) }
+async function latestFiling(seriesId, cik) {
+  const key = String(cik);
+  let reg = byRegistrant.get(key);
+  if (!reg) {
+    const d = await get(`https://data.sec.gov/submissions/CIK${key.padStart(10, "0")}.json`, true);
+    const r = d.filings.recent;
+    const filings = [];
+    for (let i = 0; i < r.form.length; i++) {
+      if (r.form[i] === "NPORT-P") filings.push({ acc: r.accessionNumber[i], filed: r.filingDate[i] });
+    }
+    reg = { filings, next: 0, found: new Map() };
+    byRegistrant.set(key, reg);
   }
-  throw new Error(`no NPORT-P filing found for series ${seriesId}`);
+  while (!reg.found.has(seriesId) && reg.next < reg.filings.length) {
+    const f = reg.filings[reg.next++];
+    const dir = `https://www.sec.gov/Archives/edgar/data/${key}/${f.acc.replace(/-/g, "")}`;
+    const head = await get(`${dir}/${f.acc}-index-headers.html`);
+    const series = (head.match(/<SERIES-ID>\s*(S\d+)/) || [])[1];
+    if (series && !reg.found.has(series)) reg.found.set(series, { url: `${dir}/primary_doc.xml`, filed: f.filed });
+  }
+  const hit = reg.found.get(seriesId);
+  if (!hit) throw new Error(`no NPORT-P filing found for series ${seriesId}`);
+  return hit;
 }
 
 export async function fundFromNport(ticker, series, lookups) {
   const s = series.get(ticker);
   if (!s) throw new Error(`${ticker} is not in the SEC's fund ticker list`);
-  const filing = await latestFiling(s.seriesId);
+  const filing = await latestFiling(s.seriesId, s.cik);
   const doc = parseNport(await get(filing.url));
   if (doc.seriesId !== s.seriesId) throw new Error(`filing is for series ${doc.seriesId}, expected ${s.seriesId}`);
   if (!doc.equities.length) throw new Error("the filing lists no common stock");
