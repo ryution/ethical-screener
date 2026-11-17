@@ -70,6 +70,8 @@ function currentUser(req) {
 }
 const publicUser = (u) => ({
   id: u.id, email: u.email, emailVerified: !!u.emailVerified,
+  // The categories they saved, so the dashboard and home page open with them.
+  screens: Array.isArray(u.screens) ? u.screens : [],
   brokerageConnected: !!(u.snaptrade && u.snaptrade.connectedAt),
   snaptradeEnabled: snaptradeEnabled(),
 });

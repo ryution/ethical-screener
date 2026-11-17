@@ -128,7 +128,7 @@ export default function Analyzer() {
   const [authMode, setAuthMode] = useState(() => (URL_AT_LOAD.get("reset") ? "reset" : null));
   // A signed-in user can choose to browse the public search page without signing out.
   const [viewHome, setViewHome] = useState(false);
-  useEffect(() => { api("/api/me").then((d) => setUser(d.user)).catch(() => setUser(null)); }, []);
+  useEffect(() => { api("/api/me").then((d) => signIn(d.user)).catch(() => setUser(null)); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, []);
   // Signed-out visitors get Google's sign-in script in the background, so the button is
   // already there when they open Sign in or Get started.
   useEffect(() => {
@@ -137,19 +137,27 @@ export default function Analyzer() {
     return () => clearTimeout(t);
   }, [user]);
 
+  // A signed-in person's saved categories are the source of truth: copied to this device
+  // so the home page picker opens with them, and updated from either picker.
+  const signIn = (u) => { if (u?.screens?.length) saveSelection(u.screens); setUser(u); };
+  const saveAccountScreens = (keys) => {
+    setUser((u) => (u ? { ...u, screens: keys } : u));
+    return api("/api/screens-select", { method: "POST", body: { screens: keys } });
+  };
+
   if (user === undefined) return <Splash />;
   if (user && !viewHome) {
-    return <Dashboard user={user} onSignOut={() => { setUser(null); setAuthMode(null); }} onGoHome={() => setViewHome(true)} />;
+    return <Dashboard user={user} onSaveScreens={saveAccountScreens} onSignOut={() => { setUser(null); setAuthMode(null); }} onGoHome={() => setViewHome(true)} />;
   }
   // Already signed in and just browsing home: "Get started" and "Sign in" return to the
   // dashboard instead of opening the form again.
   const openAuth = (mode) => (user ? setViewHome(false) : setAuthMode(mode));
   return (
     <>
-      <Landing onStart={() => openAuth("signup")} onSignIn={() => openAuth("login")} />
+      <Landing onStart={() => openAuth("signup")} onSignIn={() => openAuth("login")} onPick={user ? saveAccountScreens : null} />
       {!user && authMode && (
         <AuthModal mode={authMode} setMode={setAuthMode} onClose={() => setAuthMode(null)}
-          onAuthed={(u) => { setUser(u); setViewHome(false); setAuthMode(null); }} />
+          onAuthed={(u) => { signIn(u); setViewHome(false); setAuthMode(null); }} />
       )}
     </>
   );
@@ -361,7 +369,7 @@ function CategoryPicker({ screens, presets, selected, toggle, setAll, allOn, onA
   );
 }
 
-function HeroAnalyzer({ onStart, snaptrade, meta }) {
+function HeroAnalyzer({ onStart, onPick, snaptrade, meta }) {
   const [q, setQ] = useState(initialSymbol);
   const [result, setResult] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -402,7 +410,16 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
   }, []);
   // Remember a selection only once the reader has changed it, never the automatic start.
   const chose = useRef(false);
-  useEffect(() => { if (selected && chose.current) saveSelection([...selected]); }, [selected]);
+  // Signed in, the choice is saved to the account too, a moment after the last click.
+  const pickRef = useRef(onPick);
+  pickRef.current = onPick;
+  useEffect(() => {
+    if (!selected || !chose.current) return;
+    saveSelection([...selected]);
+    if (!pickRef.current) return;
+    const t = setTimeout(() => pickRef.current([...selected]).catch(() => {}), 600);
+    return () => clearTimeout(t);
+  }, [selected]);
   const toggle = (k) => { chose.current = true; setSelected((prev) => {
     const n = new Set(prev); if (n.has(k)) n.delete(k); else n.add(k); return n;
   }); };
@@ -539,6 +556,25 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
     // Wide enough for the results to lay out in columns on a desktop; the search row and
     // its examples stay at a comfortable reading measure inside it.
     <div style={{ margin: "32px 0 0", textAlign: "left" }}>
+      {/* Two columns on a wide screen: search and categories on the left, the portfolio
+          upload as its own card on the right. On a phone the card follows the categories,
+          so it doesn't sit under the search box like part of it. */}
+      <style>{`
+        .ps-find { display: grid; grid-template-columns: minmax(0, 640px) minmax(240px, 320px); gap: 24px 48px; justify-content: space-between; align-items: start; }
+        @media (max-width: 960px) {
+          .ps-find { grid-template-columns: minmax(0, 640px); }
+          .ps-pf { display: flex; align-items: center; gap: 12px; padding: 12px 14px !important; }
+          .ps-pf-icon { flex-shrink: 0; }
+          .ps-pf-title { margin-top: 0 !important; font-size: 15px !important; flex: 1; min-width: 0; }
+          .ps-pf-text { display: none; }
+          .ps-pf-btn { flex-shrink: 0; padding: 8px 14px !important; font-size: 13px !important; }
+        }
+      `}</style>
+      <div className="ps-find">
+      <div>
+      <div style={{ fontFamily: sans, fontSize: 16, fontWeight: 600, color: D.ink, margin: "0 0 10px" }}>
+        Have a stock or fund in mind? <span style={{ color: D.muted, fontWeight: 400 }}>Check whether it fits your values.</span>
+      </div>
       {/* Wraps on a phone: the box takes the first line and Check and Compare drop below it,
           instead of squeezing the box to a third of the screen. */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, maxWidth: 640 }}>
@@ -580,25 +616,24 @@ function HeroAnalyzer({ onStart, snaptrade, meta }) {
           <button key={x} onClick={() => { setQ(x); run(x); }} style={{ background: "rgba(237,239,243,0.08)", border: `1px solid ${D.glassBorder}`, color: D.muted, borderRadius: 999, padding: "4px 11px", fontFamily: sans, fontSize: 12, fontWeight: 600, cursor: "pointer" }}>{x}</button>
         ))}
       </div>
-      {/* Its own row, so it reads as a second way in rather than one more example. */}
-      <button onClick={() => setPfOpen(true)} className="ps-upload"
-        style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", maxWidth: 640, boxSizing: "border-box", marginTop: 14,
-          cursor: "pointer", textAlign: "left", fontFamily: sans, color: D.ink, background: "rgba(156,203,245,0.07)",
-          border: "1px dashed rgba(156,203,245,0.45)", borderRadius: 14, padding: "12px 15px" }}>
-        <span aria-hidden style={{ flexShrink: 0, width: 34, height: 34, borderRadius: 10, display: "grid", placeItems: "center", background: "rgba(156,203,245,0.16)", color: P.sky }}>
-          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 11V3M4.5 6.5 8 3l3.5 3.5M3 13h10" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/></svg>
-        </span>
-        <span style={{ minWidth: 0 }}>
-          <span style={{ display: "block", fontSize: 15, fontWeight: 600 }}>Check your whole portfolio</span>
-          <span style={{ display: "block", fontSize: 13, color: D.muted, marginTop: 1 }}>Upload a positions CSV from your broker. Nothing is saved.</span>
-        </span>
-        <span aria-hidden style={{ marginLeft: "auto", flexShrink: 0, color: P.sky, fontSize: 18 }}>→</span>
-      </button>
-
       {screens.length > 0 && selected && (
         <CategoryPicker screens={screens} presets={presets} selected={selected} toggle={toggle}
           setAll={setAll} allOn={allOn} onApply={(keys) => { chose.current = true; setSelected(new Set(keys)); }} onFind={openFinder} />
       )}
+      </div>
+      <aside className="ps-pf" style={{ background: "rgba(156,203,245,0.06)", border: `1px solid ${D.glassBorder}`, borderRadius: 16, padding: "20px 20px 18px" }}>
+        <span aria-hidden className="ps-pf-icon" style={{ width: 38, height: 38, borderRadius: 11, display: "grid", placeItems: "center", background: "rgba(156,203,245,0.16)", color: P.sky }}>
+          <svg width="17" height="17" viewBox="0 0 16 16"><path d="M8 11V3M4.5 6.5 8 3l3.5 3.5M3 13h10" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        </span>
+        <div className="ps-pf-title" style={{ fontFamily: sans, fontSize: 16, fontWeight: 600, color: D.ink, marginTop: 12 }}>Check your whole portfolio</div>
+        <p className="ps-pf-text" style={{ fontFamily: sans, fontSize: 13.5, color: D.muted, lineHeight: 1.55, margin: "6px 0 14px" }}>
+          Upload a positions CSV from your broker to see every flagged holding at once. It's read in your browser and nothing is saved.
+        </p>
+        <button onClick={() => setPfOpen(true)} className="ps-upload ps-pf-btn"
+          style={{ cursor: "pointer", fontFamily: sans, fontSize: 14, fontWeight: 600, color: P.sky, background: "transparent",
+            border: "1px solid rgba(156,203,245,0.5)", borderRadius: 999, padding: "9px 18px" }}>Upload a CSV →</button>
+      </aside>
+      </div>
 
       {err && <DarkErr>{err}</DarkErr>}
       {result && (
@@ -1969,7 +2004,7 @@ const METHOD_CATALOGUE = [
 ];
 
 // ── Landing ─────────────────────────────────────────────────────────────────
-function Landing({ onStart, onSignIn }) {
+function Landing({ onStart, onSignIn, onPick }) {
   const [route, setRoute] = useState(typeof window !== "undefined" ? window.location.hash : "");
   // Server capabilities + data freshness, fetched once and handed to the hero: whether
   // brokerage connect is configured (decides which call-to-action to show) and how many
@@ -1990,7 +2025,7 @@ function Landing({ onStart, onSignIn }) {
     else window.scrollTo(0, 0);
   }, [route]);
   if (route === "#methodology") return <Methodology onStart={onStart} />;
-  return <LandingHome onStart={onStart} onSignIn={onSignIn} snaptrade={server.snaptrade} meta={server.meta} />;
+  return <LandingHome onStart={onStart} onSignIn={onSignIn} onPick={onPick} snaptrade={server.snaptrade} meta={server.meta} />;
 }
 
 // ── Methodology ───────────────────────────────────────────────────────────────
@@ -2225,7 +2260,7 @@ function HeroArt() {
   );
 }
 
-function LandingHome({ onStart, onSignIn, snaptrade, meta }) {
+function LandingHome({ onStart, onSignIn, onPick, snaptrade, meta }) {
   const wrap = { maxWidth: 1000, margin: "0 auto", padding: "0 24px" };
   const steps = [
     { n: "1", t: "Pick what matters to you", b: "Fossil fuels, weapons, tobacco, gambling, surveillance, and more. Flip on the causes you care about. We only ever check for what you choose." },
@@ -2280,7 +2315,7 @@ function LandingHome({ onStart, onSignIn, snaptrade, meta }) {
               <HeroArt />
             </div>
             <VerifiedBanner />
-            <HeroAnalyzer onStart={onStart} wrap={wrap} snaptrade={snaptrade} meta={meta} />
+            <HeroAnalyzer onStart={onStart} onPick={onPick} wrap={wrap} snaptrade={snaptrade} meta={meta} />
             <p style={{ fontFamily: sans, fontSize: 12.5, color: D.faint, marginTop: 18 }}>Read-only analysis. We never move your money without your say-so.</p>
           </div>
         </header>
@@ -2499,9 +2534,11 @@ function AuthModal({ mode, setMode, onClose, onAuthed }) {
 }
 
 // ── Dashboard (light theme) ─────────────────────────────────────────────────
-function Dashboard({ user, onSignOut, onGoHome }) {
+function Dashboard({ user, onSaveScreens, onSignOut, onGoHome }) {
   const [screens, setScreens] = useState(null);
-  const [selected, setSelected] = useState(new Set());
+  // Starts from what they saved last time (it comes with the account), not from the
+  // brokerage analysis, which only answers once a brokerage is connected.
+  const [selected, setSelected] = useState(() => new Set(user.screens || []));
   const [saved, setSaved] = useState(false);
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -2533,7 +2570,15 @@ function Dashboard({ user, onSignOut, onGoHome }) {
   }, []);
 
   const toggle = (key) => { setSaved(false); setSelected((s) => { const n = new Set(s); if (n.has(key)) n.delete(key); else n.add(key); return n; }); };
-  const saveScreens = async () => { await api("/api/screens-select", { method: "POST", body: { screens: [...selected] } }); setSaved(true); if (analysis) refresh(); };
+  const saveScreens = async () => {
+    setErr("");
+    try {
+      await onSaveScreens([...selected]);
+      saveSelection([...selected]);
+      setSaved(true);
+      if (analysis) refresh();
+    } catch (e) { setErr(e.message || "Couldn't save. Try again."); }
+  };
   const connect = async () => {
     setErr("");
     try { const { url } = await api("/api/brokerage-connect", { method: "POST" }); window.location.href = url; }
