@@ -76,6 +76,9 @@ export function parseFeed(xml) {
       || unescaped.match(/<img[^>]+src=["'](https:[^"']+)["']/)?.[1] || null;
     const image = candidate && IMAGE_HOSTS.test(decodeEntities(candidate)) ? decodeEntities(candidate) : null;
     if (!title || !link) continue;
+    // Videos and quizzes ride along in some feeds; this strip is
+    // for reported stories.
+    if (/\/videos?\//.test(link)) continue;
     items.push({ title, link, description, image, publishedAt: pubDate ? new Date(pubDate).toISOString() : null });
   }
   return items;

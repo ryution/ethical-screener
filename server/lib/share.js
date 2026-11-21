@@ -40,8 +40,8 @@ export function shareMeta(symbol) {
   const r = lookupSymbol(symbol);
   const sym = r?.symbol || String(symbol || "").toUpperCase();
   const fallback = {
-    title: "PlainStreet: see what's really inside your index fund",
-    description: "Search any stock or ETF ticker. We name the fossil fuel, weapons, tobacco, opioid and surveillance companies inside it, each with a one-sentence reason and a source.",
+    title: "PlainStreet: What are you really investing in?",
+    description: "Search any stock or ETF ticker. Explore company exposure to controversial ethics and corporate risk, from fossil fuels and weapons to opioids and surveillance.",
     ogImage: "/og/default.png", groups: [], r,
   };
   if (!r) return fallback;

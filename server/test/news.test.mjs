@@ -31,6 +31,11 @@ test("turns numbered characters in headlines back into text", () => {
   assert.equal(parseFeed(xml)[0].title, "Jensen Huang’s Handshake — Q&A");
 });
 
+test("skips video links", () => {
+  const xml = `<rss><channel><item><title>Markets wrap</title><link>https://example.org/news/videos/2026-11-21/x</link></item></channel></rss>`;
+  assert.equal(parseFeed(xml).length, 0);
+});
+
 test("follows more than two outlets", () => {
   assert.ok(new Set(FEEDS.map((f) => f.source)).size >= 8);
 });

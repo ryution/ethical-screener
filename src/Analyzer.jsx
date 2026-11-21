@@ -220,7 +220,8 @@ function syncUrl(symbol, selected, screens, vs = "") {
     // Keys are [a-z_] so the comma can stay readable instead of becoming %2C.
     // Nothing selected leaves ?only= off; an empty one would just be noise in a shared link.
     if (selected && selected.size && screens.length && selected.size < screens.length) qs += `&only=${[...selected].join(",")}`;
-    window.history.replaceState(null, "", qs);
+    // Keep "#news" or "#how-it-works" so Back still returns to that section.
+    window.history.replaceState(null, "", qs + (window.location.hash !== "#methodology" ? window.location.hash : ""));
   } catch { /* ignore */ }
 }
 // Faith-based starting sets. A preset only selects screens that already exist, so it
@@ -2087,9 +2088,15 @@ function HotNews({ wrap }) {
                    position: "relative", display: "block", overflow: "hidden", textDecoration: "none", color: "inherit",
                    height: 340, background: P.card, flex: "0 0 clamp(250px, 31%, 340px)", scrollSnapAlign: "start",
                  }}>
-                {it.image && (
+                {it.image ? (
                   <img src={it.image} alt="" loading="lazy"
                        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                ) : (
+                  // No photo in the outlet's feed: the outlet's name
+                  // fills the space instead of a blank card.
+                  <div aria-hidden style={{ position: "absolute", inset: 0, padding: "24px 18px", background: `linear-gradient(160deg, ${A.raised}, ${P.card})` }}>
+                    <div style={{ fontFamily: headline, fontSize: 40, lineHeight: 1, color: "rgba(156,203,245,0.22)", letterSpacing: "-0.01em" }}>{it.source}</div>
+                  </div>
                 )}
                 <div aria-hidden style={{ position: "absolute", inset: 0,
                   background: "linear-gradient(to bottom, rgba(13,17,25,0) 30%, rgba(13,17,25,0.72) 58%, rgba(13,17,25,0.96) 100%)" }} />
@@ -2170,28 +2177,102 @@ const METHOD_CATALOGUE = [
 ];
 
 // ── Landing ─────────────────────────────────────────────────────────────────
+// An eased scroll we control, instead of the browser's instant jump to an anchor. It
+// stops if the reader scrolls themselves, and is instant for anyone who asked their
+// device for less motion.
+const reducedMotion = () => typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+let scrollAnim = null;
+// `to` is a number or a function; a function is asked again every frame, so the scroll
+// still lands on a section that moves while content above it loads.
+function easeScrollTo(to) {
+  if (scrollAnim) scrollAnim.stop();
+  const target = typeof to === "function" ? to : () => to;
+  const from = window.scrollY, dist = target() - from;
+  if (reducedMotion() || Math.abs(dist) < 2) { window.scrollTo(0, target()); return; }
+  const ms = Math.min(950, Math.max(450, Math.abs(dist) * 0.4));
+  const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  const start = performance.now();
+  let raf = 0;
+  const stop = () => { cancelAnimationFrame(raf); window.removeEventListener("wheel", stop); window.removeEventListener("touchstart", stop); scrollAnim = null; };
+  const step = (now) => {
+    const t = Math.min(1, (now - start) / ms);
+    window.scrollTo(0, from + (target() - from) * ease(t));
+    if (t < 1) raf = requestAnimationFrame(step); else stop();
+  };
+  window.addEventListener("wheel", stop, { passive: true });
+  window.addEventListener("touchstart", stop, { passive: true });
+  raf = requestAnimationFrame(step);
+  scrollAnim = { stop };
+}
+// The section's top, just below the sticky nav.
+const sectionTop = (el) => el.getBoundingClientRect().top + window.scrollY - (document.querySelector("nav")?.offsetHeight || 0) - 12;
+
+const PAGE_CSS = `
+@keyframes ps-page-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.ps-page { animation: ps-page-in .45s cubic-bezier(.2,.7,.2,1) both; }
+.ps-nav-link { position: relative; padding: 4px 0; }
+.ps-nav-link::after { content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px; border-radius: 2px;
+  background: ${P.sky}; transform: scaleX(0); transform-origin: left; transition: transform .28s cubic-bezier(.2,.7,.2,1); }
+.ps-nav-link:hover::after, .ps-nav-link[aria-current="true"]::after { transform: scaleX(1); }
+@media (prefers-reduced-motion: reduce) { .ps-page { animation: none; } .ps-nav-link::after { transition: none; } }
+`;
+
 function Landing({ onStart, onSignIn, onPick }) {
-  const [route, setRoute] = useState(typeof window !== "undefined" ? window.location.hash : "");
+  // `n` changes on every click, so clicking "News" twice still scrolls back to it.
+  const [nav, setNav] = useState(() => ({ route: typeof window !== "undefined" ? window.location.hash : "", n: 0 }));
+  const route = nav.route;
+  const page = route === "#methodology" ? "methodology" : "home";
   // Server capabilities + data freshness, fetched once and handed to the hero: whether
   // brokerage connect is configured (decides which call-to-action to show) and how many
   // companies the data covers.
   const [server, setServer] = useState({ snaptrade: null, meta: null });
   useEffect(() => {
-    const h = () => setRoute(window.location.hash);
-    window.addEventListener("hashchange", h);
+    // In-page links ("#news", "#methodology", "#" for the top) are handled here so the
+    // browser never jumps: the address bar is updated and the effect below scrolls.
+    const onClick = (e) => {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      const a = e.target.closest?.('a[href^="#"]');
+      if (!a) return;
+      const hash = a.getAttribute("href");
+      e.preventDefault();
+      history.pushState(null, "", hash === "#" ? location.pathname + location.search : hash);
+      setNav((p) => ({ route: hash === "#" ? "" : hash, n: p.n + 1 }));
+    };
+    const onPop = () => setNav((p) => ({ route: window.location.hash, n: p.n + 1 }));
+    document.addEventListener("click", onClick);
+    window.addEventListener("popstate", onPop);
+    window.addEventListener("hashchange", onPop);
     api("/api/screens").then((d) => setServer({ snaptrade: !!d.snaptrade, meta: d.data || null })).catch(() => {});
-    return () => window.removeEventListener("hashchange", h);
+    return () => { document.removeEventListener("click", onClick); window.removeEventListener("popstate", onPop); window.removeEventListener("hashchange", onPop); };
   }, []);
-  // "#methodology" is its own page and opens at the top. Any other hash is a section on the
-  // home page (#news, #how-it-works), so scroll to it once the page is on screen.
+  // A new page (Methodology, or back home from it) fades in from its top. A section on the
+  // page you're already on is reached with an eased scroll.
+  const lastPage = useRef(page);
   useEffect(() => {
+    const changedPage = lastPage.current !== page;
+    lastPage.current = page;
     const id = route.slice(1);
-    const el = id && route !== "#methodology" ? document.getElementById(id) : null;
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-    else window.scrollTo(0, 0);
-  }, [route]);
-  if (route === "#methodology") return <Methodology onStart={onStart} />;
-  return <LandingHome onStart={onStart} onSignIn={onSignIn} onPick={onPick} snaptrade={server.snaptrade} meta={server.meta} />;
+    const el = id && page === "home" ? document.getElementById(id) : null;
+    if (changedPage) {
+      window.scrollTo(0, 0);
+      // Give the home page a moment to lay out (the search result loads in) first.
+      if (el) setTimeout(() => easeScrollTo(() => sectionTop(el)), 350);
+      return;
+    }
+    if (el) easeScrollTo(() => sectionTop(el));
+    else if (nav.n > 0) easeScrollTo(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nav]);
+  return (
+    <>
+      <style>{PAGE_CSS}</style>
+      <div key={page} className="ps-page">
+        {page === "methodology"
+          ? <Methodology onStart={onStart} />
+          : <LandingHome onStart={onStart} onSignIn={onSignIn} onPick={onPick} snaptrade={server.snaptrade} meta={server.meta} route={route} />}
+      </div>
+    </>
+  );
 }
 
 // ── Methodology ───────────────────────────────────────────────────────────────
@@ -2426,7 +2507,7 @@ function HeroArt() {
   );
 }
 
-function LandingHome({ onStart, onSignIn, onPick, snaptrade, meta }) {
+function LandingHome({ onStart, onSignIn, onPick, snaptrade, meta, route = "" }) {
   const wrap = { maxWidth: 1000, margin: "0 auto", padding: "0 24px" };
   const steps = [
     { n: "1", t: "Pick what matters to you", b: "Fossil fuels, weapons, tobacco, gambling, surveillance, and more. Flip on the causes you care about. We only ever check for what you choose." },
@@ -2454,9 +2535,9 @@ function LandingHome({ onStart, onSignIn, onPick, snaptrade, meta }) {
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20, padding: "14px clamp(16px,3vw,28px)" }}>
             <span style={{ flexShrink: 0, fontFamily: wordmark, fontSize: 25, fontWeight: 600, color: L.ink, letterSpacing: "-0.02em" }}>PlainStreet</span>
             <div className="ps-nav-actions" style={{ display: "flex", alignItems: "center", gap: 26 }}>
-              <a href="#news" className="ps-nav-extra" style={{ fontFamily: sans, fontSize: 15, color: L.ink, textDecoration: "none" }}>News</a>
-              <a href="#how-it-works" className="ps-nav-extra" style={{ fontFamily: sans, fontSize: 15, color: L.ink, textDecoration: "none" }}>How it works</a>
-              <a href="#methodology" className="ps-nav-methodology" style={{ fontFamily: sans, fontSize: 15, color: L.ink, textDecoration: "none" }}>Methodology</a>
+              <a href="#news" aria-current={route === "#news"} className="ps-nav-extra ps-nav-link" style={{ fontFamily: sans, fontSize: 15, color: L.ink, textDecoration: "none" }}>News</a>
+              <a href="#how-it-works" aria-current={route === "#how-it-works"} className="ps-nav-extra ps-nav-link" style={{ fontFamily: sans, fontSize: 15, color: L.ink, textDecoration: "none" }}>How it works</a>
+              <a href="#methodology" className="ps-nav-methodology ps-nav-link" style={{ fontFamily: sans, fontSize: 15, color: L.ink, textDecoration: "none" }}>Methodology</a>
               <button onClick={onSignIn} style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: sans, fontSize: 15, color: L.ink }}>Sign in</button>
               <button onClick={onStart} style={startBtn(999, "10px 20px", 15)}>Get started</button>
             </div>
