@@ -17,6 +17,7 @@ import { enrichedFlagsFor, enrichedName, enrichedTickers, dataMeta } from "./enr
 import { filingFlagsFor, filingName, filingTickers, filingMeta } from "./filings.js";
 import { normalizeTicker } from "./symbols.js";
 import { holdingsMeta, weightsFor, topHoldingsFor } from "./holdings.js";
+import { notableInvestorsFor } from "./notable.js";
 import { knownTicker, tickerName } from "./suggest.js";
 
 export { dataMeta };
@@ -141,12 +142,13 @@ export function lookupSymbol(symbol) {
   // Shown, never graded — it is not an input to any letter.
   const political = politicalFor(sym);
   const inFunds = fundsHolding(sym);
-  if (flags.length) return { symbol: sym, type: "stock", name: nameFor(sym), flags, conduct, credits, political, inFunds };
+  const notable = notableInvestorsFor(sym);
+  if (flags.length) return { symbol: sym, type: "stock", name: nameFor(sym), flags, conduct, credits, political, inFunds, notable };
   // "none" comes in two honest flavours: a US filer we know and found nothing on, or a
   // symbol we don't recognize at all (a fund we can't see inside, a foreign listing, a
   // typo). The UI words them differently — the second must never read as "clean".
   const known = knownTicker(sym);
-  return { symbol: sym, type: "none", known, name: known ? (tickerName(sym) || null) : null, conduct, credits, political, inFunds: known ? inFunds : [] };
+  return { symbol: sym, type: "none", known, name: known ? (tickerName(sym) || null) : null, conduct, credits, political, inFunds: known ? inFunds : [], notable: known ? notable : [] };
 }
 
 const distinctLabels = (contains) => {

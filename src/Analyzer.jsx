@@ -907,6 +907,40 @@ function FundsHolding({ items, symbol }) {
   );
 }
 
+// Well-known investors holding this stock, from their latest SEC 13F filing. Says how big
+// the stake is and how much of that investor's reported portfolio it is.
+const bigUsd = (v) => v >= 1e9 ? `$${(v / 1e9).toFixed(v >= 1e10 ? 0 : 1)}B` : v >= 1e6 ? `$${(v / 1e6).toFixed(v >= 1e8 ? 0 : 1)}M` : `$${Math.round(v / 1e3)}K`;
+const investorLabel = (x) => (x.person.startsWith("founded by") || x.person.startsWith("the "))
+  ? <><b>{x.name}</b> <span style={{ color: L.muted }}>({x.person})</span></>
+  : <><b>{x.person}</b><span style={{ color: L.muted }}>{"'s "}{x.name}</span></>;
+function NotableInvestors({ items, symbol }) {
+  const [all, setAll] = useState(false);
+  if (!items || !items.length) return null;
+  const shown = all ? items : items.slice(0, 4);
+  return (
+    <div style={{ marginTop: 18, paddingTop: 16, borderTop: `1px solid ${L.line}` }}>
+      <div style={{ fontFamily: sans, fontSize: 15, fontWeight: 600, color: L.ink }}>Notable investors in {symbol}</div>
+      <div style={{ fontFamily: sans, fontSize: 12.5, color: L.faint, margin: "2px 0 10px" }}>From each investor's latest quarterly 13F filing with the SEC.</div>
+      <div style={{ display: "grid", gap: 8 }}>
+        {shown.map((x) => (
+          <div key={x.name} style={{ display: "flex", alignItems: "baseline", gap: 12, flexWrap: "wrap", fontFamily: sans, fontSize: 13.5, color: L.ink,
+            background: L.lineSoft, border: `1px solid ${L.line}`, borderRadius: 12, padding: "10px 13px" }}>
+            <span style={{ flex: "1 1 220px", minWidth: 0 }}>{investorLabel(x)}</span>
+            <span style={{ fontWeight: 700 }} className="ps-num">{bigUsd(x.valueUsd)}</span>
+            {x.pctOfPortfolio != null && <span style={{ color: L.muted, fontSize: 12.5 }}>{x.pctOfPortfolio < 0.1 ? "<0.1" : x.pctOfPortfolio.toFixed(1)}% of its portfolio</span>}
+            <a href={x.url} target="_blank" rel="noopener noreferrer" style={{ color: A.lav, fontSize: 12, textDecoration: "none" }}>as of {x.asOf} ↗</a>
+          </div>
+        ))}
+      </div>
+      {items.length > 4 && (
+        <button onClick={() => setAll((v) => !v)} style={{ ...filterLink, fontSize: 13, marginTop: 10 }}>
+          {all ? "Show fewer" : `Show all ${items.length}`}
+        </button>
+      )}
+    </div>
+  );
+}
+
 function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
   // The result panel is a light card sitting on the dark band, so everything inside it
   // uses the light ramp rather than the band's.
@@ -969,6 +1003,7 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
         <QuotePanel symbol={result.symbol} />
         <div style={{ marginTop: 14 }}><Grades flags={[]} conduct={result.conduct} credits={result.credits} political={result.political} selectedCount={selectedCount} /></div>
         <FundsHolding items={result.inFunds} symbol={result.symbol} />
+        <NotableInvestors items={result.notable} symbol={result.symbol} />
         {cta}
       </div>
     );
@@ -985,6 +1020,7 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
           </p>
           <QuotePanel symbol={result.symbol} />
           <FundsHolding items={result.inFunds} symbol={result.symbol} />
+        <NotableInvestors items={result.notable} symbol={result.symbol} />
           {cta}
         </div>
       );
@@ -999,9 +1035,10 @@ function HeroResult({ result, onStart, snaptrade, selectedCount = 0 }) {
         <QuotePanel symbol={result.symbol} />
         <div style={{ marginTop: 16 }}><Grades flags={flags} conduct={result.conduct} credits={result.credits} political={result.political} selectedCount={selectedCount} /></div>
         <div style={{ marginTop: 14, display: "grid", gap: 10 }}>
-          {flags.map((f) => <FlagCard key={f.key} flag={f} company={result.name} />)}
+          {flags.map((f) => <FlagCard key={f.key} flag={f} company={result.name} symbol={result.symbol} />)}
         </div>
         <FundsHolding items={result.inFunds} symbol={result.symbol} />
+        <NotableInvestors items={result.notable} symbol={result.symbol} />
         {cta}
       </div>
     );
@@ -1506,7 +1543,7 @@ const MODAL_CSS = `
 `;
 const BACKDROP = { position: "fixed", inset: 0, zIndex: 100, background: "rgba(8,11,18,0.55)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)" };
 
-function CompareModal({ title, selectedCount, onClose, children }) {
+function CompareModal({ title, selectedCount, subtitle, onClose, children }) {
   const panel = useRef(null);
   // `onClose` is a fresh function every render. Holding the latest one in a ref keeps the
   // effect below to a single run, so it doesn't refocus the dialog on every keystroke.
@@ -1544,12 +1581,12 @@ function CompareModal({ title, selectedCount, onClose, children }) {
           <div style={{ minWidth: 0 }}>
             <div style={{ fontFamily: serif, fontSize: 20, color: L.ink, lineHeight: 1.2 }}>{title}</div>
             <div style={{ fontFamily: sans, fontSize: 12, color: L.faint, marginTop: 3 }}>
-              {selectedCount
+              {subtitle !== undefined ? subtitle : selectedCount
                 ? `Using your ${selectedCount} selected ${selectedCount === 1 ? "category" : "categories"}. Close this to change them.`
                 : "No categories selected."}
             </div>
           </div>
-          <button onClick={() => close.current()} aria-label="Close comparison"
+          <button onClick={() => close.current()} aria-label="Close"
             style={{ marginLeft: "auto", flexShrink: 0, cursor: "pointer", fontFamily: sans, fontSize: 13,
               fontWeight: 600, color: L.muted, background: "transparent", border: `1px solid ${L.line}`,
               borderRadius: 999, padding: "7px 14px" }}>Close ✕</button>
@@ -1687,6 +1724,8 @@ function FundBreakdown({ groups, theme }) {
                     </div>
                     <div style={{ fontFamily: sans, fontSize: 12.5, color: c.muted, lineHeight: 1.5 }}>{openReason}</div>
                     <FlagEvidence quote={openItem.quote} source={openItem.source} asOf={openItem.asOf} muted={c.muted} link={c.link} />
+                    <LearnMore flag={{ key: g.key, label: g.label, reason: openReason, quote: openItem.quote, source: openItem.source, asOf: openItem.asOf }}
+                      symbol={openItem.ticker} company={openItem.name} />
                     <ReportControl item={openItem} group={g} linkColor={c.link} muted={c.muted} />
                   </div>
                 )}
@@ -1702,7 +1741,7 @@ function FundBreakdown({ groups, theme }) {
 
 // §3.3 — one card per flag. The label used to sit in a narrow left column with the whole
 // finding crammed beside it, which turned three sentences into a thin wall of text.
-function FlagCard({ flag, company, dark = false }) {
+function FlagCard({ flag, company, symbol, dark = false }) {
   const surface = dark ? "rgba(237,239,243,0.05)" : L.card;
   const border = dark ? D.glassBorder : L.line;
   const ink = dark ? D.ink : L.ink;
@@ -1714,7 +1753,134 @@ function FlagCard({ flag, company, dark = false }) {
       <div style={{ fontFamily: sans, fontSize: 14.5, lineHeight: 1.6, color: ink, maxWidth: "68ch", letterSpacing: "-0.005em" }}>{lead}</div>
       {rest && <div style={{ fontFamily: sans, fontSize: 13.5, lineHeight: 1.62, color: muted, maxWidth: "68ch" }}>{rest}</div>}
       <FlagEvidence quote={flag.quote} source={flag.source} asOf={flag.asOf} muted={muted} link={A.lav} />
+      {symbol && <LearnMore flag={flag} symbol={symbol} company={company} />}
     </div>
+  );
+}
+
+// ── "Learn more" about a flag ── a pop-up that explains the issue (Wikipedia, with its
+// picture), shows why this company is flagged, introduces the company, lists recent
+// BBC and New York Times headlines naming it, and links out to search news coverage and
+// U.S. court records. Everything is either our sourced flag or a linked outside source.
+function LearnMore({ flag, symbol, company }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button onClick={() => setOpen(true)} className="ps-learn"
+        style={{ justifySelf: "start", display: "inline-flex", alignItems: "center", gap: 6, cursor: "pointer", fontFamily: sans, fontSize: 12.5, fontWeight: 600,
+          color: P.sky, background: "rgba(156,203,245,0.08)", border: "1px solid rgba(156,203,245,0.35)", borderRadius: 999, padding: "5px 12px" }}>
+        Learn more about this <span aria-hidden>→</span>
+      </button>
+      {open && <LearnModal flag={flag} symbol={symbol} company={company} onClose={() => setOpen(false)} />}
+    </>
+  );
+}
+
+function LearnModal({ flag, symbol, company, onClose }) {
+  const [wiki, setWiki] = useState(null);
+  const [news, setNews] = useState(null);
+  useEffect(() => {
+    let live = true;
+    api(`/api/learn?flag=${encodeURIComponent(flag.key)}&symbol=${encodeURIComponent(symbol)}`).then((d) => { if (live) setWiki(d); }).catch(() => { if (live) setWiki({}); });
+    api(`/api/news?symbol=${encodeURIComponent(symbol)}`).then((d) => { if (live) setNews(d.items || []); }).catch(() => { if (live) setNews([]); });
+    return () => { live = false; };
+  }, [flag.key, symbol]);
+  const name = displayName(company) || symbol;
+  const issue = wiki?.issue, about = wiki?.company;
+  const { lead, rest } = reasonParts(flag.reason, company);
+  const h = { fontFamily: sans, fontSize: 12, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: L.faint, margin: "0 0 10px" };
+  const section = { padding: "18px 0", borderTop: `1px solid ${L.line}` };
+  const wikiLink = (u) => <a href={u} target="_blank" rel="noopener noreferrer" style={{ fontFamily: sans, fontSize: 13, color: A.lav, textDecoration: "none" }}>Read more on Wikipedia ↗</a>;
+  const q = (s) => encodeURIComponent(s);
+  const links = [
+    { label: `News about ${name} and ${flag.label.toLowerCase()}`, sub: "Google News search", href: `https://news.google.com/search?q=${q(`"${name}" ${flag.label}`)}` },
+    { label: `Court cases naming ${name}`, sub: "CourtListener, a free archive of U.S. court records", href: `https://www.courtlistener.com/?q=${q(`"${name}"`)}` },
+    { label: `${name} lawsuits and settlements in the news`, sub: "Google News search", href: `https://news.google.com/search?q=${q(`"${name}" lawsuit OR settlement`)}` },
+  ];
+  return (
+    <CompareModal title={`${name} · ${flag.label}`} subtitle={`${symbol} is flagged for ${flag.label.toLowerCase()}. Here's more on the issue and where to read further.`} onClose={onClose}>
+      <style>{`.ps-learn-link:hover { border-color: rgba(156,203,245,0.6) !important; } .ps-news-card:hover { border-color: rgba(156,203,245,0.5) !important; }`}</style>
+      <div style={{ fontFamily: sans, color: L.ink }}>
+        {/* The issue, in general */}
+        <div style={{ padding: "18px 0", display: "grid", gridTemplateColumns: issue?.image ? "minmax(0,1fr) min(180px, 34%)" : "1fr", gap: 18, alignItems: "start" }}>
+          <div>
+            <div style={h}>The issue</div>
+            {!wiki ? <div style={{ fontSize: 14, color: L.muted }}>Loading…</div>
+              : issue ? (
+                <>
+                  <div style={{ fontSize: 19, fontWeight: 600, marginBottom: 6 }}>{issue.title}</div>
+                  <p style={{ fontSize: 14.5, lineHeight: 1.6, color: L.muted, margin: "0 0 8px" }}>{issue.extract}</p>
+                  {wikiLink(issue.url)}
+                </>
+              ) : <p style={{ fontSize: 14, color: L.muted, margin: 0 }}>{flag.label}.</p>}
+          </div>
+          {issue?.image && <img src={issue.image} alt={issue.title} loading="lazy" style={{ width: "100%", aspectRatio: "4 / 3", objectFit: "cover", borderRadius: 12, border: `1px solid ${L.line}` }} />}
+        </div>
+
+        {/* Why this company */}
+        <div style={section}>
+          <div style={h}>Why {name} is flagged</div>
+          <div style={{ fontSize: 15, lineHeight: 1.6 }}>{lead}</div>
+          {rest && <div style={{ fontSize: 14, lineHeight: 1.6, color: L.muted, marginTop: 4 }}>{rest}</div>}
+          <div style={{ marginTop: 8 }}><FlagEvidence quote={flag.quote} source={flag.source} asOf={flag.asOf} muted={L.muted} link={A.lav} /></div>
+        </div>
+
+        {/* The company */}
+        {about && (
+          <div style={{ ...section, display: "grid", gridTemplateColumns: about.image ? "72px minmax(0,1fr)" : "1fr", gap: 14, alignItems: "start" }}>
+            {about.image && <img src={about.image} alt="" loading="lazy" style={{ width: 72, height: 72, objectFit: "contain", background: "#fff", borderRadius: 12, padding: 6, boxSizing: "border-box" }} />}
+            <div>
+              <div style={h}>About {name}</div>
+              <p style={{ fontSize: 14, lineHeight: 1.6, color: L.muted, margin: "0 0 6px" }}>{about.extract}</p>
+              {wikiLink(about.url)}
+            </div>
+          </div>
+        )}
+
+        {/* Headlines */}
+        <div style={section}>
+          <div style={h}>In the news</div>
+          {news === null ? <div style={{ fontSize: 14, color: L.muted }}>Loading…</div>
+            : !news.length ? <p style={{ fontSize: 14, color: L.muted, margin: 0 }}>No recent BBC or New York Times headlines name {name}. Try the searches below.</p>
+            : (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 10 }}>
+                {news.slice(0, 4).map((n) => (
+                  <a key={n.link} href={n.link} target="_blank" rel="noopener noreferrer" className="ps-news-card"
+                    style={{ display: "grid", gridTemplateColumns: n.image ? "64px minmax(0,1fr)" : "1fr", gap: 10, textDecoration: "none", color: L.ink,
+                      background: L.lineSoft, border: `1px solid ${L.line}`, borderRadius: 12, padding: 10 }}>
+                    {n.image && <img src={n.image} alt="" loading="lazy" style={{ width: 64, height: 64, objectFit: "cover", borderRadius: 8 }} />}
+                    <span>
+                      <span style={{ display: "block", fontSize: 13.5, fontWeight: 600, lineHeight: 1.35 }}>{n.title}</span>
+                      <span style={{ display: "block", fontSize: 12, color: L.faint, marginTop: 4 }}>{n.source}{n.publishedAt ? ` · ${new Date(n.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}` : ""}</span>
+                    </span>
+                  </a>
+                ))}
+              </div>
+            )}
+        </div>
+
+        {/* Look further */}
+        <div style={section}>
+          <div style={h}>Look further</div>
+          <div style={{ display: "grid", gap: 8 }}>
+            {links.map((l) => (
+              <a key={l.href} href={l.href} target="_blank" rel="noopener noreferrer" className="ps-learn-link"
+                style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none", color: L.ink, border: `1px solid ${L.line}`, borderRadius: 12, padding: "11px 14px" }}>
+                <span style={{ flex: 1, minWidth: 0 }}>
+                  <span style={{ display: "block", fontSize: 14, fontWeight: 600 }}>{l.label}</span>
+                  <span style={{ display: "block", fontSize: 12.5, color: L.faint, marginTop: 2 }}>{l.sub}</span>
+                </span>
+                <span aria-hidden style={{ color: A.lav }}>↗</span>
+              </a>
+            ))}
+          </div>
+          <p style={{ fontSize: 12, color: L.faint, margin: "14px 0 0", lineHeight: 1.5 }}>
+            These open outside sites. Search results aren't checked by us; our flag rests only on the source above.
+            {(issue || about) && <> Summaries from Wikipedia, <a href={wiki?.license} target="_blank" rel="noopener noreferrer" style={{ color: L.faint }}>CC BY-SA 4.0</a>.</>}
+          </p>
+        </div>
+      </div>
+    </CompareModal>
   );
 }
 
@@ -2716,7 +2882,7 @@ function Results({ analysis }) {
               </div>
               <div style={{ fontFamily: sans, fontSize: 11.5, color: L.faint, marginTop: 2 }}>{h.account} · {h.units} shares</div>
               <div style={{ marginTop: 12, display: "grid", gap: 10 }}>
-                {h.flags.map((f) => <FlagCard key={f.key} flag={f} company={h.description} />)}
+                {h.flags.map((f) => <FlagCard key={f.key} flag={f} company={h.description} symbol={h.symbol} />)}
               </div>
             </div>
           ))}

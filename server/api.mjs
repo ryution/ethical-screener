@@ -16,6 +16,7 @@ import { snaptradeEnabled, registerUser as stRegister, connectionPortalUrl, allP
 import { analyze, lookupSymbol, coverageMeta } from "./lib/analyzer.js";
 import { alternatives } from "./lib/alternatives.js";
 import { checkPortfolio } from "./lib/portfolio.js";
+import { wikiIssue, wikiCompany, wikiLicense } from "./lib/wiki.js";
 import { verifyGoogleIdToken, GOOGLE_CLIENT_ID } from "./lib/google.js";
 import { suggest } from "./lib/suggest.js";
 import { screenCatalogue, isScreenKey, VALUE_PRESETS } from "./lib/screens.js";
@@ -158,7 +159,7 @@ const CSP = [
   "font-src 'self' data: https://fonts.gstatic.com",
   // News thumbnails come straight from the publisher (BBC, NYT) — no proxying, so their
   // image hosts need an explicit CSP allowance.
-  "img-src 'self' data: https://ichef.bbci.co.uk https://static01.nyt.com https://static.nytimes.com",
+  "img-src 'self' data: https://ichef.bbci.co.uk https://static01.nyt.com https://static.nytimes.com https://upload.wikimedia.org https://thumb.wikimedia.org",
   "connect-src 'self' https://accounts.google.com/gsi/",
   "form-action 'self'",
   "frame-ancestors 'none'",
@@ -317,6 +318,15 @@ export async function handler(req, res) {
   }
 
   // ---- recent headlines mentioning a tracked company (BBC + NYT, headline+link only) ----
+  // ---- "Learn more" about a flag: Wikipedia's summary of the issue and of the company ----
+  if (req.method === "GET" && path === "/api/learn") {
+    const rl = rateLimit("learn", ip, 600, 60 * 60 * 1000);
+    if (rl.limited) return sendJson(res, 429, { error: "Too many requests. Try again shortly." }, { "Retry-After": String(rl.retryAfter) });
+    const flag = url.searchParams.get("flag") || "";
+    const symbol = url.searchParams.get("symbol") || "";
+    return sendJson(res, 200, { issue: isScreenKey(flag) ? wikiIssue(flag) : null, company: wikiCompany(symbol), license: wikiLicense() });
+  }
+
   if (req.method === "GET" && path === "/api/news") {
     const rl = rateLimit("news", ip, 60, 60 * 60 * 1000);
     if (rl.limited) return sendJson(res, 429, { error: "Too many requests. Try again shortly." }, { "Retry-After": String(rl.retryAfter) });

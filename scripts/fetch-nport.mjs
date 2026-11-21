@@ -102,7 +102,7 @@ function screenedForm(rawTicker) {
   return null;
 }
 
-function loadLookups() {
+export function loadLookups() {
   const cusip = existsSync(join(GEN, "cusip-tickers.json")) ? JSON.parse(readFileSync(join(GEN, "cusip-tickers.json"), "utf8")).map : {};
   const names = new Map();
   // tickers.json is the SEC's ticker list, largest companies first, so the first ticker
