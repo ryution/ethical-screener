@@ -1,8 +1,10 @@
 // Hot news — recent headlines that mention a company we track, pulled from outlets'
-// own RSS feeds (BBC, The New York Times). Deliberately NOT Google News RSS: its own
-// feed license restricts reuse to "a personal feed reader for personal, non-commercial
-// use" — this app isn't that, so it's off the table. BBC and NYT both publish RSS
-// specifically for syndication/aggregation instead.
+// own RSS feeds (BBC, The New York Times, The Wall Street Journal, The Guardian, NPR, CBS News, MarketWatch, Fox
+// Business, ProPublica, Grist). Deliberately NOT Google News RSS: its own feed license
+// restricts reuse to "a personal feed reader for personal, non-commercial use", so it's
+// off the table. Each outlet here publishes its own feed; we show only the headline,
+// photo and a link back, which is what those feeds are for. If PlainStreet starts
+// charging, re-check each outlet's feed terms.
 //
 // HONESTY RULE, same as everywhere else in this app: we show a headline, its outlet,
 // and a link to the original story — never a summary or characterization we wrote.
@@ -18,11 +20,27 @@ import { filingFlagsFor, filingTickers, filingName } from "./filings.js";
 
 const NYT = (section) => ({ source: "The New York Times", url: `https://rss.nytimes.com/services/xml/rss/nyt/${section}.xml` });
 const BBC = (section) => ({ source: "BBC", url: `https://feeds.bbci.co.uk/news/${section}/rss.xml` });
-const FEEDS = [
+const GUARDIAN = (path) => ({ source: "The Guardian", url: `https://www.theguardian.com/${path}/rss` });
+// A spread of outlets, so one newsroom's coverage isn't the whole picture: public
+// broadcasters, newspapers left and right of center, market news, and two investigative
+// and climate desks that report on the issues our categories cover.
+export const FEEDS = [
   BBC("business"), BBC("technology"), BBC("science_and_environment"),
   NYT("Business"), NYT("Technology"), NYT("Economy"), NYT("EnergyEnvironment"), NYT("Dealbook"),
   NYT("YourMoney"), NYT("MediaandAdvertising"), NYT("Climate"), NYT("Health"),
+  GUARDIAN("business"), GUARDIAN("us/environment"), GUARDIAN("us/technology"),
+  { source: "NPR", url: "https://feeds.npr.org/1006/rss.xml" },
+  { source: "CBS News", url: "https://www.cbsnews.com/latest/rss/moneywatch" },
+  { source: "MarketWatch", url: "https://feeds.content.dowjones.io/public/rss/mw_topstories" },
+  { source: "Fox Business", url: "https://moxie.foxbusiness.com/google-publisher/latest.xml" },
+  { source: "ProPublica", url: "https://www.propublica.org/feeds/propublica/main" },
+  { source: "Grist", url: "https://grist.org/feed/" },
+  ...["WSJcomUSBusiness", "RSSMarketsMain", "RSSWSJD", "socialeconomyfeed"]
+    .map((f) => ({ source: "The Wall Street Journal", url: `https://feeds.content.dowjones.io/public/rss/${f}` })),
 ];
+// Where story photos come from. The page's security policy allows these hosts and no
+// others, so a photo from anywhere else is dropped rather than shown broken.
+const IMAGE_HOSTS = /^https:\/\/(ichef\.bbci\.co\.uk|static01\.nyt\.com|static\.nytimes\.com|i\.guim\.co\.uk|media\.npr\.org|npr\.brightspotcdn\.com|[a-z0-9-]+\.cbsnewsstatic\.com|images\.mktw\.net|static\.foxbusiness\.com|www\.propublica\.org|grist\.org|images\.wsj\.net|opinion-images\.wsj\.net)\//;
 
 const UA = "PlainStreet News research@plainstreet.app";
 const CACHE_TTL_MS = 15 * 60 * 1000; // be a good citizen — don't refetch on every request
@@ -32,21 +50,31 @@ function decodeEntities(s) {
   return String(s || "")
     .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
     .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
-    .replace(/&#39;/g, "'").replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&nbsp;/g, " ")
+    // Numbered characters, like the WSJ's &#x2019; for a curly apostrophe.
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
     .trim();
 }
 
-function parseFeed(xml) {
+export function parseFeed(xml) {
   const items = [];
-  for (const block of xml.matchAll(/<item>([\s\S]*?)<\/item>/g)) {
+  for (const block of xml.matchAll(/<item(?:\s[^>]*)?>([\s\S]*?)<\/item>/g)) {
     const body = block[1];
     const title = decodeEntities(body.match(/<title>([\s\S]*?)<\/title>/)?.[1]);
     const link = decodeEntities(body.match(/<link>([\s\S]*?)<\/link>/)?.[1]);
     const description = decodeEntities(body.match(/<description>([\s\S]*?)<\/description>/)?.[1]);
     const pubDate = body.match(/<pubDate>([\s\S]*?)<\/pubDate>/)?.[1];
-    // BBC uses <media:thumbnail url="...">; NYT uses <media:content url="...">.
-    const image = body.match(/<media:thumbnail[^>]*\burl="([^"]+)"/)?.[1]
-      || body.match(/<media:content[^>]*\burl="([^"]+)"/)?.[1] || null;
+    // Outlets put the photo in different places: BBC <media:thumbnail>, NYT and the
+    // Guardian <media:content>, MarketWatch <enclosure>, CBS <image>, and NPR,
+    // ProPublica and Grist an <img> inside the story text.
+    const unescaped = decodeEntities(body);
+    const candidate = body.match(/<media:thumbnail[^>]*\burl="([^"]+)"/)?.[1]
+      || body.match(/<media:content[^>]*\burl="([^"]+)"/)?.[1]
+      || body.match(/<enclosure[^>]*\burl="([^"]+)"[^>]*type="image/)?.[1]
+      || body.match(/<image>\s*(https:[^<\s]+)\s*<\/image>/)?.[1]
+      || unescaped.match(/<img[^>]+src=["'](https:[^"']+)["']/)?.[1] || null;
+    const image = candidate && IMAGE_HOSTS.test(decodeEntities(candidate)) ? decodeEntities(candidate) : null;
     if (!title || !link) continue;
     items.push({ title, link, description, image, publishedAt: pubDate ? new Date(pubDate).toISOString() : null });
   }
@@ -57,7 +85,8 @@ async function fetchFeed({ source, url }) {
   const cached = _cache.get(url);
   if (cached && Date.now() - cached.fetchedAt < CACHE_TTL_MS) return cached.items;
   try {
-    const res = await fetch(url, { headers: { "User-Agent": UA } });
+    // One slow outlet must not hold up the whole strip.
+    const res = await fetch(url, { headers: { "User-Agent": UA }, signal: AbortSignal.timeout(8000) });
     if (!res.ok) throw new Error(`${res.status}`);
     const items = parseFeed(await res.text()).map((it) => ({ ...it, source }));
     _cache.set(url, { items, fetchedAt: Date.now() });

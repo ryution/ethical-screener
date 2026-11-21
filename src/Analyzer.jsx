@@ -1760,7 +1760,7 @@ function FlagCard({ flag, company, symbol, dark = false }) {
 
 // ── "Learn more" about a flag ── a pop-up that explains the issue (Wikipedia, with its
 // picture), shows why this company is flagged, introduces the company, lists recent
-// BBC and New York Times headlines naming it, and links out to search news coverage and
+// headlines naming it from the outlets in news.js, and links out to search news coverage and
 // U.S. court records. Everything is either our sourced flag or a linked outside source.
 function LearnMore({ flag, symbol, company }) {
   const [open, setOpen] = useState(false);
@@ -1841,7 +1841,7 @@ function LearnModal({ flag, symbol, company, onClose }) {
         <div style={section}>
           <div style={h}>In the news</div>
           {news === null ? <div style={{ fontSize: 14, color: L.muted }}>Loading…</div>
-            : !news.length ? <p style={{ fontSize: 14, color: L.muted, margin: 0 }}>No recent BBC or New York Times headlines name {name}. Try the searches below.</p>
+            : !news.length ? <p style={{ fontSize: 14, color: L.muted, margin: 0 }}>No recent headlines from the outlets we follow name {name}. Try the searches below.</p>
             : (
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 10 }}>
                 {news.slice(0, 4).map((n) => (
@@ -2060,7 +2060,7 @@ function HotNews({ wrap }) {
     <section id="news" style={{ ...wrap, padding: "clamp(40px,5vw,60px) 24px 0", scrollMarginTop: 70 }}>
       <div style={{ marginBottom: 26 }}>
         <h2 style={{ fontFamily: headline, fontSize: "clamp(32px,4.6vw,48px)", color: L.pine, fontWeight: 400, margin: 0, letterSpacing: "-0.01em" }}>Hot off the wire</h2>
-        <p style={{ fontFamily: sans, fontSize: 15, color: L.muted, margin: "8px 0 0" }}>Recent BBC and New York Times headlines that name a company we flag, with the flag it carries.</p>
+        <p style={{ fontFamily: sans, fontSize: 15, color: L.muted, margin: "8px 0 0" }}>Recent headlines from the BBC, The New York Times, The Wall Street Journal, The Guardian, NPR, CBS, MarketWatch, Fox Business, ProPublica and Grist that name a company we flag, with the flag it carries.</p>
       </div>
       {!items ? (
         <p style={{ textAlign: "center", fontFamily: sans, color: L.faint, fontSize: 14 }}>Loading…</p>

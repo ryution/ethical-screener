@@ -159,7 +159,7 @@ const CSP = [
   "font-src 'self' data: https://fonts.gstatic.com",
   // News thumbnails come straight from the publisher (BBC, NYT) — no proxying, so their
   // image hosts need an explicit CSP allowance.
-  "img-src 'self' data: https://ichef.bbci.co.uk https://static01.nyt.com https://static.nytimes.com https://upload.wikimedia.org https://thumb.wikimedia.org",
+  "img-src 'self' data: https://ichef.bbci.co.uk https://static01.nyt.com https://static.nytimes.com https://i.guim.co.uk https://media.npr.org https://npr.brightspotcdn.com https://*.cbsnewsstatic.com https://images.mktw.net https://static.foxbusiness.com https://www.propublica.org https://grist.org https://images.wsj.net https://opinion-images.wsj.net https://upload.wikimedia.org https://thumb.wikimedia.org",
   "connect-src 'self' https://accounts.google.com/gsi/",
   "form-action 'self'",
   "frame-ancestors 'none'",
